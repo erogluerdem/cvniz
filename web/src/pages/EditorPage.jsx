@@ -4,7 +4,8 @@ import {
     ArrowLeft, Download, Eye, Printer, ChevronLeft, ChevronRight, Save, LogIn, Crown, Sparkles,
     UserPlus, Lock, Shield, Check, X, AlertTriangle, Layout, Type, Palette, Settings as SettingsIcon,
     History, Share2, ZoomIn, ZoomOut, Maximize2, Monitor, Laptop, Tablet, Smartphone, Search,
-    User, Briefcase, GraduationCap, Wrench, Menu, Trophy, FolderKanban, Award, Users, Heart, GitBranch, Linkedin, FileText, Globe2
+    User, Briefcase, GraduationCap, Wrench, Menu, Trophy, FolderKanban, Award, Users, Heart, GitBranch, Linkedin, FileText, Globe2,
+    Edit3, PanelLeft
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -101,6 +102,19 @@ export default function EditorPage() {
     const [upsellTriggerType, setUpsellTriggerType] = useState('download')
     const scrollRef = useRef(null)
     const [uiTheme, setUiTheme] = useState('night')
+
+    // Mobile-specific states
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobilePreviewMode, setMobilePreviewMode] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
+
+    // Detect mobile viewport
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
     const isDayMode = uiTheme === 'day'
     const selectionColor = isDayMode ? 'selection:bg-sky-200/70' : 'selection:bg-cyan-500/30'
     const versionOptions = useMemo(() => (cvId ? getVersions(cvId) : []), [cvId, getVersions])
@@ -591,85 +605,97 @@ export default function EditorPage() {
         : 'bg-[#0f1115]/40 border-white/5 text-slate-300'
 
     return (
-        <div className={`fixed inset-0 flex flex-col overflow-hidden editor-page-shell ${shellClasses} ${selectionColor}`}>
-            {/* Top Bar - High End Header */}
-            <header className={`h-20 border-b backdrop-blur-xl flex items-center justify-between px-6 shrink-0 z-50 ${headerClasses}`}>
-                <div className="flex items-center gap-6">
+        <div className={`fixed inset-0 flex flex-col overflow-hidden editor-page-shell mobile-full-height ${shellClasses} ${selectionColor}`}>
+            {/* Mobile Backdrop for Sidebar */}
+            {isMobile && (
+                <div
+                    className={`mobile-backdrop ${mobileMenuOpen ? 'active' : ''}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+            {/* Top Bar - Responsive Header */}
+            <header className={`h-14 md:h-20 border-b backdrop-blur-xl flex items-center justify-between px-3 md:px-6 shrink-0 z-50 ${headerClasses}`}>
+                {/* Left Section */}
+                <div className="flex items-center gap-2 md:gap-6">
+                    {/* Mobile: Hamburger Menu */}
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="p-2.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-all md:hidden touch-target"
+                    >
+                        <Menu className="w-5 h-5" />
+                    </button>
+
+                    {/* Desktop: Back Button */}
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="p-2 mr-2 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all border border-white/5"
+                        className="hidden md:flex p-2 mr-2 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all border border-white/5"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
+
+                    {/* CV Name - Compact on Mobile */}
                     <div className="flex flex-col">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                             <input
                                 type="text"
                                 value={cvName}
                                 onChange={(e) => setCvName(e.target.value)}
-                                className="bg-transparent border-none text-sm font-bold tracking-tight text-white focus:outline-none w-40 focus:ring-0"
+                                className={`bg-transparent border-none text-sm font-bold tracking-tight focus:outline-none focus:ring-0 ${isDayMode ? 'text-slate-900' : 'text-white'} w-24 md:w-40`}
                             />
-                            <div className="flex items-center gap-2">
-                                <div className={`flex rounded-lg p-0.5 border ml-2 ${isDayMode ? 'bg-slate-100 border-slate-200' : 'bg-black/40 border-white/5'}`}>
-                                    <button
-                                        onClick={handleUndo}
-                                        disabled={!canUndo}
-                                        className={`p-1 rounded transition-all ${canUndo ? 'text-slate-200 hover:bg-white/5' : 'text-slate-600'}`}
-                                        title="Geri Al (Ctrl+Z)"
-                                    >
-                                        <Undo2 className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        onClick={handleRedo}
-                                        disabled={!canRedo}
-                                        className={`p-1 rounded transition-all ${canRedo ? 'text-slate-200 hover:bg-white/5' : 'text-slate-600'}`}
-                                        title="İleri Al (Ctrl+Y)"
-                                    >
-                                        <Redo2 className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
 
-                                <div className={`h-4 w-px mx-2 ${isDayMode ? 'bg-slate-200/60' : 'bg-white/10'}`} />
-
-                                <div className={`flex items-center gap-2 px-2 py-0.5 rounded border ${isDayMode ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-white/5 border-white/10'}`}>
-                                    {isOnline ? (
-                                        <>
-                                            {syncStatus === 'syncing' ? (
-                                                <>
-                                                    <RefreshCw className="w-3 h-3 text-cyan-400 animate-spin" />
-                                                    <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Eşitleniyor...</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Cloud className="w-3 h-3 text-emerald-500" />
-                                                    <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">Senkronize</span>
-                                                </>
-                                            )}
-                                        </>
+                            {/* Sync Status - Compact */}
+                            <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded border text-[10px] ${isDayMode ? 'bg-slate-100 border-slate-200' : 'bg-white/5 border-white/10'}`}>
+                                {isOnline ? (
+                                    syncStatus === 'syncing' ? (
+                                        <RefreshCw className="w-3 h-3 text-cyan-400 animate-spin" />
                                     ) : (
-                                        <>
-                                            <CloudOff className="w-3 h-3 text-amber-500" />
-                                            <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest">Çevrimdışı</span>
-                                        </>
-                                    )}
-                                </div>
+                                        <Cloud className="w-3 h-3 text-emerald-500" />
+                                    )
+                                ) : (
+                                    <CloudOff className="w-3 h-3 text-amber-500" />
+                                )}
+                                <span className="hidden sm:inline font-black uppercase tracking-widest text-[8px]">
+                                    {isOnline ? (syncStatus === 'syncing' ? 'Eşitleniyor' : 'Senkronize') : 'Çevrimdışı'}
+                                </span>
                             </div>
 
-                            <div className="flex gap-2 ml-4">
-                                <button onClick={handleLoadSample} className="text-[9px] font-black text-cyan-400 hover:text-cyan-300 uppercase tracking-widest border border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 transition-all active:scale-95">Örnek Doldur</button>
-                                <button onClick={() => setShowCVImporter(true)} className="text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest border border-emerald-500/20 px-2 py-0.5 rounded bg-emerald-500/5 transition-all active:scale-95 flex items-center gap-1">
-                                    <FileText className="w-3 h-3" /> CV Yükle
+                            {/* Undo/Redo - Hidden on Mobile */}
+                            <div className={`hidden md:flex rounded-lg p-0.5 border ${isDayMode ? 'bg-slate-100 border-slate-200' : 'bg-black/40 border-white/5'}`}>
+                                <button
+                                    onClick={handleUndo}
+                                    disabled={!canUndo}
+                                    className={`p-1 rounded transition-all ${canUndo ? 'text-slate-200 hover:bg-white/5' : 'text-slate-600'}`}
+                                    title="Geri Al (Ctrl+Z)"
+                                >
+                                    <Undo2 className="w-3.5 h-3.5" />
                                 </button>
-                                <button onClick={() => setShowLinkedInModal(true)} className="text-[9px] font-black text-blue-400 hover:text-blue-300 uppercase tracking-widest border border-blue-500/20 px-2 py-0.5 rounded bg-blue-500/5 transition-all active:scale-95 flex items-center gap-1">
-                                    <Linkedin className="w-3 h-3" /> LinkedIn
+                                <button
+                                    onClick={handleRedo}
+                                    disabled={!canRedo}
+                                    className={`p-1 rounded transition-all ${canRedo ? 'text-slate-200 hover:bg-white/5' : 'text-slate-600'}`}
+                                    title="İleri Al (Ctrl+Y)"
+                                >
+                                    <Redo2 className="w-3.5 h-3.5" />
                                 </button>
-                                <button onClick={handleClearAll} className="text-[9px] font-black text-red-400 hover:text-red-300 uppercase tracking-widest border border-red-500/20 px-2 py-0.5 rounded bg-red-500/5 transition-all active:scale-95">Temizle</button>
                             </div>
+                        </div>
+
+                        {/* Quick Actions - Hidden on Mobile */}
+                        <div className="hidden lg:flex gap-2 mt-1">
+                            <button onClick={handleLoadSample} className="text-[9px] font-black text-cyan-400 hover:text-cyan-300 uppercase tracking-widest border border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 transition-all active:scale-95">Örnek Doldur</button>
+                            <button onClick={() => setShowCVImporter(true)} className="text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest border border-emerald-500/20 px-2 py-0.5 rounded bg-emerald-500/5 transition-all active:scale-95 flex items-center gap-1">
+                                <FileText className="w-3 h-3" /> CV Yükle
+                            </button>
+                            <button onClick={() => setShowLinkedInModal(true)} className="text-[9px] font-black text-blue-400 hover:text-blue-300 uppercase tracking-widest border border-blue-500/20 px-2 py-0.5 rounded bg-blue-500/5 transition-all active:scale-95 flex items-center gap-1">
+                                <Linkedin className="w-3 h-3" /> LinkedIn
+                            </button>
+                            <button onClick={handleClearAll} className="text-[9px] font-black text-red-400 hover:text-red-300 uppercase tracking-widest border border-red-500/20 px-2 py-0.5 rounded bg-red-500/5 transition-all active:scale-95">Temizle</button>
                         </div>
                     </div>
                 </div>
 
-                {/* Mini Template Gallery */}
+                {/* Mini Template Gallery - Hidden on Mobile/Tablet */}
                 <div
                     ref={scrollRef}
                     className={`hidden xl:flex flex-1 max-w-4xl mx-12 items-center gap-4 overflow-x-auto no-scrollbar px-4 h-14 border-x cursor-grab active:cursor-grabbing select-none ${isDayMode ? 'border-slate-200/80 bg-white/60 rounded-[18px] shadow-inner text-slate-700' : 'border-white/5'}`}
@@ -714,7 +740,9 @@ export default function EditorPage() {
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3">
+                {/* Right Section - Action Buttons */}
+                <div className="flex items-center gap-2 md:gap-3">
+                    {/* AI Button - Desktop Only */}
                     <button
                         id="premium-panel-trigger"
                         onClick={() => setShowPremiumPanel(true)}
@@ -723,30 +751,35 @@ export default function EditorPage() {
                         <Sparkles className="w-4 h-4" />
                         AI
                     </button>
+
+                    {/* Save Button - Icon only on Mobile */}
                     <button
                         onClick={handleSave}
                         disabled={saveSuccess}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all font-bold text-xs ${saveSuccess ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
-                            }`}
+                        className={`flex items-center justify-center gap-2 p-2.5 md:px-4 md:py-2 rounded-xl border transition-all font-bold text-xs touch-target ${saveSuccess ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'}`}
                     >
                         <Save className="w-4 h-4" />
-                        {saveSuccess ? 'KAYDEDİLDİ' : 'KAYDET'}
+                        <span className="hidden md:inline">{saveSuccess ? 'KAYDEDİLDİ' : 'KAYDET'}</span>
                     </button>
+
+                    {/* Version Button - Desktop Only */}
                     {cvId && (
                         <button
                             onClick={() => setShowVersionModal(true)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 transition-all font-bold text-xs"
+                            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 transition-all font-bold text-xs"
                             title="Versiyon Geçmişi"
                         >
                             <GitBranch className="w-4 h-4" />
                             VERSİYON
                         </button>
                     )}
+
+                    {/* Download Button */}
                     <div className="relative" ref={exportMenuRef}>
                         <button
                             onClick={() => setShowExportMenu(!showExportMenu)}
                             disabled={isExporting}
-                            className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black shadow-xl transition-all ${canDownload ? 'btn-premium shadow-cyan-500/20' : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/20'}`}
+                            className={`flex items-center justify-center gap-2 p-2.5 md:px-6 md:py-2 rounded-xl text-xs font-black shadow-xl transition-all touch-target ${canDownload ? 'btn-premium shadow-cyan-500/20' : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/20'}`}
                         >
                             {isExporting ? (
                                 <RefreshCw className="w-4 h-4 animate-spin" />
@@ -755,12 +788,14 @@ export default function EditorPage() {
                             ) : (
                                 <Lock className="w-4 h-4" />
                             )}
-                            {isExporting ? 'İŞLENİYOR...' : canDownload ? 'İNDİR' : 'İNDİR (PRO)'}
-                            <ChevronRight className={`w-3.5 h-3.5 transition-transform ${showExportMenu ? 'rotate-90' : ''}`} />
+                            <span className="hidden md:inline">
+                                {isExporting ? 'İŞLENİYOR...' : canDownload ? 'İNDİR' : 'İNDİR (PRO)'}
+                            </span>
+                            <ChevronRight className={`hidden md:block w-3.5 h-3.5 transition-transform ${showExportMenu ? 'rotate-90' : ''}`} />
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute top-full right-0 mt-2 w-48 glass-card rounded-2xl border border-white/10 shadow-2xl py-2 overflow-hidden z-[100] animate-scale-in">
+                            <div className="absolute top-full right-0 mt-2 w-56 rounded-2xl border border-white/20 shadow-2xl py-2 overflow-hidden z-[100] animate-scale-in bg-[#1a1d24]">
                                 {[
                                     { id: 'pdf', label: 'PDF Olarak İndir', icon: <FileText className="w-4 h-4" /> },
                                     { id: 'png', label: 'Resim (PNG)', icon: <Layout className="w-4 h-4" /> },
@@ -771,12 +806,12 @@ export default function EditorPage() {
                                     <button
                                         key={item.id}
                                         onClick={() => handleFormatExport(item.id)}
-                                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-colors text-left text-[11px] font-black uppercase tracking-widest text-slate-300 hover:text-white"
+                                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-cyan-500/20 transition-colors text-left"
                                     >
-                                        <div className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-cyan-400">
                                             {item.icon}
                                         </div>
-                                        {item.label}
+                                        <span className="text-sm font-semibold text-white">{item.label}</span>
                                     </button>
                                 ))}
                             </div>
@@ -785,15 +820,42 @@ export default function EditorPage() {
                 </div>
             </header>
 
-            <div className="flex-1 flex overflow-hidden">
-                {/* Side Navigation - Vertical SaaS Sidebar */}
-                <nav className={`w-20 lg:w-64 border-r flex flex-col shrink-0 transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-64'} ${sidebarClasses}`}>
-                    <div className="flex-1 py-8 flex flex-col gap-2 px-4 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 flex overflow-hidden relative">
+                {/* Side Navigation - Slide-in Drawer on Mobile */}
+                <nav className={`
+                    ${isMobile
+                        ? `fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`
+                        : 'relative w-20 lg:w-64'
+                    } 
+                    border-r flex flex-col shrink-0 ${sidebarClasses}
+                `}>
+                    {/* Mobile Drawer Header */}
+                    {isMobile && (
+                        <div className={`p-4 border-b flex items-center justify-between ${isDayMode ? 'border-slate-200' : 'border-white/10'}`}>
+                            <span className={`text-sm font-black uppercase tracking-widest ${isDayMode ? 'text-slate-700' : 'text-white'}`}>
+                                Menü
+                            </span>
+                            <button
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="p-2 rounded-xl hover:bg-white/10 text-slate-400"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                    )}
+
+                    <div className="flex-1 py-4 md:py-8 flex flex-col gap-2 px-3 md:px-4 overflow-y-auto custom-scrollbar">
                         {editorTabs.map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative ${activeTab === tab.id
+                                onClick={() => {
+                                    setActiveTab(tab.id)
+                                    if (isMobile) {
+                                        setMobileMenuOpen(false)
+                                        setMobilePreviewMode(false)
+                                    }
+                                }}
+                                className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative touch-target ${activeTab === tab.id
                                     ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
                                     : 'text-slate-500 hover:bg-white/5 hover:text-slate-300 border border-transparent'
                                     }`}
@@ -801,7 +863,7 @@ export default function EditorPage() {
                                 <div className={`${activeTab === tab.id ? 'text-cyan-400 scale-110' : 'text-slate-500 group-hover:scale-110'} transition-transform`}>
                                     {tab.icon}
                                 </div>
-                                <span className={`text-sm font-bold tracking-tight whitespace-nowrap transition-opacity duration-300 ${sidebarCollapsed ? 'opacity-0 lg:hidden' : 'opacity-100'}`}>
+                                <span className={`text-sm font-bold tracking-tight whitespace-nowrap ${isMobile ? 'opacity-100' : (sidebarCollapsed ? 'opacity-0 lg:hidden' : 'opacity-100')}`}>
                                     {tab.label}
                                 </span>
                                 {activeTab === tab.id && (
@@ -809,9 +871,44 @@ export default function EditorPage() {
                                 )}
                             </button>
                         ))}
+
+                        {/* Mobile Quick Actions */}
+                        {isMobile && (
+                            <div className={`mt-4 pt-4 border-t space-y-2 ${isDayMode ? 'border-slate-200' : 'border-white/10'}`}>
+                                <button
+                                    onClick={() => { handleLoadSample(); setMobileMenuOpen(false) }}
+                                    className="w-full mobile-menu-item"
+                                >
+                                    <Sparkles className="w-5 h-5 text-cyan-400" />
+                                    Örnek Doldur
+                                </button>
+                                <button
+                                    onClick={() => { setShowCVImporter(true); setMobileMenuOpen(false) }}
+                                    className="w-full mobile-menu-item"
+                                >
+                                    <FileText className="w-5 h-5 text-emerald-400" />
+                                    CV Yükle
+                                </button>
+                                <button
+                                    onClick={() => { setShowLinkedInModal(true); setMobileMenuOpen(false) }}
+                                    className="w-full mobile-menu-item"
+                                >
+                                    <Linkedin className="w-5 h-5 text-blue-400" />
+                                    LinkedIn'den İçe Aktar
+                                </button>
+                                <button
+                                    onClick={() => { handleClearAll(); setMobileMenuOpen(false) }}
+                                    className="w-full mobile-menu-item text-red-400"
+                                >
+                                    <X className="w-5 h-5" />
+                                    Temizle
+                                </button>
+                            </div>
+                        )}
                     </div>
 
-                    <div className={`p-4 border-t mt-auto ${isDayMode ? 'border-slate-200/80' : 'border-white/5'}`}>
+                    {/* CV Strength - Desktop Only */}
+                    <div className={`hidden md:block p-4 border-t mt-auto ${isDayMode ? 'border-slate-200/80' : 'border-white/5'}`}>
                         <div className={`rounded-2xl p-4 border ${isDayMode ? 'bg-slate-50 border-slate-200 shadow-day text-slate-700' : 'bg-gradient-to-br from-slate-800 to-slate-900 border-white/5'}`}>
                             <div className="flex items-center gap-3 mb-3">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDayMode ? 'bg-emerald-100 text-emerald-500' : 'bg-emerald-500/20'}`}>
@@ -829,15 +926,23 @@ export default function EditorPage() {
                     </div>
                 </nav>
 
-                {/* Form Editor Area */}
-                <main className={`w-full lg:w-[480px] shrink-0 border-r flex flex-col overflow-hidden relative ${formPanelClasses}`}>
-                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                {/* Form Editor Area - Conditional on Mobile */}
+                <main className={`
+                    ${isMobile
+                        ? `absolute inset-0 transition-transform duration-300 ${mobilePreviewMode ? '-translate-x-full' : 'translate-x-0'}`
+                        : 'relative w-full lg:w-[480px] shrink-0'
+                    } 
+                    border-r flex flex-col overflow-hidden ${formPanelClasses}
+                `}>
+                    <div className={`flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar editor-form-container ${isMobile ? 'pb-24' : ''}`}>
                         <div className="max-w-md mx-auto">
-                            <h2 className={`text-2xl font-black mb-2 tracking-tight uppercase italic flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                            <h2 className={`text-xl md:text-2xl font-black mb-2 tracking-tight uppercase italic flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
                                 {editorTabs.find(t => t.id === activeTab)?.label}
                             </h2>
-                            <div className="text-slate-500 text-sm mb-10 font-bold uppercase tracking-widest flex items-center gap-3">
-                                <div className="w-8 h-px bg-slate-800" /> Profesyonel Editör Çekirdeği
+                            <div className="text-slate-500 text-xs md:text-sm mb-6 md:mb-10 font-bold uppercase tracking-widest flex items-center gap-3">
+                                <div className={`w-6 md:w-8 h-px ${isDayMode ? 'bg-slate-300' : 'bg-slate-800'}`} />
+                                <span className="hidden sm:inline">Profesyonel Editör Çekirdeği</span>
+                                <span className="sm:hidden">Editör</span>
                             </div>
 
                             <CVForm
@@ -862,10 +967,16 @@ export default function EditorPage() {
                     </div>
                 </main>
 
-                {/* Preview Area - Deluxe Canvas */}
-                <section className={`flex-1 relative overflow-hidden flex flex-col ${previewClasses}`}>
-                    {/* Viewport Toolbar - Premium Design */}
-                    <div className={`h-14 border-b flex items-center justify-between px-8 z-20 backdrop-blur-2xl ${toolbarClasses}`}>
+                {/* Preview Area - Conditional on Mobile */}
+                <section className={`
+                    ${isMobile
+                        ? `absolute inset-0 transition-transform duration-300 ${mobilePreviewMode ? 'translate-x-0' : 'translate-x-full'}`
+                        : 'relative flex-1'
+                    } 
+                    overflow-hidden flex flex-col ${previewClasses}
+                `}>
+                    {/* Viewport Toolbar - Hidden on Mobile */}
+                    <div className={`hidden md:flex h-14 border-b items-center justify-between px-8 z-20 backdrop-blur-2xl ${toolbarClasses}`}>
                         <div className="flex items-center gap-8">
                             {/* Device Mode Switcher */}
                             <div className={`flex items-center rounded-[14px] p-1 border shadow-inner ${isDayMode ? 'bg-white border-slate-200/70' : 'bg-black/40 border-white/5'}`}>
@@ -946,9 +1057,33 @@ export default function EditorPage() {
                         </div>
                     </div>
 
+                    {/* Mobile Preview Header */}
+                    {isMobile && mobilePreviewMode && (
+                        <div className={`h-12 border-b flex items-center justify-between px-4 ${toolbarClasses}`}>
+                            <span className={`text-sm font-bold ${isDayMode ? 'text-slate-700' : 'text-white'}`}>
+                                Önizleme
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setZoom(z => Math.max(z - 10, 30))}
+                                    className="p-2 rounded-lg hover:bg-white/10 text-slate-400 touch-target"
+                                >
+                                    <ZoomOut className="w-4 h-4" />
+                                </button>
+                                <span className="text-[10px] font-black text-cyan-400">{zoom}%</span>
+                                <button
+                                    onClick={() => setZoom(z => Math.min(z + 10, 200))}
+                                    className="p-2 rounded-lg hover:bg-white/10 text-slate-400 touch-target"
+                                >
+                                    <ZoomIn className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Infinite Canvas Container */}
                     <div
-                        className="flex-1 overflow-auto p-12 lg:p-24 relative flex justify-center custom-scrollbar bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px]"
+                        className={`flex-1 overflow-auto p-4 md:p-12 lg:p-24 relative flex justify-center custom-scrollbar bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] ${isMobile ? 'pb-24' : ''}`}
                         onContextMenu={(e) => {
                             if (!isPremium) {
                                 e.preventDefault()
@@ -960,9 +1095,11 @@ export default function EditorPage() {
                         <div
                             className="transition-all duration-300 origin-top shadow-[0_30px_100px_rgba(0,0,0,0.5)] border border-white/5 rounded-sm overflow-hidden bg-white flex flex-col"
                             style={{
-                                width: viewportMode === 'mobile' ? '375px' : viewportMode === 'tablet' ? '768px' : '210mm',
+                                width: isMobile ? '100%' : (viewportMode === 'mobile' ? '375px' : viewportMode === 'tablet' ? '768px' : '210mm'),
+                                maxWidth: isMobile ? '100%' : 'none',
                                 minHeight: viewportMode === 'mobile' ? '667px' : viewportMode === 'tablet' ? '1024px' : '297mm',
-                                transform: `scale(${zoom / 100})`,
+                                transform: isMobile ? `scale(${Math.min(zoom / 100, 0.9)})` : `scale(${zoom / 100})`,
+                                transformOrigin: 'top center',
                                 height: 'fit-content'
                             }}
                         >
@@ -1021,6 +1158,28 @@ export default function EditorPage() {
                         )}
                     </div>
                 </section>
+
+                {/* Mobile Bottom Toggle Bar */}
+                {isMobile && (
+                    <div className={`mobile-toggle-bar ${isDayMode ? 'mobile-toggle-bar-day' : ''}`}>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setMobilePreviewMode(false)}
+                                className={`mobile-toggle-btn ${!mobilePreviewMode ? 'active' : ''}`}
+                            >
+                                <Edit3 className="w-5 h-5" />
+                                <span>Düzenle</span>
+                            </button>
+                            <button
+                                onClick={() => setMobilePreviewMode(true)}
+                                className={`mobile-toggle-btn ${mobilePreviewMode ? 'active' : ''}`}
+                            >
+                                <Eye className="w-5 h-5" />
+                                <span>Önizleme</span>
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* ATS Score Modal */}

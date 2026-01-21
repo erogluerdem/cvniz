@@ -178,19 +178,19 @@ export default {
                     '75%': { borderRadius: '60% 40% 60% 30% / 70% 30% 50% 60%' },
                 },
                 aurora: {
-                    '0%, 100%': { 
+                    '0%, 100%': {
                         backgroundPosition: '50% 50%, 50% 50%',
                         filter: 'blur(100px)',
                     },
-                    '25%': { 
+                    '25%': {
                         backgroundPosition: '0% 50%, 100% 50%',
                         filter: 'blur(120px)',
                     },
-                    '50%': { 
+                    '50%': {
                         backgroundPosition: '100% 50%, 0% 50%',
                         filter: 'blur(100px)',
                     },
-                    '75%': { 
+                    '75%': {
                         backgroundPosition: '50% 100%, 50% 0%',
                         filter: 'blur(120px)',
                     },
@@ -266,6 +266,20 @@ export default {
                 '18': '4.5rem',
                 '88': '22rem',
                 '128': '32rem',
+                'safe-top': 'env(safe-area-inset-top)',
+                'safe-bottom': 'env(safe-area-inset-bottom)',
+                'safe-left': 'env(safe-area-inset-left)',
+                'safe-right': 'env(safe-area-inset-right)',
+            },
+            height: {
+                'screen-dvh': '100dvh',
+                'screen-safe': 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
+            },
+            minHeight: {
+                'touch': '44px',
+            },
+            minWidth: {
+                'touch': '44px',
             },
             transitionTimingFunction: {
                 'bounce-in': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',

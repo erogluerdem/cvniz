@@ -56,7 +56,7 @@ export default function CVPreview({ cvData, template, showWatermark, theme, high
                 {showWatermark && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
                         <div
-                            className="text-8xl font-black text-gray-500/10 rotate-[-35deg] select-none uppercase tracking-[0.5em]"
+                            className="text-6xl font-black text-gray-400/[0.07] rotate-[-35deg] select-none uppercase tracking-[0.3em]"
                         >
                             CVniz.com
                         </div>

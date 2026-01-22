@@ -7,25 +7,25 @@ export default function CorporateTemplate({ data, theme }) {
     return (
         <div className="min-h-full bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Header */}
-            <header className="bg-gradient-to-r from-indigo-900 to-purple-900 text-white px-10 py-10">
-                <div className="flex items-center gap-8">
+            <header className="bg-gradient-to-r from-indigo-900 to-purple-900 text-white px-8 py-6 md:py-8">
+                <div className="flex items-center gap-6 md:gap-8">
                     {/* Avatar/Photo */}
                     {personal.photo ? (
-                        <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg shrink-0">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg shrink-0">
                             <img src={personal.photo} alt={personal.fullName} className="w-full h-full object-cover" />
                         </div>
                     ) : (
-                        <div className="w-24 h-24 rounded-lg bg-white/10 flex items-center justify-center text-3xl font-bold border-2 border-white/20 shrink-0">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-white/10 flex items-center justify-center text-2xl md:text-3xl font-bold border-2 border-white/20 shrink-0">
                             {personal.fullName ? personal.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'CV'}
                         </div>
                     )}
 
                     <div className="flex-1">
-                        <h1 className="text-3xl font-bold mb-1">{personal.fullName || 'Ad Soyad'}</h1>
-                        <p className="text-indigo-200 text-lg mb-4">{personal.title || 'Pozisyon'}</p>
+                        <h1 className="text-2xl md:text-3xl font-bold mb-0.5">{personal.fullName || 'Ad Soyad'}</h1>
+                        <p className="text-indigo-200 text-base md:text-lg mb-3">{personal.title || 'Pozisyon'}</p>
 
                         {/* Contact Info */}
-                        <div className="flex flex-wrap gap-4 text-sm">
+                        <div className="flex flex-wrap gap-4 text-xs md:text-sm">
                             {personal.email && (
                                 <div className="flex items-center gap-2 text-indigo-200">
                                     <Mail className="w-4 h-4" />
@@ -50,14 +50,14 @@ export default function CorporateTemplate({ data, theme }) {
             </header>
 
             {/* Main Content */}
-            <div className="p-10">
+            <div className="p-6 md:p-8">
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-gray-50 rounded-lg border-l-4 border-indigo-600">
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 mb-3">
+                    <section className="mb-6 p-4 md:p-6 bg-gray-50 rounded-lg border-l-4 border-indigo-600 break-inside-avoid">
+                        <h2 className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 mb-2">
                             Profesyonel Özet
                         </h2>
-                        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
                             {personal.summary}
                         </p>
                     </section>
@@ -65,27 +65,27 @@ export default function CorporateTemplate({ data, theme }) {
 
                 <div className="grid grid-cols-3 gap-8">
                     {/* Left Column - Experience & Education */}
-                    <div className="col-span-2 space-y-8">
+                    <div className="col-span-2 space-y-6">
                         {/* Experience */}
                         {experience.length > 0 && (
                             <section>
-                                <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 mb-4 pb-2 border-b-2 border-indigo-600">
+                                <h2 className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 mb-4 pb-1.5 border-b-2 border-indigo-600 break-inside-avoid">
                                     İş Deneyimi
                                 </h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative">
+                                        <div key={exp.id} className="relative break-inside-avoid">
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
-                                                    <h3 className="font-bold text-gray-900 text-lg">{exp.position || 'Pozisyon'}</h3>
-                                                    <p className="text-indigo-600 font-medium">{exp.company || 'Şirket'}</p>
+                                                    <h3 className="font-bold text-gray-900 text-base">{exp.position || 'Pozisyon'}</h3>
+                                                    <p className="text-indigo-600 text-sm font-medium">{exp.company || 'Şirket'}</p>
                                                 </div>
-                                                <span className="text-sm text-white bg-indigo-600 px-3 py-1 rounded-full">
+                                                <span className="text-[11px] font-bold text-white bg-indigo-600 px-3 py-0.5 rounded-full">
                                                     {exp.startDate} - {exp.endDate}
                                                 </span>
                                             </div>
                                             {exp.description && (
-                                                <p className="text-gray-600 text-sm whitespace-pre-line pl-4 border-l-2 border-gray-200">
+                                                <p className="text-gray-600 text-xs whitespace-pre-line pl-4 border-l-2 border-gray-100">
                                                     {exp.description}
                                                 </p>
                                             )}
@@ -98,20 +98,20 @@ export default function CorporateTemplate({ data, theme }) {
                         {/* Education */}
                         {education.length > 0 && (
                             <section>
-                                <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 mb-4 pb-2 border-b-2 border-indigo-600">
+                                <h2 className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 mb-4 pb-1.5 border-b-2 border-indigo-600 break-inside-avoid">
                                     Eğitim
                                 </h2>
                                 <div className="space-y-4">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="flex justify-between items-start">
+                                        <div key={edu.id} className="flex justify-between items-start break-inside-avoid">
                                             <div>
-                                                <h3 className="font-bold text-gray-900">{edu.school || 'Okul'}</h3>
-                                                <p className="text-indigo-600">{edu.degree || 'Bölüm'}</p>
+                                                <h3 className="font-bold text-gray-900 text-sm">{edu.school || 'Okul'}</h3>
+                                                <p className="text-indigo-600 text-xs">{edu.degree || 'Bölüm'}</p>
                                                 {edu.description && (
-                                                    <p className="text-gray-600 text-sm mt-1">{edu.description}</p>
+                                                    <p className="text-gray-600 text-[11px] mt-1">{edu.description}</p>
                                                 )}
                                             </div>
-                                            <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded">
+                                            <span className="text-[11px] text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded">
                                                 {edu.startDate} - {edu.endDate}
                                             </span>
                                         </div>

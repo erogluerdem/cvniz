@@ -9,7 +9,7 @@ const defaultContent = {
         title: 'Profesyonel CV\'nizi',
         titleHighlight: 'Dakikalar İçinde',
         titleEnd: 'Oluşturun',
-        subtitle: 'Yapay zeka destekli CV oluşturucu ile kariyer hedeflerinize ulaşın. 107+ profesyonel şablon, anında PDF indirme.',
+        subtitle: 'Yapay zeka destekli CV oluşturucu ile kariyer hedeflerinize ulaşın. 200+ profesyonel şablon, anında PDF indirme.',
         ctaPrimary: 'Ücretsiz Başla',
         ctaSecondary: 'Şablonları İncele',
         badge: '🚀 100.000+ kullanıcı güveniyor'
@@ -39,14 +39,14 @@ const defaultContent = {
         { question: 'Verilerim güvende mi?', answer: 'Evet, 256-bit SSL şifreleme ile verileriniz korunur.' }
     ],
     steps: [
-        { icon: 'FileText', title: 'Şablon Seç', description: '107+ profesyonel şablon arasından seç' },
+        { icon: 'FileText', title: 'Şablon Seç', description: '200+ profesyonel şablon arasından seç' },
         { icon: 'Zap', title: 'Bilgilerini Gir', description: 'AI destekli editör ile içerik oluştur' },
         { icon: 'Download', title: 'PDF İndir', description: '300 DPI kalitesinde profesyonel CV' }
     ],
     companies: ['Google', 'Microsoft', 'Apple', 'Amazon', 'Meta', 'Netflix', 'Spotify', 'Tesla'],
     pricing: {
         free: { price: 0, features: ['1 CV', '1 Şablon', '3 PDF İndirme'] },
-        pro: { price: 29, features: ['Sınırsız CV', '107+ Şablon', 'Sınırsız PDF', 'AI Asistan', 'Öncelikli Destek'] }
+        pro: { price: 29, features: ['Sınırsız CV', '200+ Şablon', 'Sınırsız PDF', 'AI Asistan', 'Öncelikli Destek'] }
     },
     footer: {
         description: 'Profesyonel CV oluşturmanın en kolay yolu.',

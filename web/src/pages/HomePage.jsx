@@ -470,7 +470,7 @@ export default function HomePage() {
     const { content } = useSiteContent()
     const [videoModalOpen, setVideoModalOpen] = useState(false)
     const [backendTemplates, setBackendTemplates] = useState([])
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
 
     useEffect(() => {
@@ -562,98 +562,98 @@ export default function HomePage() {
             <LiveProofNotification isDayMode={isDayMode} />
             <VideoModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
 
-            {/* Floating CTA Button */}
-            <div className="fixed bottom-8 right-8 z-40 animate-float">
+            {/* Floating CTA Button - Hidden on mobile, shown on desktop */}
+            <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-40 animate-float hidden md:block">
                 <Link
                     to="/editor"
-                    className="flex items-center gap-2 px-6 py-3 btn-premium rounded-full shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)] hover:scale-105 transition-transform"
+                    className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 btn-premium rounded-full shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)] hover:scale-105 transition-transform"
                 >
-                    <Rocket className="w-5 h-5" />
+                    <Rocket className="w-4 h-4 md:w-5 md:h-5" />
                     <span className="hidden md:inline">Hemen Başla</span>
                 </Link>
             </div>
 
             {/* Hero Section */}
-            <AnimatedSection className="pt-28 pb-16 px-6 lg:px-12">
+            <AnimatedSection className="pt-20 md:pt-28 pb-8 md:pb-16 px-4 md:px-6 lg:px-12">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
                         {/* Left - Text Content */}
                         <div>
-                            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 ${heroRibbonClasses}`}>
-                                <Sparkles className={`w-4 h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
-                                <span className={`text-sm ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>Türkiye'nin #1 CV Oluşturucu</span>
+                            <div className={`inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full mb-4 md:mb-6 ${heroRibbonClasses}`}>
+                                <Sparkles className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
+                                <span className={`text-xs md:text-sm ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>Türkiye'nin #1 CV Oluşturucu</span>
                             </div>
 
-                            <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
-                                <span className="text-white">{content.hero.title} </span>
+                            <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6">
+                                <span className={isDayMode ? 'text-slate-900' : 'text-white'}>{content.hero.title} </span>
                                 <span className="gradient-text">{content.hero.titleHighlight}</span>
-                                <span className="text-white"> {content.hero.titleEnd}</span>
+                                <span className={isDayMode ? 'text-slate-900' : 'text-white'}> {content.hero.titleEnd}</span>
                             </h1>
-                            <p className="text-xl text-gray-400 mb-8 leading-relaxed">
+                            <p className="text-base md:text-xl text-gray-500 mb-6 md:mb-8 leading-relaxed">
                                 {content.hero.subtitle}
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                                <Link to="/editor" className="btn-premium text-lg px-8 py-4 flex items-center justify-center gap-2 group">
+                            <div className="flex flex-col sm:flex-row gap-3 mb-6 md:mb-8">
+                                <Link to="/editor" className="btn-premium text-base md:text-lg px-6 md:px-8 py-3 md:py-4 flex items-center justify-center gap-2 group">
                                     {content.hero.ctaPrimary}
-                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                                 <button
                                     onClick={() => setVideoModalOpen(true)}
-                                    className="btn-secondary px-8 py-4 flex items-center justify-center gap-2 group"
+                                    className="btn-secondary px-6 md:px-8 py-3 md:py-4 flex items-center justify-center gap-2 group"
                                 >
                                     {content.hero.ctaSecondary}
-                                    <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    <Play className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
                                 </button>
                             </div>
 
-                            {/* Trust Badges */}
-                            <div className={`flex flex-wrap items-center gap-4 text-sm ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
-                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${trustPillClasses}`}>
-                                    <Shield className={`w-4 h-4 ${isDayMode ? 'text-emerald-500' : 'text-green-400'}`} />
-                                    <span>Ücretsiz Başla</span>
+                            {/* Trust Badges - Compact on mobile */}
+                            <div className={`flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3 text-xs md:text-sm ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                                <div className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-full ${trustPillClasses}`}>
+                                    <Shield className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-emerald-500' : 'text-green-400'}`} />
+                                    <span>Ücretsiz</span>
                                 </div>
-                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${trustPillClasses}`}>
-                                    <CheckCircle className={`w-4 h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
-                                    <span>Kredi Kartı Gerekmez</span>
+                                <div className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-full ${trustPillClasses}`}>
+                                    <CheckCircle className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
+                                    <span>Kart Gerekmez</span>
                                 </div>
-                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${trustPillClasses}`}>
-                                    <Award className={`w-4 h-4 ${isDayMode ? 'text-amber-500' : 'text-amber-400'}`} />
-                                    <span>7 Gün Para İadesi</span>
+                                <div className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-full ${trustPillClasses}`}>
+                                    <Award className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-amber-500' : 'text-amber-400'}`} />
+                                    <span>7 Gün İade</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Right - Hero Image */}
-                        <div className="relative">
+                        {/* Right - Hero Image - Hidden on mobile for cleaner look */}
+                        <div className="relative hidden md:block">
                             <div className="relative z-10">
                                 <img
                                     src="/images/1415454.png"
                                     alt="CV Builder"
-                                    className="rounded-2xl shadow-2xl w-full"
+                                    className="rounded-2xl shadow-2xl w-full max-w-md mx-auto"
                                 />
                             </div>
-                            {/* Floating Stats */}
-                            <div className="absolute -bottom-6 -left-6 glass-card rounded-xl p-4 z-20 animate-float">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center ring-2 ring-white/20">
-                                        <CheckCircle className="w-6 h-6 text-white" />
+                            {/* Floating Stats - Desktop only */}
+                            <div className="absolute -bottom-6 -left-6 glass-card rounded-xl p-3 z-20 animate-float hidden lg:block">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center ring-2 ring-white/20">
+                                        <CheckCircle className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <div className="text-2xl font-bold">100K+</div>
-                                        <div className="text-sm text-gray-400">CV Oluşturuldu</div>
+                                        <div className="text-xl font-bold">100K+</div>
+                                        <div className="text-xs text-gray-400">CV Oluşturuldu</div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="absolute -top-4 -right-4 glass-card rounded-xl p-4 z-20 animate-float-delayed">
+                            <div className="absolute -top-4 -right-4 glass-card rounded-xl p-3 z-20 animate-float-delayed hidden lg:block">
                                 <div className="flex items-center gap-2">
                                     <div className="flex -space-x-2">
-                                        <div className="w-8 h-8 rounded-full bg-cyan-500"></div>
-                                        <div className="w-8 h-8 rounded-full bg-cyan-300"></div>
-                                        <div className="w-8 h-8 rounded-full bg-slate-300"></div>
+                                        <div className="w-6 h-6 rounded-full bg-cyan-500"></div>
+                                        <div className="w-6 h-6 rounded-full bg-cyan-300"></div>
+                                        <div className="w-6 h-6 rounded-full bg-slate-300"></div>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                        {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
+                                    <div className="flex items-center gap-0.5">
+                                        {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />)}
                                     </div>
                                 </div>
                             </div>
@@ -665,30 +665,31 @@ export default function HomePage() {
                     {/* Gradient Wave at bottom of hero */}
                     <GradientWave isDayMode={isDayMode} />
 
-                    {/* How It Works - Mini Steps */}
-                    <div className="mt-20 grid md:grid-cols-3 gap-6">
-                        {content.steps?.map((step, i) => (
-                            <AnimatedSection key={i} delay={i * 100} className="glass-card rounded-2xl p-6 text-center hover:scale-105 transition-transform duration-300 group relative">
-                                <div className="text-4xl font-extrabold text-white/10 absolute top-4 right-6">{String(i + 1).padStart(2, '0')}</div>
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-300 to-slate-200 flex items-center justify-center mx-auto mb-4 ring-1 ring-white/10 text-slate-950">
-                                    {/* Map icon names to components */}
-                                    {step.icon === 'FileText' && <FileText className="w-8 h-8" />}
-                                    {step.icon === 'Zap' && <Zap className="w-8 h-8" />}
-                                    {step.icon === 'Download' && <Download className="w-8 h-8" />}
-                                    {!['FileText', 'Zap', 'Download'].includes(step.icon) && <Sparkles className="w-8 h-8" />}
+                    {/* How It Works - Mini Steps - Horizontal scroll on mobile */}
+                    <div className="mt-8 md:mt-20">
+                        <div className="flex md:grid md:grid-cols-3 gap-3 md:gap-6 overflow-x-auto pb-4 md:pb-0 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+                            {content.steps?.map((step, i) => (
+                                <div key={i} className="glass-card rounded-xl md:rounded-2xl p-4 md:p-6 text-center hover:scale-105 transition-transform duration-300 group relative flex-shrink-0 w-[200px] md:w-auto">
+                                    <div className="text-2xl md:text-4xl font-extrabold text-white/10 absolute top-2 md:top-4 right-3 md:right-6">{String(i + 1).padStart(2, '0')}</div>
+                                    <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-300 to-slate-200 flex items-center justify-center mx-auto mb-2 md:mb-4 ring-1 ring-white/10 text-slate-950">
+                                        {step.icon === 'FileText' && <FileText className="w-5 h-5 md:w-8 md:h-8" />}
+                                        {step.icon === 'Zap' && <Zap className="w-5 h-5 md:w-8 md:h-8" />}
+                                        {step.icon === 'Download' && <Download className="w-5 h-5 md:w-8 md:h-8" />}
+                                        {!['FileText', 'Zap', 'Download'].includes(step.icon) && <Sparkles className="w-5 h-5 md:w-8 md:h-8" />}
+                                    </div>
+                                    <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-2">{step.title}</h3>
+                                    <p className="text-gray-400 text-xs md:text-sm line-clamp-2">{step.description}</p>
                                 </div>
-                                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                                <p className="text-gray-400 text-sm">{step.description}</p>
-                            </AnimatedSection>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </AnimatedSection>
 
             {/* Stats Section with Animated Counter */}
-            <AnimatedSection className={`py-12 px-6 ${isDayMode ? '' : 'border-y border-white/10'}`}>
-                <div className={`max-w-6xl mx-auto ${isDayMode ? 'bg-white/80 border border-slate-200/70 rounded-[32px] p-10 shadow-day backdrop-blur-lg' : ''}`}>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <AnimatedSection className={`py-8 md:py-12 px-4 md:px-6 ${isDayMode ? '' : 'border-y border-white/10'}`}>
+                <div className={`max-w-6xl mx-auto ${isDayMode ? 'bg-white/80 border border-slate-200/70 rounded-2xl md:rounded-[32px] p-6 md:p-10 shadow-day backdrop-blur-lg' : ''}`}>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
                         {content.stats?.map((stat, i) => (
                             <InteractiveStatCard
                                 key={i}
@@ -703,37 +704,37 @@ export default function HomePage() {
             </AnimatedSection>
 
             {/* AI Experience Section */}
-            <AnimatedSection className={`py-20 px-6 ${isDayMode ? 'bg-gradient-to-b from-white via-sky-50/70 to-white' : ''}`}>
-                <div className={`max-w-6xl mx-auto ${isDayMode ? 'rounded-[32px] border border-slate-200/70 p-10 shadow-day bg-white/90 backdrop-blur-lg' : ''}`}>
+            <AnimatedSection className={`py-12 md:py-20 px-4 md:px-6 ${isDayMode ? 'bg-gradient-to-b from-white via-sky-50/70 to-white' : ''}`}>
+                <div className={`max-w-6xl mx-auto ${isDayMode ? 'rounded-2xl md:rounded-[32px] border border-slate-200/70 p-4 md:p-10 shadow-day bg-white/90 backdrop-blur-lg' : ''}`}>
                     <AIDemo />
                 </div>
             </AnimatedSection>
 
             {/* Video Demo Section */}
-            <AnimatedSection className={`py-20 px-6 ${isDayMode ? 'bg-gradient-to-b from-sky-50 via-white to-sky-50/60' : ''}`}>
+            <AnimatedSection className={`py-12 md:py-20 px-4 md:px-6 ${isDayMode ? 'bg-gradient-to-b from-sky-50 via-white to-sky-50/60' : ''}`}>
                 <div className="max-w-6xl mx-auto">
-                    <div className={`glass-card rounded-3xl p-12 text-center relative overflow-hidden ${isDayMode ? 'bg-white/95 border border-slate-200/60 shadow-day' : ''}`}>
+                    <div className={`glass-card rounded-2xl md:rounded-3xl p-6 md:p-12 text-center relative overflow-hidden ${isDayMode ? 'bg-white/95 border border-slate-200/60 shadow-day' : ''}`}>
                         <div className={`absolute inset-0 ${isDayMode ? 'bg-gradient-to-br from-white/60 via-sky-100/50 to-amber-50/50' : 'bg-gradient-to-br from-cyan-500/10 to-slate-200/10'}`}></div>
-                        <div className={`absolute top-10 left-10 w-32 h-32 rounded-full blur-3xl ${isDayMode ? 'bg-sky-200/50' : 'bg-cyan-500/25'}`}></div>
-                        <div className={`absolute bottom-10 right-10 w-32 h-32 rounded-full blur-3xl ${isDayMode ? 'bg-amber-100/60' : 'bg-slate-200/20'}`}></div>
+                        <div className={`absolute top-10 left-10 w-24 md:w-32 h-24 md:h-32 rounded-full blur-3xl ${isDayMode ? 'bg-sky-200/50' : 'bg-cyan-500/25'}`}></div>
+                        <div className={`absolute bottom-10 right-10 w-24 md:w-32 h-24 md:h-32 rounded-full blur-3xl ${isDayMode ? 'bg-amber-100/60' : 'bg-slate-200/20'}`}></div>
 
                         <div className="relative z-10">
-                            <Video className={`w-16 h-16 mx-auto mb-6 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                            <Video className={`w-10 h-10 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
+                            <h2 className="text-xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4">
                                 <span className="gradient-text">Nasıl Çalışıyor?</span>
                             </h2>
-                            <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                            <p className="text-gray-400 mb-6 md:mb-8 max-w-xl mx-auto text-sm md:text-base">
                                 2 dakikalık demo video ile CVniz'nin gücünü keşfet
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
                                 <button
                                     onClick={() => setVideoModalOpen(true)}
-                                    className="btn-primary text-lg px-8 py-4 flex items-center justify-center gap-2 group"
+                                    className="btn-primary text-base md:text-lg px-6 md:px-8 py-3 md:py-4 flex items-center justify-center gap-2 group"
                                 >
-                                    <Play className="w-5 h-5 group-hover:scale-110 transition-transform" /> Demo Videoyu İzle
+                                    <Play className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" /> Demo Videoyu İzle
                                 </button>
-                                <Link to="/editor" className="btn-secondary px-8 py-4 flex items-center justify-center gap-2">
-                                    <Zap className="w-5 h-5" /> Hemen Dene
+                                <Link to="/editor" className="btn-secondary px-6 md:px-8 py-3 md:py-4 flex items-center justify-center gap-2">
+                                    <Zap className="w-4 h-4 md:w-5 md:h-5" /> Hemen Dene
                                 </Link>
                             </div>
                         </div>
@@ -741,82 +742,86 @@ export default function HomePage() {
                 </div>
             </AnimatedSection>
 
-            {/* 🚀 ANIMATED WEB CV SECTION - NEW! */}
-            <AnimatedSection className={`py-24 px-6 relative overflow-hidden ${isDayMode ? 'bg-gradient-to-r from-sky-50 via-white to-amber-50/60' : ''}`}>
+            {/* 🚀 ANIMATED WEB CV SECTION */}
+            <AnimatedSection className={`py-12 md:py-24 px-4 md:px-6 relative overflow-hidden ${isDayMode ? 'bg-gradient-to-r from-sky-50 via-white to-amber-50/60' : ''}`}>
                 {/* Background Effects */}
                 <div className={`absolute inset-0 ${isDayMode ? 'bg-gradient-to-r from-sky-100 via-white to-amber-50/60' : 'bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-pink-500/5'}`}></div>
-                <div className={`absolute top-20 left-1/4 w-72 h-72 rounded-full blur-[120px] ${isDayMode ? 'bg-sky-200/60' : 'bg-cyan-500/20'}`}></div>
-                <div className={`absolute bottom-20 right-1/4 w-72 h-72 rounded-full blur-[120px] ${isDayMode ? 'bg-amber-100/70' : 'bg-purple-500/20'}`}></div>
+                <div className={`absolute top-20 left-1/4 w-48 md:w-72 h-48 md:h-72 rounded-full blur-[120px] ${isDayMode ? 'bg-sky-200/60' : 'bg-cyan-500/20'}`}></div>
+                <div className={`absolute bottom-20 right-1/4 w-48 md:w-72 h-48 md:h-72 rounded-full blur-[120px] ${isDayMode ? 'bg-amber-100/70' : 'bg-purple-500/20'}`}></div>
 
                 <div className="max-w-7xl mx-auto relative z-10">
                     {/* Header */}
-                    <div className="text-center mb-16">
-                        <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full mb-6 ${isDayMode ? 'bg-white border border-slate-200 text-sky-600 shadow-sm' : 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30'}`}>
-                            <Sparkles className={`w-5 h-5 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
-                            <span className={`text-sm font-bold ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>YENİ ÖZELLİK</span>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${isDayMode ? 'bg-gradient-to-r from-sky-400 to-amber-300 text-slate-900' : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'}`}>BETA</span>
+                    <div className="text-center mb-8 md:mb-16">
+                        <div className={`inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-1.5 md:py-2 rounded-full mb-4 md:mb-6 ${isDayMode ? 'bg-white border border-slate-200 text-sky-600 shadow-sm' : 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30'}`}>
+                            <Sparkles className={`w-3 h-3 md:w-5 md:h-5 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
+                            <span className={`text-xs md:text-sm font-bold ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>YENİ ÖZELLİK</span>
+                            <span className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${isDayMode ? 'bg-gradient-to-r from-sky-400 to-amber-300 text-slate-900' : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'}`}>BETA</span>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black mb-6">
+                        <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6">
                             <span className="gradient-text">Animated Web CV</span>
                         </h2>
-                        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                            CV'nizi canlı bir web sitesine dönüştürün. Kendi URL'iniz, animasyonlar ve interaktif deneyim!
+                        <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto">
+                            CV'nizi canlı bir web sitesine dönüştürün
                         </p>
                     </div>
 
-                    {/* Feature Grid */}
-                    <div className="grid md:grid-cols-3 gap-6 mb-12">
-                        {[
-                            { icon: <Globe2 className="w-8 h-8" />, title: 'Kendi URL\'iniz', desc: 'CVniz.com/senin-ismin şeklinde benzersiz adres' },
-                            { icon: <Sparkles className="w-8 h-8" />, title: '30+ Premium Şablon', desc: 'Minimal, Dark, Glass, Creative ve daha fazlası' },
-                            { icon: <Zap className="w-8 h-8" />, title: 'Canlı Animasyonlar', desc: 'Scroll efektleri, hover animasyonları, parallax' }
-                        ].map((feature, i) => (
-                            <div key={i} className="glass-card rounded-2xl p-6 text-center hover:scale-105 transition-transform duration-300 group">
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-4 text-white group-hover:scale-110 transition-transform">
-                                    {feature.icon}
+                    {/* Feature Grid - Horizontal scroll on mobile */}
+                    <div className="mb-8 md:mb-12 -mx-4 md:mx-0">
+                        <div className="flex md:grid md:grid-cols-3 gap-3 md:gap-6 overflow-x-auto pb-4 md:pb-0 scrollbar-hide px-4 md:px-0">
+                            {[
+                                { icon: <Globe2 className="w-5 h-5 md:w-8 md:h-8" />, title: 'Kendi URL', desc: 'CVniz.com/senin-ismin' },
+                                { icon: <Sparkles className="w-5 h-5 md:w-8 md:h-8" />, title: '30+ Şablon', desc: 'Minimal, Dark, Glass' },
+                                { icon: <Zap className="w-5 h-5 md:w-8 md:h-8" />, title: 'Animasyonlar', desc: 'Scroll, Hover, Parallax' }
+                            ].map((feature, i) => (
+                                <div key={i} className="glass-card rounded-xl md:rounded-2xl p-4 md:p-6 text-center hover:scale-105 transition-transform duration-300 group flex-shrink-0 w-[180px] md:w-auto">
+                                    <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-2 md:mb-4 text-white group-hover:scale-110 transition-transform">
+                                        {feature.icon}
+                                    </div>
+                                    <h3 className="text-sm md:text-lg font-bold mb-1 md:mb-2">{feature.title}</h3>
+                                    <p className="text-gray-400 text-xs md:text-sm">{feature.desc}</p>
                                 </div>
-                                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                                <p className="text-gray-400 text-sm">{feature.desc}</p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Template Preview Cards */}
-                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-12">
-                        {webTemplates.map((template, i) => (
-                            <div
-                                key={i}
-                                className={`aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer hover:scale-105 hover:-translate-y-2 transition-all duration-300 shadow-xl relative`}
-                                style={{ background: template.thumbnail ? 'transparent' : undefined }}
-                            >
-                                {template.thumbnail ? (
-                                    <img src={template.thumbnail} alt={template.name} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className={`w-full h-full bg-gradient-to-br ${template.color} p-4 flex flex-col justify-end`}>
-                                        <span className={`text-sm font-bold ${template.textColor}`}>{template.name}</span>
-                                    </div>
-                                )}
-                                {template.thumbnail && (
-                                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
-                                        <span className="text-sm font-bold text-white">{template.name}</span>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                    {/* Template Preview Cards - Horizontal scroll on mobile */}
+                    <div className="mb-8 md:mb-12 -mx-4 md:mx-0">
+                        <div className="flex md:grid md:grid-cols-6 gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-0 scrollbar-hide px-4 md:px-0">
+                            {webTemplates.map((template, i) => (
+                                <div
+                                    key={i}
+                                    className="aspect-[3/4] rounded-xl md:rounded-2xl overflow-hidden cursor-pointer hover:scale-105 hover:-translate-y-2 transition-all duration-300 shadow-lg md:shadow-xl relative flex-shrink-0 w-28 md:w-auto"
+                                    style={{ background: template.thumbnail ? 'transparent' : undefined }}
+                                >
+                                    {template.thumbnail ? (
+                                        <img src={template.thumbnail} alt={template.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className={`w-full h-full bg-gradient-to-br ${template.color} p-2 md:p-4 flex flex-col justify-end`}>
+                                            <span className={`text-[10px] md:text-sm font-bold ${template.textColor}`}>{template.name}</span>
+                                        </div>
+                                    )}
+                                    {template.thumbnail && (
+                                        <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 bg-gradient-to-t from-black/80 to-transparent">
+                                            <span className="text-[10px] md:text-sm font-bold text-white">{template.name}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* CTA */}
                     <div className="text-center">
                         <Link
                             to="/dashboard"
-                            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-2xl shadow-cyan-500/30"
+                            className="inline-flex items-center gap-2 md:gap-3 px-6 md:px-10 py-3 md:py-5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg hover:scale-105 transition-transform shadow-2xl shadow-cyan-500/30"
                         >
-                            <Globe2 className="w-6 h-6" />
-                            Web CV'nizi Oluşturun
-                            <ArrowRight className="w-6 h-6" />
+                            <Globe2 className="w-4 h-4 md:w-6 md:h-6" />
+                            Web CV Oluştur
+                            <ArrowRight className="w-4 h-4 md:w-6 md:h-6" />
                         </Link>
-                        <p className="text-gray-500 text-sm mt-4">
-                            Ücretsiz şablonlarla başlayın • Premium şablonlar 29₺'den başlayan fiyatlarla
+                        <p className="text-gray-500 text-xs md:text-sm mt-3 md:mt-4">
+                            Ücretsiz şablonlarla başlayın
                         </p>
                     </div>
                 </div>
@@ -827,7 +832,7 @@ export default function HomePage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            <span className="gradient-text">107+ Profesyonel Şablon</span>
+                            <span className="gradient-text">200+ Profesyonel Şablon</span>
                         </h2>
                         <p className="text-gray-400 max-w-xl mx-auto">
                             Her sektör ve kariyer seviyesi için özel tasarlanmış premium şablonlar
@@ -969,7 +974,7 @@ export default function HomePage() {
                             <tbody>
                                 {[
                                     { feature: 'Temel Şablonlar', free: true, pro: true, enterprise: true },
-                                    { feature: 'Premium Şablonlar (107+)', free: false, pro: true, enterprise: true },
+                                    { feature: 'Premium Şablonlar (200+)', free: false, pro: true, enterprise: true },
                                     { feature: 'AI İçerik Önerisi', free: false, pro: true, enterprise: true },
                                     { feature: 'Sınırsız İndirme', free: false, pro: true, enterprise: true },
                                     { feature: 'Öncelikli Destek', free: false, pro: false, enterprise: true },

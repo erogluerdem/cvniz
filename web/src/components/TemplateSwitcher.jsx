@@ -7,8 +7,10 @@ export default function TemplateSwitcher({
     onClose,
     selectedTemplate,
     onSelect,
-    isPremium
+    isPremium,
+    uiTheme
 }) {
+    const isDayMode = uiTheme === 'day'
     const [searchQuery, setSearchQuery] = useState('')
     const [filter, setFilter] = useState('All')
 
@@ -30,11 +32,11 @@ export default function TemplateSwitcher({
             <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose} />
 
             {/* Modal Content */}
-            <div className="relative w-full max-w-6xl h-full max-h-[85vh] bg-[#0f1115] border border-white/10 rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className={`relative w-full max-w-6xl h-full max-h-[85vh] ${isDayMode ? 'bg-white shadow-2xl border-slate-200' : 'bg-[#0f1115] border-white/10'} border rounded-[32px] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300`}>
                 {/* Header */}
-                <header className="p-8 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6 shrink-0">
+                <header className={`p-8 border-b ${isDayMode ? 'border-slate-100' : 'border-white/5'} flex flex-col md:flex-row md:items-center justify-between gap-6 shrink-0`}>
                     <div>
-                        <h2 className="text-3xl font-black text-white tracking-tight uppercase italic flex items-center gap-3">
+                        <h2 className={`text-3xl font-black ${isDayMode ? 'text-slate-900' : 'text-white'} tracking-tight uppercase italic flex items-center gap-3`}>
                             <Layout className="w-8 h-8 text-cyan-400" />
                             Elite Şablon Galerisi
                         </h2>
@@ -49,61 +51,65 @@ export default function TemplateSwitcher({
                                 placeholder="Şablon ara..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 w-full md:w-64"
+                                className={`${isDayMode ? 'bg-slate-100 border-slate-200 text-slate-900 focus:ring-sky-500/20' : 'bg-white/5 border-white/10 text-white focus:ring-cyan-500/20'} border rounded-2xl pl-12 pr-4 py-3 text-sm focus:outline-none w-full md:w-64`}
                             />
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all border border-white/10"
+                            className={`p-3 rounded-2xl ${isDayMode ? 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-400 hover:text-slate-600' : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border-white/10'} border transition-all`}
                         >
                             <X className="w-6 h-6" />
                         </button>
                     </div>
                 </header>
 
+
                 {/* Filters */}
-                <div className="px-8 py-4 border-b border-white/5 flex items-center gap-3 overflow-x-auto shrink-0 no-scrollbar">
+                <div className={`px-8 py-4 border-b ${isDayMode ? 'border-slate-100' : 'border-white/5'} flex items-center gap-3 overflow-x-auto shrink-0 no-scrollbar`}>
                     {categories.map(cat => (
                         <button
                             key={cat}
                             onClick={() => setFilter(cat)}
                             className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === cat
-                                    ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-                                    : 'bg-white/5 text-slate-500 hover:text-slate-300 hover:bg-white/10 border border-white/5'
-                                }`}
+                                ? (isDayMode ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/20' : 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20')
+                                : (isDayMode ? 'bg-slate-100 text-slate-500 hover:text-slate-900 hover:bg-slate-200 border-slate-200' : 'bg-white/5 text-slate-500 hover:text-slate-300 hover:bg-white/10 border-white/5')
+                                } border`}
                         >
                             {cat}
                         </button>
                     ))}
                 </div>
 
+
                 {/* Grid */}
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-[#090a0d]">
+                <div className={`flex-1 overflow-y-auto p-8 custom-scrollbar ${isDayMode ? 'bg-slate-50' : 'bg-[#090a0d]'}`}>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredTemplates.map(t => (
                             <div
                                 key={t.id}
                                 onClick={() => onSelect(t.id)}
                                 className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 ${selectedTemplate === t.id
-                                        ? 'ring-2 ring-cyan-500 ring-offset-4 ring-offset-[#090a0d] scale-[1.02]'
-                                        : 'hover:scale-[1.02]'
+                                    ? `ring-2 ${isDayMode ? 'ring-sky-500 ring-offset-white' : 'ring-cyan-500 ring-offset-[#090a0d]'} ring-offset-4 scale-[1.02]`
+                                    : 'hover:scale-[1.02]'
                                     }`}
                             >
+
                                 {/* Preview Card */}
-                                <div className="aspect-[3/4] bg-[#0d0f12] border border-white/5 rounded-3xl p-4 flex flex-col gap-4 relative overflow-hidden group-hover:border-white/20 transition-all">
+                                <div className={`aspect-[3/4] ${isDayMode ? 'bg-white border-slate-200' : 'bg-[#0d0f12] border-white/5'} border rounded-3xl p-4 flex flex-col gap-4 relative overflow-hidden group-hover:border-sky-500/30 transition-all shadow-sm`}>
                                     {/* Mock CV Preview Lines */}
-                                    <div className="w-full h-8 bg-white/5 rounded-lg flex items-center px-3 mb-2">
-                                        <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-lg">{t.emoji}</div>
-                                        <div className="ml-3 h-2 w-20 bg-white/10 rounded-full" />
+                                    <div className={`w-full h-8 ${isDayMode ? 'bg-slate-50' : 'bg-white/5'} rounded-lg flex items-center px-3 mb-2`}>
+                                        <div className={`w-8 h-8 rounded-full ${isDayMode ? 'bg-sky-500/10' : 'bg-cyan-500/10'} flex items-center justify-center text-lg`}>{t.emoji}</div>
+                                        <div className={`ml-3 h-2 w-20 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'} rounded-full`} />
                                     </div>
                                     <div className="space-y-2">
-                                        <div className="h-1.5 w-full bg-white/5 rounded-full" />
-                                        <div className="h-1.5 w-[80%] bg-white/5 rounded-full" />
-                                        <div className="h-1.5 w-[90%] bg-white/5 rounded-full" />
+                                        <div className={`h-1.5 w-full ${isDayMode ? 'bg-slate-100' : 'bg-white/5'} rounded-full`} />
+                                        <div className={`h-1.5 w-[80%] ${isDayMode ? 'bg-slate-100' : 'bg-white/5'} rounded-full`} />
+                                        <div className={`h-1.5 w-[90%] ${isDayMode ? 'bg-slate-100' : 'bg-white/5'} rounded-full`} />
                                     </div>
-                                    <div className="mt-auto pt-4 border-t border-white/5">
+
+                                    <div className={`mt-auto pt-4 border-t ${isDayMode ? 'border-slate-100' : 'border-white/5'}`}>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t.category}</span>
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.category}</span>
                                             {t.isPremium && !isPremium && <Crown className="w-3.5 h-3.5 text-amber-500" />}
                                         </div>
                                     </div>
@@ -128,10 +134,11 @@ export default function TemplateSwitcher({
                                 {/* Label */}
                                 <div className="mt-4 px-2">
                                     <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors uppercase tracking-tight">{t.name}</h3>
-                                        {t.isPremium && <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />}
+                                        <h3 className={`text-sm font-bold ${isDayMode ? 'text-slate-900' : 'text-white'} group-hover:text-sky-500 transition-colors uppercase tracking-tight`}>{t.name}</h3>
+                                        {t.isPremium && <Sparkles className={`w-3.5 h-3.5 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'} animate-pulse`} />}
                                     </div>
                                 </div>
+
                             </div>
                         ))}
                     </div>
@@ -148,7 +155,7 @@ export default function TemplateSwitcher({
                 </div>
 
                 {/* Footer */}
-                <footer className="p-8 border-t border-white/5 bg-[#0f1115] shrink-0 flex items-center justify-between">
+                <footer className={`p-8 border-t ${isDayMode ? 'border-slate-100 bg-slate-50' : 'border-white/5 bg-[#0f1115]'} shrink-0 flex items-center justify-between`}>
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Elite Template System v2.0 // Fully Responsive</p>
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2 text-[10px] font-black text-amber-500 uppercase tracking-widest">
@@ -156,12 +163,13 @@ export default function TemplateSwitcher({
                         </div>
                         <button
                             onClick={onClose}
-                            className="btn-premium px-10 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest"
+                            className={`${isDayMode ? 'bg-slate-900 hover:bg-slate-800' : 'btn-premium'} px-10 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white transition-all`}
                         >
                             TAMAMLANDI
                         </button>
                     </div>
                 </footer>
+
             </div>
         </div>
     )

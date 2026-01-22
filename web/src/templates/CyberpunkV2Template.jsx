@@ -20,7 +20,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-[#050505] text-white p-0 relative overflow-hidden"
+        <div className="min-h-full bg-[#050505] text-white p-0 relative"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -34,10 +34,10 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[150px] -mr-64 -mt-64 rounded-full pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 blur-[150px] -ml-64 -mb-64 rounded-full pointer-events-none" />
 
-            <div className="relative z-10 p-8 md:p-12">
+            <div className="relative z-10 p-6 md:p-8">
                 {/* Header Section */}
-                <header className={`mb-16 border-b-2 border-dashed border-white/10 pb-12 transition-all duration-500 ${highlightedField === 'personal' ? 'scale-[1.02] bg-white/[0.02] p-4 rounded-3xl ring-2 ring-cyan-500/50' : ''}`}>
-                    <div className="flex flex-col md:flex-row gap-8 items-center md:items-end">
+                <header className={`mb-8 border-b border-dashed border-white/10 pb-8 transition-all duration-500 ${highlightedField === 'personal' ? 'scale-[1.01] bg-white/[0.01] p-4 rounded-2xl ring-1 ring-cyan-500/30' : ''}`}>
+                    <div className="flex flex-col md:flex-row gap-6 items-center md:items-end">
                         {personal.photo && (
                             <div className="shrink-0 w-40 h-40 rounded-none transform rotate-3 border-4 border-cyan-500/50 p-2 bg-[#050505] shadow-[0_0_20px_rgba(0,242,255,0.3)]">
                                 <img src={personal.photo} alt={personal.fullName} className="w-full h-full object-cover grayscale brightness-125 contrast-125" />
@@ -54,10 +54,10 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 {personal.title || 'System_Architect'}
                             </p>
 
-                            <div className="flex flex-wrap justify-center md:justify-start gap-6 text-[11px] font-black uppercase tracking-widest text-slate-400">
-                                {personal.email && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><Mail className="w-4 h-4 text-cyan-500" /> {personal.email}</span>}
-                                {personal.phone && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><Phone className="w-4 h-4 text-cyan-500" /> {personal.phone}</span>}
-                                {personal.location && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><MapPin className="w-4 h-4 text-cyan-500" /> {personal.location}</span>}
+                            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                {personal.email && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><Mail className="w-3 h-3 text-cyan-500" /> {personal.email}</span>}
+                                {personal.phone && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><Phone className="w-3 h-3 text-cyan-500" /> {personal.phone}</span>}
+                                {personal.location && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><MapPin className="w-3 h-3 text-cyan-500" /> {personal.location}</span>}
                             </div>
                         </div>
                         {theme?.showQrCode && (
@@ -72,9 +72,9 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                     {/* Main Content */}
-                    <div className="lg:col-span-8 space-y-12">
+                    <div className="lg:col-span-8 space-y-10">
                         {/* Summary */}
                         {personal.summary && (
                             <section className="relative">
@@ -90,11 +90,11 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
 
                         {/* Experience */}
                         {experience.length > 0 && (
-                            <section className={`transition-all duration-500 ${highlightedField === 'experience' ? 'scale-[1.02] bg-white/[0.02] p-8 rounded-[40px] ring-2 ring-cyan-500/50' : ''}`}>
-                                <h2 className="text-sm font-black uppercase tracking-[0.5em] text-white mb-10 flex items-center gap-4">
-                                    <span className="w-12 h-px bg-cyan-500/50" /> {t.experience}
+                            <section className={`break-inside-avoid transition-all duration-500 ${highlightedField === 'experience' ? 'scale-[1.01] bg-white/[0.01] p-6 rounded-3xl ring-1 ring-cyan-500/30' : ''}`}>
+                                <h2 className="text-xs font-black uppercase tracking-[0.4em] text-white mb-8 flex items-center gap-3">
+                                    <span className="w-10 h-px bg-cyan-500/30" /> {t.experience}
                                 </h2>
-                                <div className="space-y-12">
+                                <div className="space-y-10">
                                     {experience.map((exp) => (
                                         <div key={exp.id} className="group relative">
                                             <div className="absolute -left-8 top-1.5 w-4 h-4 border border-cyan-500 bg-[#050505] group-hover:bg-cyan-500 transition-colors" />

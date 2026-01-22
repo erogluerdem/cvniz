@@ -113,7 +113,7 @@ export default function WelcomePopup() {
                     <div className="grid grid-cols-3 gap-3 mb-8">
                         <div className="text-center p-3 rounded-xl bg-white/5">
                             <FileText className="w-6 h-6 mx-auto mb-2 text-cyan-400" />
-                            <span className="text-xs text-gray-400">107+ Şablon</span>
+                            <span className="text-xs text-gray-400">200+ Şablon</span>
                         </div>
                         <div className="text-center p-3 rounded-xl bg-white/5">
                             <Zap className="w-6 h-6 mx-auto mb-2 text-amber-400" />

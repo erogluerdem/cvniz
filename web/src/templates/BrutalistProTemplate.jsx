@@ -27,7 +27,7 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
 
             <div className="flex flex-col md:flex-row min-h-full">
                 {/* Left Sidebar - Bold Info */}
-                <aside className="w-full md:w-72 border-b-[6px] md:border-b-0 md:border-r-[6px] border-black bg-white p-8 flex flex-col">
+                <aside className="w-full md:w-64 border-b-[4px] md:border-b-0 md:border-r-[4px] border-black bg-white p-6 flex flex-col">
                     <div className={`mb-12 transition-all duration-300 ${highlightedField === 'personal' ? 'ring-8 ring-black ring-offset-4' : ''}`}>
                         {personal.photo && (
                             <div className="w-full aspect-square border-[4px] border-black bg-black mb-8 overflow-hidden">
@@ -81,8 +81,8 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 bg-[#f0f0f0] p-8 md:p-12">
-                    <div className="max-w-4xl space-y-12">
+                <main className="flex-1 bg-[#f0f0f0] p-6 md:p-8">
+                    <div className="max-w-4xl space-y-8">
                         {/* Summary */}
                         {personal.summary && (
                             <section>
@@ -97,22 +97,22 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
 
                         {/* Experience */}
                         {experience.length > 0 && (
-                            <section className={`transition-all duration-300 ${highlightedField === 'experience' ? 'bg-[#ffde00] p-10 border-4 border-black' : ''}`}>
-                                <h2 className="text-4xl font-black uppercase mb-8 tracking-tighter flex items-center gap-6">
-                                    {t.experience} <ArrowRight className="w-8 h-8 stroke-[4]" />
+                            <section className={`transition-all duration-300 ${highlightedField === 'experience' ? 'bg-[#ffde00] p-8 border-4 border-black' : ''}`}>
+                                <h2 className="text-2xl md:text-3xl font-black uppercase mb-6 tracking-tighter flex items-center gap-4 break-inside-avoid">
+                                    {t.experience} <ArrowRight className="w-6 h-6 stroke-[3]" />
                                 </h2>
-                                <div className="space-y-16">
+                                <div className="space-y-10">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-10 border-l-[6px] border-black group">
-                                            <div className="absolute -left-5 top-0 w-8 h-8 bg-black flex items-center justify-center text-white font-black">
+                                        <div key={exp.id} className="relative pl-8 border-l-[4px] border-black group break-inside-avoid">
+                                            <div className="absolute -left-4 top-0 w-6 h-6 bg-black flex items-center justify-center text-white font-black text-[10px]">
                                                 ★
                                             </div>
-                                            <div className="flex flex-col md:flex-row justify-between items-baseline mb-4 gap-4">
-                                                <h3 className="text-3xl font-black uppercase italic group-hover:underline underline-offset-8 transition-all">{exp.position}</h3>
-                                                <span className="font-black text-sm bg-black text-white px-4 py-1">{exp.startDate} - {exp.endDate}</span>
+                                            <div className="flex flex-col md:flex-row justify-between items-baseline mb-3 gap-3">
+                                                <h3 className="text-xl md:text-2xl font-black uppercase italic group-hover:underline underline-offset-4 transition-all">{exp.position}</h3>
+                                                <span className="font-black text-[11px] bg-black text-white px-3 py-0.5">{exp.startDate} - {exp.endDate}</span>
                                             </div>
-                                            <p className="text-xl font-black mb-4 group-hover:text-red-600 transition-colors uppercase">{exp.company}</p>
-                                            <p className="text-lg font-bold leading-relaxed">{exp.description}</p>
+                                            <p className="text-lg font-black mb-3 group-hover:text-red-600 transition-colors uppercase">{exp.company}</p>
+                                            <p className="text-base font-bold leading-relaxed">{exp.description}</p>
                                         </div>
                                     ))}
                                 </div>

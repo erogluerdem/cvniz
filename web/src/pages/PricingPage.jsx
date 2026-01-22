@@ -31,7 +31,7 @@ const pricingPlans = [
         period: ' / ay',
         description: 'Kariyerini bir üst seviyeye taşımak isteyenler için.',
         features: [
-            { text: '107+ Premium Şablon', included: true },
+            { text: '200+ Premium Şablon', included: true },
             { text: 'Watermark\'sız PDF Çıktısı', included: true },
             { text: 'Gelişmiş Düzenleme Araçları', included: true },
             { text: 'Sınırsız İndirme', included: true },

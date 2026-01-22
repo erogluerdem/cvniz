@@ -795,7 +795,10 @@ export default function EditorPage() {
                         </button>
 
                         {showExportMenu && (
-                            <div className="absolute top-full right-0 mt-2 w-56 rounded-2xl border border-white/20 shadow-2xl py-2 overflow-hidden z-[100] animate-scale-in bg-[#1a1d24]">
+                            <div className={`absolute top-full right-0 mt-2 w-56 rounded-2xl border shadow-2xl py-2 overflow-hidden z-[100] animate-scale-in ${isDayMode
+                                ? 'bg-white border-slate-200 shadow-lg'
+                                : 'bg-[#1a1d24] border-white/20'
+                                }`}>
                                 {[
                                     { id: 'pdf', label: 'PDF Olarak İndir', icon: <FileText className="w-4 h-4" /> },
                                     { id: 'png', label: 'Resim (PNG)', icon: <Layout className="w-4 h-4" /> },
@@ -806,12 +809,18 @@ export default function EditorPage() {
                                     <button
                                         key={item.id}
                                         onClick={() => handleFormatExport(item.id)}
-                                        className="w-full px-4 py-3 flex items-center gap-3 hover:bg-cyan-500/20 transition-colors text-left"
+                                        className={`w-full px-4 py-3 flex items-center gap-3 transition-colors text-left ${isDayMode
+                                            ? 'hover:bg-sky-50 text-slate-700'
+                                            : 'hover:bg-cyan-500/20 text-white'
+                                            }`}
                                     >
-                                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-cyan-400">
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDayMode
+                                            ? 'bg-slate-100 text-sky-500'
+                                            : 'bg-white/10 text-cyan-400'
+                                            }`}>
                                             {item.icon}
                                         </div>
-                                        <span className="text-sm font-semibold text-white">{item.label}</span>
+                                        <span className={`text-sm font-semibold ${isDayMode ? 'text-slate-800' : 'text-white'}`}>{item.label}</span>
                                     </button>
                                 ))}
                             </div>
@@ -1142,7 +1151,7 @@ export default function EditorPage() {
                                 >
                                     <Sparkles className="w-5 h-5 text-cyan-400" />
                                     <div>
-                                        <div className="font-bold text-sm">107+ Şablon Aç</div>
+                                        <div className="font-bold text-sm">200+ Şablon Aç</div>
                                         <div className="text-xs text-gray-400">Tüm premium şablonlar</div>
                                     </div>
                                 </button>
@@ -1288,6 +1297,7 @@ export default function EditorPage() {
                     if (activeTab === 'templates') setActiveTab('personal')
                 }}
                 isPremium={isPremium}
+                uiTheme={uiTheme}
             />
 
             {/* Auth Required Modal */}

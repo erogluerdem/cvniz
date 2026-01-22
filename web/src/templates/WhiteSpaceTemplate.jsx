@@ -15,44 +15,44 @@ export default function WhiteSpaceTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-12 md:p-16"
+        <div className="min-h-full bg-white text-slate-800 p-8 md:p-10"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
             }}>
 
             <div className="max-w-3xl mx-auto">
-                {/* Extremely Minimal Header */}
-                <header className={`mb-24 ${highlightedField === 'personal' ? 'bg-indigo-50 p-8 -m-8 rounded-2xl' : ''}`}>
-                    <h1 className="text-4xl font-bold tracking-tight mb-6 break-words">{personal.fullName || 'Name'}</h1>
+                {/* Header */}
+                <header className={`mb-12 ${highlightedField === 'personal' ? 'bg-indigo-50/50 p-6 -m-4 rounded-xl ring-1 ring-indigo-500/10' : ''}`}>
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 break-words">{personal.fullName || 'Name'}</h1>
 
-                    <div className="flex flex-wrap gap-8 text-sm text-slate-500">
-                        <span className="text-indigo-600 font-medium">{personal.title || 'Role'}</span>
+                    <div className="flex flex-wrap gap-6 text-sm text-slate-500">
+                        <span className="text-indigo-600 font-bold uppercase tracking-widest text-[11px]">{personal.title || 'Role'}</span>
                         {personal.email && <span>{personal.email}</span>}
                         {personal.phone && <span>{personal.phone}</span>}
                     </div>
                 </header>
 
-                {/* Summary with maximum breathing room */}
+                {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-24">
-                        <p className="text-xl leading-loose text-slate-600">{personal.summary}</p>
+                    <section className="mb-12 break-inside-avoid">
+                        <p className="text-lg leading-relaxed text-slate-500 italic">{personal.summary}</p>
                     </section>
                 )}
 
-                {/* Experience - Ultra spacious */}
+                {/* Experience */}
                 {experience.length > 0 && (
-                    <section className={`mb-24 ${highlightedField === 'experience' ? 'bg-indigo-50 p-8 -mx-8 rounded-2xl' : ''}`}>
-                        <h2 className="text-xs font-bold uppercase tracking-[0.5em] text-indigo-500 mb-12">{t.experience}</h2>
-                        <div className="space-y-16">
+                    <section className={`mb-12 ${highlightedField === 'experience' ? 'bg-indigo-50/30 p-8 -mx-8 rounded-xl ring-1 ring-indigo-500/10' : ''}`}>
+                        <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-indigo-500 mb-8 break-inside-avoid">{t.experience}</h2>
+                        <div className="space-y-10">
                             {experience.map((exp) => (
-                                <div key={exp.id}>
-                                    <div className="mb-4">
+                                <div key={exp.id} className="break-inside-avoid">
+                                    <div className="mb-3">
                                         <h3 className="text-xl font-bold">{exp.position}</h3>
-                                        <p className="text-indigo-600">{exp.company}</p>
+                                        <p className="text-indigo-600 font-medium text-sm">{exp.company}</p>
                                     </div>
-                                    <p className="text-slate-400 text-sm mb-4">{exp.startDate} – {exp.endDate}</p>
-                                    <p className="text-slate-600 leading-relaxed">{exp.description}</p>
+                                    <p className="text-slate-400 text-[11px] font-bold mb-3 uppercase tracking-tighter">{exp.startDate} – {exp.endDate}</p>
+                                    <p className="text-slate-600 text-[15px] leading-relaxed font-light">{exp.description}</p>
                                 </div>
                             ))}
                         </div>

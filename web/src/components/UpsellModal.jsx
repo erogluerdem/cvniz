@@ -11,7 +11,7 @@ import { usePayment, PLANS } from '../context/PaymentContext'
 const UPSELL_FEATURES = [
     {
         icon: Palette,
-        title: '107+ Premium Şablon',
+        title: '200+ Premium Şablon',
         description: 'Profesyonel tasarımlarla öne çıkın',
         highlight: true
     },

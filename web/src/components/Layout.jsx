@@ -76,15 +76,14 @@ export default function Layout() {
             <div className="orb orb-1" />
             <div className="orb orb-2" />
             <div className="orb orb-3" />
-            
+
             <CookieConsent />
-            
+
             {/* Premium Header */}
-            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-                scrolled 
-                    ? 'py-2 glass border-b border-white/10 shadow-lg shadow-black/5' 
-                    : 'py-4 bg-transparent'
-            }`}>
+            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+                ? 'py-2 glass border-b border-white/10 shadow-lg shadow-black/5'
+                : 'py-4 bg-transparent'
+                }`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-3 group">
@@ -107,11 +106,10 @@ export default function Layout() {
                                 <Link
                                     key={link.path}
                                     to={link.path}
-                                    className={`relative text-sm px-4 py-2 rounded-xl transition-all duration-300 font-medium ${
-                                        isActive(link.path)
-                                            ? 'text-white bg-gradient-to-r from-cyan-500/20 to-purple-500/20 ring-1 ring-cyan-500/30'
-                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                    }`}
+                                    className={`relative text-sm px-4 py-2 rounded-xl transition-all duration-300 font-medium ${isActive(link.path)
+                                        ? 'text-white bg-gradient-to-r from-cyan-500/20 to-purple-500/20 ring-1 ring-cyan-500/30'
+                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        }`}
                                 >
                                     {link.label}
                                     {isActive(link.path) && (
@@ -145,8 +143,8 @@ export default function Layout() {
                             </>
                         ) : (
                             <>
-                                <Link 
-                                    to="/login" 
+                                <Link
+                                    to="/login"
                                     className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all text-sm font-medium"
                                 >
                                     Giriş Yap
@@ -164,11 +162,10 @@ export default function Layout() {
                             onClick={toggleTheme}
                             aria-pressed={isDayMode}
                             title="Gece / Gündüz modu"
-                            className={`hidden md:flex items-center gap-2 p-2.5 rounded-xl border transition-all duration-300 ${
-                                isDayMode
-                                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20'
-                                    : 'bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20'
-                            }`}
+                            className={`hidden md:flex items-center gap-2 p-2.5 rounded-xl border transition-all duration-300 ${isDayMode
+                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20'
+                                : 'bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20'
+                                }`}
                         >
                             {isDayMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
@@ -201,11 +198,10 @@ export default function Layout() {
                                     key={link.path}
                                     to={link.path}
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className={`py-3 px-4 rounded-xl transition-colors ${
-                                        isActive(link.path)
-                                            ? 'text-cyan-300 bg-cyan-500/10 font-medium'
-                                            : 'text-gray-300 hover:bg-white/5'
-                                    }`}
+                                    className={`py-3 px-4 rounded-xl transition-colors ${isActive(link.path)
+                                        ? 'text-cyan-300 bg-cyan-500/10 font-medium'
+                                        : 'text-gray-300 hover:bg-white/5'
+                                        }`}
                                 >
                                     {link.label}
                                 </Link>
@@ -263,9 +259,9 @@ export default function Layout() {
                     {/* Main Footer Content */}
                     <div className={`py-12 px-6 ${isDayMode ? 'bg-white/60' : ''}`}>
                         <div className="max-w-6xl mx-auto">
-                            <div className="grid md:grid-cols-5 gap-8 mb-12">
-                                {/* Brand Column */}
-                                <div className="md:col-span-2">
+                            <div className="grid grid-cols-3 md:grid-cols-5 gap-4 md:gap-8 mb-12">
+                                {/* Brand Column - Hidden on mobile, shown on desktop */}
+                                <div className="hidden md:block md:col-span-2">
                                     <Link to="/" className="flex items-center gap-2 mb-4 group">
                                         <div className={`w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ${isDayMode ? 'ring-slate-100 shadow-day' : 'ring-white/10'} group-hover:scale-110 transition-transform`}>
                                             <FileText className="w-5 h-5 text-slate-900" />
@@ -298,10 +294,10 @@ export default function Layout() {
                                     </div>
                                 </div>
 
-                                {/* Links Columns */}
+                                {/* Links Columns - 3 column on mobile */}
                                 <div>
-                                    <h4 className={`font-bold mb-4 text-sm uppercase tracking-wider ${footerHeadingText}`}>Ürün</h4>
-                                    <ul className="space-y-3 text-sm">
+                                    <h4 className={`font-bold mb-2 md:mb-4 text-xs md:text-sm uppercase tracking-wider ${footerHeadingText}`}>Ürün</h4>
+                                    <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
                                         {[
                                             { to: '/features', label: 'Özellikler' },
                                             { to: '/templates', label: 'Şablonlar' },
@@ -309,8 +305,7 @@ export default function Layout() {
                                             { to: '/editor', label: 'CV Editörü' }
                                         ].map((link, i) => (
                                             <li key={i}>
-                                                <Link to={link.to} className={`${footerLinkBase} transition-colors flex items-center gap-2 group`}>
-                                                    <span className={`w-0 h-px ${isDayMode ? 'bg-sky-500' : 'bg-cyan-400'} group-hover:w-3 transition-all`} />
+                                                <Link to={link.to} className={`${footerLinkBase} transition-colors`}>
                                                     {link.label}
                                                 </Link>
                                             </li>
@@ -319,17 +314,16 @@ export default function Layout() {
                                 </div>
 
                                 <div>
-                                    <h4 className={`font-bold mb-4 text-sm uppercase tracking-wider ${footerHeadingText}`}>Destek</h4>
-                                    <ul className="space-y-3 text-sm">
+                                    <h4 className={`font-bold mb-2 md:mb-4 text-xs md:text-sm uppercase tracking-wider ${footerHeadingText}`}>Destek</h4>
+                                    <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
                                         {[
                                             { to: '/faq', label: 'SSS' },
                                             { to: '/contact', label: 'İletişim' },
                                             { to: '/blog', label: 'Blog' },
-                                            { to: '/help', label: 'Yardım Merkezi' }
+                                            { to: '/help', label: 'Yardım' }
                                         ].map((link, i) => (
                                             <li key={i}>
-                                                <Link to={link.to} className={`${footerLinkBase} transition-colors flex items-center gap-2 group`}>
-                                                    <span className={`w-0 h-px ${isDayMode ? 'bg-sky-500' : 'bg-cyan-400'} group-hover:w-3 transition-all`} />
+                                                <Link to={link.to} className={`${footerLinkBase} transition-colors`}>
                                                     {link.label}
                                                 </Link>
                                             </li>
@@ -338,17 +332,16 @@ export default function Layout() {
                                 </div>
 
                                 <div>
-                                    <h4 className={`font-bold mb-4 text-sm uppercase tracking-wider ${footerHeadingText}`}>Yasal</h4>
-                                    <ul className="space-y-3 text-sm">
+                                    <h4 className={`font-bold mb-2 md:mb-4 text-xs md:text-sm uppercase tracking-wider ${footerHeadingText}`}>Yasal</h4>
+                                    <ul className="space-y-1.5 md:space-y-3 text-xs md:text-sm">
                                         {[
-                                            { to: '/privacy', label: 'Gizlilik Politikası' },
-                                            { to: '/terms', label: 'Kullanım Şartları' },
-                                            { to: '/cookies', label: 'Çerez Politikası' },
+                                            { to: '/privacy', label: 'Gizlilik' },
+                                            { to: '/terms', label: 'Şartlar' },
+                                            { to: '/cookies', label: 'Çerezler' },
                                             { to: '/gdpr', label: 'KVKK' }
                                         ].map((link, i) => (
                                             <li key={i}>
-                                                <Link to={link.to} className={`${footerLinkBase} transition-colors flex items-center gap-2 group`}>
-                                                    <span className={`w-0 h-px ${isDayMode ? 'bg-sky-500' : 'bg-cyan-400'} group-hover:w-3 transition-all`} />
+                                                <Link to={link.to} className={`${footerLinkBase} transition-colors`}>
                                                     {link.label}
                                                 </Link>
                                             </li>
@@ -382,9 +375,9 @@ export default function Layout() {
                         </div>
                     </div>
                 </div>
-            </footer>
+            </footer >
 
-        </div>
+        </div >
     )
 }
 

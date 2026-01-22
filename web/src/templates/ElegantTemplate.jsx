@@ -6,24 +6,24 @@ export default function ElegantTemplate({ data }) {
     return (
         <div className="min-h-full bg-stone-50" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {/* Elegant Header with Border Frame */}
-            <div className="p-8">
-                <div className="border-2 border-stone-300 p-8 relative">
+            <div className="p-4 md:p-6">
+                <div className="border border-stone-300 p-6 relative">
                     {/* Corner Decorations */}
-                    <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-stone-800"></div>
-                    <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-stone-800"></div>
-                    <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-stone-800"></div>
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-stone-800"></div>
+                    <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-stone-800"></div>
+                    <div className="absolute -top-1 -right-1 w-3 h-3 border-t border-r border-stone-800"></div>
+                    <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b border-l border-stone-800"></div>
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-stone-800"></div>
 
                     <div className="text-center">
-                        <h1 className="text-5xl font-normal text-stone-800 mb-2 tracking-widest uppercase">
+                        <h1 className="text-3xl font-normal text-stone-800 mb-1 tracking-widest uppercase">
                             {personal.fullName || 'Ad Soyad'}
                         </h1>
-                        <div className="flex items-center justify-center gap-4 my-4">
-                            <div className="h-px w-16 bg-stone-400"></div>
-                            <span className="text-stone-500 text-2xl">✦</span>
-                            <div className="h-px w-16 bg-stone-400"></div>
+                        <div className="flex items-center justify-center gap-3 my-2">
+                            <div className="h-px w-12 bg-stone-300"></div>
+                            <span className="text-stone-400 text-lg">✦</span>
+                            <div className="h-px w-12 bg-stone-300"></div>
                         </div>
-                        <p className="text-xl text-stone-600 italic tracking-wide">{personal.title || 'Profesyonel Ünvan'}</p>
+                        <p className="text-base text-stone-600 italic tracking-wide">{personal.title || 'Profesyonel Ünvan'}</p>
                     </div>
                 </div>
             </div>
@@ -65,37 +65,37 @@ export default function ElegantTemplate({ data }) {
             </div>
 
             {/* Main Content */}
-            <div className="px-12 py-8">
+            <div className="px-8 md:px-12 py-6">
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-10 text-center max-w-3xl mx-auto">
-                        <p className="text-lg text-stone-600 leading-relaxed italic">
+                    <section className="mb-8 text-center max-w-2xl mx-auto break-inside-avoid">
+                        <p className="text-base text-stone-600 leading-relaxed italic">
                             "{personal.summary}"
                         </p>
                     </section>
                 )}
 
                 {/* Decorative Divider */}
-                <div className="flex items-center justify-center gap-4 mb-10">
-                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-stone-300"></div>
-                    <span className="text-stone-400 text-lg">❧</span>
-                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-stone-300"></div>
+                <div className="flex items-center justify-center gap-4 mb-8">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-stone-200"></div>
+                    <span className="text-stone-300 text-base">❧</span>
+                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-stone-200"></div>
                 </div>
 
                 {/* Experience */}
                 {experience.length > 0 && (
-                    <section className="mb-10">
-                        <h2 className="text-2xl text-center text-stone-800 mb-8 tracking-widest uppercase">
+                    <section className="mb-8">
+                        <h2 className="text-xl text-center text-stone-800 mb-6 tracking-widest uppercase">
                             Deneyim
                         </h2>
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             {experience.map((exp) => (
-                                <div key={exp.id} className="text-center">
-                                    <h3 className="text-xl font-semibold text-stone-800">{exp.position || 'Pozisyon'}</h3>
-                                    <p className="text-stone-600 italic text-lg">{exp.company || 'Şirket'}</p>
-                                    <p className="text-sm text-stone-500 mt-1">{exp.startDate} — {exp.endDate}</p>
+                                <div key={exp.id} className="text-center break-inside-avoid">
+                                    <h3 className="text-lg font-semibold text-stone-800">{exp.position || 'Pozisyon'}</h3>
+                                    <p className="text-stone-600 italic text-base">{exp.company || 'Şirket'}</p>
+                                    <p className="text-xs text-stone-500 mt-0.5">{exp.startDate} — {exp.endDate}</p>
                                     {exp.description && (
-                                        <p className="text-stone-600 mt-4 max-w-2xl mx-auto text-left whitespace-pre-line">
+                                        <p className="text-stone-600 mt-2 max-w-2xl mx-auto text-left whitespace-pre-line text-sm">
                                             {exp.description}
                                         </p>
                                     )}
@@ -106,26 +106,26 @@ export default function ElegantTemplate({ data }) {
                 )}
 
                 {/* Decorative Divider */}
-                <div className="flex items-center justify-center gap-4 my-10">
-                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-stone-300"></div>
-                    <span className="text-stone-400 text-lg">✿</span>
-                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-stone-300"></div>
+                <div className="flex items-center justify-center gap-4 my-8">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-stone-200"></div>
+                    <span className="text-stone-300 text-base">✿</span>
+                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-stone-200"></div>
                 </div>
 
                 {/* Education */}
                 {education.length > 0 && (
-                    <section className="mb-10">
-                        <h2 className="text-2xl text-center text-stone-800 mb-8 tracking-widest uppercase">
+                    <section className="mb-8">
+                        <h2 className="text-xl text-center text-stone-800 mb-6 tracking-widest uppercase">
                             Eğitim
                         </h2>
-                        <div className="space-y-6 text-center">
+                        <div className="space-y-4 text-center">
                             {education.map((edu) => (
-                                <div key={edu.id}>
-                                    <h3 className="text-xl font-semibold text-stone-800">{edu.school || 'Okul'}</h3>
-                                    <p className="text-stone-600 italic">{edu.degree || 'Bölüm'}</p>
-                                    <p className="text-sm text-stone-500">{edu.startDate} — {edu.endDate}</p>
+                                <div key={edu.id} className="break-inside-avoid">
+                                    <h3 className="text-lg font-semibold text-stone-800">{edu.school || 'Okul'}</h3>
+                                    <p className="text-stone-600 text-sm italic">{edu.degree || 'Bölüm'}</p>
+                                    <p className="text-xs text-stone-500">{edu.startDate} — {edu.endDate}</p>
                                     {edu.description && (
-                                        <p className="text-stone-500 text-sm mt-1">{edu.description}</p>
+                                        <p className="text-stone-500 text-[11px] mt-1">{edu.description}</p>
                                     )}
                                 </div>
                             ))}

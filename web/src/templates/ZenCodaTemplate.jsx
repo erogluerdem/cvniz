@@ -10,7 +10,7 @@ export default function ZenCodaTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#f4f7f4] p-0 sm:p-12 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="min-h-full bg-[#f4f7f4] p-0 md:p-8 flex justify-center py-6 relative" style={{ fontFamily: "'Inter', sans-serif" }}>
 
             {/* ZEN CODA BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -38,26 +38,26 @@ export default function ZenCodaTemplate({ data }) {
                 />
             </div>
 
-            <div className="w-[210mm] min-h-[297mm] mx-auto bg-white/90 backdrop-blur-md shadow-[0_20px_100px_rgba(46,62,45,0.05)] flex flex-col relative z-10 overflow-hidden p-20 text-[#2c3e2d] border border-white">
+            <div className="w-full max-w-[210mm] mx-auto bg-white/90 backdrop-blur-md shadow-[0_20px_100px_rgba(46,62,45,0.05)] flex flex-col relative z-10 p-10 md:p-16 text-[#2c3e2d] border border-white">
 
-                <header className="relative z-10 flex flex-col items-center text-center mb-32">
+                <header className="relative z-10 flex flex-col items-center text-center mb-16">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 1.5 }}
-                        className="w-20 h-20 bg-[#e9f0e8] rounded-full flex items-center justify-center mb-12 text-[#5d7a5e] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                        className="w-16 h-16 bg-[#e9f0e8] rounded-full flex items-center justify-center mb-8 text-[#5d7a5e] shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                     >
-                        <Flower2 className="w-10 h-10 opacity-40" />
+                        <Flower2 className="w-8 h-8 opacity-40" />
                     </motion.div>
 
                     <h1 className="text-6xl font-extralight uppercase tracking-[0.6em] leading-none mb-8 text-[#1a2e1b] -mr-[0.6em]">
                         {personal.fullName}
                     </h1>
 
-                    <div className="flex items-center gap-6 text-xs font-bold uppercase tracking-[0.8em] text-[#8ba68c] mb-12 -mr-[0.8em]">
-                        <div className="w-16 h-px bg-[#8ba68c] opacity-20" />
+                    <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-[0.6em] text-[#8ba68c] mb-8 -mr-[0.6em]">
+                        <div className="w-12 h-px bg-[#8ba68c] opacity-20" />
                         {personal.title}
-                        <div className="w-16 h-px bg-[#8ba68c] opacity-20" />
+                        <div className="w-12 h-px bg-[#8ba68c] opacity-20" />
                     </div>
 
                     <div className="flex justify-center gap-12 text-[11px] font-medium uppercase tracking-widest text-stone-400">
@@ -74,7 +74,7 @@ export default function ZenCodaTemplate({ data }) {
                     </div>
                 </header>
 
-                <main className="relative z-10 grid grid-cols-12 gap-24 flex-1">
+                <main className="relative z-10 grid grid-cols-12 gap-12 md:gap-16 flex-1">
                     <div className="col-span-12 mb-20">
                         <section className="max-w-4xl mx-auto text-center border-y border-stone-50 py-16 px-10 relative">
                             <motion.div

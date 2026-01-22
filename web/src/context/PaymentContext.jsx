@@ -21,7 +21,7 @@ export const PLANS = {
         id: 'pro',
         name: 'Pro',
         price: { monthly: 49, yearly: 29, lifetime: 149 },
-        features: ['Sınırsız CV', '107+ Şablon', 'AI Özellikler', 'Öncelikli Destek'],
+        features: ['Sınırsız CV', '200+ Şablon', 'AI Özellikler', 'Öncelikli Destek'],
         isPremium: true,
         popular: true
     },

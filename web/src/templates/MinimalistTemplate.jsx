@@ -5,20 +5,20 @@ export default function MinimalistTemplate({ data, theme }) {
     const { personal, experience, education, skills, languages, customSections } = data
 
     return (
-        <div className="p-10 min-h-full bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div className="p-6 md:p-8 min-h-full bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Header */}
-            <header className="text-center mb-10 pb-8 border-b border-gray-200">
+            <header className="text-center mb-6 md:mb-8 pb-6 border-b border-gray-100">
                 {personal.photo && (
-                    <div className="flex justify-center mb-6">
-                        <div className="w-32 h-32 rounded-full overflow-hidden border border-gray-200 p-1 bg-white shadow-sm">
+                    <div className="flex justify-center mb-4">
+                        <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border border-gray-200 p-1 bg-white shadow-sm">
                             <img src={personal.photo} alt={personal.fullName} className="w-full h-full object-cover rounded-full" />
                         </div>
                     </div>
                 )}
-                <h1 className="text-4xl font-light text-gray-900 mb-2 tracking-wide">
+                <h1 className="text-2xl md:text-3xl font-light text-gray-900 mb-1 tracking-wide">
                     {personal.fullName || 'Ad Soyad'}
                 </h1>
-                <p className="text-lg text-gray-500 mb-6">{personal.title || 'Pozisyon'}</p>
+                <p className="text-base text-gray-400 mb-4">{personal.title || 'Pozisyon'}</p>
 
                 {/* Contact Info - Horizontal */}
                 <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
@@ -57,8 +57,8 @@ export default function MinimalistTemplate({ data, theme }) {
 
             {/* Summary */}
             {personal.summary && (
-                <section className="mb-10">
-                    <p className="text-gray-600 text-center max-w-3xl mx-auto leading-relaxed">
+                <section className="mb-8 break-inside-avoid">
+                    <p className="text-gray-500 text-sm text-center max-w-2xl mx-auto leading-relaxed italic">
                         {personal.summary}
                     </p>
                 </section>
@@ -66,22 +66,22 @@ export default function MinimalistTemplate({ data, theme }) {
 
             {/* Experience */}
             {experience.length > 0 && (
-                <section className="mb-10">
-                    <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mb-6 text-center">
+                <section className="mb-8">
+                    <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-5 text-center break-inside-avoid">
                         İş Deneyimi
                     </h2>
-                    <div className="space-y-8">
+                    <div className="space-y-6">
                         {experience.map((exp) => (
-                            <div key={exp.id} className="grid grid-cols-[140px_1fr] gap-6">
-                                <div className="text-right">
-                                    <div className="text-sm text-gray-500">{exp.startDate}</div>
-                                    <div className="text-sm text-gray-500">{exp.endDate}</div>
+                            <div key={exp.id} className="grid grid-cols-[120px_1fr] gap-4 md:gap-6 break-inside-avoid">
+                                <div className="text-right pt-0.5">
+                                    <div className="text-[11px] font-bold text-gray-400">{exp.startDate}</div>
+                                    <div className="text-[11px] text-gray-300">{exp.endDate}</div>
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">{exp.position || 'Pozisyon'}</h3>
-                                    <p className="text-gray-500 text-sm mb-2">{exp.company || 'Şirket'}</p>
+                                    <h3 className="font-bold text-gray-800 text-base">{exp.position || 'Pozisyon'}</h3>
+                                    <p className="text-gray-400 text-sm mb-2 italic">{exp.company || 'Şirket'}</p>
                                     {exp.description && (
-                                        <p className="text-gray-600 text-sm whitespace-pre-line leading-relaxed">
+                                        <p className="text-gray-500 text-[13px] whitespace-pre-line leading-relaxed">
                                             {exp.description}
                                         </p>
                                     )}

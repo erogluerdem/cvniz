@@ -1140,13 +1140,8 @@ export default function CVForm({
     }
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
-            {/* Auto-save Indicator */}
-            <div className="absolute -top-12 right-0 flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-50">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Buluta Kaydedildi
-            </div>
-            {/* Personal Tab */}
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative pb-20">
+            {/* Tab Content */}
             {activeTab === 'personal' && (
                 <div className="space-y-6">
                     {/* Photo Upload Section */}
@@ -2127,7 +2122,7 @@ export default function CVForm({
                                 {shareUrl && (
                                     <div className="flex items-center gap-4 flex-wrap">
                                         <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-500">
-                                            <QrCode className="w-4 h-4" /> QR 
+                                            <QrCode className="w-4 h-4" /> QR
                                         </div>
                                         <div className="bg-white p-2 rounded-2xl">
                                             <QRCodeDisplay url={shareUrl} size={96} />
@@ -2573,6 +2568,12 @@ export default function CVForm({
                     </div>
                 </div>
             )}
+
+            {/* Bottom Auto-save Indicator */}
+            <div className="pt-12 mt-12 border-t border-white/5 flex items-center justify-end gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-60">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Buluta Kaydedildi
+            </div>
         </div>
     )
 }

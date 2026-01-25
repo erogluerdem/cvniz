@@ -36,8 +36,11 @@ export default function UsersPage() {
 
     useEffect(() => {
         fetchUsers()
-        fetchStats()
     }, [])
+
+    useEffect(() => {
+        fetchStats()
+    }, [users])
 
     const fetchUsers = async (customParams = {}) => {
         setRefreshing(true)
@@ -61,8 +64,6 @@ export default function UsersPage() {
 
     const fetchStats = async () => {
         try {
-            // Stats API logic could be separate or part of users res
-            // For now calculating locally but backend has the route
             const premiumCount = users.filter(u => u.isPremium).length
             const bannedCount = users.filter(u => !u.isActive).length
             const adminCount = users.filter(u => u.role === 'admin').length
@@ -117,7 +118,7 @@ export default function UsersPage() {
             } else {
                 const updateData = { ...formData }
                 if (!updateData.password) delete updateData.password
-                const res = await userAPI.updateUser(selectedUser.id, updateData)
+                const res = await userAPI.updateUser(selectedUser.id || selectedUser._id, updateData)
                 if (res.success) {
                     toast.success('Kullanıcı güncellendi')
                     setShowModal(false)
@@ -136,7 +137,7 @@ export default function UsersPage() {
         if (!newPassword || newPassword.length < 6) return
 
         try {
-            const res = await userAPI.resetPassword(user.id, newPassword)
+            const res = await userAPI.resetPassword(user.id || user._id, newPassword)
             if (res.success) {
                 toast.success('Şifre başarıyla güncellendi')
             }
@@ -150,7 +151,7 @@ export default function UsersPage() {
         setShowLogsModal(true)
         setLoadingLogs(true)
         try {
-            const res = await userAPI.getLoginLogs(user.id)
+            const res = await userAPI.getLoginLogs(user.id || user._id)
             if (res.success) {
                 setUserLogs(res.logs)
             }
@@ -167,7 +168,7 @@ export default function UsersPage() {
                 ? { isPremium: !user.isPremium }
                 : { isActive: !user.isActive }
 
-            const res = await userAPI.updateUser(user.id, updateData)
+            const res = await userAPI.updateUser(user.id || user._id, updateData)
             if (res.success) {
                 toast.success('Durum güncellendi')
                 fetchUsers()
@@ -213,7 +214,7 @@ export default function UsersPage() {
                         { label: 'Banned', value: stats?.banned, color: 'red', icon: Ban }
                     ].map((s, i) => (
                         <div key={i} className="px-6 py-3 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4 group hover:bg-white/10 transition-all cursor-default">
-                            <s.icon className={`w-4 h-4 text-${s.color}-400 group-hover:scale-110 transition-transform`} />
+                            <s.icon className={`w-4 h-4 ${s.color === 'amber' ? 'text-amber-400' : s.color === 'purple' ? 'text-purple-400' : 'text-red-400'} group-hover:scale-110 transition-transform`} />
                             <div>
                                 <div className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">{s.label}</div>
                                 <div className="text-sm font-black text-white italic leading-none">{s.value}</div>
@@ -287,7 +288,7 @@ export default function UsersPage() {
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {users.map((u) => (
-                                <tr key={u.id} className={`group hover:bg-cyan-500/[0.03] transition-all ${!u.isActive ? 'opacity-40 grayscale-[0.5]' : ''}`}>
+                                <tr key={u.id || u._id} className={`group hover:bg-cyan-500/[0.03] transition-all ${!u.isActive ? 'opacity-40 grayscale-[0.5]' : ''}`}>
                                     <td className="px-10 py-8">
                                         <div className="flex items-center gap-5">
                                             <div className="relative group/avatar cursor-pointer">
@@ -311,7 +312,7 @@ export default function UsersPage() {
                                             <div className="min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <h4 className="font-black text-white italic truncate group-hover:text-cyan-400 transition-colors uppercase tracking-tight">{u.name}</h4>
-                                                    {u.id === currentUser?.id && (
+                                                    {(u.id === currentUser?.id || u._id === currentUser?._id) && (
                                                         <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[8px] font-black uppercase tracking-widest border border-blue-500/20">SİZ</span>
                                                     )}
                                                 </div>
@@ -561,72 +562,69 @@ export default function UsersPage() {
                         </div>
                     </div>
                 </div>
-            )
-            }
+            )}
 
             {/* Logs Modal */}
-            {
-                showLogsModal && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-fade-in">
-                        <div className="glass-card rounded-[3.5rem] p-10 max-w-2xl w-full border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden animate-scale-in">
-                            <div className="flex items-center justify-between mb-8">
-                                <div>
-                                    <h3 className="text-2xl font-black text-white italic uppercase">{selectedUser?.name} - GİRİŞ KAYITLARI</h3>
-                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Son 50 başarılı giriş denemesi</p>
-                                </div>
-                                <button
-                                    onClick={() => setShowLogsModal(false)}
-                                    className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all text-gray-500 hover:text-white"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
+            {showLogsModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-fade-in">
+                    <div className="glass-card rounded-[3.5rem] p-10 max-w-2xl w-full border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden animate-scale-in">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h3 className="text-2xl font-black text-white italic uppercase">{selectedUser?.name} - GİRİŞ KAYITLARI</h3>
+                                <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Son 50 başarılı giriş denemesi</p>
                             </div>
+                            <button
+                                onClick={() => setShowLogsModal(false)}
+                                className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all text-gray-500 hover:text-white"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
 
-                            <div className="max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
-                                {loadingLogs ? (
-                                    <div className="py-20 flex flex-col items-center justify-center gap-4">
-                                        <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
-                                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Kayıtlar Sorgulanıyor...</span>
-                                    </div>
-                                ) : userLogs.length > 0 ? (
-                                    <div className="space-y-3">
-                                        {userLogs.map((log, i) => (
-                                            <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                                                        {log.device?.type === 'mobile' ? <Smartphone className="w-4 h-4 text-cyan-400" /> : <Laptop className="w-4 h-4 text-cyan-400" />}
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-xs font-black text-white uppercase italic">{log.location?.city || 'Bilinmeyen Şehir'}, {log.location?.country || 'TR'}</div>
-                                                        <div className="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">{log.ip} • {log.device?.os} {log.device?.browser}</div>
-                                                    </div>
+                        <div className="max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
+                            {loadingLogs ? (
+                                <div className="py-20 flex flex-col items-center justify-center gap-4">
+                                    <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Kayıtlar Sorgulanıyor...</span>
+                                </div>
+                            ) : userLogs.length > 0 ? (
+                                <div className="space-y-3">
+                                    {userLogs.map((log, i) => (
+                                        <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                                                    {log.device?.type === 'mobile' ? <Smartphone className="w-4 h-4 text-cyan-400" /> : <Laptop className="w-4 h-4 text-cyan-400" />}
                                                 </div>
-                                                <div className="text-right text-[9px] font-black text-gray-500 uppercase tracking-widest">
-                                                    {new Date(log.createdAt).toLocaleString('tr-TR')}
+                                                <div>
+                                                    <div className="text-xs font-black text-white uppercase italic">{log.location?.city || 'Bilinmeyen Şehir'}, {log.location?.country || 'TR'}</div>
+                                                    <div className="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">{log.ip} • {log.device?.os} {log.device?.browser}</div>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-20 text-center">
-                                        <Activity className="w-12 h-12 text-gray-800 mx-auto mb-4" />
-                                        <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Henüz bir giriş kaydı bulunamadı.</p>
-                                    </div>
-                                )}
-                            </div>
+                                            <div className="text-right text-[9px] font-black text-gray-500 uppercase tracking-widest">
+                                                {new Date(log.createdAt).toLocaleString('tr-TR')}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-20 text-center">
+                                    <Activity className="w-12 h-12 text-gray-800 mx-auto mb-4" />
+                                    <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Henüz bir giriş kaydı bulunamadı.</p>
+                                </div>
+                            )}
+                        </div>
 
-                            <div className="mt-8">
-                                <button
-                                    onClick={() => setShowLogsModal(false)}
-                                    className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-xs text-gray-400 uppercase tracking-widest hover:bg-white/10 transition-all"
-                                >
-                                    KAPAT
-                                </button>
-                            </div>
+                        <div className="mt-8">
+                            <button
+                                onClick={() => setShowLogsModal(false)}
+                                className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-xs text-gray-400 uppercase tracking-widest hover:bg-white/10 transition-all"
+                            >
+                                KAPAT
+                            </button>
                         </div>
                     </div>
-                )
-            }
-        </div >
+                </div>
+            )}
+        </div>
     )
 }

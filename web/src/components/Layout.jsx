@@ -1,15 +1,19 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { FileText, User, LogOut, Menu, X, Sun, Moon, Sparkles, Zap, ChevronDown } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import CookieConsent from './CookieConsent'
+import NotificationBell from './NotificationBell'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Layout() {
     const { user, logout, isAdmin } = useAuth()
     const location = useLocation()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const [theme, setTheme] = useState('night')
+    const userMenuRef = useRef(null)
     const isDayMode = theme === 'day'
 
     const navLinks = [
@@ -27,6 +31,17 @@ export default function Layout() {
         const handleScroll = () => setScrolled(window.scrollY > 20)
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    // Close user menu on click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setUserMenuOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
     useEffect(() => {
@@ -123,24 +138,72 @@ export default function Layout() {
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-3">
                         {user ? (
-                            <>
-                                <Link
-                                    to={isAdmin ? '/admin' : '/dashboard'}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all group"
-                                >
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold group-hover:scale-110 transition-transform">
-                                        {user.name?.[0]?.toUpperCase() || 'U'}
-                                    </div>
-                                    <span className="hidden sm:inline text-sm font-medium">{user.name?.split(' ')[0]}</span>
-                                </Link>
-                                <button
-                                    onClick={() => logout()}
-                                    className="p-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                                    title="Çıkış Yap"
-                                >
-                                    <LogOut className="w-5 h-5" />
-                                </button>
-                            </>
+                            <div className="flex items-center gap-3">
+                                <NotificationBell />
+
+                                <div className="relative" ref={userMenuRef}>
+                                    <button
+                                        onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/10"
+                                    >
+                                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold group-hover:scale-105 transition-transform shadow-lg">
+                                            {user.name?.[0]?.toUpperCase() || 'U'}
+                                        </div>
+                                        <div className="hidden sm:flex flex-col items-start leading-tight">
+                                            <span className="text-sm font-semibold text-white">{user.name?.split(' ')[0]}</span>
+                                            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{isAdmin ? 'Admin' : 'Üye'}</span>
+                                        </div>
+                                        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {userMenuOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                className="absolute right-0 top-full mt-2 w-56 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-2 z-50"
+                                            >
+                                                <div className="px-4 py-2 border-b border-white/5 mb-2">
+                                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Hesap</p>
+                                                    <p className="text-sm font-medium text-white truncate">{user.email}</p>
+                                                </div>
+
+                                                <Link
+                                                    to={isAdmin ? '/admin' : '/dashboard'}
+                                                    onClick={() => setUserMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                                >
+                                                    <Zap className="w-4 h-4 text-cyan-400" />
+                                                    <span>Panel'e Git</span>
+                                                </Link>
+
+                                                <Link
+                                                    to={isAdmin ? '/admin/settings' : '/dashboard'}
+                                                    onClick={() => setUserMenuOpen(false)}
+                                                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                                >
+                                                    <User className="w-4 h-4 text-purple-400" />
+                                                    <span>Profil Ayarları</span>
+                                                </Link>
+
+                                                <div className="my-2 border-t border-white/5"></div>
+
+                                                <button
+                                                    onClick={() => {
+                                                        setUserMenuOpen(false)
+                                                        logout()
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                                                >
+                                                    <LogOut className="w-4 h-4" />
+                                                    <span>Güvenli Çıkış</span>
+                                                </button>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </div>
                         ) : (
                             <>
                                 <Link

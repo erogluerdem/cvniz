@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { useCV } from '../context/CVContext'
@@ -71,7 +72,7 @@ import {
     X, Share2, Link2, Eye, Award, Trophy, Target, Medal, Gift,
     Sun, Moon, HelpCircle, ArrowRight, ExternalLink, Mail, Lock,
     Camera, Check, AlertCircle, History, Columns, Play, PenTool, Globe2, Briefcase,
-    DollarSign, BarChart3, Layout, Volume2, Palette, Video, Upload
+    DollarSign, BarChart3, Layout, Volume2, Palette, Video, Upload, ChevronDown
 } from 'lucide-react'
 
 // ============ MAIN COMPONENT ============
@@ -89,7 +90,9 @@ export default function DashboardPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [greeting, setGreeting] = useState('Merhaba')
     const [showNotifications, setShowNotifications] = useState(false)
+    const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
+    const userMenuRef = useRef(null)
     const [showShareModal, setShowShareModal] = useState(false)
     const [selectedCVForShare, setSelectedCVForShare] = useState(null)
     const [showOnboarding, setShowOnboarding] = useState(false)
@@ -208,6 +211,17 @@ export default function DashboardPage() {
             window.dispatchEvent(new CustomEvent('CVniz-theme-change', { detail: nextTheme }))
         }
     }, [darkMode])
+
+    // Close user menu on click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setUserMenuOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
 
     const handleLogout = () => {
         logout()
@@ -368,35 +382,91 @@ export default function DashboardPage() {
                         <NotificationBell />
 
                         {/* User Menu */}
-                        <button
-                            onClick={() => setShowProfileModal(true)}
-                            className="flex items-center gap-3 hover:bg-white/5 rounded-xl p-2 transition-colors"
-                        >
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center ring-2 ring-white/20">
-                                <span className="text-sm font-bold">{user?.name?.[0] || 'U'}</span>
-                            </div>
-                            <div className="hidden sm:block text-left">
-                                <div className="text-sm font-semibold">{user?.name || 'Kullanıcı'}</div>
-                                <div className="text-xs text-gray-400 flex items-center gap-1">
-                                    {isPremium ? (
-                                        <>
-                                            <Crown className="w-3 h-3 text-amber-400" />
-                                            <span className="text-amber-400">Pro Üye</span>
-                                        </>
-                                    ) : (
-                                        <span>Ücretsiz Plan</span>
-                                    )}
+                        <div className="relative" ref={userMenuRef}>
+                            <button
+                                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                className="flex items-center gap-3 hover:bg-white/5 rounded-xl p-2 transition-all border border-transparent hover:border-white/10"
+                            >
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center ring-2 ring-white/20 shadow-lg">
+                                    <span className="text-sm font-bold text-white">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
                                 </div>
-                            </div>
-                        </button>
+                                <div className="hidden sm:block text-left leading-tight">
+                                    <div className="text-sm font-semibold text-white">{user?.name || 'Kullanıcı'}</div>
+                                    <div className="text-[10px] text-gray-400 flex items-center gap-1 font-bold uppercase tracking-widest">
+                                        {isPremium ? (
+                                            <>
+                                                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                                                <span className="text-amber-400">Pro Üye</span>
+                                            </>
+                                        ) : (
+                                            <span>Ücretsiz Plan</span>
+                                        )}
+                                    </div>
+                                </div>
+                                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                            </button>
 
-                        <button
-                            onClick={handleLogout}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                            title="Çıkış Yap"
-                        >
-                            <LogOut className="w-5 h-5 text-gray-400" />
-                        </button>
+                            <AnimatePresence>
+                                {userMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute right-0 top-full mt-2 w-64 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-2 z-50"
+                                    >
+                                        <div className="px-4 py-2 border-b border-white/5 mb-2">
+                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Giriş Yapılan Hesap</p>
+                                            <p className="text-sm font-medium text-white truncate">{user?.email}</p>
+                                        </div>
+
+                                        <button
+                                            onClick={() => {
+                                                setUserMenuOpen(false)
+                                                setShowProfileModal(true)
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                        >
+                                            <User className="w-4 h-4 text-purple-400" />
+                                            <span>Profil Ayarları</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                setUserMenuOpen(false)
+                                                setShowSubscriptionManager(true)
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                        >
+                                            <Crown className="w-4 h-4 text-amber-400" />
+                                            <span>Abonelik Yönetimi</span>
+                                        </button>
+
+                                        {user?.role === 'admin' && (
+                                            <Link
+                                                to="/admin"
+                                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                            >
+                                                <Settings className="w-4 h-4 text-cyan-400" />
+                                                <span>Yönetici Paneli</span>
+                                            </Link>
+                                        )}
+
+                                        <div className="my-2 border-t border-white/5"></div>
+
+                                        <button
+                                            onClick={() => {
+                                                setUserMenuOpen(false)
+                                                handleLogout()
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left"
+                                        >
+                                            <LogOut className="w-4 h-4" />
+                                            <span>Güvenli Çıkış</span>
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -793,7 +863,7 @@ export default function DashboardPage() {
                                     </Link>
                                 </div>
                             )}
-                            
+
                             {/* Revenue Features */}
                             <div className="glass-card rounded-[2rem] p-5 border border-white/5">
                                 <h3 className="text-sm font-black text-white italic mb-4 flex items-center gap-2">
@@ -802,7 +872,7 @@ export default function DashboardPage() {
                                 </h3>
                                 <div className="space-y-2">
                                     {isPremium && (
-                                        <button 
+                                        <button
                                             onClick={() => setShowSubscriptionManager(true)}
                                             className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyan-500/30 transition-all flex items-center gap-3 group"
                                         >
@@ -815,7 +885,7 @@ export default function DashboardPage() {
                                             </div>
                                         </button>
                                     )}
-                                    <button 
+                                    <button
                                         onClick={() => setShowGiftCard(true)}
                                         className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-pink-500/30 transition-all flex items-center gap-3 group"
                                     >
@@ -827,7 +897,7 @@ export default function DashboardPage() {
                                             <p className="text-[9px] text-gray-500">Premium hediye et</p>
                                         </div>
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => setShowAffiliate(true)}
                                         className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-purple-500/30 transition-all flex items-center gap-3 group"
                                     >

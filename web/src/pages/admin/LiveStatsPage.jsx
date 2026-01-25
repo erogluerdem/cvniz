@@ -124,8 +124,8 @@ export default function LiveStatsPage() {
                     <button
                         onClick={() => setIsLive(!isLive)}
                         className={`px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center gap-3 active:scale-95 ${isLive
-                                ? 'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20'
-                                : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20'
+                            ? 'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20'
+                            : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20'
                             }`}
                     >
                         {isLive ? <Radio className="w-4 h-4" /> : <RefreshCw className="w-4 h-4" />}
@@ -175,7 +175,7 @@ export default function LiveStatsPage() {
                                 </p>
                             </div>
                             <div className="flex flex-wrap justify-center gap-4 pt-4">
-                                {['TÜRKİYE: 8', 'USA: 2', 'GERMANY: 1', 'UK: 1'].map((loc, i) => (
+                                {(stats?.locations?.length > 0 ? stats.locations : ['TÜRKİYE: 0']).map((loc, i) => (
                                     <div key={i} className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-cyan-200/50 uppercase tracking-widest">
                                         {loc}
                                     </div>
@@ -227,12 +227,12 @@ export default function LiveStatsPage() {
                                 <div key={i} className="flex gap-4 group animate-fade-in">
                                     <div className="relative flex flex-col items-center">
                                         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${(i % 3 === 0) ? 'bg-cyan-500/10 border border-cyan-500/20' :
-                                                (i % 3 === 1) ? 'bg-purple-500/10 border border-purple-500/20' :
-                                                    'bg-amber-500/10 border border-amber-500/20'
+                                            (i % 3 === 1) ? 'bg-purple-500/10 border border-purple-500/20' :
+                                                'bg-amber-500/10 border border-amber-500/20'
                                             }`}>
                                             <MousePointer2 className={`w-4 h-4 ${(i % 3 === 0) ? 'text-cyan-400' :
-                                                    (i % 3 === 1) ? 'text-purple-400' :
-                                                        'text-amber-400'
+                                                (i % 3 === 1) ? 'text-purple-400' :
+                                                    'text-amber-400'
                                                 }`} />
                                         </div>
                                         {i !== recentActions.length - 1 && <div className="w-0.5 flex-1 bg-white/5 my-2"></div>}

@@ -66,10 +66,10 @@ export default function AnalyticsPage() {
     }
 
     const metrics = [
-        { label: 'ZİYARETÇİ', value: data?.conversion?.visitors || 0, icon: Eye, color: 'cyan', change: '+12.5%' },
-        { label: 'YENİ KAYIT', value: data?.conversion?.signups || 0, icon: Users, color: 'purple', change: '+8.3%' },
-        { label: 'OLUŞTURULAN CV', value: data?.conversion?.cvs || 0, icon: FileText, color: 'blue', change: '+15.2%' },
-        { label: 'PRO ÖDEME', value: data?.conversion?.payments || 0, icon: Zap, color: 'amber', change: '+22.1%' }
+        { label: 'ZİYARETÇİ', value: data?.conversion?.visitors || 0, icon: Eye, color: 'cyan', change: '0%' },
+        { label: 'YENİ KAYIT', value: data?.conversion?.signups || 0, icon: Users, color: 'purple', change: '0%' },
+        { label: 'OLUŞTURULAN CV', value: data?.conversion?.cvs || 0, icon: FileText, color: 'blue', change: '0%' },
+        { label: 'PRO ÖDEME', value: data?.conversion?.payments || 0, icon: Zap, color: 'amber', change: '0%' }
     ]
 
     return (
@@ -96,8 +96,8 @@ export default function AnalyticsPage() {
                                 key={range.id}
                                 onClick={() => setTimeRange(range.id)}
                                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${timeRange === range.id
-                                        ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20'
-                                        : 'text-gray-500 hover:text-white'
+                                    ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20'
+                                    : 'text-gray-500 hover:text-white'
                                     }`}
                             >
                                 {range.label}

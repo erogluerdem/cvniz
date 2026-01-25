@@ -1343,16 +1343,25 @@ router.get('/analytics', authenticate, adminOnly, async (req, res) => {
             { $limit: 10 }
         ]);
 
-        // 3. User Demographics (Mocking for now as we don't store country/city in User)
-        // In real app, we would use GeoIP or stored profile data
+        // 3. Device Distribution from CVView
+        const deviceDistribution = await CVView.aggregate([
+            { $match: { createdAt: { $gte: startDate } } },
+            {
+                $group: {
+                    _id: { $cond: [{ $eq: ["$device.isMobile", true] }, "Mobile", "Desktop"] },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
         const devices = [
-            { id: 'Desktop', count: Math.floor(Math.random() * 500) + 1000 },
-            { id: 'Mobile', count: Math.floor(Math.random() * 800) + 1200 },
-            { id: 'Tablet', count: Math.floor(Math.random() * 100) + 200 }
+            { id: 'Desktop', count: deviceDistribution.find(d => d._id === 'Desktop')?.count || 0 },
+            { id: 'Mobile', count: deviceDistribution.find(d => d._id === 'Mobile')?.count || 0 },
+            { id: 'Tablet', count: 0 } // Our model current only separates Mobile/Desktop
         ];
 
         // 4. Conversion Stats
-        const totalVisitors = 50000; // Mocked
+        const totalVisitors = await CVView.countDocuments({ createdAt: { $gte: startDate } });
         const totalSignups = await User.countDocuments({ createdAt: { $gte: startDate } });
         const totalCVs = await CV.countDocuments({ createdAt: { $gte: startDate } });
         const totalPayments = await Payment.countDocuments({ status: 'completed', createdAt: { $gte: startDate } });
@@ -1393,7 +1402,13 @@ router.get('/live-stats', authenticate, adminOnly, async (req, res) => {
         // 2. Active CV Sessions (Modified in last hour)
         const activeCVSessions = await CV.countDocuments({ updatedAt: { $gte: lastHour } });
 
-        // 3. System Metrics
+        // 3. Real PDF Generations (Download Count)
+        const downloadStats = await CV.aggregate([
+            { $group: { _id: null, total: { $sum: "$metadata.downloadCount" } } }
+        ]);
+        const pdfGenerations = downloadStats[0]?.total || 0;
+
+        // 4. System Metrics
         const totalMem = os.totalmem();
         const freeMem = os.freemem();
         const usedMem = totalMem - freeMem;
@@ -1405,18 +1420,27 @@ router.get('/live-stats', authenticate, adminOnly, async (req, res) => {
         // 4. Live Activity (Last 10 logs)
         const recentLogs = await Log.find().sort({ createdAt: -1 }).limit(10);
 
+        // 5. Locations (Last hour activity)
+        const locations = await LoginLog.aggregate([
+            { $match: { createdAt: { $gte: lastHour } } },
+            { $group: { _id: '$location.countryCode', count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
+        ]);
+
         res.json({
             success: true,
             stats: {
-                onlineUsers: onlineUsers || Math.floor(Math.random() * 5) + 1, // Fallback to a small random if no real activity
+                onlineUsers: onlineUsers,
                 activeCVSessions,
-                pdfGenerations: Math.floor(Math.random() * 10), // Mocked for now
+                pdfGenerations,
                 server: {
                     cpu: Math.min(cpuUsage, 100),
                     ram: ramUsage,
                     uptime: Math.floor(uptime / 3600),
                     platform: os.platform()
-                }
+                },
+                locations: locations.map(l => `${l._id || 'TR'}: ${l.count}`)
             },
             recentActions: recentLogs.map(log => ({
                 action: log.action,

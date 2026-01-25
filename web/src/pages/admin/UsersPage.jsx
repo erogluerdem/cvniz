@@ -30,6 +30,9 @@ export default function UsersPage() {
         name: '', email: '', password: '', role: 'user', isActive: true, isPremium: false
     })
     const [submitting, setSubmitting] = useState(false)
+    const [showLogsModal, setShowLogsModal] = useState(false)
+    const [userLogs, setUserLogs] = useState([])
+    const [loadingLogs, setLoadingLogs] = useState(false)
 
     useEffect(() => {
         fetchUsers()
@@ -125,6 +128,36 @@ export default function UsersPage() {
             toast.error(error.message || 'İşlem başarısız')
         } finally {
             setSubmitting(false)
+        }
+    }
+
+    const handleResetPassword = async (user) => {
+        const newPassword = prompt(`${user.name} için yeni şifre girin (en az 6 karakter):`)
+        if (!newPassword || newPassword.length < 6) return
+
+        try {
+            const res = await userAPI.resetPassword(user.id, newPassword)
+            if (res.success) {
+                toast.success('Şifre başarıyla güncellendi')
+            }
+        } catch (error) {
+            toast.error('Şifre güncellenemedi')
+        }
+    }
+
+    const handleViewLogs = async (user) => {
+        setSelectedUser(user)
+        setShowLogsModal(true)
+        setLoadingLogs(true)
+        try {
+            const res = await userAPI.getLoginLogs(user.id)
+            if (res.success) {
+                setUserLogs(res.logs)
+            }
+        } catch (error) {
+            toast.error('Giriş kayıtları yüklenemedi')
+        } finally {
+            setLoadingLogs(false)
         }
     }
 
@@ -346,6 +379,20 @@ export default function UsersPage() {
                                                 <Edit className="w-4 h-4" />
                                             </button>
                                             <button
+                                                onClick={() => handleResetPassword(u)}
+                                                className="p-3 rounded-2xl bg-white/5 border border-white/10 text-purple-400 hover:bg-purple-500 hover:text-white transition-all shadow-xl shadow-transparent hover:shadow-purple-500/20"
+                                                title="Reset Password"
+                                            >
+                                                <Key className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleViewLogs(u)}
+                                                className="p-3 rounded-2xl bg-white/5 border border-white/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-all shadow-xl shadow-transparent hover:shadow-blue-500/20"
+                                                title="Login Logs"
+                                            >
+                                                <Activity className="w-4 h-4" />
+                                            </button>
+                                            <button
                                                 onClick={() => toggleStatus(u, 'isPremium')}
                                                 className={`p-3 rounded-2xl border transition-all ${u.isPremium
                                                     ? 'bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500 hover:text-slate-950'
@@ -364,12 +411,6 @@ export default function UsersPage() {
                                                 title={!u.isActive ? 'Unban User' : 'Ban User'}
                                             >
                                                 {!u.isActive ? <Unlock className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
-                                            </button>
-                                            <button
-                                                className="p-3 rounded-2xl bg-white/5 border border-white/10 text-gray-500 hover:bg-white/10 transition-all"
-                                                title="Details"
-                                            >
-                                                <ChevronRight className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </td>
@@ -520,7 +561,72 @@ export default function UsersPage() {
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+            )
+            }
+
+            {/* Logs Modal */}
+            {
+                showLogsModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-fade-in">
+                        <div className="glass-card rounded-[3.5rem] p-10 max-w-2xl w-full border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden animate-scale-in">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h3 className="text-2xl font-black text-white italic uppercase">{selectedUser?.name} - GİRİŞ KAYITLARI</h3>
+                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Son 50 başarılı giriş denemesi</p>
+                                </div>
+                                <button
+                                    onClick={() => setShowLogsModal(false)}
+                                    className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all text-gray-500 hover:text-white"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <div className="max-h-[400px] overflow-y-auto pr-4 custom-scrollbar">
+                                {loadingLogs ? (
+                                    <div className="py-20 flex flex-col items-center justify-center gap-4">
+                                        <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+                                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Kayıtlar Sorgulanıyor...</span>
+                                    </div>
+                                ) : userLogs.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {userLogs.map((log, i) => (
+                                            <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                                                        {log.device?.type === 'mobile' ? <Smartphone className="w-4 h-4 text-cyan-400" /> : <Laptop className="w-4 h-4 text-cyan-400" />}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-xs font-black text-white uppercase italic">{log.location?.city || 'Bilinmeyen Şehir'}, {log.location?.country || 'TR'}</div>
+                                                        <div className="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">{log.ip} • {log.device?.os} {log.device?.browser}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right text-[9px] font-black text-gray-500 uppercase tracking-widest">
+                                                    {new Date(log.createdAt).toLocaleString('tr-TR')}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-20 text-center">
+                                        <Activity className="w-12 h-12 text-gray-800 mx-auto mb-4" />
+                                        <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Henüz bir giriş kaydı bulunamadı.</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="mt-8">
+                                <button
+                                    onClick={() => setShowLogsModal(false)}
+                                    className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-xs text-gray-400 uppercase tracking-widest hover:bg-white/10 transition-all"
+                                >
+                                    KAPAT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     )
 }

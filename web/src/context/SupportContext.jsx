@@ -5,22 +5,22 @@ import { supportAPI } from '../services/api'
 const SupportContext = createContext(null)
 
 export function SupportProvider({ children }) {
-    const { user } = useAuth()
+    const { user, loading: authLoading } = useAuth()
     const [tickets, setTickets] = useState([])
     const [allTickets, setAllTickets] = useState([]) // State for admin reactivity
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        if (user) {
+        if (!authLoading && user) {
             loadTickets()
             if (user.role === 'admin') {
                 loadAllTicketsAdmin()
             }
-        } else {
+        } else if (!authLoading && !user) {
             setTickets([])
             setAllTickets([])
         }
-    }, [user])
+    }, [user, authLoading])
 
     const loadTickets = async () => {
         try {

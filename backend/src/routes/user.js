@@ -177,6 +177,39 @@ router.put('/:id', authenticate, adminOnly, async (req, res) => {
     }
 });
 
+// @desc    Get user login logs (Admin only)
+// @route   GET /api/users/:id/login-logs
+router.get('/:id/login-logs', authenticate, adminOnly, async (req, res) => {
+    try {
+        const LoginLog = require('../models/LoginLog');
+        const logs = await LoginLog.find({ userId: req.params.id }).sort({ createdAt: -1 }).limit(50);
+        res.json({ success: true, logs });
+    } catch (error) {
+        res.status(500).json({ error: 'Giriş kayıtları alınamadı' });
+    }
+});
+
+// @desc    Reset user password (Admin only)
+// @route   POST /api/users/:id/reset-password
+router.post('/:id/reset-password', authenticate, adminOnly, async (req, res) => {
+    try {
+        const { password } = req.body;
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'Geçersiz şifre' });
+        }
+
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+
+        user.password = password;
+        await user.save();
+
+        res.json({ success: true, message: 'Şifre başarıyla sıfırlandı' });
+    } catch (error) {
+        res.status(500).json({ error: 'Şifre sıfırlama hatası' });
+    }
+});
+
 // ============ USER: ANNOUNCEMENTS ============
 router.get('/announcements/active', authenticate, async (req, res) => {
     try {

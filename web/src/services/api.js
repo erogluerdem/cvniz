@@ -186,6 +186,14 @@ export const userAPI = {
     // Admin: Update user
     updateUser: (id, data) =>
         api.put(`/users/${id}`, data),
+
+    // Admin: Get user login logs
+    getLoginLogs: (id) =>
+        api.get(`/users/${id}/login-logs`),
+
+    // Admin: Reset user password
+    resetPassword: (id, password) =>
+        api.post(`/users/${id}/reset-password`, { password }),
 };
 
 // ============ SUPPORT API ============

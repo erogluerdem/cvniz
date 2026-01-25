@@ -1438,7 +1438,9 @@ router.get('/live-stats', authenticate, adminOnly, async (req, res) => {
                     cpu: Math.min(cpuUsage, 100),
                     ram: ramUsage,
                     uptime: Math.floor(uptime / 3600),
-                    platform: os.platform()
+                    platform: os.platform(),
+                    hostname: os.hostname(),
+                    arch: os.arch()
                 },
                 locations: locations.map(l => `${l._id || 'TR'}: ${l.count}`)
             },

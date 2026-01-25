@@ -16,6 +16,7 @@ export default function LiveStatsPage() {
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
     const [performanceHistory, setPerformanceHistory] = useState([])
+    const [latency, setLatency] = useState(0)
 
     // Polling interval ref
     const pollingRef = useRef(null)
@@ -44,8 +45,10 @@ export default function LiveStatsPage() {
 
     const fetchData = async () => {
         setLoading(true)
+        const start = Date.now()
         try {
             const res = await adminAPI.getLiveStats()
+            setLatency(Date.now() - start)
             if (res.success) {
                 setStats(res.stats)
                 setRecentActions(res.recentActions)
@@ -60,8 +63,10 @@ export default function LiveStatsPage() {
 
     const fetchUpdates = async () => {
         setRefreshing(true)
+        const start = Date.now()
         try {
             const res = await adminAPI.getLiveStats()
+            setLatency(Date.now() - start)
             if (res.success) {
                 setStats(res.stats)
                 setRecentActions(res.recentActions)
@@ -112,12 +117,14 @@ export default function LiveStatsPage() {
                     <div className="hidden lg:flex items-center gap-4 px-6 py-3 rounded-2xl bg-white/5 border border-white/5">
                         <div className="text-right">
                             <div className="text-[9px] font-black text-gray-500 uppercase tracking-widest">GECİKME</div>
-                            <div className="text-xs font-black text-emerald-400">14ms</div>
+                            <div className="text-xs font-black text-emerald-400">{latency}ms</div>
                         </div>
                         <div className="w-px h-6 bg-white/10"></div>
                         <div className="text-right">
-                            <div className="text-[9px] font-black text-gray-500 uppercase tracking-widest">LOKASYON</div>
-                            <div className="text-xs font-black text-white italic">TR-EUROPE</div>
+                            <div className="text-[9px] font-black text-gray-500 uppercase tracking-widest">SUNUCU</div>
+                            <div className="text-xs font-black text-white italic truncate max-w-[100px]" title={stats?.server?.hostname}>
+                                {stats?.server?.hostname || 'LOKAL'}
+                            </div>
                         </div>
                     </div>
 
@@ -264,15 +271,15 @@ export default function LiveStatsPage() {
                         {[
                             { label: 'CPU LOAD', value: stats?.server?.cpu, icon: CpuIcon, color: 'cyan' },
                             { label: 'RAM USAGE', value: stats?.server?.ram, icon: Database, color: 'purple' },
-                            { label: 'DISK I/O', value: 42, icon: HardDrive, color: 'amber' }
+                            { label: 'PLATFORM', value: (stats?.server?.platform === 'win32' ? 99 : 85), icon: HardDrive, color: 'amber', label2: stats?.server?.platform?.toUpperCase() }
                         ].map((stat, i) => (
                             <div key={i} className="space-y-3">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <stat.icon className={`w-3.5 h-3.5 text-${stat.color}-400`} />
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{stat.label}</span>
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{stat.label2 || stat.label}</span>
                                     </div>
-                                    <span className={`text-[10px] font-black text-${stat.color}-400`}>%{stat.value}</span>
+                                    <span className={`text-[10px] font-black text-${stat.color}-400`}>{stat.label2 ? stat.label2 : '%' + stat.value}</span>
                                 </div>
                                 <div className="h-2 bg-white/5 rounded-full overflow-hidden p-0.5">
                                     <div

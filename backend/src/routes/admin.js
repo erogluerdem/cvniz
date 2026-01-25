@@ -59,7 +59,7 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
 
         // Active users (last 24h)
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const activeUsersCount = await User.countDocuments({ lastLogin: { $gte: last24h } });
+        const activeUsersCount = await User.countDocuments({ lastLoginAt: { $gte: last24h } });
 
         // Growth Calculation (CVs MoM)
         const lastMonth = new Date();
@@ -111,11 +111,14 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
                 yesterdayCVs,
                 todayRevenue,
                 activeUsers: activeUsersCount,
-                downloads: Math.floor(totalCVs * 3.2), // Mock but based on real CVs
+                downloads: await CV.countDocuments({ isArchived: false }), // Real active CV count
                 openTickets,
                 templateUsage: templateUsage.map(t => ({ id: t._id, usage: t.count })),
-                monthlyTrends: monthlyTrends.map(t => t.count),
-                growth: yesterdayCVs > 0 ? (((todayCVs - yesterdayCVs) / yesterdayCVs) * 100).toFixed(1) : 100
+                monthlyTrends: monthlyTrends.map(t => ({
+                    label: new Date(t._id.year, t._id.month - 1).toLocaleDateString('tr-TR', { month: 'short' }).toUpperCase(),
+                    count: t.count
+                })),
+                growth: yesterdayCVs > 0 ? (((todayCVs - yesterdayCVs) / yesterdayCVs) * 100).toFixed(1) : (todayCVs > 0 ? 100 : 0)
             }
         });
     } catch (error) {

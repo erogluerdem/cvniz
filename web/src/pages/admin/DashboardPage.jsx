@@ -122,10 +122,10 @@ export default function DashboardPage() {
             {/* Primary Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'TOPLAM KULLANICI', value: stats.totalUsers, icon: Users, color: 'cyan', growth: '+12%', sub: 'Premium Oranı: %' + ((stats.premiumUsers / stats.totalUsers) * 100).toFixed(0) },
-                    { label: 'TOPLAM GELİR', value: '₺' + stats.revenue.toLocaleString(), icon: DollarSign, color: 'emerald', growth: '+24%', sub: 'Bugün: ₺' + stats.todayRevenue },
-                    { label: 'OLUŞTURULAN CV', value: stats.totalCVs, icon: FileText, color: 'purple', growth: stats.growth + '%', sub: 'Bugün: ' + stats.todayCVs },
-                    { label: 'DESTEK TALEBİ', value: stats.openTickets, icon: MessageCircle, color: 'amber', growth: '-5%', sub: 'Aktif Görüşmeler' }
+                    { label: 'TOPLAM KULLANICI', value: stats.totalUsers, icon: Users, color: 'cyan', growth: '+0%', sub: 'Premium Oranı: %' + (stats.totalUsers > 0 ? ((stats.premiumUsers / stats.totalUsers) * 100).toFixed(0) : 0) },
+                    { label: 'TOPLAM GELİR', value: '₺' + stats.revenue.toLocaleString(), icon: DollarSign, color: 'emerald', growth: '+0%', sub: 'Bugün: ₺' + (stats.todayRevenue || 0) },
+                    { label: 'OLUŞTURULAN CV', value: stats.totalCVs, icon: FileText, color: 'purple', growth: (stats.growth || 0) + '%', sub: 'Bugün: ' + (stats.todayCVs || 0) },
+                    { label: 'DESTEK TALEBİ', value: stats.openTickets, icon: MessageCircle, color: 'amber', growth: '0%', sub: 'Aktif Görüşmeler' }
                 ].map((stat, i) => (
                     <div key={i} className="glass-card rounded-[2.5rem] p-7 border border-white/5 relative group overflow-hidden">
                         <div className={`absolute -top-10 -right-10 w-32 h-32 bg-${stat.color}-500/10 blur-3xl group-hover:scale-150 transition-all duration-700`}></div>
@@ -170,20 +170,20 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="flex items-end justify-between h-64 gap-3 px-2">
-                            {stats.monthlyTrends.map((val, i) => (
+                            {stats.monthlyTrends.map((t, i) => (
                                 <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
                                     <div className="relative w-full flex justify-center items-end h-full">
                                         <div
                                             className="w-full max-w-[40px] rounded-t-2xl bg-gradient-to-t from-cyan-600 to-cyan-400 transition-all duration-1000 group-hover:from-cyan-400 group-hover:to-blue-400 shadow-[0_0_20px_rgba(6,182,212,0.1)] group-hover:shadow-[0_0_30px_rgba(6,182,212,0.3)] relative"
-                                            style={{ height: `${(val / (Math.max(...stats.monthlyTrends, 10))) * 100}%` }}
+                                            style={{ height: `${(t.count / (Math.max(...stats.monthlyTrends.map(x => x.count), 10))) * 100}%` }}
                                         >
                                             <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-slate-900 text-[10px] font-black px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 pointer-events-none">
-                                                {val}
+                                                {t.count}
                                             </div>
                                         </div>
                                     </div>
                                     <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
-                                        {['TEM', 'AĞU', 'EYL', 'EKİ', 'KAS', 'ARA'][i]}
+                                        {t.label}
                                     </span>
                                 </div>
                             ))}
@@ -269,16 +269,13 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="space-y-6">
-                            {(logs.length > 0 ? logs : [
-                                { action: 'Sistem Başlatıldı', module: 'System', adminEmail: 'root@CVniz.com', createdAt: new Date() },
-                                { action: 'Yeni Kullanıcı Kaydı', module: 'Auth', adminEmail: 'guest', createdAt: new Date() }
-                            ]).map((log, i) => (
+                            {logs.length > 0 ? logs.map((log, i) => (
                                 <div key={i} className="flex gap-4 group">
                                     <div className="relative flex flex-col items-center">
                                         <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform bg-white/10">
                                             <FileText className="w-4 h-4 text-cyan-400" />
                                         </div>
-                                        {i !== (logs.length || 2) - 1 && <div className="w-0.5 flex-1 bg-white/5 my-2"></div>}
+                                        {i !== logs.length - 1 && <div className="w-0.5 flex-1 bg-white/5 my-2"></div>}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-0.5">
@@ -291,7 +288,11 @@ export default function DashboardPage() {
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="py-10 text-center">
+                                    <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest">Henüz etkinlik bulunmuyor</p>
+                                </div>
+                            )}
                         </div>
 
                         <button className="w-full mt-10 py-4 rounded-2xl bg-white/5 border border-white/10 text-gray-500 font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-3 active:scale-95">

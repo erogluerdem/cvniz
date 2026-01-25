@@ -1501,7 +1501,14 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
             { $sort: { "_id": 1 } }
         ]);
 
-        // 4. Summaries
+        // 4. Template Usage Report
+        const templateData = await CV.aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $group: { _id: "$template", count: { $sum: 1 } } },
+            { $sort: { count: -1 } }
+        ]);
+
+        // 5. Summaries
         const summary = {
             totalRevenue: revenueData.reduce((acc, curr) => acc + curr.amount, 0),
             totalPayments: revenueData.reduce((acc, curr) => acc + curr.count, 0),
@@ -1515,6 +1522,7 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
                 revenue: revenueData,
                 users: userData,
                 cvs: cvData,
+                templates: templateData,
                 summary
             }
         });

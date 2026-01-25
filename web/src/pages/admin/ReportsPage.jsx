@@ -11,8 +11,9 @@ import { useToast } from '../../context/ToastContext'
 const reportTypes = [
     { id: 'revenue', name: 'GELİR ANALİZİ', icon: DollarSign, color: 'emerald', sub: 'Finansal Performans' },
     { id: 'users', name: 'KULLANICI ANALİZİ', icon: Users, color: 'purple', sub: 'Büyüme & Etkileşim' },
-    { id: 'cvs', name: 'CV ANALİZİ', icon: FileText, color: 'blue', sub: 'Şablon & Kullanım' },
-    { id: 'all', name: 'GENEL ÖZET', icon: Layout, color: 'cyan', sub: 'Tüm Sistem Raporu' }
+    { id: 'cvs', name: 'CV ANALİZİ', icon: FileText, color: 'blue', sub: 'Trend Analizi' },
+    { id: 'templates', name: 'ŞABLON ANALİZİ', icon: Layout, color: 'indigo', sub: 'Popüler Tasarımlar' },
+    { id: 'all', name: 'GENEL ÖZET', icon: RefreshCw, color: 'cyan', sub: 'Tüm Sistem Raporu' }
 ]
 
 export default function ReportsPage() {
@@ -43,6 +44,21 @@ export default function ReportsPage() {
             setLoading(false)
             setGenerating(false)
         }
+    }
+
+    const handleExport = (format) => {
+        if (!data) return
+        const reportData = data[selectedType === 'all' ? 'revenue' : selectedType]
+        const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `CVniz_Report_${selectedType}_${dateRange.start}_${dateRange.end}.json`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        toast.success(`Rapor ${format} olarak hazırlandı`)
     }
 
     if (loading) {
@@ -136,8 +152,8 @@ export default function ReportsPage() {
                             key={type.id}
                             onClick={() => setSelectedType(type.id)}
                             className={`p-6 rounded-[2rem] border transition-all text-left flex items-center gap-5 group relative overflow-hidden ${selectedType === type.id
-                                    ? `bg-gradient-to-br from-${type.color}-500/20 to-${type.color}-600/20 border-${type.color}-500/30`
-                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                ? `bg-gradient-to-br from-${type.color}-500/20 to-${type.color}-600/20 border-${type.color}-500/30`
+                                : 'bg-white/5 border-white/5 hover:bg-white/10'
                                 }`}
                         >
                             {selectedType === type.id && (
@@ -159,9 +175,14 @@ export default function ReportsPage() {
                         <div className="relative z-10 space-y-4">
                             <h4 className="text-sm font-black text-white uppercase tracking-widest">DIŞA AKTARMA</h4>
                             <p className="text-[10px] text-gray-500 font-bold uppercase leading-relaxed">Seçili tarih aralığındaki tüm ham verileri Excel veya JSON formatında indirebilirsiniz.</p>
-                            <div className="grid grid-cols-2 gap-3 pt-2">
-                                <button className="py-3 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black text-gray-300 uppercase tracking-widest hover:bg-white/10 transition-all">EXCEL (XLSX)</button>
-                                <button className="py-3 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black text-gray-300 uppercase tracking-widest hover:bg-white/10 transition-all">JSON (DATA)</button>
+                            <div className="grid grid-cols-1 gap-3 pt-2">
+                                <button
+                                    onClick={() => handleExport('JSON')}
+                                    className="py-3 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black text-gray-300 uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Download className="w-3 h-3" />
+                                    VERİYİ DIŞA AKTAR (JSON)
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -192,19 +213,22 @@ export default function ReportsPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {(data?.[selectedType === 'all' ? 'revenue' : selectedType] || []).slice(0, 10).map((row, i) => (
+                                    {(data?.[selectedType === 'all' ? 'revenue' : selectedType] || []).map((row, i) => (
                                         <tr key={i} className="hover:bg-white/5 transition-all group">
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                                                    <span className="text-[11px] font-black text-white italic">{row._id}</span>
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${selectedType === 'templates' ? 'bg-indigo-500' : 'bg-purple-500'}`}></div>
+                                                    <span className="text-[11px] font-black text-white italic truncate max-w-[150px]">
+                                                        {selectedType === 'templates' ? row._id.toUpperCase() : row._id}
+                                                    </span>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 uppercase">
                                                 <span className="text-[10px] font-bold text-gray-500 tracking-widest leading-none">
                                                     {selectedType === 'revenue' ? 'PRO-ÜYELİK SATIŞI' :
                                                         selectedType === 'users' ? 'YENİ KULLANICI KAYDI' :
-                                                            selectedType === 'cvs' ? 'CV OLUŞTURMA İŞLEMİ' : 'SİSTEM METRİĞİ'}
+                                                            selectedType === 'cvs' ? 'CV OLUŞTURMA İŞLEMİ' :
+                                                                selectedType === 'templates' ? 'ŞABLON KULLANIMI' : 'SİSTEM METRİĞİ'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-5 text-right font-black text-white italic text-xs tracking-tighter">

@@ -8,10 +8,13 @@ import {
 } from 'lucide-react'
 
 export default function WelcomePopup() {
-    const { user } = useAuth()
+    const { user, isAdmin } = useAuth()
     const { activeCampaign, dismissCampaign, trackCampaignClick, triggerCampaign } = useCampaign()
     const navigate = useNavigate()
     const [isVisible, setIsVisible] = useState(false)
+
+    // Hide for admins
+    if (isAdmin) return null;
     const [isClosing, setIsClosing] = useState(false)
 
     // Trigger welcome campaign on registration

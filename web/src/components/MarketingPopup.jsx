@@ -1,10 +1,12 @@
 import { X, Gift, PartyPopper, BellRing, ArrowRight, Sparkles } from 'lucide-react'
 import { useMarketing } from '../context/MarketingAutomationContext'
+import { useAuth } from '../context/AuthContext'
 
 export default function MarketingPopup() {
+    const { isAdmin } = useAuth()
     const { activeCampaign, dismissCampaign } = useMarketing()
 
-    if (!activeCampaign) return null
+    if (isAdmin || !activeCampaign) return null
 
     const icons = {
         anniversary: <PartyPopper className="w-8 h-8 text-amber-400" />,

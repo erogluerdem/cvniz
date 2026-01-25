@@ -2,12 +2,14 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useCampaign } from '../context/CampaignContext'
 import { usePayment } from '../context/PaymentContext'
+import { useAuth } from '../context/AuthContext'
 import {
     X, Gift, Clock, ArrowRight, Shield,
     Check, Tag, Sparkles, AlertTriangle
 } from 'lucide-react'
 
 export default function AbandonedCartModal() {
+    const { isAdmin } = useAuth()
     const { activeCampaign, dismissCampaign, trackCampaignClick, triggerCampaign, trackConversion } = useCampaign()
     const { applyCoupon, selectedPlan } = usePayment()
     const navigate = useNavigate()

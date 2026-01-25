@@ -1,17 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { X, Gift, Clock, ArrowRight, Sparkles, Crown, Zap } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import Confetti from 'react-confetti'
 
 // Smart Sales Popup - Responds to various user behaviors
 export function ExitIntentPopup() {
+    const { isAdmin } = useAuth()
     const [isVisible, setIsVisible] = useState(false)
     const [hasShown, setHasShown] = useState(false)
     const [showConfetti, setShowConfetti] = useState(false)
     const [triggerType, setTriggerType] = useState(null) // 'exit', 'time', 'scroll'
     const couponCode = 'BEKLE20'
     const timerRef = useRef(null)
+
+    if (isAdmin) return null;
 
     useEffect(() => {
         // Check if already shown in this session
@@ -255,7 +259,8 @@ export function PremiumPreviewLock({ templateName, onUpgrade }) {
 
 // Pro Upsell Popup - Shows after first CV creation
 export function ProUpsellPopup({ isOpen, onClose, cvName }) {
-    if (!isOpen) return null
+    const { isAdmin } = useAuth()
+    if (!isOpen || isAdmin) return null
 
     return (
         <AnimatePresence>
@@ -358,6 +363,7 @@ export function ProUpsellPopup({ isOpen, onClose, cvName }) {
 
 // Sticky Bottom CTA Bar
 export function StickyBottomCTA({ show = true }) {
+    const { isAdmin } = useAuth()
     const [isVisible, setIsVisible] = useState(false)
     const [dismissed, setDismissed] = useState(false)
     const [isDayMode, setIsDayMode] = useState(false)
@@ -401,7 +407,7 @@ export function StickyBottomCTA({ show = true }) {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [dismissed])
 
-    if (!show || !isVisible || dismissed) return null
+    if (isAdmin || !show || !isVisible || dismissed) return null
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-40">

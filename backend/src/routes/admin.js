@@ -23,6 +23,8 @@ const ApiKey = require('../models/ApiKey');
 const AISettings = require('../models/AISettings');
 const AIUsageLog = require('../models/AIUsageLog');
 const Theme = require('../models/Theme');
+const CVView = require('../models/CVView');
+const CVReview = require('../models/CVReview');
 const logger = require('../utils/logger');
 const { authenticate, adminOnly } = require('../middleware/auth');
 
@@ -360,7 +362,8 @@ router.get('/cvs', authenticate, adminOnly, async (req, res) => {
                     'owner.id': '$owner._id',
                     'owner.name': 1,
                     'owner.email': 1,
-                    'owner.avatar': 1
+                    'owner.avatar': 1,
+                    metadata: 1
                 }
             },
             { $sort: { createdAt: -1 } }

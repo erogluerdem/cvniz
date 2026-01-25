@@ -3,12 +3,28 @@ import { Eye, Trash2, Search, Filter, FileText, Calendar, User, Layout, Loader2,
 import { adminAPI } from '../../services/api'
 import { StatusBadge, FilterTabs } from '../../components/admin/SharedComponents'
 import { Link } from 'react-router-dom'
+import { useToast } from '../../context/ToastContext'
+
+const templateNames = {
+    modern: 'Modern Sanat',
+    minimalist: 'Sade & Şık',
+    corporate: 'Kurumsal Vizyon',
+    creative: 'Yaratıcı Zihin',
+    tech: 'Dijital Gelecek',
+    executive: 'Yönetici Elit',
+    elegant: 'Zarif Çizgiler',
+    healthcare: 'Sağlık Vizyonu',
+    academic: 'Akademik Başarı',
+    finance: 'Finansal Analiz',
+    default: 'Standart Şablon'
+}
 
 export default function CVsPage() {
     const [cvs, setCvs] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
     const [activeFilter, setActiveFilter] = useState('all')
+    const { toast } = useToast()
 
     useEffect(() => {
         fetchCVs()
@@ -31,10 +47,13 @@ export default function CVsPage() {
     const handleDelete = async (id) => {
         if (!confirm('Bu CV\'yi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) return
         try {
-            // Not: Admin için özel silme rotası gerekebilir, şimdilik api.js'ten kontrol
-            alert('Silme özelliği admin rotası entegrasyonu bekliyor.')
+            const response = await adminAPI.deleteCV(id)
+            if (response.success) {
+                toast.success('CV başarıyla silindi')
+                fetchCVs()
+            }
         } catch (error) {
-            alert('Silme hatası: ' + error.message)
+            toast.error('Silme hatası: ' + error.message)
         }
     }
 
@@ -78,6 +97,9 @@ export default function CVsPage() {
             webTemplateIds.some(id => cv.template?.startsWith(id));
     }).length
 
+    const totalViews = cvs.reduce((acc, cv) => acc + (cv.metadata?.viewCount || 0), 0)
+    const totalDownloads = cvs.reduce((acc, cv) => acc + (cv.metadata?.downloadCount || 0), 0)
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -96,10 +118,10 @@ export default function CVsPage() {
             {/* Quick Stats Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Yayında', val: publicCount, icon: <ExternalLink className="w-4 h-4 text-emerald-400" />, color: 'emerald' },
-                    { label: 'Arşivlenmiş', val: archivedCount, icon: <Trash2 className="w-4 h-4 text-gray-400" />, color: 'gray' },
-                    { label: 'Şablon Çeşitliliği', val: [...new Set(cvs.map(c => c.template))].length, icon: <Layout className="w-4 h-4 text-indigo-400" />, color: 'indigo' },
-                    { label: 'Bugün Oluşturulan', val: cvs.filter(c => new Date(c.createdAt).toLocaleDateString() === new Date().toLocaleDateString()).length, icon: <FileText className="w-4 h-4 text-cyan-400" />, color: 'cyan' }
+                    { label: 'TOPLAM GÖRÜNTÜLEME', val: totalViews, icon: <Eye className="w-4 h-4 text-cyan-400" />, color: 'cyan' },
+                    { label: 'TOPLAM İNDİRME', val: totalDownloads, icon: <Download className="w-4 h-4 text-emerald-400" />, color: 'emerald' },
+                    { label: 'YAYINDA OLANLAR', val: publicCount, icon: <ExternalLink className="w-4 h-4 text-purple-400" />, color: 'purple' },
+                    { label: 'BUGÜN OLUŞTURULAN', val: cvs.filter(c => new Date(c.createdAt).toLocaleDateString() === new Date().toLocaleDateString()).length, icon: <FileText className="w-4 h-4 text-amber-400" />, color: 'amber' }
                 ].map((stat, i) => (
                     <div key={i} className="glass-card p-4 rounded-2xl flex items-center justify-between border border-white/5">
                         <div>
@@ -155,10 +177,10 @@ export default function CVsPage() {
                                 <tr className="bg-white/5 border-b border-white/5">
                                     <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500">Özgeçmiş Bilgisi</th>
                                     <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500">Oluşturan</th>
-                                    <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500 text-center">Şablon</th>
+                                    <th className="text-center px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500">Analitikler</th>
                                     <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500">Durum</th>
                                     <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500">Tarih</th>
-                                    <th className="text-right px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500 text-center">İşlemler</th>
+                                    <th className="text-right px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-500">İşlemler</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5">
@@ -171,8 +193,8 @@ export default function CVsPage() {
                                                 </div>
                                                 <div>
                                                     <div className="font-bold text-white group-hover:text-cyan-400 transition-colors">{cv.name}</div>
-                                                    <div className="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-tighter">
-                                                        ID: {cv.id.slice(-8)}
+                                                    <div className="text-[10px] text-gray-500 flex items-center gap-1 uppercase tracking-widest font-bold">
+                                                        ŞABLON: {templateNames[cv.template] || cv.template.toUpperCase()}
                                                     </div>
                                                 </div>
                                             </div>
@@ -188,10 +210,27 @@ export default function CVsPage() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className="px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400 uppercase">
-                                                {cv.template}
-                                            </span>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-col items-center gap-2">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase">GÖRÜNTÜLEME</span>
+                                                        <span className="text-xs font-black text-white">{cv.metadata?.viewCount || 0}</span>
+                                                    </div>
+                                                    <div className="w-px h-6 bg-white/5"></div>
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase">İNDİRME</span>
+                                                        <span className="text-xs font-black text-white">{cv.metadata?.downloadCount || 0}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-gradient-to-r from-cyan-500 to-purple-500"
+                                                        style={{ width: `${cv.metadata?.completeness || 0}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-[9px] text-gray-500 font-bold uppercase">Doluluk: %{cv.metadata?.completeness || 0}</span>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {cv.isPublic ? (

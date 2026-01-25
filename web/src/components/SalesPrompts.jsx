@@ -15,9 +15,9 @@ export function ExitIntentPopup() {
     const couponCode = 'BEKLE20'
     const timerRef = useRef(null)
 
-    if (isAdmin) return null;
-
     useEffect(() => {
+        if (isAdmin) return; // Skip logic but keep hook count
+
         // Check if already shown in this session
         if (sessionStorage.getItem('exitPopupShown')) {
             setHasShown(true)
@@ -65,13 +65,15 @@ export function ExitIntentPopup() {
             window.removeEventListener('scroll', handleScroll)
             if (timerRef.current) clearTimeout(timerRef.current)
         }
-    }, [hasShown])
+    }, [hasShown, isAdmin])
 
     const handleCopy = () => {
         navigator.clipboard.writeText(couponCode)
         setShowConfetti(true)
         setTimeout(() => setShowConfetti(false), 3000)
     }
+
+    if (isAdmin) return null;
 
     return (
         <AnimatePresence>

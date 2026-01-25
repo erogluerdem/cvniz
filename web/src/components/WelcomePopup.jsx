@@ -12,13 +12,11 @@ export default function WelcomePopup() {
     const { activeCampaign, dismissCampaign, trackCampaignClick, triggerCampaign } = useCampaign()
     const navigate = useNavigate()
     const [isVisible, setIsVisible] = useState(false)
-
-    // Hide for admins
-    if (isAdmin) return null;
     const [isClosing, setIsClosing] = useState(false)
 
     // Trigger welcome campaign on registration
     useEffect(() => {
+        if (isAdmin) return; // Skip logic for admins but keep hook count
         if (user) {
             // Check if this is a new user (registered within last 5 minutes)
             const registrationTime = new Date(user.createdAt).getTime()
@@ -36,14 +34,15 @@ export default function WelcomePopup() {
                 return () => clearTimeout(timer)
             }
         }
-    }, [user, triggerCampaign])
+    }, [user, triggerCampaign, isAdmin])
 
     // Show popup when activeCampaign is welcome type
     useEffect(() => {
+        if (isAdmin) return;
         if (activeCampaign?.id === 'welcome') {
             setIsVisible(true)
         }
-    }, [activeCampaign])
+    }, [activeCampaign, isAdmin])
 
     const handleClose = () => {
         setIsClosing(true)
@@ -66,7 +65,8 @@ export default function WelcomePopup() {
         navigate('/templates')
     }
 
-    if (!isVisible || !activeCampaign || activeCampaign.id !== 'welcome') return null
+    // Early return after all hooks
+    if (isAdmin || !isVisible || !activeCampaign || activeCampaign.id !== 'welcome') return null
 
     const content = activeCampaign.content
 

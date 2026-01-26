@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { useCV } from '../context/CVContext'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getTemplateById } from '../data/webCVTemplates'
+import { useTemplates } from '../context/TemplateContext'
 import { Download, Share2, Printer, Check, Link as LinkIcon, X } from 'lucide-react'
 
 // Modular Web Templates

@@ -507,11 +507,11 @@ export default function TemplatesPage() {
                 )}
             </div>
 
-            {/* Add/Edit Modal */}
+            {/* Add/Edit Modal - Locked to DARK MODE for visibility */}
             {(showModal === 'add' || showModal === 'edit') && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl transition-all duration-300">
-                    <div className="glass-card rounded-[3rem] p-8 max-w-md w-full border border-white/10 relative overflow-hidden shadow-2xl scale-100 opacity-100 transition-all">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-3xl -z-10"></div>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl transition-all duration-300">
+                    <div className="bg-[#0f1115] rounded-[3rem] p-8 max-w-md w-full border border-white/10 relative overflow-hidden shadow-2xl scale-100 opacity-100 transition-all">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-3xl -z-10 pointer-events-none"></div>
 
                         <div className="flex items-center justify-between mb-8">
                             <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic">

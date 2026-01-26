@@ -379,7 +379,7 @@ export default function TemplatesPage() {
 
             {/* Conditional Rendering: List or Editor */}
             {(showModal === 'add' || showModal === 'edit') ? (
-                <div className="glass-card rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden animate-fade-in">
+                <div className="bg-slate-900 rounded-[2.5rem] p-8 border border-white/10 relative overflow-hidden animate-fade-in shadow-2xl ring-1 ring-white/10">
                     <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
                         <div className="flex items-center gap-4">
                             <button
@@ -558,15 +558,15 @@ export default function TemplatesPage() {
                                             type="button"
                                             onClick={() => setModalTab('theme_' + section.id)}
                                             className={`w-full text-left p-4 rounded-2xl border transition-all group relative overflow-hidden ${(modalTab === 'theme' || modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
-                                                    && (modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
-                                                    ? 'bg-cyan-500/10 border-cyan-500/30'
-                                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                && (modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
+                                                ? 'bg-cyan-500/10 border-cyan-500/30'
+                                                : 'bg-white/5 border-white/5 hover:bg-white/10'
                                                 }`}
                                         >
                                             <div className="flex items-center gap-3 relative z-10">
                                                 <div className={`p-2.5 rounded-xl ${(modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
-                                                        ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
-                                                        : 'bg-white/10 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
+                                                    ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
+                                                    : 'bg-white/10 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
                                                     }`}>
                                                     <section.icon className="w-5 h-5" />
                                                 </div>
@@ -687,8 +687,8 @@ export default function TemplatesPage() {
                                                                         }
                                                                     })}
                                                                     className={`flex items-center justify-between px-5 py-4 rounded-xl border transition-all ${form.config?.styles?.fontFamily === font.value
-                                                                            ? 'bg-cyan-500/10 border-cyan-500/50 text-white'
-                                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                                                                        ? 'bg-cyan-500/10 border-cyan-500/50 text-white'
+                                                                        : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
                                                                         }`}
                                                                 >
                                                                     <span className="text-sm font-bold" style={{ fontFamily: font.value }}>{font.name}</span>
@@ -767,8 +767,8 @@ export default function TemplatesPage() {
                                                                         }
                                                                     })}
                                                                     className={`p-4 rounded-xl border text-center transition-all ${form.config?.styles?.heroLayout === layout
-                                                                            ? 'bg-emerald-500/10 border-emerald-500/50 text-white'
-                                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                                                                        ? 'bg-emerald-500/10 border-emerald-500/50 text-white'
+                                                                        : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
                                                                         }`}
                                                                 >
                                                                     <div className="mb-2">
@@ -798,8 +798,8 @@ export default function TemplatesPage() {
                                                                         }
                                                                     })}
                                                                     className={`flex items-center gap-4 p-3 rounded-xl border transition-all ${form.config?.styles?.cardStyle === style
-                                                                            ? 'bg-emerald-500/10 border-emerald-500/50 text-white'
-                                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                                                                        ? 'bg-emerald-500/10 border-emerald-500/50 text-white'
+                                                                        : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
                                                                         }`}
                                                                 >
                                                                     <div className={`w-4 h-4 rounded-full border ${form.config?.styles?.cardStyle === style ? 'border-emerald-500 bg-emerald-500' : 'border-gray-600'}`} />
@@ -874,8 +874,8 @@ export default function TemplatesPage() {
                                                                 }
                                                             })}
                                                             className={`flex items-start gap-4 p-4 rounded-2xl border cursor-pointer transition-all ${form.config?.styles?.[opt.key]
-                                                                    ? 'bg-amber-500/10 border-amber-500/50'
-                                                                    : 'bg-white/5 border-white/5 hover:border-white/10'
+                                                                ? 'bg-amber-500/10 border-amber-500/50'
+                                                                : 'bg-white/5 border-white/5 hover:border-white/10'
                                                                 }`}
                                                         >
                                                             <div className={`mt-1 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${form.config?.styles?.[opt.key] ? 'bg-amber-500 border-amber-500' : 'border-gray-600'
@@ -918,30 +918,31 @@ export default function TemplatesPage() {
                             { label: 'AKTİF ŞABLONLAR', value: stats.active, icon: <CheckCircle2 className="w-4 h-4" />, color: 'green' },
                             { label: 'TOPLAM KULLANIM', value: stats.usage, icon: <TrendingUp className="w-4 h-4" />, color: 'amber' }
                         ].map((stat, i) => (
-                            <div key={i} className="glass-card rounded-[2.5rem] p-6 border border-white/5 relative overflow-hidden group hover:bg-white/[0.07] transition-all">
-                                <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/5 blur-3xl -z-10`}></div>
+
+                            <div key={i} className="bg-white dark:bg-white/5 rounded-[2.5rem] p-6 border border-gray-100 dark:border-white/5 relative overflow-hidden group shadow-sm hover:shadow-lg transition-all">
+                                <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 dark:bg-${stat.color}-500/5 blur-3xl -z-10`}></div>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className={`p-2 rounded-xl bg-${stat.color}-500/10 text-${stat.color}-400`}>
+                                    <div className={`p-2 rounded-xl bg-${stat.color}-500/10 text-${stat.color}-500 dark:text-${stat.color}-400`}>
                                         {stat.icon}
                                     </div>
                                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{stat.label}</span>
                                 </div>
-                                <div className="text-3xl font-black text-white tracking-tighter italic">{stat.value}</div>
+                                <div className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter italic">{stat.value}</div>
                             </div>
                         ))}
                     </div>
 
                     {/* Toolbar */}
-                    <div className="glass-card rounded-[2.5rem] p-4 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="bg-white dark:bg-white/5 rounded-[2.5rem] p-4 border border-gray-100 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
                         {/* ... (Existing Toolbar Content) ... */}
                         <div className="relative w-full md:w-96">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Şablon adı ile ara..."
-                                className="bg-white/5 border border-white/5 rounded-2xl pl-12 pr-6 py-3.5 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-medium"
+                                className="bg-gray-100 dark:bg-black/20 border-transparent dark:border-white/5 rounded-2xl pl-12 pr-6 py-3.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:bg-white dark:focus:bg-black/40 focus:ring-2 focus:ring-cyan-500/20 transition-all w-full font-medium"
                             />
                         </div>
                         <FilterTabs
@@ -955,39 +956,41 @@ export default function TemplatesPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                         {/* ... (Existing Grid Content) ... */}
                         {filtered.map(t => (
-                            <div key={t._id} className={`glass-card rounded-[2.5rem] p-3 transition-all border relative group ${t.isActive ? 'border-white/5 hover:border-cyan-500/30' : 'opacity-40 grayscale'}`}>
+                            <div key={t._id} className={`rounded-[2.5rem] p-3 transition-all border relative group ${t.isActive
+                                ? 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/5 hover:border-cyan-500/30 shadow-sm hover:shadow-xl dark:shadow-none'
+                                : 'bg-gray-50 dark:bg-white/5 border-gray-100 dark:border-white/5 opacity-60 grayscale'
+                                }`}>
                                 {/* Preview - Show thumbnail if available */}
-                                <div className="aspect-[3/4] rounded-[2rem] bg-white/5 overflow-hidden relative mb-4 flex items-center justify-center" style={{ background: t.thumbnail ? 'transparent' : `linear-gradient(135deg, ${getColor(t.templateId)}22, ${getColor(t.templateId + 'x')}44)` }}>
+                                <div className="aspect-[3/4] rounded-[2rem] bg-gray-100 dark:bg-white/5 overflow-hidden relative mb-4 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500" style={{ background: t.thumbnail ? 'transparent' : `linear-gradient(135deg, ${getColor(t.templateId)}22, ${getColor(t.templateId + 'x')}44)` }}>
                                     {t.thumbnail ? (
                                         <img src={t.thumbnail} alt={t.name} className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="text-center">
-                                            <span className="text-4xl font-black text-white/20 uppercase italic select-none">{t.name.charAt(0)}</span>
+                                            <span className="text-4xl font-black text-gray-300 dark:text-white/20 uppercase italic select-none">{t.name.charAt(0)}</span>
                                         </div>
                                     )}
                                     <div className="absolute top-4 right-4 z-10">
                                         {t.isPremium && <div className="p-2 rounded-xl bg-amber-500/20 text-amber-500 border border-amber-500/20 shadow-lg shadow-amber-500/10"><Crown className="w-4 h-4" /></div>}
                                     </div>
 
-                                    {/* Actions Overlay */}
-                                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 p-4">
+                                    {/* Actions Overlay - Darker for better contrast */}
+                                    <div className="absolute inset-0 bg-slate-900/95 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 p-4">
                                         <Link
                                             to={`/editor?template=${t.templateId}&sample=true`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="w-full py-2.5 rounded-xl bg-cyan-500/20 text-cyan-400 font-black text-[10px] tracking-widest uppercase border border-cyan-500/20 hover:bg-cyan-500 hover:text-white transition-all text-center"
+                                            className="w-full py-3 rounded-xl bg-cyan-500/20 text-cyan-400 font-black text-[10px] tracking-widest uppercase border border-cyan-500/20 hover:bg-cyan-500 hover:text-white transition-all text-center"
                                         >
                                             ÖNİZLEME
                                         </Link>
                                         <button
                                             onClick={() => handleToggle(t._id)}
-                                            className={`w-full py-2.5 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${t.isActive ? 'bg-red-500/20 text-red-500 border border-red-500/20' : 'bg-green-500/20 text-green-500 border border-green-500/20'}`}
+                                            className={`w-full py-3 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${t.isActive ? 'bg-red-500/20 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white' : 'bg-green-500/20 text-green-500 border border-green-500/20 hover:bg-green-500 hover:text-white'}`}
                                         >
                                             {t.isActive ? 'PASİF YAP' : 'AKTİF YAP'}
                                         </button>
                                         <button
                                             onClick={() => {
-                                                // Create a clean, safe copy of the template data
                                                 const safeForm = {
                                                     _id: t._id,
                                                     templateId: t.templateId || '',
@@ -1009,13 +1012,13 @@ export default function TemplatesPage() {
                                                 setShowModal('edit')
                                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                                             }}
-                                            className="w-full py-2.5 rounded-xl bg-white/10 text-white font-black text-[10px] tracking-widest uppercase border border-white/10 hover:bg-white/20 transition-all"
+                                            className="w-full py-3 rounded-xl bg-white/10 text-white font-black text-[10px] tracking-widest uppercase border border-white/10 hover:bg-white/20 transition-all"
                                         >
                                             DÜZENLE
                                         </button>
                                         <button
                                             onClick={() => handleDelete(t._id)}
-                                            className="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 font-black text-[10px] tracking-widest uppercase hover:bg-red-500 hover:text-white transition-all"
+                                            className="w-full py-3 rounded-xl bg-red-500/10 text-red-500 font-black text-[10px] tracking-widest uppercase hover:bg-red-500 hover:text-white transition-all"
                                         >
                                             SİL
                                         </button>
@@ -1024,10 +1027,10 @@ export default function TemplatesPage() {
 
                                 {/* Info Area */}
                                 <div className="px-2">
-                                    <h4 className="text-xs font-black text-white truncate mb-1 uppercase tracking-tight italic">{t.name}</h4>
+                                    <h4 className="text-xs font-black text-gray-900 dark:text-white truncate mb-1 uppercase tracking-tight italic">{t.name}</h4>
                                     <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
-                                        <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-cyan-400" /> {t.usageCount || 0}</span>
-                                        <span className="px-2 py-0.5 rounded-lg bg-white/5 border border-white/5 uppercase">{t.category}</span>
+                                        <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-cyan-500 dark:text-cyan-400" /> {t.usageCount || 0}</span>
+                                        <span className="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 uppercase text-gray-600 dark:text-gray-400">{t.category}</span>
                                     </div>
                                 </div>
                             </div>

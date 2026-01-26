@@ -3,6 +3,8 @@ const router = express.Router();
 const Payment = require('../models/Payment');
 const User = require('../models/User');
 const { authenticate, adminOnly } = require('../middleware/auth');
+const emailService = require('../services/EmailService');
+const smsService = require('../services/SmsService');
 
 // @desc    Get all payments (Admin only)
 // @route   GET /api/payments
@@ -89,6 +91,10 @@ router.post('/bank-transfer', authenticate, async (req, res) => {
             expiresAt
         });
 
+        // NOTIFICATIONS
+        await emailService.sendBankTransferReceived(req.user, payment);
+        await emailService.sendAdminNotification(payment);
+
         res.status(201).json({ success: true, payment });
     } catch (error) {
         console.error(error);
@@ -129,6 +135,10 @@ router.post('/success', authenticate, async (req, res) => {
             premiumExpiresAt: expiresAt
         });
 
+        // NOTIFICATIONS
+        await emailService.sendPaymentSuccess(req.user, payment);
+        await smsService.sendPaymentSuccess(req.user, payment);
+
         res.status(201).json({ success: true, payment });
     } catch (error) {
         res.status(500).json({ error: 'Ödeme kaydedilemedi' });
@@ -154,10 +164,14 @@ router.put('/:id/approve', authenticate, adminOnly, async (req, res) => {
         await payment.save();
 
         // Update User
-        await User.findByIdAndUpdate(payment.userId, {
+        const user = await User.findByIdAndUpdate(payment.userId, {
             isPremium: true,
             premiumExpiresAt: payment.expiresAt
         });
+
+        // NOTIFICATIONS
+        await emailService.sendBankTransferApproved(user, payment);
+        await smsService.sendBankTransferApproved(user, payment);
 
         res.json({ success: true, payment });
     } catch (error) {
@@ -178,6 +192,11 @@ router.put('/:id/reject', authenticate, adminOnly, async (req, res) => {
         payment.status = 'rejected';
         payment.adminNote = adminNote;
         await payment.save();
+
+        const user = await User.findById(payment.userId);
+
+        // NOTIFICATIONS
+        await emailService.sendBankTransferRejected(user, payment);
 
         res.json({ success: true, payment });
     } catch (error) {

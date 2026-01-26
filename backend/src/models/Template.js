@@ -40,20 +40,10 @@ const templateSchema = new mongoose.Schema({
         default: ''
     },
     config: {
-        colors: {
-            bg: String,
-            text: String,
-            accent: String,
-            secondary: String,
-            surface: String
-        },
-        styles: {
-            heroLayout: String,
-            fontFamily: String,
-            borderRadius: String,
-            cardStyle: String,
-            glassmorphism: Boolean,
-            shadows: String
+        type: mongoose.Schema.Types.Mixed,
+        default: {
+            colors: {},
+            styles: {}
         }
     }
 }, {

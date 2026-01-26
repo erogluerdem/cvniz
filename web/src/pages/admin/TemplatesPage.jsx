@@ -544,143 +544,355 @@ export default function TemplatesPage() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="space-y-8">
-                                {/* COLOR PALETTE */}
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
-                                        <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
-                                            <Palette className="w-5 h-5" />
+                            <div className="grid grid-cols-12 gap-8 h-[calc(100vh-320px)]">
+                                {/* Sidebar Navigation for Theme Sections */}
+                                <div className="col-span-3 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
+                                    {[
+                                        { id: 'colors', label: 'Renkler', icon: Palette, desc: 'Temel ve vurgu renkleri' },
+                                        { id: 'typography', label: 'Tipografi', icon: Type, desc: 'Font ve metin ayarları' },
+                                        { id: 'layout', label: 'Yerleşim', icon: Layout, desc: 'Boşluk ve düzen' },
+                                        { id: 'effects', label: 'Efektler', icon: Zap, desc: 'Gölge ve kenarlıklar' }
+                                    ].map(section => (
+                                        <button
+                                            key={section.id}
+                                            type="button"
+                                            onClick={() => setModalTab('theme_' + section.id)}
+                                            className={`w-full text-left p-4 rounded-2xl border transition-all group relative overflow-hidden ${(modalTab === 'theme' || modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
+                                                    && (modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
+                                                    ? 'bg-cyan-500/10 border-cyan-500/30'
+                                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-3 relative z-10">
+                                                <div className={`p-2.5 rounded-xl ${(modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors'))
+                                                        ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
+                                                        : 'bg-white/10 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
+                                                    }`}>
+                                                    <section.icon className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <h4 className={`text-xs font-black uppercase tracking-wider mb-0.5 ${(modalTab === 'theme_' + section.id || (modalTab === 'theme' && section.id === 'colors')) ? 'text-white' : 'text-gray-400 group-hover:text-white'
+                                                        }`}>{section.label}</h4>
+                                                    <p className="text-[10px] text-gray-500 font-medium">{section.desc}</p>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Main Editor Area */}
+                                <div className="col-span-9 bg-white/5 rounded-[2rem] border border-white/5 p-8 overflow-y-auto custom-scrollbar relative">
+                                    {/* Default to Colors if just 'theme' is selected */}
+                                    {(modalTab === 'theme' || modalTab === 'theme_colors') && (
+                                        <div className="space-y-8 animate-fade-in">
+                                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                                                <div>
+                                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Renk Yönetimi</h3>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Marka ve tema renklerini özelleştirin</p>
+                                                </div>
+                                                <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400">
+                                                    <Palette className="w-6 h-6" />
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-6">
+                                                {[
+                                                    { key: 'bg', label: 'Ana Arka Plan', desc: 'Sayfanın genel zemin rengi' },
+                                                    { key: 'surface', label: 'Kart Zemini', desc: 'İçerik kartlarının rengi' },
+                                                    { key: 'text', label: 'Ana Metin', desc: 'Başlık ve paragraf rengi' },
+                                                    { key: 'muted', label: 'İkincil Metin', desc: 'Açıklama yazı rengi' },
+                                                    { key: 'accent', label: 'Vurgu Rengi', desc: 'Buton ve link rengi' },
+                                                    { key: 'secondary', label: 'İkincil Vurgu', desc: 'Dekoratif renk' },
+                                                    { key: 'border', label: 'Kenarlıklar', desc: 'Çizgi ve sınır rengi' },
+                                                    { key: 'success', label: 'Onay/Başarı', desc: 'Pozitif durum rengi' }
+                                                ].map(color => (
+                                                    <div key={color.key} className="bg-black/20 rounded-2xl p-4 border border-white/5 hover:border-white/10 transition-all">
+                                                        <div className="flex justify-between items-start mb-3">
+                                                            <div>
+                                                                <label className="text-xs font-black text-white uppercase tracking-wider block">{color.label}</label>
+                                                                <span className="text-[10px] text-gray-500 font-medium">{color.desc}</span>
+                                                            </div>
+                                                            <div
+                                                                className="w-10 h-10 rounded-full shadow-lg border-2 border-white/10"
+                                                                style={{ backgroundColor: form.config?.colors?.[color.key] || '#cccccc' }}
+                                                            />
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <div className="relative flex-1 group">
+                                                                <input
+                                                                    type="color"
+                                                                    value={form.config?.colors?.[color.key] || '#cccccc'}
+                                                                    onChange={(e) => setForm({
+                                                                        ...form,
+                                                                        config: {
+                                                                            ...form.config,
+                                                                            colors: { ...form.config.colors, [color.key]: e.target.value }
+                                                                        }
+                                                                    })}
+                                                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                                                                />
+                                                                <div className="px-3 py-2 bg-white/5 rounded-xl border border-white/5 text-xs font-mono text-gray-300 group-hover:text-white transition-colors flex items-center gap-2">
+                                                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: form.config?.colors?.[color.key] || '#cccccc' }} />
+                                                                    Seç
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex-[2]">
+                                                                <input
+                                                                    type="text"
+                                                                    value={form.config?.colors?.[color.key] || ''}
+                                                                    onChange={(e) => setForm({
+                                                                        ...form,
+                                                                        config: {
+                                                                            ...form.config,
+                                                                            colors: { ...form.config.colors, [color.key]: e.target.value }
+                                                                        }
+                                                                    })}
+                                                                    className="w-full px-3 py-2 bg-white/5 border border-white/5 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-cyan-500/50 uppercase"
+                                                                    placeholder="#HIT"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 className="text-sm font-black text-white uppercase tracking-wider">Renk Paleti</h4>
-                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Şablonun temel renklerini belirleyin</p>
+                                    )}
+
+                                    {modalTab === 'theme_typography' && (
+                                        <div className="space-y-8 animate-fade-in">
+                                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                                                <div>
+                                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Tipografi Ayarları</h3>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Okunabilirlik ve font hiyerarşisi</p>
+                                                </div>
+                                                <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400">
+                                                    <Type className="w-6 h-6" />
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-8">
+                                                <div className="space-y-6">
+                                                    <div className="space-y-3">
+                                                        <label className="text-xs font-black text-white uppercase tracking-wider block">Yazı Tipi Ailesi</label>
+                                                        <div className="grid grid-cols-1 gap-2">
+                                                            {FONT_OPTIONS.map(font => (
+                                                                <button
+                                                                    key={font.name}
+                                                                    type="button"
+                                                                    onClick={() => setForm({
+                                                                        ...form,
+                                                                        config: {
+                                                                            ...form.config,
+                                                                            styles: { ...form.config.styles, fontFamily: font.value }
+                                                                        }
+                                                                    })}
+                                                                    className={`flex items-center justify-between px-5 py-4 rounded-xl border transition-all ${form.config?.styles?.fontFamily === font.value
+                                                                            ? 'bg-cyan-500/10 border-cyan-500/50 text-white'
+                                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                                                                        }`}
+                                                                >
+                                                                    <span className="text-sm font-bold" style={{ fontFamily: font.value }}>{font.name}</span>
+                                                                    {form.config?.styles?.fontFamily === font.value && <CheckCircle2 className="w-4 h-4 text-cyan-400" />}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-6">
+                                                    <div className="space-y-4">
+                                                        <label className="text-xs font-black text-white uppercase tracking-wider block">Ölçeklendirme</label>
+
+                                                        {[
+                                                            { key: 'baseSize', label: 'Temel Font Boyutu', min: 12, max: 18, suffix: 'px' },
+                                                            { key: 'headingScale', label: 'Başlık Ölçeği', min: 1, max: 2, step: 0.1, suffix: 'x' },
+                                                            { key: 'lineHeight', label: 'Satır Yüksekliği', min: 1, max: 2, step: 0.1, suffix: '' }
+                                                        ].map(item => (
+                                                            <div key={item.key} className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                                                                <div className="flex justify-between mb-2">
+                                                                    <span className="text-xs text-gray-400 font-bold uppercase">{item.label}</span>
+                                                                    <span className="text-xs text-cyan-400 font-mono">
+                                                                        {form.config?.styles?.[item.key] || item.min}{item.suffix}
+                                                                    </span>
+                                                                </div>
+                                                                <input
+                                                                    type="range"
+                                                                    min={item.min}
+                                                                    max={item.max}
+                                                                    step={item.step || 1}
+                                                                    value={parseFloat(form.config?.styles?.[item.key]) || item.min}
+                                                                    onChange={(e) => setForm({
+                                                                        ...form,
+                                                                        config: {
+                                                                            ...form.config,
+                                                                            styles: { ...form.config.styles, [item.key]: e.target.value }
+                                                                        }
+                                                                    })}
+                                                                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                        {[
-                                            { key: 'bg', label: 'Arka Plan' },
-                                            { key: 'text', label: 'Yazı Rengi' },
-                                            { key: 'accent', label: 'Vurgu Rengi' },
-                                            { key: 'secondary', label: 'İkincil Renk' }
-                                        ].map(color => (
-                                            <div key={color.key} className="space-y-3">
-                                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">{color.label}</label>
-                                                <div className="group relative">
-                                                    <div className="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
-                                                        <div
-                                                            className="w-10 h-10 rounded-lg border border-white/10 shadow-lg cursor-pointer transition-transform group-hover:scale-105"
-                                                            style={{ backgroundColor: form.config?.colors?.[color.key] || '#cccccc' }}
-                                                        >
+                                    )}
+
+                                    {modalTab === 'theme_layout' && (
+                                        <div className="space-y-8 animate-fade-in">
+                                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                                                <div>
+                                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Yerleşim ve Düzen</h3>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Yapısal özellikler ve boşluklar</p>
+                                                </div>
+                                                <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+                                                    <Layout className="w-6 h-6" />
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-8">
+                                                <div className="space-y-6">
+                                                    <div className="space-y-3">
+                                                        <label className="text-xs font-black text-white uppercase tracking-wider block">Hero Bölümü</label>
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                            {HERO_LAYOUTS.map(layout => (
+                                                                <button
+                                                                    key={layout}
+                                                                    type="button"
+                                                                    onClick={() => setForm({
+                                                                        ...form,
+                                                                        config: {
+                                                                            ...form.config,
+                                                                            styles: { ...form.config.styles, heroLayout: layout }
+                                                                        }
+                                                                    })}
+                                                                    className={`p-4 rounded-xl border text-center transition-all ${form.config?.styles?.heroLayout === layout
+                                                                            ? 'bg-emerald-500/10 border-emerald-500/50 text-white'
+                                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                                                                        }`}
+                                                                >
+                                                                    <div className="mb-2">
+                                                                        {/* Simple Icon Representation could go here */}
+                                                                        <div className="w-full h-12 rounded bg-current opacity-20 mx-auto" />
+                                                                    </div>
+                                                                    <span className="text-[10px] font-black uppercase tracking-widest">{layout}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-6">
+                                                    <div className="space-y-4">
+                                                        <label className="text-xs font-black text-white uppercase tracking-wider block">Kart Yapısı</label>
+                                                        <div className="grid grid-cols-1 gap-3">
+                                                            {CARD_STYLES.map(style => (
+                                                                <button
+                                                                    key={style}
+                                                                    type="button"
+                                                                    onClick={() => setForm({
+                                                                        ...form,
+                                                                        config: {
+                                                                            ...form.config,
+                                                                            styles: { ...form.config.styles, cardStyle: style }
+                                                                        }
+                                                                    })}
+                                                                    className={`flex items-center gap-4 p-3 rounded-xl border transition-all ${form.config?.styles?.cardStyle === style
+                                                                            ? 'bg-emerald-500/10 border-emerald-500/50 text-white'
+                                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                                                                        }`}
+                                                                >
+                                                                    <div className={`w-4 h-4 rounded-full border ${form.config?.styles?.cardStyle === style ? 'border-emerald-500 bg-emerald-500' : 'border-gray-600'}`} />
+                                                                    <span className="text-xs font-bold uppercase">{style}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {modalTab === 'theme_effects' && (
+                                        <div className="space-y-8 animate-fade-in">
+                                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                                                <div>
+                                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Görsel Efektler</h3>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Radius, gölgeler ve detaylar</p>
+                                                </div>
+                                                <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+                                                    <Zap className="w-6 h-6" />
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-8">
+                                                <div className="space-y-6">
+                                                    {[
+                                                        { key: 'borderRadius', label: 'Köşe Yuvarlama', min: 0, max: 32, suffix: 'px' },
+                                                        { key: 'borderWidth', label: 'Kenarlık Kalınlığı', min: 0, max: 4, suffix: 'px' },
+                                                        { key: 'blur', label: 'Blur Efekti', min: 0, max: 20, suffix: 'px' }
+                                                    ].map(item => (
+                                                        <div key={item.key} className="bg-black/20 p-5 rounded-2xl border border-white/5">
+                                                            <div className="flex justify-between mb-3">
+                                                                <span className="text-xs text-gray-400 font-bold uppercase">{item.label}</span>
+                                                                <span className="text-xs text-amber-400 font-mono">
+                                                                    {form.config?.styles?.[item.key] || item.min}{item.suffix}
+                                                                </span>
+                                                            </div>
                                                             <input
-                                                                type="color"
-                                                                value={form.config?.colors?.[color.key] || '#cccccc'}
+                                                                type="range"
+                                                                min={item.min}
+                                                                max={item.max}
+                                                                value={parseInt(form.config?.styles?.[item.key]) || item.min}
                                                                 onChange={(e) => setForm({
                                                                     ...form,
                                                                     config: {
                                                                         ...form.config,
-                                                                        colors: { ...form.config.colors, [color.key]: e.target.value }
+                                                                        styles: { ...form.config.styles, [item.key]: e.target.value }
                                                                     }
                                                                 })}
-                                                                className="opacity-0 w-full h-full cursor-pointer"
+                                                                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
                                                             />
                                                         </div>
-                                                        <input
-                                                            type="text"
-                                                            value={form.config?.colors?.[color.key] || ''}
-                                                            onChange={(e) => setForm({
+                                                    ))}
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <label className="text-xs font-black text-white uppercase tracking-wider block">Özel Seçenekler</label>
+                                                    {[
+                                                        { key: 'glassmorphism', label: 'Glassmorphism Aktif', desc: 'Bulanık arka plan efekti' },
+                                                        { key: 'gradientBg', label: 'Gradyan Arka Plan', desc: 'Düz renk yerine geçişli zemin' },
+                                                        { key: 'animate', label: 'Animasyonlar', desc: 'Giriş ve hover efektleri' }
+                                                    ].map(opt => (
+                                                        <div
+                                                            key={opt.key}
+                                                            onClick={() => setForm({
                                                                 ...form,
                                                                 config: {
                                                                     ...form.config,
-                                                                    colors: { ...form.config.colors, [color.key]: e.target.value }
+                                                                    styles: { ...form.config.styles, [opt.key]: !form.config?.styles?.[opt.key] }
                                                                 }
                                                             })}
-                                                            className="flex-1 bg-transparent border-none text-xs font-mono text-white focus:outline-none uppercase"
-                                                        />
-                                                    </div>
+                                                            className={`flex items-start gap-4 p-4 rounded-2xl border cursor-pointer transition-all ${form.config?.styles?.[opt.key]
+                                                                    ? 'bg-amber-500/10 border-amber-500/50'
+                                                                    : 'bg-white/5 border-white/5 hover:border-white/10'
+                                                                }`}
+                                                        >
+                                                            <div className={`mt-1 w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${form.config?.styles?.[opt.key] ? 'bg-amber-500 border-amber-500' : 'border-gray-600'
+                                                                }`}>
+                                                                {form.config?.styles?.[opt.key] && <Check className="w-3 h-3 text-white" />}
+                                                            </div>
+                                                            <div>
+                                                                <h5 className={`text-xs font-black uppercase ${form.config?.styles?.[opt.key] ? 'text-white' : 'text-gray-400'
+                                                                    }`}>{opt.label}</h5>
+                                                                <p className="text-[10px] text-gray-500 mt-0.5">{opt.desc}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* TYPOGRAPHY */}
-                                <div className="space-y-4 pt-6">
-                                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
-                                        <div className="p-2 rounded-lg bg-cyan-500/20 text-cyan-400">
-                                            <Type className="w-5 h-5" />
                                         </div>
-                                        <div>
-                                            <h4 className="text-sm font-black text-white uppercase tracking-wider">Tipografi</h4>
-                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Karakter stili ve font ailesi</p>
-                                        </div>
-                                    </div>
-                                    <div className="max-w-md">
-                                        <select
-                                            value={form.config?.styles?.fontFamily || ''}
-                                            onChange={(e) => setForm({
-                                                ...form,
-                                                config: {
-                                                    ...form.config,
-                                                    styles: { ...form.config.styles, fontFamily: e.target.value }
-                                                }
-                                            })}
-                                            className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold text-xs appearance-none focus:border-cyan-500/50 focus:outline-none transition-all cursor-pointer"
-                                        >
-                                            <option value="">Font Seçin</option>
-                                            {FONT_OPTIONS.map(font => (
-                                                <option key={font.name} value={font.value} style={{ fontFamily: font.value }}>{font.name.toUpperCase()}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                {/* LAYOUT & UI */}
-                                <div className="space-y-4 pt-6">
-                                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
-                                        <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
-                                            <Layout className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-sm font-black text-white uppercase tracking-wider">Yerleşim ve Stil</h4>
-                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Tasarımın yapısal özellikleri</p>
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Hero Düzeni</label>
-                                            <select
-                                                value={form.config?.styles?.heroLayout || ''}
-                                                onChange={(e) => setForm({
-                                                    ...form,
-                                                    config: {
-                                                        ...form.config,
-                                                        styles: { ...form.config.styles, heroLayout: e.target.value }
-                                                    }
-                                                })}
-                                                className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold text-white uppercase outline-none focus:border-emerald-500/30 cursor-pointer"
-                                            >
-                                                <option value="">Düzen Seçin</option>
-                                                {HERO_LAYOUTS.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}
-                                            </select>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Kart Stili</label>
-                                            <select
-                                                value={form.config?.styles?.cardStyle || ''}
-                                                onChange={(e) => setForm({
-                                                    ...form,
-                                                    config: {
-                                                        ...form.config,
-                                                        styles: { ...form.config.styles, cardStyle: e.target.value }
-                                                    }
-                                                })}
-                                                className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold text-white uppercase outline-none focus:border-emerald-500/30 cursor-pointer"
-                                            >
-                                                <option value="">Stil Seçin</option>
-                                                {CARD_STYLES.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         )}

@@ -299,6 +299,33 @@ function AppRoutes() {
 }
 
 export default function App() {
+    const [theme, setTheme] = useState('day')
+    const isDayMode = theme === 'day'
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        const storedTheme = window.localStorage.getItem('CVniz-home-theme')
+        if (storedTheme === 'day' || storedTheme === 'night') {
+            setTheme(storedTheme)
+        }
+
+        const handleThemeChange = (event) => {
+            const nextTheme = event.detail
+            if (nextTheme === 'day' || nextTheme === 'night') {
+                setTheme(nextTheme)
+            }
+        }
+        window.addEventListener('CVniz-theme-change', handleThemeChange)
+        return () => window.removeEventListener('CVniz-theme-change', handleThemeChange)
+    }, [])
+
+    useEffect(() => {
+        if (typeof document === 'undefined') return
+        const root = document.documentElement
+        root.classList.toggle('theme-day', isDayMode)
+        root.classList.toggle('theme-night', !isDayMode)
+    }, [isDayMode])
+
     // DevTools Warning
     if (typeof window !== 'undefined') {
         const devToolsWarning = () => {
@@ -340,71 +367,74 @@ export default function App() {
                                                                 <SubscriptionProvider>
                                                                     <GiftCardProvider>
                                                                         <AffiliateProvider>
-                                                                <CampaignProvider>
-                                                                    <ABTestProvider>
-                                                                        <SupportProvider>
-                                                                            <AdminNotificationProvider>
-                                                                                <SiteContentProvider>
-                                                                                    <InterviewProvider>
-                                                                                        <SalaryProvider>
-                                                                                            <CareerPathProvider>
-                                                                                                <SkillsGapProvider>
-                                                                                                    <PortfolioProvider>
-                                                                                                        <MarketingAutomationProvider>
-                                                                                                            <PersistenceProvider>
-                                                                                                                <ToastProvider>
-                                                                                                                    <ScrollToTop />
-                                                                                                                    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-                                                                                                                        {/* Floating Orbs */}
-                                                                                                                        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                                                                                                                            <div className="orb w-96 h-96 bg-cyan-500/20 top-20 -left-48 animate-float"></div>
-                                                                                                                            <div className="orb w-80 h-80 bg-slate-200/10 bottom-20 -right-40 animate-float-delayed"></div>
-                                                                                                                            <div className="orb w-64 h-64 bg-cyan-400/10 top-1/2 left-1/3 animate-float"></div>
-                                                                                                                        </div>
+                                                                            <CampaignProvider>
+                                                                                <ABTestProvider>
+                                                                                    <SupportProvider>
+                                                                                        <AdminNotificationProvider>
+                                                                                            <SiteContentProvider>
+                                                                                                <InterviewProvider>
+                                                                                                    <SalaryProvider>
+                                                                                                        <CareerPathProvider>
+                                                                                                            <SkillsGapProvider>
+                                                                                                                <PortfolioProvider>
+                                                                                                                    <MarketingAutomationProvider>
+                                                                                                                        <PersistenceProvider>
+                                                                                                                            <ToastProvider>
+                                                                                                                                <ScrollToTop />
+                                                                                                                                <div className={`min-h-screen transition-colors duration-500 ${isDayMode
+                                                                                                                                    ? 'bg-gradient-to-br from-white via-sky-50 to-amber-50 text-slate-900'
+                                                                                                                                    : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white'
+                                                                                                                                    }`}>
+                                                                                                                                    {/* Floating Orbs */}
+                                                                                                                                    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                                                                                                                                        <div className={`orb w-96 h-96 top-20 -left-48 animate-float ${isDayMode ? 'bg-sky-400/20' : 'bg-cyan-500/20'}`}></div>
+                                                                                                                                        <div className={`orb w-80 h-80 bottom-20 -right-40 animate-float-delayed ${isDayMode ? 'bg-amber-400/10' : 'bg-slate-200/10'}`}></div>
+                                                                                                                                        <div className={`orb w-64 h-64 top-1/2 left-1/3 animate-float ${isDayMode ? 'bg-sky-300/10' : 'bg-cyan-400/10'}`}></div>
+                                                                                                                                    </div>
 
-                                                                                                                        {/* Main Content */}
-                                                                                                                        <div className="relative z-10">
-                                                                                                                            <AppRoutes />
-                                                                                                                        </div>
+                                                                                                                                    {/* Main Content */}
+                                                                                                                                    <div className="relative z-10">
+                                                                                                                                        <AppRoutes />
+                                                                                                                                    </div>
 
-                                                                                                                        {/* Sales Prompts */}
-                                                                                                                        <ExitIntentPopup />
-                                                                                                                        <StickyBottomCTA />
+                                                                                                                                    {/* Sales Prompts */}
+                                                                                                                                    <ExitIntentPopup />
+                                                                                                                                    <StickyBottomCTA />
 
-                                                                                                                        {/* Campaign Popups */}
-                                                                                                                        <WelcomePopup />
-                                                                                                                        <AbandonedCartModal />
-                                                                                                                        <MarketingPopup />
-                                                                                                                    </div>
-                                                                                                                </ToastProvider>
-                                                                                                            </PersistenceProvider>
-                                                                                                        </MarketingAutomationProvider>
-                                                                                                    </PortfolioProvider>
-                                                                                                </SkillsGapProvider>
-                                                                                            </CareerPathProvider>
-                                                                                        </SalaryProvider>
-                                                                                    </InterviewProvider>
-                                                                                </SiteContentProvider>
-                                                                            </AdminNotificationProvider>
-                                                                        </SupportProvider>
-                                                                    </ABTestProvider>
-                                                                </CampaignProvider>
-                                                        </AffiliateProvider>
-                                                    </GiftCardProvider>
-                                                </SubscriptionProvider>
-                                            </PaymentProvider>
-                                        </WhiteLabelProvider>
-                                    </JobBoardProvider>
-                                </ReviewProvider>
-                            </EnterpriseProvider>
-                        </HeatmapProvider>
-                    </AnalyticsProvider>
-                </TranslationProvider>
-            </CoverLetterProvider>
-        </CVProvider>
-    </ReferralProvider>
-</NotificationProvider>
-</AuthProvider>
+                                                                                                                                    {/* Campaign Popups */}
+                                                                                                                                    <WelcomePopup />
+                                                                                                                                    <AbandonedCartModal />
+                                                                                                                                    <MarketingPopup />
+                                                                                                                                </div>
+                                                                                                                            </ToastProvider>
+                                                                                                                        </PersistenceProvider>
+                                                                                                                    </MarketingAutomationProvider>
+                                                                                                                </PortfolioProvider>
+                                                                                                            </SkillsGapProvider>
+                                                                                                        </CareerPathProvider>
+                                                                                                    </SalaryProvider>
+                                                                                                </InterviewProvider>
+                                                                                            </SiteContentProvider>
+                                                                                        </AdminNotificationProvider>
+                                                                                    </SupportProvider>
+                                                                                </ABTestProvider>
+                                                                            </CampaignProvider>
+                                                                        </AffiliateProvider>
+                                                                    </GiftCardProvider>
+                                                                </SubscriptionProvider>
+                                                            </PaymentProvider>
+                                                        </WhiteLabelProvider>
+                                                    </JobBoardProvider>
+                                                </ReviewProvider>
+                                            </EnterpriseProvider>
+                                        </HeatmapProvider>
+                                    </AnalyticsProvider>
+                                </TranslationProvider>
+                            </CoverLetterProvider>
+                        </CVProvider>
+                    </ReferralProvider>
+                </NotificationProvider>
+            </AuthProvider>
         </BrowserRouter >
     )
 }

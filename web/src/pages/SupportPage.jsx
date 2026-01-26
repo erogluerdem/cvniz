@@ -61,7 +61,7 @@ export default function SupportPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [newMessage, setNewMessage] = useState('')
     const messageEndRef = useRef(null)
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
     const selectionColor = isDayMode ? 'selection:bg-sky-200/70' : 'selection:bg-cyan-500/30'
 

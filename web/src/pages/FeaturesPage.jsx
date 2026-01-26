@@ -91,7 +91,7 @@ const features = [
 ]
 
 export default function FeaturesPage() {
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
 
     useEffect(() => {

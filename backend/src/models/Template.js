@@ -12,7 +12,7 @@ const templateSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['popular', 'professional', 'tech', 'creative', 'modern', 'premium'],
+        enum: ['popular', 'professional', 'tech', 'creative', 'modern', 'premium', 'web', 'Genel', 'Kurumsal', 'Yaratıcı', 'Teknoloji', 'Sektörel', 'Bireysel', 'Bilim', 'Eğitim', 'Spor', 'Online Portfolio'],
         default: 'professional'
     },
     isPremium: {

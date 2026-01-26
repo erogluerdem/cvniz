@@ -12,7 +12,7 @@ export default function Layout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const userMenuRef = useRef(null)
     const isDayMode = theme === 'day'
 

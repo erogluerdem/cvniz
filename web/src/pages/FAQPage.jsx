@@ -82,7 +82,7 @@ export default function FAQPage() {
     const [activeCategory, setActiveCategory] = useState('Genel')
     const [searchQuery, setSearchQuery] = useState('')
     const [openIndex, setOpenIndex] = useState(0)
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
 
     useEffect(() => {

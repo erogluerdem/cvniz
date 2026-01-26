@@ -101,7 +101,7 @@ export default function EditorPage() {
     const [showUpsellModal, setShowUpsellModal] = useState(false)
     const [upsellTriggerType, setUpsellTriggerType] = useState('download')
     const scrollRef = useRef(null)
-    const [uiTheme, setUiTheme] = useState('night')
+    const [uiTheme, setUiTheme] = useState('day')
 
     // Mobile-specific states
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

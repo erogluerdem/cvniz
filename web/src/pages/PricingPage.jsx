@@ -90,7 +90,7 @@ export default function PricingPage() {
     const { isPremium } = useAuth()
     const navigate = useNavigate()
     const [isYearly, setIsYearly] = useState(true)
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
 
     useEffect(() => {

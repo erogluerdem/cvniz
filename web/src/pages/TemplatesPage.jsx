@@ -143,7 +143,7 @@ export default function TemplatesPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [scrolled, setScrolled] = useState(false)
     const [backendTemplates, setBackendTemplates] = useState([])
-    const [theme, setTheme] = useState('night')
+    const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
 
     useEffect(() => {
@@ -324,7 +324,7 @@ export default function TemplatesPage() {
                                             </div>
 
                                             {/* Overlay Actions */}
-                                            <div className={`absolute inset-0 ${overlayBackground} opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6 gap-4`}> 
+                                            <div className={`absolute inset-0 ${overlayBackground} opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6 gap-4`}>
                                                 <Link
                                                     to={`/editor?template=${template.id}`}
                                                     className="w-full btn-premium py-4 text-center rounded-2xl font-black text-sm tracking-widest shadow-2xl translate-y-4 group-hover:translate-y-0 transition-all duration-500"

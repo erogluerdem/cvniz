@@ -37,8 +37,13 @@ const paymentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'completed', 'failed', 'refunded'],
+        enum: ['pending', 'completed', 'failed', 'refunded', 'waiting_approval', 'rejected'],
         default: 'pending'
+    },
+    provider: {
+        type: String,
+        enum: ['iyzico', 'paytr', 'bank_transfer', 'stripe', 'card'],
+        default: 'card'
     },
     paymentMethod: {
         type: String,
@@ -50,6 +55,21 @@ const paymentSchema = new mongoose.Schema({
     transactionId: {
         type: String,
         unique: true
+    },
+    conversationId: {
+        type: String
+    },
+    proofDocument: {
+        type: String, // URL for bank transfer receipt
+        default: null
+    },
+    senderName: {
+        type: String, // Name on the bank account
+        default: null
+    },
+    adminNote: {
+        type: String,
+        default: null
     },
     couponCode: {
         type: String,

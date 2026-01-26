@@ -227,6 +227,19 @@ export const paymentAPI = {
 
     process: (data) =>
         api.post('/payments', data),
+
+    init: (data) =>
+        api.post('/payments/init', data),
+
+    bankTransfer: (data) =>
+        api.post('/payments/bank-transfer', data),
+
+    // Admin
+    approve: (id) =>
+        api.put(`/payments/${id}/approve`),
+
+    reject: (id, adminNote) =>
+        api.put(`/payments/${id}/reject`, { adminNote }),
 };
 
 // ============ ADMIN API ============

@@ -5,8 +5,10 @@ import { usePayment, PLANS } from '../context/PaymentContext'
 import { CountdownTimer } from '../components/SalesPrompts'
 import {
     CreditCard, Check, Shield, Lock, ArrowLeft, Tag, X, Loader2,
-    Calendar, Infinity, Clock, Sparkles, Crown, CheckCircle, AlertCircle
+    Calendar, Infinity, Clock, Sparkles, Crown, CheckCircle, AlertCircle,
+    Landmark, Copy, Upload, ArrowRight
 } from 'lucide-react'
+import { mediaAPI, paymentAPI } from '../services/api'
 
 export default function CheckoutPage() {
     const navigate = useNavigate()
@@ -30,6 +32,69 @@ export default function CheckoutPage() {
     const [errors, setErrors] = useState({})
     const [paymentSuccess, setPaymentSuccess] = useState(false)
     const [paymentResult, setPaymentResult] = useState(null)
+
+    // Payment Logic
+    const [paymentMethod, setPaymentMethod] = useState('card') // 'card' or 'bank'
+    const [bankForm, setBankForm] = useState({ senderName: '', file: null })
+
+    const [localProcessing, setLocalProcessing] = useState(false)
+
+    const handleFileSelect = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                setErrors(prev => ({ ...prev, bank: 'Dosya boyutu 5MB\'dan küçük olmalı' }))
+                return
+            }
+            setBankForm({ ...bankForm, file })
+            setErrors(prev => ({ ...prev, bank: '' }))
+        }
+    }
+
+    const handleBankSubmit = async () => {
+        if (!bankForm.senderName || bankForm.senderName.length < 3) {
+            setErrors({ bank: 'Lütfen gönderen adını tam girin' })
+            return
+        }
+        if (!bankForm.file) {
+            setErrors({ bank: 'Lütfen dekont yükleyin' })
+            return
+        }
+
+        setLocalProcessing(true)
+
+        try {
+            // 1. Upload Receipt
+            const formData = new FormData()
+            formData.append('file', bankForm.file)
+            const uploadRes = await mediaAPI.upload(formData)
+
+            if (!uploadRes.success) throw new Error('Dosya yüklenemedi')
+            const proofUrl = uploadRes.data.url
+
+            // 2. Create Payment Notification
+            const paymentRes = await paymentAPI.bankTransfer({
+                planId: selectedPlan.id,
+                planName: selectedPlan.name,
+                billingCycle,
+                amount: finalPrice,
+                senderName: bankForm.senderName,
+                proofDocument: proofUrl
+            })
+
+            if (paymentRes.success) {
+                setPaymentSuccess(true)
+                setPaymentResult(paymentRes.payment)
+            } else {
+                setErrors({ bank: paymentRes.error || 'Bildirim oluşturulamadı' })
+            }
+        } catch (error) {
+            console.error(error)
+            setErrors({ bank: error.response?.data?.error || error.message || 'Bir hata oluştu' })
+        } finally {
+            setLocalProcessing(false)
+        }
+    }
 
     // Countdown timer - expires in 24 hours from session start
     const [offerEndTime] = useState(() => {
@@ -266,101 +331,183 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
-                        {/* Card Form */}
-                        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-6">
+                        {/* Payment Method Selection */}
+                        <div className="glass-card rounded-2xl p-6">
                             <h2 className="font-bold mb-4 flex items-center gap-2">
                                 <CreditCard className="w-5 h-5 text-cyan-400" />
-                                Kart Bilgileri
+                                Ödeme Yöntemi
                             </h2>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm text-gray-400 mb-2">Kart Numarası</label>
-                                    <input
-                                        type="text"
-                                        value={cardData.cardNumber}
-                                        onChange={(e) => handleCardChange('cardNumber', e.target.value)}
-                                        placeholder="1234 5678 9012 3456"
-                                        maxLength={19}
-                                        className={`w-full bg-white/5 border rounded-xl px-4 py-3 focus:outline-none transition-colors ${errors.cardNumber ? 'border-red-500' : 'border-white/10 focus:border-cyan-500/50'
-                                            }`}
-                                    />
-                                    {errors.cardNumber && <p className="text-red-400 text-xs mt-1">{errors.cardNumber}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm text-gray-400 mb-2">Kart Üzerindeki İsim</label>
-                                    <input
-                                        type="text"
-                                        value={cardData.cardName}
-                                        onChange={(e) => handleCardChange('cardName', e.target.value.toUpperCase())}
-                                        placeholder="AD SOYAD"
-                                        className={`w-full bg-white/5 border rounded-xl px-4 py-3 focus:outline-none transition-colors ${errors.cardName ? 'border-red-500' : 'border-white/10 focus:border-cyan-500/50'
-                                            }`}
-                                    />
-                                    {errors.cardName && <p className="text-red-400 text-xs mt-1">{errors.cardName}</p>}
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm text-gray-400 mb-2">Son Kullanma</label>
-                                        <input
-                                            type="text"
-                                            value={cardData.expiry}
-                                            onChange={(e) => handleCardChange('expiry', e.target.value)}
-                                            placeholder="AA/YY"
-                                            maxLength={5}
-                                            className={`w-full bg-white/5 border rounded-xl px-4 py-3 focus:outline-none transition-colors ${errors.expiry ? 'border-red-500' : 'border-white/10 focus:border-cyan-500/50'
-                                                }`}
-                                        />
-                                        {errors.expiry && <p className="text-red-400 text-xs mt-1">{errors.expiry}</p>}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm text-gray-400 mb-2">CVV</label>
-                                        <input
-                                            type="text"
-                                            value={cardData.cvv}
-                                            onChange={(e) => handleCardChange('cvv', e.target.value)}
-                                            placeholder="123"
-                                            maxLength={4}
-                                            className={`w-full bg-white/5 border rounded-xl px-4 py-3 focus:outline-none transition-colors ${errors.cvv ? 'border-red-500' : 'border-white/10 focus:border-cyan-500/50'
-                                                }`}
-                                        />
-                                        {errors.cvv && <p className="text-red-400 text-xs mt-1">{errors.cvv}</p>}
-                                    </div>
-                                </div>
+                            <div className="flex p-1 bg-white/5 rounded-xl mb-6">
+                                <button
+                                    onClick={() => setPaymentMethod('card')}
+                                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all ${paymentMethod === 'card'
+                                        ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
+                                        : 'text-gray-400 hover:text-white'
+                                        }`}
+                                >
+                                    <CreditCard className="w-4 h-4" />
+                                    Kredi / Banka Kartı
+                                </button>
+                                <button
+                                    onClick={() => setPaymentMethod('bank')}
+                                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all ${paymentMethod === 'bank'
+                                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20'
+                                        : 'text-gray-400 hover:text-white'
+                                        }`}
+                                >
+                                    <Landmark className="w-4 h-4" />
+                                    Havale / EFT
+                                </button>
                             </div>
 
-                            {errors.submit && (
-                                <div className="mt-4 p-3 rounded-xl bg-red-500/20 text-red-400 text-sm flex items-center gap-2">
-                                    <AlertCircle className="w-4 h-4" />
-                                    {errors.submit}
+                            {paymentMethod === 'card' ? (
+                                <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in">
+                                    <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-200 text-sm mb-4 flex items-start gap-3">
+                                        <Shield className="w-5 h-5 shrink-0" />
+                                        <p>Ödemeniz <strong>Iyzico / PayTR</strong> güvencesiyle 256-bit SSL şifreleme ile işlenecektir. Kart bilgileriniz sistemimizde saklanmaz.</p>
+                                    </div>
+
+                                    {/* Card input simulation (or redirect info) */}
+                                    <div className="text-center py-8">
+                                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <CreditCard className="w-8 h-8 text-gray-400" />
+                                        </div>
+                                        <p className="text-gray-300 text-sm mb-6 max-w-xs mx-auto">
+                                            "Öde" butonuna tıkladığınızda güvenli ödeme sayfasına yönlendirileceksiniz.
+                                        </p>
+
+                                        {/* Mock Simulation Buttons for Development */}
+                                        <div className="text-xs text-gray-500 mb-4 bg-black/20 p-2 rounded">
+                                            (Geliştirici Notu: Gerçek entegrasyonda burası Iyzico formunu açar)
+                                        </div>
+                                    </div>
+
+                                    {errors.submit && (
+                                        <div className="p-3 rounded-xl bg-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            {errors.submit}
+                                        </div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={isProcessing}
+                                        className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-lg flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-purple-500 transition-all disabled:opacity-50 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95"
+                                    >
+                                        {isProcessing ? (
+                                            <>
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                Yönlendiriliyor...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Lock className="w-5 h-5" />
+                                                {finalPrice}₺ Güvenli Öde
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            ) : (
+                                <div className="space-y-6 animate-fade-in">
+                                    {/* Bank Accounts */}
+                                    <div className="space-y-4">
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                                                    <span className="font-bold text-lg">GB</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold">Garanti Bankası</h4>
+                                                    <p className="text-xs text-gray-400">CVniz Teknoloji A.Ş.</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between bg-black/20 p-3 rounded-lg mb-2">
+                                                <code className="text-sm font-mono text-cyan-400">TR12 0006 2000 0001 2345 6789 01</code>
+                                                <button onClick={() => navigator.clipboard.writeText('TR12 0006 2000 0001 2345 6789 01')} className="text-gray-500 hover:text-white p-1">
+                                                    <Copy className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                            <p className="text-[10px] text-gray-500 text-center">
+                                                Açıklama kısmına <strong>{user?.email}</strong> yazmayı unutmayın.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Upload Form */}
+                                    <div className="border-t border-white/10 pt-6">
+                                        <h3 className="font-bold mb-4 flex items-center gap-2">
+                                            <Upload className="w-4 h-4 text-purple-400" />
+                                            Ödeme Bildirimi
+                                        </h3>
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block text-sm text-gray-400 mb-2">Gönderen Ad Soyad</label>
+                                                <input
+                                                    type="text"
+                                                    value={bankForm.senderName}
+                                                    onChange={(e) => setBankForm({ ...bankForm, senderName: e.target.value })}
+                                                    placeholder="Örn: Ahmet Yılmaz"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500/50 transition-colors"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm text-gray-400 mb-2">Dekont Yükle</label>
+                                                <div className="relative group cursor-pointer">
+                                                    <input
+                                                        type="file"
+                                                        onChange={handleFileSelect}
+                                                        accept="image/*,.pdf"
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                    />
+                                                    <div className={`border-2 border-dashed rounded-xl p-6 text-center transition-all ${bankForm.file
+                                                        ? 'border-green-500/50 bg-green-500/10'
+                                                        : 'border-white/10 bg-white/5 group-hover:border-white/20 group-hover:bg-white/10'
+                                                        }`}>
+                                                        {bankForm.file ? (
+                                                            <div className="flex items-center justify-center gap-2 text-green-400">
+                                                                <CheckCircle className="w-5 h-5" />
+                                                                <span className="font-medium text-sm truncate max-w-[200px]">{bankForm.file.name}</span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-gray-400">
+                                                                <Upload className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                                                                <p className="text-sm">Dosya seçmek için tıklayın</p>
+                                                                <p className="text-[10px] mt-1 opacity-50">JPG, PNG veya PDF</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {errors.bank && (
+                                                <div className="text-xs text-red-400 flex items-center gap-1">
+                                                    <AlertCircle className="w-3 h-3" /> {errors.bank}
+                                                </div>
+                                            )}
+
+                                            <button
+                                                type="button"
+                                                onClick={handleBankSubmit}
+                                                disabled={isProcessing || localProcessing}
+                                                className="w-full py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                                            >
+                                                {isProcessing || localProcessing ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        Bildirimi Gönder
+                                                        <ArrowRight className="w-5 h-5" />
+                                                    </>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
-
-                            <button
-                                type="submit"
-                                disabled={isProcessing}
-                                className="mt-6 w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-lg flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-purple-500 transition-all disabled:opacity-50"
-                            >
-                                {isProcessing ? (
-                                    <>
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                        İşleniyor...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Lock className="w-5 h-5" />
-                                        {finalPrice}₺ Öde
-                                    </>
-                                )}
-                            </button>
-
-                            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
-                                <Shield className="w-4 h-4" />
-                                256-bit SSL ile güvenli ödeme
-                            </div>
-                        </form>
+                        </div>
                     </div>
 
                     {/* Right Column - Summary */}

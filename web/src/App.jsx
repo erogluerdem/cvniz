@@ -227,7 +227,6 @@ function AppRoutes() {
                     <Route path="users" element={<AdminUsersPage />} />
                     <Route path="cvs" element={<AdminCVsPage />} />
                     <Route path="payments" element={<AdminPaymentsPage />} />
-                    <Route path="templates" element={<AdminTemplatesPage />} />
                     <Route path="settings" element={<AdminSettingsPage />} />
                     <Route path="analytics" element={<AdminAnalyticsPage />} />
                     <Route path="live-stats" element={<AdminLiveStatsPage />} />

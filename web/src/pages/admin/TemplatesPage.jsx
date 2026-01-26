@@ -200,6 +200,7 @@ const HERO_LAYOUTS = ['centered', 'left-aligned', 'split', 'editorial', 'traditi
 const CARD_STYLES = ['flat', 'bordered', 'elevated', 'glass', 'brutal', 'neon']
 
 const getColor = (id) => {
+    if (!id) return 'hsl(0, 50%, 50%)'
     let h = 0; for (let c of id) h = c.charCodeAt(0) + ((h << 5) - h)
     return `hsl(${h % 360}, 60%, 50%)`
 }
@@ -451,15 +452,26 @@ export default function TemplatesPage() {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        setSelected(t);
-                                        // Ensure config exists and has sub-objects
-                                        const safeConfig = {
-                                            colors: { ...(t.config?.colors || {}) },
-                                            styles: { ...(t.config?.styles || {}) }
-                                        };
-                                        setForm({ ...t, config: safeConfig });
-                                        setModalTab('general');
-                                        setShowModal('edit');
+                                        // Create a clean, safe copy of the template data
+                                        const safeForm = {
+                                            _id: t._id,
+                                            templateId: t.templateId || '',
+                                            name: t.name || '',
+                                            category: t.category || 'professional',
+                                            isPremium: !!t.isPremium,
+                                            thumbnail: t.thumbnail || t.preview || '',
+                                            description: t.description || '',
+                                            isActive: !!t.isActive,
+                                            usageCount: t.usageCount || 0,
+                                            config: {
+                                                colors: { ...(t.config?.colors || {}) },
+                                                styles: { ...(t.config?.styles || {}) }
+                                            }
+                                        }
+                                        setSelected(t)
+                                        setForm(safeForm)
+                                        setModalTab('general')
+                                        setShowModal('edit')
                                     }}
                                     className="w-full py-2.5 rounded-xl bg-white/10 text-white font-black text-[10px] tracking-widest uppercase border border-white/10 hover:bg-white/20 transition-all"
                                 >

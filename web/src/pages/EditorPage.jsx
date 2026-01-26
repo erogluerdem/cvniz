@@ -16,7 +16,7 @@ import PremiumFeaturesPanel from '../components/PremiumFeaturesPanel'
 import { sampleCVData, emptyCV } from '../data/sampleData'
 import { exportToPDF, printCV, exportToPNG, exportToJSON, exportToHTML, exportToDOCX } from '../utils/pdfExport'
 import { preloadTemplate } from '../templates/templateLoader'
-import { templates } from '../data/templates'
+import { useTemplates } from '../context/TemplateContext'
 import TemplateSwitcher from '../components/TemplateSwitcher'
 import AuthRequiredModal from '../components/AuthRequiredModal'
 import VersionHistoryModal from '../components/VersionHistoryModal'
@@ -66,9 +66,9 @@ export default function EditorPage() {
 
     // Check if current template is premium
     const isTemplatePremium = useMemo(() => {
-        const currentTemplate = templates.find(t => t.id === selectedTemplate)
-        return currentTemplate?.isPremium ?? false
-    }, [selectedTemplate])
+        const currentTemplate = getTemplateConfig(selectedTemplate)
+        return currentTemplate?.premium ?? false
+    }, [selectedTemplate, getTemplateConfig])
 
     // Can user download? (Free template OR premium user)
     const canDownload = !isTemplatePremium || isPremium
@@ -98,7 +98,22 @@ export default function EditorPage() {
     const [showVersionModal, setShowVersionModal] = useState(false)
     const [showLinkedInModal, setShowLinkedInModal] = useState(false)
     const [showCVImporter, setShowCVImporter] = useState(false)
-    const [showUpsellModal, setShowUpsellModal] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
+
+    // Update local theme when template changes to use admin defaults
+    useEffect(() => {
+        const config = getTemplateConfig(selectedTemplate)
+        if (config && config.colors && Object.keys(config.colors).length > 0) {
+            setTheme(prev => ({
+                ...prev,
+                webAccentColor: config.colors.accent || prev.webAccentColor,
+                webBackgroundColor: config.colors.bg || prev.webBackgroundColor,
+                webTextColor: config.colors.text || prev.webTextColor,
+                webFontFamily: config.styles?.fontFamily?.replace(/'/g, "") || prev.webFontFamily,
+                accentColor: config.colors.accent || prev.accentColor
+            }))
+        }
+    }, [selectedTemplate, getTemplateConfig])
     const [upsellTriggerType, setUpsellTriggerType] = useState('download')
     const scrollRef = useRef(null)
     const [uiTheme, setUiTheme] = useState('day')
@@ -106,7 +121,6 @@ export default function EditorPage() {
     // Mobile-specific states
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [mobilePreviewMode, setMobilePreviewMode] = useState(false)
-    const [isMobile, setIsMobile] = useState(false)
 
     // Detect mobile viewport
     useEffect(() => {

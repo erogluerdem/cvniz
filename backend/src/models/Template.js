@@ -38,6 +38,23 @@ const templateSchema = new mongoose.Schema({
     description: {
         type: String,
         default: ''
+    },
+    config: {
+        colors: {
+            bg: String,
+            text: String,
+            accent: String,
+            secondary: String,
+            surface: String
+        },
+        styles: {
+            heroLayout: String,
+            fontFamily: String,
+            borderRadius: String,
+            cardStyle: String,
+            glassmorphism: Boolean,
+            shadows: String
+        }
     }
 }, {
     timestamps: true

@@ -25,13 +25,14 @@ export default function PublicCVViewer() {
     const { cvId } = useParams()
     const [searchParams] = useSearchParams()
     const { cvs } = useCV()
+    const { getTemplateConfig } = useTemplates()
     const [cv, setCv] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [showShareModal, setShowShareModal] = useState(false)
     const [copied, setCopied] = useState(false)
 
     const templateId = searchParams.get('template')
-    const template = templateId ? getTemplateById(templateId) : null
+    const template = templateId ? getTemplateConfig(templateId) : null
     const category = template?.category || 'dark'
 
     useEffect(() => {

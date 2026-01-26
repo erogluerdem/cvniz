@@ -377,309 +377,212 @@ export default function TemplatesPage() {
                 </div>
             </div>
 
-            {/* Stats Banner */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                    { label: 'TOPLAM ŞABLON', value: stats.total, icon: <Layout className="w-4 h-4" />, color: 'cyan' },
-                    { label: 'PREMİUM ÜYELİK', value: stats.premium, icon: <Crown className="w-4 h-4" />, color: 'purple' },
-                    { label: 'AKTİF ŞABLONLAR', value: stats.active, icon: <CheckCircle2 className="w-4 h-4" />, color: 'green' },
-                    { label: 'TOPLAM KULLANIM', value: stats.usage, icon: <TrendingUp className="w-4 h-4" />, color: 'amber' }
-                ].map((stat, i) => (
-                    <div key={i} className="glass-card rounded-[2.5rem] p-6 border border-white/5 relative overflow-hidden group hover:bg-white/[0.07] transition-all">
-                        <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/5 blur-3xl -z-10`}></div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className={`p-2 rounded-xl bg-${stat.color}-500/10 text-${stat.color}-400`}>
-                                {stat.icon}
-                            </div>
-                            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{stat.label}</span>
-                        </div>
-                        <div className="text-3xl font-black text-white tracking-tighter italic">{stat.value}</div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Toolbar */}
-            <div className="glass-card rounded-[2.5rem] p-4 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="relative w-full md:w-96">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Şablon adı ile ara..."
-                        className="bg-white/5 border border-white/5 rounded-2xl pl-12 pr-6 py-3.5 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-medium"
-                    />
-                </div>
-                <FilterTabs
-                    tabs={categoryTabs}
-                    activeTab={activeCategory}
-                    onChange={setActiveCategory}
-                />
-            </div>
-
-            {/* Templates Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                {filtered.map(t => (
-                    <div key={t._id} className={`glass-card rounded-[2.5rem] p-3 transition-all border relative group ${t.isActive ? 'border-white/5 hover:border-cyan-500/30' : 'opacity-40 grayscale'}`}>
-                        {/* Preview - Show thumbnail if available */}
-                        <div className="aspect-[3/4] rounded-[2rem] bg-white/5 overflow-hidden relative mb-4 flex items-center justify-center" style={{ background: t.thumbnail ? 'transparent' : `linear-gradient(135deg, ${getColor(t.templateId)}22, ${getColor(t.templateId + 'x')}44)` }}>
-                            {t.thumbnail ? (
-                                <img src={t.thumbnail} alt={t.name} className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="text-center">
-                                    <span className="text-4xl font-black text-white/20 uppercase italic select-none">{t.name.charAt(0)}</span>
-                                </div>
-                            )}
-                            <div className="absolute top-4 right-4 z-10">
-                                {t.isPremium && <div className="p-2 rounded-xl bg-amber-500/20 text-amber-500 border border-amber-500/20 shadow-lg shadow-amber-500/10"><Crown className="w-4 h-4" /></div>}
-                            </div>
-
-                            {/* Actions Overlay */}
-                            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 p-4">
-                                <Link
-                                    to={`/editor?template=${t.templateId}&sample=true`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-full py-2.5 rounded-xl bg-cyan-500/20 text-cyan-400 font-black text-[10px] tracking-widest uppercase border border-cyan-500/20 hover:bg-cyan-500 hover:text-white transition-all text-center"
-                                >
-                                    ÖNİZLEME
-                                </Link>
-                                <button
-                                    onClick={() => handleToggle(t._id)}
-                                    className={`w-full py-2.5 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${t.isActive ? 'bg-red-500/20 text-red-500 border border-red-500/20' : 'bg-green-500/20 text-green-500 border border-green-500/20'}`}
-                                >
-                                    {t.isActive ? 'PASİF YAP' : 'AKTİF YAP'}
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        // Create a clean, safe copy of the template data
-                                        const safeForm = {
-                                            _id: t._id,
-                                            templateId: t.templateId || '',
-                                            name: t.name || '',
-                                            category: t.category || 'professional',
-                                            isPremium: !!t.isPremium,
-                                            thumbnail: t.thumbnail || t.preview || '',
-                                            description: t.description || '',
-                                            isActive: !!t.isActive,
-                                            usageCount: t.usageCount || 0,
-                                            config: {
-                                                colors: { ...(t.config?.colors || {}) },
-                                                styles: { ...(t.config?.styles || {}) }
-                                            }
-                                        }
-                                        setSelected(t)
-                                        setForm(safeForm)
-                                        setModalTab('general')
-                                        setShowModal('edit')
-                                    }}
-                                    className="w-full py-2.5 rounded-xl bg-white/10 text-white font-black text-[10px] tracking-widest uppercase border border-white/10 hover:bg-white/20 transition-all"
-                                >
-                                    DÜZENLE
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(t._id)}
-                                    className="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 font-black text-[10px] tracking-widest uppercase hover:bg-red-500 hover:text-white transition-all"
-                                >
-                                    SİL
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Info Area */}
-                        <div className="px-2">
-                            <h4 className="text-xs font-black text-white truncate mb-1 uppercase tracking-tight italic">{t.name}</h4>
-                            <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
-                                <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-cyan-400" /> {t.usageCount || 0}</span>
-                                <span className="px-2 py-0.5 rounded-lg bg-white/5 border border-white/5 uppercase">{t.category}</span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-
-                {/* Empty State */}
-                {filtered.length === 0 && (
-                    <div className="col-span-full py-20 text-center flex flex-col items-center justify-center opacity-40">
-                        <AlertCircle className="w-16 h-16 text-gray-600 mb-4" />
-                        <h4 className="text-lg font-black text-white uppercase tracking-tighter italic">ŞABLON BULUNAMADI</h4>
-                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Lütfen farklı bir kategori veya arama terimi deneyin.</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Add/Edit Modal - Locked to DARK MODE for visibility */}
-            {(showModal === 'add' || showModal === 'edit') && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl transition-all duration-300">
-                    <div className="bg-[#0f1115] rounded-[3rem] p-8 max-w-md w-full border border-white/10 relative overflow-hidden shadow-2xl scale-100 opacity-100 transition-all">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-3xl -z-10 pointer-events-none"></div>
-
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic">
-                                {showModal === 'add' ? 'YENİ ŞABLON' : 'ŞABLON AYARLARI'}
-                            </h3>
-                            <button onClick={() => setShowModal(null)} className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-white transition-all">
-                                <X className="w-6 h-6" />
-                            </button>
-                        </div>
-
-                        {/* Modal Tabs */}
-                        <div className="flex gap-2 p-1 bg-white/5 rounded-2xl mb-8">
+            {/* Conditional Rendering: List or Editor */}
+            {(showModal === 'add' || showModal === 'edit') ? (
+                <div className="glass-card rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden animate-fade-in">
+                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
+                        <div className="flex items-center gap-4">
                             <button
-                                onClick={() => setModalTab('general')}
-                                className={`flex-1 py-2.5 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${modalTab === 'general' ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20' : 'text-gray-500 hover:text-white'}`}
+                                onClick={() => setShowModal(null)}
+                                className="p-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all group"
                             >
-                                GENEL AYARLAR
+                                <ArrowUpRight className="w-5 h-5 rotate-[225deg] group-hover:-translate-x-1 transition-transform" />
+                            </button>
+                            <div>
+                                <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic">
+                                    {showModal === 'add' ? 'YENİ ŞABLON OLUŞTUR' : 'ŞABLON DÜZENLE'}
+                                </h3>
+                                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">
+                                    {showModal === 'add' ? 'Yeni bir tasarım dili oluşturun' : `${form.name} şablonunu yapılandırın`}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setShowModal(null)}
+                                className="px-6 py-3 rounded-2xl bg-white/5 text-gray-500 font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
+                            >
+                                İPTAL
                             </button>
                             <button
-                                onClick={() => setModalTab('theme')}
-                                className={`flex-1 py-2.5 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${modalTab === 'theme' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-gray-500 hover:text-white'}`}
+                                onClick={handleSave}
+                                className="px-8 py-3 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
                             >
-                                TEMA DÜZENLEYİCİ
+                                <Save className="w-4 h-4" />
+                                KAYDET
                             </button>
                         </div>
+                    </div>
 
-                        <form onSubmit={handleSave} className="space-y-6">
-                            {modalTab === 'general' ? (
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">ŞABLON ADI</label>
-                                        <input
-                                            type="text"
-                                            value={form.name}
-                                            onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                            className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold"
-                                            placeholder="Örn: Executive v2"
-                                            required
-                                        />
-                                    </div>
+                    {/* Editor Tabs - In-Page Style */}
+                    <div className="flex gap-2 p-1 bg-white/5 rounded-2xl mb-8 max-w-md">
+                        <button
+                            onClick={() => setModalTab('general')}
+                            className={`flex-1 py-3 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${modalTab === 'general' ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20' : 'text-gray-500 hover:text-white'}`}
+                        >
+                            GENEL AYARLAR
+                        </button>
+                        <button
+                            onClick={() => setModalTab('theme')}
+                            className={`flex-1 py-3 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${modalTab === 'theme' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-gray-500 hover:text-white'}`}
+                        >
+                            TEMA DÜZENLEYİCİ
+                        </button>
+                    </div>
 
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">KATEGORİ</label>
-                                        <select
-                                            value={form.category}
-                                            onChange={(e) => setForm({ ...form, category: e.target.value })}
-                                            className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold appearance-none cursor-pointer"
-                                        >
-                                            <option value="popular">Popular</option>
-                                            <option value="professional">Professional</option>
-                                            <option value="tech">Tech</option>
-                                            <option value="creative">Creative</option>
-                                            <option value="modern">Modern</option>
-                                            <option value="premium">Premium</option>
-                                            <option value="web">Web CV</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Thumbnail - URL or File Upload */}
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">KAPAK RESMİ</label>
-                                        <div className="flex gap-2">
+                    <div className="max-w-4xl">
+                        {modalTab === 'general' ? (
+                            <div className="space-y-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">ŞABLON ADI</label>
                                             <input
                                                 type="text"
-                                                value={form.thumbnail || ''}
-                                                onChange={(e) => setForm({ ...form, thumbnail: e.target.value })}
-                                                className="flex-1 bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all font-bold text-xs"
-                                                placeholder="URL veya dosya yükle →"
+                                                value={form.name}
+                                                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                                className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold"
+                                                placeholder="Örn: Executive v2"
+                                                required
                                             />
-                                            <label className={`px-4 py-4 rounded-2xl cursor-pointer transition-all flex items-center gap-2 ${uploading ? 'bg-cyan-500/20 text-cyan-400' : 'bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400'}`}>
-                                                {uploading ? (
-                                                    <RefreshCw className="w-5 h-5 animate-spin" />
-                                                ) : (
-                                                    <Upload className="w-5 h-5" />
-                                                )}
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">KATEGORİ</label>
+                                            <select
+                                                value={form.category}
+                                                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                                                className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold appearance-none cursor-pointer"
+                                            >
+                                                <option value="popular">Popular</option>
+                                                <option value="professional">Professional</option>
+                                                <option value="tech">Tech</option>
+                                                <option value="creative">Creative</option>
+                                                <option value="modern">Modern</option>
+                                                <option value="premium">Premium</option>
+                                                <option value="web">Web CV</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        {/* Thumbnail - URL or File Upload */}
+                                        <div>
+                                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">KAPAK RESMİ</label>
+                                            <div className="flex gap-2">
                                                 <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    disabled={uploading}
-                                                    onChange={async (e) => {
-                                                        const file = e.target.files?.[0]
-                                                        if (!file) return
-                                                        setUploading(true)
-                                                        try {
-                                                            const { mediaAPI } = await import('../../services/api')
-                                                            const formData = new FormData()
-                                                            formData.append('file', file)
-                                                            const res = await mediaAPI.upload(formData)
-                                                            if (res.success && res.media?.path) {
-                                                                const baseUrl = window.location.origin.replace(':5175', ':3001')
-                                                                setForm({ ...form, thumbnail: baseUrl + res.media.path })
-                                                                toast.success('Resim yüklendi!')
-                                                            }
-                                                        } catch (err) {
-                                                            toast.error('Yükleme hatası: ' + (err.message || 'Bilinmeyen hata'))
-                                                        } finally {
-                                                            setUploading(false)
-                                                            e.target.value = ''
-                                                        }
-                                                    }}
+                                                    type="text"
+                                                    value={form.thumbnail || ''}
+                                                    onChange={(e) => setForm({ ...form, thumbnail: e.target.value })}
+                                                    className="flex-1 bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all font-bold text-xs"
+                                                    placeholder="URL veya dosya yükle →"
                                                 />
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        onClick={() => setForm({ ...form, isPremium: !form.isPremium })}
-                                        className={`flex items-center justify-between p-5 rounded-[2rem] border transition-all cursor-pointer ${form.isPremium ? 'bg-amber-500/10 border-amber-500/30' : 'bg-white/5 border-white/10'}`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`p-3 rounded-2xl ${form.isPremium ? 'bg-amber-500 text-white' : 'bg-white/5 text-gray-500'}`}>
-                                                <Crown className="w-5 h-5" />
+                                                <label className={`px-4 py-4 rounded-2xl cursor-pointer transition-all flex items-center gap-2 ${uploading ? 'bg-cyan-500/20 text-cyan-400' : 'bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400'}`}>
+                                                    {uploading ? (
+                                                        <RefreshCw className="w-5 h-5 animate-spin" />
+                                                    ) : (
+                                                        <Upload className="w-5 h-5" />
+                                                    )}
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        disabled={uploading}
+                                                        onChange={async (e) => {
+                                                            const file = e.target.files?.[0]
+                                                            if (!file) return
+                                                            setUploading(true)
+                                                            try {
+                                                                const { mediaAPI } = await import('../../services/api')
+                                                                const formData = new FormData()
+                                                                formData.append('file', file)
+                                                                const res = await mediaAPI.upload(formData)
+                                                                if (res.success && res.media?.path) {
+                                                                    const baseUrl = window.location.origin.replace(':5175', ':3001')
+                                                                    setForm({ ...form, thumbnail: baseUrl + res.media.path })
+                                                                    toast.success('Resim yüklendi!')
+                                                                }
+                                                            } catch (err) {
+                                                                toast.error('Yükleme hatası: ' + (err.message || 'Bilinmeyen hata'))
+                                                            } finally {
+                                                                setUploading(false)
+                                                                e.target.value = ''
+                                                            }
+                                                        }}
+                                                    />
+                                                </label>
                                             </div>
-                                            <span className={`text-xs font-black uppercase tracking-widest ${form.isPremium ? 'text-amber-500' : 'text-gray-500'}`}>PREMİUM ŞABLON</span>
                                         </div>
-                                        <div className={`w-10 h-6 rounded-full p-1 transition-all ${form.isPremium ? 'bg-amber-500' : 'bg-white/10'}`}>
-                                            <div className={`w-4 h-4 rounded-full bg-white transition-all transform ${form.isPremium ? 'translate-x-4' : ''}`} />
-                                        </div>
-                                    </div>
 
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">AÇIKLAMA</label>
-                                        <textarea
-                                            value={form.description || ''}
-                                            onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                            rows={2}
-                                            className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold resize-none"
-                                            placeholder="Şablon açıklaması..."
-                                        />
+                                        <div
+                                            onClick={() => setForm({ ...form, isPremium: !form.isPremium })}
+                                            className={`flex items-center justify-between p-5 rounded-[2rem] border transition-all cursor-pointer ${form.isPremium ? 'bg-amber-500/10 border-amber-500/30' : 'bg-white/5 border-white/10'}`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className={`p-3 rounded-2xl ${form.isPremium ? 'bg-amber-500 text-white' : 'bg-white/5 text-gray-500'}`}>
+                                                    <Crown className="w-5 h-5" />
+                                                </div>
+                                                <span className={`text-xs font-black uppercase tracking-widest ${form.isPremium ? 'text-amber-500' : 'text-gray-500'}`}>PREMİUM ŞABLON</span>
+                                            </div>
+                                            <div className={`w-10 h-6 rounded-full p-1 transition-all ${form.isPremium ? 'bg-amber-500' : 'bg-white/10'}`}>
+                                                <div className={`w-4 h-4 rounded-full bg-white transition-all transform ${form.isPremium ? 'translate-x-4' : ''}`} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="space-y-6 max-h-[50vh] overflow-y-auto pr-4 custom-scrollbar">
-                                    {/* COLOR PALETTE */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Palette className="w-4 h-4 text-purple-400" />
-                                            <label className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Renk Paleti</label>
+
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">AÇIKLAMA</label>
+                                    <textarea
+                                        value={form.description || ''}
+                                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                        rows={4}
+                                        className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold resize-none"
+                                        placeholder="Şablonun öne çıkan özelliklerini ve kullanım alanlarını açıklayın..."
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-8">
+                                {/* COLOR PALETTE */}
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
+                                        <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
+                                            <Palette className="w-5 h-5" />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {[
-                                                { key: 'bg', label: 'Arka Plan' },
-                                                { key: 'text', label: 'Yazı Rengi' },
-                                                { key: 'accent', label: 'Vurgu Rengi' },
-                                                { key: 'secondary', label: 'İkincil Renk' }
-                                            ].map(color => (
-                                                <div key={color.key} className="space-y-2">
-                                                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">{color.label}</label>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="relative group">
-                                                            <div
-                                                                className="w-8 h-8 rounded-lg border border-white/10 overflow-hidden shadow-lg"
-                                                                style={{ backgroundColor: form.config?.colors?.[color.key] || '#cccccc' }}
-                                                            >
-                                                                <input
-                                                                    type="color"
-                                                                    value={form.config?.colors?.[color.key] || '#cccccc'}
-                                                                    onChange={(e) => setForm({
-                                                                        ...form,
-                                                                        config: {
-                                                                            ...form.config,
-                                                                            colors: { ...form.config.colors, [color.key]: e.target.value }
-                                                                        }
-                                                                    })}
-                                                                    className="absolute inset-0 opacity-0 cursor-pointer"
-                                                                />
-                                                            </div>
+                                        <div>
+                                            <h4 className="text-sm font-black text-white uppercase tracking-wider">Renk Paleti</h4>
+                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Şablonun temel renklerini belirleyin</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                        {[
+                                            { key: 'bg', label: 'Arka Plan' },
+                                            { key: 'text', label: 'Yazı Rengi' },
+                                            { key: 'accent', label: 'Vurgu Rengi' },
+                                            { key: 'secondary', label: 'İkincil Renk' }
+                                        ].map(color => (
+                                            <div key={color.key} className="space-y-3">
+                                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">{color.label}</label>
+                                                <div className="group relative">
+                                                    <div className="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
+                                                        <div
+                                                            className="w-10 h-10 rounded-lg border border-white/10 shadow-lg cursor-pointer transition-transform group-hover:scale-105"
+                                                            style={{ backgroundColor: form.config?.colors?.[color.key] || '#cccccc' }}
+                                                        >
+                                                            <input
+                                                                type="color"
+                                                                value={form.config?.colors?.[color.key] || '#cccccc'}
+                                                                onChange={(e) => setForm({
+                                                                    ...form,
+                                                                    config: {
+                                                                        ...form.config,
+                                                                        colors: { ...form.config.colors, [color.key]: e.target.value }
+                                                                    }
+                                                                })}
+                                                                className="opacity-0 w-full h-full cursor-pointer"
+                                                            />
                                                         </div>
                                                         <input
                                                             type="text"
@@ -691,20 +594,27 @@ export default function TemplatesPage() {
                                                                     colors: { ...form.config.colors, [color.key]: e.target.value }
                                                                 }
                                                             })}
-                                                            className="flex-1 px-3 py-2 bg-black/20 border border-white/5 rounded-xl text-[10px] font-mono text-white focus:border-purple-500/30 outline-none uppercase"
+                                                            className="flex-1 bg-transparent border-none text-xs font-mono text-white focus:outline-none uppercase"
                                                         />
                                                     </div>
                                                 </div>
-                                            ))}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* TYPOGRAPHY */}
+                                <div className="space-y-4 pt-6">
+                                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
+                                        <div className="p-2 rounded-lg bg-cyan-500/20 text-cyan-400">
+                                            <Type className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-black text-white uppercase tracking-wider">Tipografi</h4>
+                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Karakter stili ve font ailesi</p>
                                         </div>
                                     </div>
-
-                                    {/* TYPOGRAPHY */}
-                                    <div className="space-y-3">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Type className="w-4 h-4 text-cyan-400" />
-                                            <label className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Tipografi</label>
-                                        </div>
+                                    <div className="max-w-md">
                                         <select
                                             value={form.config?.styles?.fontFamily || ''}
                                             onChange={(e) => setForm({
@@ -714,7 +624,7 @@ export default function TemplatesPage() {
                                                     styles: { ...form.config.styles, fontFamily: e.target.value }
                                                 }
                                             })}
-                                            className="w-full px-5 py-3.5 bg-slate-900/50 border border-white/10 rounded-2xl text-white font-bold text-xs appearance-none focus:border-cyan-500/50 focus:outline-none transition-all cursor-pointer"
+                                            className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold text-xs appearance-none focus:border-cyan-500/50 focus:outline-none transition-all cursor-pointer"
                                         >
                                             <option value="">Font Seçin</option>
                                             {FONT_OPTIONS.map(font => (
@@ -722,71 +632,205 @@ export default function TemplatesPage() {
                                             ))}
                                         </select>
                                     </div>
+                                </div>
 
-                                    {/* LAYOUT & UI */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Layout className="w-4 h-4 text-emerald-400" />
-                                            <label className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Yerleşim ve Stil</label>
+                                {/* LAYOUT & UI */}
+                                <div className="space-y-4 pt-6">
+                                    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/5">
+                                        <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+                                            <Layout className="w-5 h-5" />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Hero Düzeni</label>
-                                                <select
-                                                    value={form.config?.styles?.heroLayout || ''}
-                                                    onChange={(e) => setForm({
-                                                        ...form,
-                                                        config: {
-                                                            ...form.config,
-                                                            styles: { ...form.config.styles, heroLayout: e.target.value }
-                                                        }
-                                                    })}
-                                                    className="w-full px-4 py-3 bg-black/20 border border-white/5 rounded-xl text-[10px] font-bold text-white uppercase outline-none focus:border-emerald-500/30"
-                                                >
-                                                    <option value="">Düzen Seçin</option>
-                                                    {HERO_LAYOUTS.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}
-                                                </select>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Kart Stili</label>
-                                                <select
-                                                    value={form.config?.styles?.cardStyle || ''}
-                                                    onChange={(e) => setForm({
-                                                        ...form,
-                                                        config: {
-                                                            ...form.config,
-                                                            styles: { ...form.config.styles, cardStyle: e.target.value }
-                                                        }
-                                                    })}
-                                                    className="w-full px-4 py-3 bg-black/20 border border-white/5 rounded-xl text-[10px] font-bold text-white uppercase outline-none focus:border-emerald-500/30"
-                                                >
-                                                    <option value="">Stil Seçin</option>
-                                                    {CARD_STYLES.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
-                                                </select>
-                                            </div>
+                                        <div>
+                                            <h4 className="text-sm font-black text-white uppercase tracking-wider">Yerleşim ve Stil</h4>
+                                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Tasarımın yapısal özellikleri</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Hero Düzeni</label>
+                                            <select
+                                                value={form.config?.styles?.heroLayout || ''}
+                                                onChange={(e) => setForm({
+                                                    ...form,
+                                                    config: {
+                                                        ...form.config,
+                                                        styles: { ...form.config.styles, heroLayout: e.target.value }
+                                                    }
+                                                })}
+                                                className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold text-white uppercase outline-none focus:border-emerald-500/30 cursor-pointer"
+                                            >
+                                                <option value="">Düzen Seçin</option>
+                                                {HERO_LAYOUTS.map(l => <option key={l} value={l}>{l.toUpperCase()}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Kart Stili</label>
+                                            <select
+                                                value={form.config?.styles?.cardStyle || ''}
+                                                onChange={(e) => setForm({
+                                                    ...form,
+                                                    config: {
+                                                        ...form.config,
+                                                        styles: { ...form.config.styles, cardStyle: e.target.value }
+                                                    }
+                                                })}
+                                                className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold text-white uppercase outline-none focus:border-emerald-500/30 cursor-pointer"
+                                            >
+                                                <option value="">Stil Seçin</option>
+                                                {CARD_STYLES.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                            )}
-
-                            <div className="flex gap-4 pt-6">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowModal(null)}
-                                    className="flex-1 py-4 rounded-2xl bg-white/5 text-gray-500 font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
-                                >
-                                    İPTAL
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all outline-none border border-white/10"
-                                >
-                                    KAYDET
-                                </button>
                             </div>
-                        </form>
+                        )}
                     </div>
                 </div>
+            ) : (
+                <>
+                    {/* Stats Banner */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {/* ... (Existing Stats Content) ... */}
+                    </div>
+                </>
+            )}
+
+            {/* Existing List View Content (Only render if NOT editing) */}
+            {(!showModal) && (
+                <>
+                    {/* Stats Banner */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {[
+                            { label: 'TOPLAM ŞABLON', value: stats.total, icon: <Layout className="w-4 h-4" />, color: 'cyan' },
+                            { label: 'PREMİUM ÜYELİK', value: stats.premium, icon: <Crown className="w-4 h-4" />, color: 'purple' },
+                            { label: 'AKTİF ŞABLONLAR', value: stats.active, icon: <CheckCircle2 className="w-4 h-4" />, color: 'green' },
+                            { label: 'TOPLAM KULLANIM', value: stats.usage, icon: <TrendingUp className="w-4 h-4" />, color: 'amber' }
+                        ].map((stat, i) => (
+                            <div key={i} className="glass-card rounded-[2.5rem] p-6 border border-white/5 relative overflow-hidden group hover:bg-white/[0.07] transition-all">
+                                <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/5 blur-3xl -z-10`}></div>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className={`p-2 rounded-xl bg-${stat.color}-500/10 text-${stat.color}-400`}>
+                                        {stat.icon}
+                                    </div>
+                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{stat.label}</span>
+                                </div>
+                                <div className="text-3xl font-black text-white tracking-tighter italic">{stat.value}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Toolbar */}
+                    <div className="glass-card rounded-[2.5rem] p-4 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                        {/* ... (Existing Toolbar Content) ... */}
+                        <div className="relative w-full md:w-96">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Şablon adı ile ara..."
+                                className="bg-white/5 border border-white/5 rounded-2xl pl-12 pr-6 py-3.5 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-medium"
+                            />
+                        </div>
+                        <FilterTabs
+                            tabs={categoryTabs}
+                            activeTab={activeCategory}
+                            onChange={setActiveCategory}
+                        />
+                    </div>
+
+                    {/* Templates Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                        {/* ... (Existing Grid Content) ... */}
+                        {filtered.map(t => (
+                            <div key={t._id} className={`glass-card rounded-[2.5rem] p-3 transition-all border relative group ${t.isActive ? 'border-white/5 hover:border-cyan-500/30' : 'opacity-40 grayscale'}`}>
+                                {/* Preview - Show thumbnail if available */}
+                                <div className="aspect-[3/4] rounded-[2rem] bg-white/5 overflow-hidden relative mb-4 flex items-center justify-center" style={{ background: t.thumbnail ? 'transparent' : `linear-gradient(135deg, ${getColor(t.templateId)}22, ${getColor(t.templateId + 'x')}44)` }}>
+                                    {t.thumbnail ? (
+                                        <img src={t.thumbnail} alt={t.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="text-center">
+                                            <span className="text-4xl font-black text-white/20 uppercase italic select-none">{t.name.charAt(0)}</span>
+                                        </div>
+                                    )}
+                                    <div className="absolute top-4 right-4 z-10">
+                                        {t.isPremium && <div className="p-2 rounded-xl bg-amber-500/20 text-amber-500 border border-amber-500/20 shadow-lg shadow-amber-500/10"><Crown className="w-4 h-4" /></div>}
+                                    </div>
+
+                                    {/* Actions Overlay */}
+                                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 p-4">
+                                        <Link
+                                            to={`/editor?template=${t.templateId}&sample=true`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="w-full py-2.5 rounded-xl bg-cyan-500/20 text-cyan-400 font-black text-[10px] tracking-widest uppercase border border-cyan-500/20 hover:bg-cyan-500 hover:text-white transition-all text-center"
+                                        >
+                                            ÖNİZLEME
+                                        </Link>
+                                        <button
+                                            onClick={() => handleToggle(t._id)}
+                                            className={`w-full py-2.5 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${t.isActive ? 'bg-red-500/20 text-red-500 border border-red-500/20' : 'bg-green-500/20 text-green-500 border border-green-500/20'}`}
+                                        >
+                                            {t.isActive ? 'PASİF YAP' : 'AKTİF YAP'}
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                // Create a clean, safe copy of the template data
+                                                const safeForm = {
+                                                    _id: t._id,
+                                                    templateId: t.templateId || '',
+                                                    name: t.name || '',
+                                                    category: t.category || 'professional',
+                                                    isPremium: !!t.isPremium,
+                                                    thumbnail: t.thumbnail || t.preview || '',
+                                                    description: t.description || '',
+                                                    isActive: !!t.isActive,
+                                                    usageCount: t.usageCount || 0,
+                                                    config: {
+                                                        colors: { ...(t.config?.colors || {}) },
+                                                        styles: { ...(t.config?.styles || {}) }
+                                                    }
+                                                }
+                                                setSelected(t)
+                                                setForm(safeForm)
+                                                setModalTab('general')
+                                                setShowModal('edit')
+                                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                                            }}
+                                            className="w-full py-2.5 rounded-xl bg-white/10 text-white font-black text-[10px] tracking-widest uppercase border border-white/10 hover:bg-white/20 transition-all"
+                                        >
+                                            DÜZENLE
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(t._id)}
+                                            className="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 font-black text-[10px] tracking-widest uppercase hover:bg-red-500 hover:text-white transition-all"
+                                        >
+                                            SİL
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Info Area */}
+                                <div className="px-2">
+                                    <h4 className="text-xs font-black text-white truncate mb-1 uppercase tracking-tight italic">{t.name}</h4>
+                                    <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
+                                        <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-cyan-400" /> {t.usageCount || 0}</span>
+                                        <span className="px-2 py-0.5 rounded-lg bg-white/5 border border-white/5 uppercase">{t.category}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Empty State */}
+                        {filtered.length === 0 && (
+                            <div className="col-span-full py-20 text-center flex flex-col items-center justify-center opacity-40">
+                                <AlertCircle className="w-16 h-16 text-gray-600 mb-4" />
+                                <h4 className="text-lg font-black text-white uppercase tracking-tighter italic">ŞABLON BULUNAMADI</h4>
+                                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Lütfen farklı bir kategori veya arama terimi deneyin.</p>
+                            </div>
+                        )}
+                    </div>
+                </>
             )}
         </div>
     )

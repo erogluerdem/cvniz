@@ -31,6 +31,7 @@ const menuGroups = [
             { path: '/admin/cv-reviews', icon: <Star className="w-4 h-4" />, label: 'CV İnceleme' },
             { path: '/admin/announcements', icon: <Megaphone className="w-4 h-4" />, label: 'Duyurular' },
             { path: '/admin/site-content', icon: <Home className="w-4 h-4" />, label: 'Site İçeriği' },
+            { path: '/admin/ab-tests', icon: <Activity className="w-4 h-4" />, label: 'A/B Testleri' },
             { path: '/admin/media', icon: <Image className="w-4 h-4" />, label: 'Medya' },
             { path: '/admin/templates', icon: <Package className="w-4 h-4" />, label: 'Şablonlar' },
         ]

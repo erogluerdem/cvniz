@@ -456,6 +456,28 @@ export const aiAPI = {
         api.post('/ai/generate-experience', { jobTitle, lang }),
 };
 
+// ============ AB TEST API ============
+export const abTestAPI = {
+    getActive: (key, visitorId) =>
+        api.get(`/abtests/active/${key}`, { params: { visitorId } }),
+
+    track: (key, variantName) =>
+        api.post('/abtests/track', { key, variantName }),
+
+    // Admin
+    getAll: () =>
+        api.get('/abtests/admin/all'),
+
+    create: (data) =>
+        api.post('/abtests/admin', data),
+
+    update: (id, data) =>
+        api.put(`/abtests/admin/${id}`, data),
+
+    delete: (id) =>
+        api.delete(`/abtests/admin/${id}`),
+};
+
 // Check if API is available (for offline detection)
 export const checkAPIHealth = async () => {
     try {

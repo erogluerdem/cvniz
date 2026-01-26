@@ -231,6 +231,7 @@ function AppRoutes() {
                     <Route path="analytics" element={<AdminAnalyticsPage />} />
                     <Route path="live-stats" element={<AdminLiveStatsPage />} />
                     <Route path="site-content" element={<AdminSiteContentPage />} />
+                    <Route path="ab-tests" element={<AdminABTestsPage />} />
                     <Route path="announcements" element={<AdminAnnouncementsPage />} />
                     <Route path="coupons" element={<AdminCouponsPage />} />
                     <Route path="emails" element={<AdminEmailsPage />} />

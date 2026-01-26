@@ -47,7 +47,7 @@ export default function EditorPage() {
     const { user, isPremium, getProfile, saveProfile } = useAuth()
     const { toast } = useToast()
     const { cvs, saveCV, updateCV, getVersions } = useCV()
-    const { getTemplateConfig } = useTemplates()
+    const { templates, getTemplateConfig } = useTemplates()
     const [searchParams] = useSearchParams()
     const {
         syncStatus, lastSynced, undo, redo, addToHistory,

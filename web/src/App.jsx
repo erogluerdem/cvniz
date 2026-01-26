@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CVProvider } from './context/CVContext'
 import { SiteContentProvider } from './context/SiteContentContext'

@@ -15,6 +15,17 @@ const emailTemplateSchema = new mongoose.Schema({
         required: true
     },
     htmlContent: String,
+    slug: {
+        type: String,
+        unique: true,
+        sparse: true,
+        trim: true
+    },
+    channel: {
+        type: String,
+        enum: ['email', 'sms'],
+        default: 'email'
+    },
     type: {
         type: String,
         enum: ['welcome', 'premium', 'password', 'reminder', 'notification', 'marketing', 'newsletter', 'custom'],

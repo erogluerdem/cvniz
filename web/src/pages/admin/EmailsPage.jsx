@@ -138,7 +138,9 @@ export default function EmailsPage() {
             name: template.name,
             subject: template.subject,
             content: template.content,
-            type: template.type
+            type: template.type,
+            slug: template.slug,
+            channel: template.channel || 'email'
         })
         setShowTemplateModal(true)
     }
@@ -235,20 +237,113 @@ export default function EmailsPage() {
                 {[
                     { id: 'compose', label: 'Yeni E-posta', icon: <Send className="w-4 h-4" /> },
                     { id: 'templates', label: 'Şablonlar', icon: <FileText className="w-4 h-4" /> },
+                    { id: 'system', label: 'Sistem Bildirimleri', icon: <Bell className="w-4 h-4" /> },
                     { id: 'history', label: 'Gönderim Geçmişi', icon: <Clock className="w-4 h-4" /> }
                 ].map(tab => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex-1 px-6 py-3.5 rounded-[2rem] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab.id
-                                ? 'bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30'
-                                : 'text-gray-500 hover:text-gray-300'
+                            ? 'bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30'
+                            : 'text-gray-500 hover:text-gray-300'
                             }`}
                     >
                         {tab.icon} {tab.label}
                     </button>
                 ))}
             </div>
+
+            {/* System Templates Tab */}
+            {activeTab === 'system' && (
+                <div className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {/* Email System Templates */}
+                        <div className="space-y-4">
+                            <h3 className="text-white font-bold flex items-center gap-2">
+                                <Mail className="w-5 h-5 text-cyan-400" />
+                                E-posta Bildirimleri
+                            </h3>
+                            <div className="grid gap-3">
+                                {[
+                                    { slug: 'welcome', label: 'Hoş Geldin', desc: 'Kayıt sonrası gönderilir' },
+                                    { slug: 'payment-success', label: 'Ödeme Başarılı', desc: 'Kartlı işlem sonrası' },
+                                    { slug: 'bank-transfer-received', label: 'Havale Alındı', desc: 'Dekont yüklenince' },
+                                    { slug: 'bank-transfer-approved', label: 'Havale Onaylandı', desc: 'Premium aktif olunca' },
+                                    { slug: 'bank-transfer-rejected', label: 'Havale Reddedildi', desc: 'Admin reddedince' },
+                                ].map(item => {
+                                    const tpl = templates.find(t => t.slug === item.slug && t.channel === 'email')
+                                    return (
+                                        <div key={item.slug} className="glass-card rounded-2xl p-4 border border-white/5 flex items-center justify-between hover:bg-white/5 transition-all">
+                                            <div>
+                                                <div className="font-bold text-white text-sm">{item.label}</div>
+                                                <div className="text-[10px] text-gray-500">{item.desc}</div>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    setEditingTemplate(tpl || null)
+                                                    setTemplateData({
+                                                        name: item.label,
+                                                        subject: tpl?.subject || '',
+                                                        content: tpl?.content || '',
+                                                        type: 'notification',
+                                                        slug: item.slug,
+                                                        channel: 'email'
+                                                    })
+                                                    setShowTemplateModal(true)
+                                                }}
+                                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all ${tpl ? 'bg-green-500/20 text-green-400' : 'bg-gray-700/50 text-gray-400'}`}
+                                            >
+                                                {tpl ? 'DÜZENLE' : 'OLUŞTUR'}
+                                            </button>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        {/* SMS System Templates */}
+                        <div className="space-y-4">
+                            <h3 className="text-white font-bold flex items-center gap-2">
+                                <Smartphone className="w-5 h-5 text-purple-400" />
+                                SMS Bildirimleri
+                            </h3>
+                            <div className="grid gap-3">
+                                {[
+                                    { slug: 'payment-success', label: 'Ödeme Başarılı', desc: 'Kartlı işlem sonrası' },
+                                    { slug: 'bank-transfer-approved', label: 'Havale Onaylandı', desc: 'Premium aktif olunca' },
+                                ].map(item => {
+                                    const tpl = templates.find(t => t.slug === item.slug && t.channel === 'sms')
+                                    return (
+                                        <div key={item.slug} className="glass-card rounded-2xl p-4 border border-white/5 flex items-center justify-between hover:bg-white/5 transition-all">
+                                            <div>
+                                                <div className="font-bold text-white text-sm">{item.label}</div>
+                                                <div className="text-[10px] text-gray-500">{item.desc}</div>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    setEditingTemplate(tpl || null)
+                                                    setTemplateData({
+                                                        name: item.label,
+                                                        subject: 'SMS', // Not used for SMS but required by model schema potentially
+                                                        content: tpl?.content || '',
+                                                        type: 'notification',
+                                                        slug: item.slug,
+                                                        channel: 'sms'
+                                                    })
+                                                    setShowTemplateModal(true)
+                                                }}
+                                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all ${tpl ? 'bg-green-500/20 text-green-400' : 'bg-gray-700/50 text-gray-400'}`}
+                                            >
+                                                {tpl ? 'DÜZENLE' : 'OLUŞTUR'}
+                                            </button>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Compose Tab */}
             {activeTab === 'compose' && (

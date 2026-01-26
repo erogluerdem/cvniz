@@ -44,8 +44,46 @@ class EmailService {
         }
     }
 
+    async getTemplate(slug, replacements = {}) {
+        try {
+            const EmailTemplate = require('../models/EmailTemplate');
+            const template = await EmailTemplate.findOne({ slug, channel: 'email', status: 'active' });
+
+            if (!template) return null;
+
+            let subject = template.subject;
+            let html = template.content; // Assuming content is HTML for now, or use htmlContent field
+
+            // Replace variables
+            for (const [key, value] of Object.entries(replacements)) {
+                const regex = new RegExp(`{{${key}}}`, 'g');
+                subject = subject.replace(regex, value);
+                html = html.replace(regex, value);
+            }
+
+            return { subject, html };
+        } catch (error) {
+            console.error('Template fetch error:', error);
+            return null;
+        }
+    }
+
     // Templates
     async sendPaymentSuccess(user, payment) {
+        const replacements = {
+            name: user.name,
+            planName: payment.planName,
+            amount: payment.amount,
+            billingCycle: payment.billingCycle,
+            date: new Date(payment.createdAt).toLocaleDateString()
+        };
+
+        const dbTemplate = await this.getTemplate('payment-success', replacements);
+        if (dbTemplate) {
+            return this.sendMail(user.email, dbTemplate.subject, dbTemplate.html);
+        }
+
+        // Fallback
         const subject = 'CVniz - Ödemeniz Başarıyla alındı';
         const html = `
             <h1>Merhaba ${user.name},</h1>
@@ -63,6 +101,16 @@ class EmailService {
     }
 
     async sendBankTransferReceived(user, payment) {
+        const replacements = {
+            name: user.name,
+            transactionId: payment.transactionId
+        };
+
+        const dbTemplate = await this.getTemplate('bank-transfer-received', replacements);
+        if (dbTemplate) {
+            return this.sendMail(user.email, dbTemplate.subject, dbTemplate.html);
+        }
+
         const subject = 'CVniz - Havale Bildiriminiz Alındı';
         const html = `
             <h1>Merhaba ${user.name},</h1>
@@ -73,6 +121,13 @@ class EmailService {
     }
 
     async sendBankTransferApproved(user, payment) {
+        const replacements = { name: user.name };
+
+        const dbTemplate = await this.getTemplate('bank-transfer-approved', replacements);
+        if (dbTemplate) {
+            return this.sendMail(user.email, dbTemplate.subject, dbTemplate.html);
+        }
+
         const subject = 'CVniz - Üyeliğiniz Onaylandı! 🎉';
         const html = `
             <h1>Tebrikler ${user.name}!</h1>
@@ -83,6 +138,16 @@ class EmailService {
     }
 
     async sendBankTransferRejected(user, payment) {
+        const replacements = {
+            name: user.name,
+            adminNote: payment.adminNote || 'Belirtilmedi'
+        };
+
+        const dbTemplate = await this.getTemplate('bank-transfer-rejected', replacements);
+        if (dbTemplate) {
+            return this.sendMail(user.email, dbTemplate.subject, dbTemplate.html);
+        }
+
         const subject = 'CVniz - Havale Bildirimi Hakkında';
         const html = `
             <h1>Merhaba ${user.name},</h1>
@@ -94,6 +159,7 @@ class EmailService {
     }
 
     async sendAdminNotification(payment) {
+        // Did not convert this to template yet as it is internal
         // Send to admin email (from env or hardcoded for now)
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@cvniz.com';
         const subject = `[Admin] Yeni Havale Bildirimi: ${payment.amount}₺`;

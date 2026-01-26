@@ -1475,6 +1475,7 @@ export default function EditorPage() {
                 }}
             />
         </div>
+        // End of EditorPage component - Fixed ReferenceError upsell v2
     )
 }
 

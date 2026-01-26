@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Crown, Search, LayoutGrid, Briefcase, Sparkles, Code, GraduationCap, Trophy, HeartPulse, Building2, User, Globe, Image as ImageIcon, CheckCircle, ArrowRight, Star, Filter } from 'lucide-react'
-import { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { templateAPI } from '../services/api'
 
 const templates = [

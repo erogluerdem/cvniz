@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { X, Gift, Clock, ArrowRight, Sparkles, Crown, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'

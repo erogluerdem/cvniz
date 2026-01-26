@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useSiteContent } from '../context/SiteContentContext'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { templateAPI } from '../services/api'
 import {
     FileText, Users, Settings, LogOut, LayoutDashboard, TrendingUp, Download, Crown,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import {
     ArrowLeft, Download, Eye, Printer, ChevronLeft, ChevronRight, Save, LogIn, Crown, Sparkles,

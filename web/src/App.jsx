@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { Suspense, lazy, useState, useEffect } from 'react'
+import React, { Suspense, lazy, useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CVProvider } from './context/CVContext'
 import { SiteContentProvider } from './context/SiteContentContext'
@@ -299,7 +299,7 @@ function AppRoutes() {
 }
 
 export default function App() {
-    const [theme, setTheme] = useState('day')
+    const [theme, setTheme] = React.useState('day')
     const isDayMode = theme === 'day'
 
     useEffect(() => {

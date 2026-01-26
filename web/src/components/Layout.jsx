@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { FileText, User, LogOut, Menu, X, Sun, Moon, Sparkles, Zap, ChevronDown } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import CookieConsent from './CookieConsent'
 import NotificationBell from './NotificationBell'
 import { motion, AnimatePresence } from 'framer-motion'

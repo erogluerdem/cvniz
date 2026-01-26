@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Sparkles, FileText, Download, Zap, Shield, Clock, Users, Check, Palette, Languages, Share2, TrendingUp, Award, Target, ArrowRight, Rocket, Heart, Play, Minus, X, CheckCircle } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 // Animated Counter
 function AnimatedCounter({ end, suffix = '', duration = 2000 }) {

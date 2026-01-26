@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Check, Star, Crown, ShieldCheck, Zap, Heart, MessageCircle, HelpCircle, ArrowRight, Minus, Plus, Award, Infinity } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 const pricingPlans = [

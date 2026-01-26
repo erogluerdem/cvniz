@@ -450,7 +450,17 @@ export default function TemplatesPage() {
                                     {t.isActive ? 'PASİF YAP' : 'AKTİF YAP'}
                                 </button>
                                 <button
-                                    onClick={() => { setSelected(t); setForm({ ...t, config: t.config || { colors: {}, styles: {} } }); setModalTab('general'); setShowModal('edit') }}
+                                    onClick={() => {
+                                        setSelected(t);
+                                        // Ensure config exists and has sub-objects
+                                        const safeConfig = {
+                                            colors: { ...(t.config?.colors || {}) },
+                                            styles: { ...(t.config?.styles || {}) }
+                                        };
+                                        setForm({ ...t, config: safeConfig });
+                                        setModalTab('general');
+                                        setShowModal('edit');
+                                    }}
                                     className="w-full py-2.5 rounded-xl bg-white/10 text-white font-black text-[10px] tracking-widest uppercase border border-white/10 hover:bg-white/20 transition-all"
                                 >
                                     DÜZENLE
@@ -487,8 +497,8 @@ export default function TemplatesPage() {
 
             {/* Add/Edit Modal */}
             {(showModal === 'add' || showModal === 'edit') && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
-                    <div className="glass-card rounded-[3rem] p-8 max-w-md w-full border border-white/10 relative overflow-hidden animate-scale-in">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl transition-all duration-300">
+                    <div className="glass-card rounded-[3rem] p-8 max-w-md w-full border border-white/10 relative overflow-hidden shadow-2xl scale-100 opacity-100 transition-all">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-3xl -z-10"></div>
 
                         <div className="flex items-center justify-between mb-8">
@@ -609,6 +619,17 @@ export default function TemplatesPage() {
                                         <div className={`w-10 h-6 rounded-full p-1 transition-all ${form.isPremium ? 'bg-amber-500' : 'bg-white/10'}`}>
                                             <div className={`w-4 h-4 rounded-full bg-white transition-all transform ${form.isPremium ? 'translate-x-4' : ''}`} />
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-2 ml-1">AÇIKLAMA</label>
+                                        <textarea
+                                            value={form.description || ''}
+                                            onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                            rows={2}
+                                            className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold resize-none"
+                                            placeholder="Şablon açıklaması..."
+                                        />
                                     </div>
                                 </div>
                             ) : (

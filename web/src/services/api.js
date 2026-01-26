@@ -440,6 +440,20 @@ export const adminAPI = {
         api.delete(`/admin/themes/${id}`),
     setActiveTheme: (slug) =>
         api.post('/admin/themes/set-active', { slug }),
+    setActiveTheme: (slug) =>
+        api.post('/admin/themes/set-active', { slug }),
+};
+
+// ============ AI API ============
+export const aiAPI = {
+    generateSummary: (jobTitle, experienceLevel, lang = 'tr') =>
+        api.post('/ai/generate-summary', { jobTitle, experienceLevel, lang }),
+
+    improveText: (text, lang = 'tr') =>
+        api.post('/ai/improve-text', { text, lang }),
+
+    generateExperience: (jobTitle, lang = 'tr') =>
+        api.post('/ai/generate-experience', { jobTitle, lang }),
 };
 
 // Check if API is available (for offline detection)

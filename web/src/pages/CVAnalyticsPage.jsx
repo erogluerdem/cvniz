@@ -26,7 +26,7 @@ export default function CVAnalyticsPage() {
     const fetchAnalytics = async () => {
         try {
             setIsLoading(true)
-            const response = await fetch(`${API_URL}/cvs/${cvId}/analytics`, {
+            const response = await fetch(`${API_URL}/analytics/stats/${cvId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

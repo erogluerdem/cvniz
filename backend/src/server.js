@@ -28,6 +28,8 @@ const lettersRoutes = require('./routes/letters');
 const interviewRoutes = require('./routes/interview');
 const applicationsRoutes = require('./routes/applications');
 const headshotRoutes = require('./routes/headshot');
+const aiRoutes = require('./routes/ai');
+const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 
@@ -104,6 +106,8 @@ app.use('/api/letters', lettersRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/applications', applicationsRoutes);
 app.use('/api/headshot', headshotRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // 404 Handler
 app.use((req, res) => {

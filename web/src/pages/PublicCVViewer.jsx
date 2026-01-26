@@ -3,6 +3,7 @@ import { useCV } from '../context/CVContext'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTemplates } from '../context/TemplateContext'
+import { useTranslation } from 'react-i18next'
 import { Download, Share2, Printer, Check, Link as LinkIcon, X } from 'lucide-react'
 
 // Modular Web Templates
@@ -30,21 +31,43 @@ export default function PublicCVViewer() {
     const [isLoading, setIsLoading] = useState(true)
     const [showShareModal, setShowShareModal] = useState(false)
     const [copied, setCopied] = useState(false)
+    const { t } = useTranslation()
 
     const templateId = searchParams.get('template')
     const template = templateId ? getTemplateConfig(templateId) : null
     const category = template?.category || 'dark'
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+
     useEffect(() => {
         const found = cvs.find(c => c.id === cvId)
         if (found) {
             setCv(found)
+            trackVisit() // Track when CV is found locally (or loaded)
             setTimeout(() => setIsLoading(false), 1500)
         } else if (cvs.length > 0) {
-            // If cvs loaded but CV not found, stop loading
             setTimeout(() => setIsLoading(false), 500)
         }
     }, [cvId, cvs])
+
+    const trackVisit = async () => {
+        try {
+            // Simple visitor ID
+            let visitorId = localStorage.getItem('cv_visitor_id')
+            if (!visitorId) {
+                visitorId = Math.random().toString(36).substring(2) + Date.now().toString(36)
+                localStorage.setItem('cv_visitor_id', visitorId)
+            }
+
+            await fetch(`${API_URL}/analytics/track/${cvId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ visitorId })
+            })
+        } catch (err) {
+            console.error('Tracking failed', err)
+        }
+    }
 
     const handlePrint = () => {
         window.print()
@@ -131,7 +154,7 @@ export default function PublicCVViewer() {
                     className="flex items-center gap-2 px-4 py-2 bg-white text-slate-950 rounded-full font-bold text-sm hover:bg-cyan-500 hover:text-white transition-all active:scale-95"
                 >
                     <Download className="w-4 h-4" />
-                    <span>PDF İNDİR</span>
+                    <span>{t('common.download')}</span>
                 </button>
 
                 <div className="w-px h-6 bg-white/20" />
@@ -139,7 +162,7 @@ export default function PublicCVViewer() {
                 <button
                     onClick={handleShare}
                     className="p-2 text-white hover:bg-white/10 rounded-full transition-all active:scale-95 group"
-                    title="Paylaş"
+                    title={t('common.share')}
                 >
                     <Share2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>

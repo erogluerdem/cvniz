@@ -1,0 +1,74 @@
+const express = require('express');
+const router = express.Router();
+const aiService = require('../services/AIService');
+const { authenticate } = require('../middleware/auth');
+const rateLimit = require('express-rate-limit');
+
+// Rate limiting for AI endpoints
+const aiLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 20, // limit each IP to 20 requests per windowMs
+    message: { error: 'Saatlik AI kullanım limitiniz doldu.' }
+});
+
+router.use(authenticate);
+router.use(aiLimiter);
+
+// @desc    Generate CV Summary
+// @route   POST /api/ai/generate-summary
+// @access  Private
+router.post('/generate-summary', async (req, res) => {
+    try {
+        const { jobTitle, experienceLevel, lang } = req.body;
+
+        if (!jobTitle) {
+            return res.status(400).json({ error: 'İş unvanı gereklidir.' });
+        }
+
+        const result = await aiService.generateSummary(jobTitle, experienceLevel || 'Mid-Level', lang);
+        res.json({ success: true, ...result });
+    } catch (error) {
+        console.error('AI Route Error:', error);
+        res.status(500).json({ error: 'AI servisi yanıt vermedi.' });
+    }
+});
+
+// @desc    Improve Text
+// @route   POST /api/ai/improve-text
+// @access  Private
+router.post('/improve-text', async (req, res) => {
+    try {
+        const { text, lang } = req.body;
+
+        if (!text || text.length < 10) {
+            return res.status(400).json({ error: 'Lütfen en az 10 karakterlik metin girin.' });
+        }
+
+        const result = await aiService.improveText(text, lang);
+        res.json({ success: true, ...result });
+    } catch (error) {
+        console.error('AI Route Error:', error);
+        res.status(500).json({ error: 'AI servisi yanıt vermedi.' });
+    }
+});
+
+// @desc    Generate Experience Points
+// @route   POST /api/ai/generate-experience
+// @access  Private
+router.post('/generate-experience', async (req, res) => {
+    try {
+        const { jobTitle, lang } = req.body;
+
+        if (!jobTitle) {
+            return res.status(400).json({ error: 'İş unvanı gereklidir.' });
+        }
+
+        const result = await aiService.generateExperience(jobTitle, lang);
+        res.json({ success: true, ...result });
+    } catch (error) {
+        console.error('AI Route Error:', error);
+        res.status(500).json({ error: 'AI servisi yanıt vermedi.' });
+    }
+});
+
+module.exports = router;

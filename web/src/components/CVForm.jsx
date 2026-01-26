@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Camera, Lock, User, Briefcase, GraduationCap, Wrench, Plus, Trash2, Languages, Link as LinkIcon, Mail, Phone, MapPin, Globe, Sparkles, Palette, Type, History, Settings as SettingsIcon, ChevronUp, ChevronDown, FolderKanban, Award, Check, Users, Heart, Layout as LayoutIcon, Search, Copy, QrCode, Share2, Image as ImageIcon, CalendarClock, RotateCcw, Play, GitBranch, BarChart3, Activity, Bell, MailOpen, FileText, Video, Quote, GripVertical, XCircle, Linkedin, Github, PenTool, SquareStack, Table, RefreshCw } from 'lucide-react'
 import { templates } from '../data/templates'
+import { aiAPI } from '../services/api'
 import QRCodeDisplay from './QRCodeDisplay'
 
 export default function CVForm({
@@ -13,6 +14,13 @@ export default function CVForm({
     const [templateSearch, setTemplateSearch] = useState('')
     const [linkCopied, setLinkCopied] = useState(false)
     const [activeWidgetId, setActiveWidgetId] = useState(null)
+
+    // AI States
+    const [showAIModal, setShowAIModal] = useState(false)
+    const [aiOptions, setAiOptions] = useState([])
+    const [aiLoading, setAiLoading] = useState(false)
+    const [aiTarget, setAiTarget] = useState(null) // { type: 'summary' | 'experience', id: optional }
+
     const isWebTemplate = selectedTemplate?.toLowerCase().includes('web')
     const webFontOptions = ['Inter', 'Space Grotesk', 'Sora', 'Playfair Display', 'Outfit', 'Poppins']
     const webPatternOptions = [
@@ -1060,7 +1068,7 @@ export default function CVForm({
         </div>
     )
 
-    const generateAISummary = () => {
+    const generateAISummary = async () => {
         if (!user) {
             const btn = document.getElementById('auth-modal-trigger')
             if (btn) {
@@ -1073,20 +1081,37 @@ export default function CVForm({
             document.getElementById('premium-panel-trigger')?.click()
             return
         }
-        const title = cvData.personal.title || 'Profesyonel'
-        const skills = cvData.skills.length > 0 ? cvData.skills.slice(0, 3).join(', ') : 'modern teknolojiler'
 
-        const templates = [
-            `${title} olarak ${skills} konularında derin uzmanlığa sahip, sonuç odaklı bir profesyonelim. Karmaşık problemleri çözme ve yenilikçi stratejiler geliştirme konusunda tutkuluyum.`,
-            `${skills} alanlarında uzmanlaşmış, ${title} rolünde 5+ yıllık deneyimli bir uzmanım. Süreç optimizasyonu ve ekip liderliği konularında kanıtlanmış bir geçmişe sahibim.`,
-            "Veri odaklı yaklaşımı benimseyen, sürekli öğrenmeye açık bir ${title}. ${skills} kullanarak iş değerini artıran projeler yönetiyorum."
-        ]
+        try {
+            setAiLoading(true)
+            setShowAIModal(true)
+            setAiTarget({ type: 'summary' })
+            setAiOptions([]) // Clear previous
 
-        const random = templates[Math.floor(Math.random() * templates.length)].replace('${title}', title).replace('${skills}', skills)
-        updatePersonal('summary', random)
+            const title = cvData.personal.title || 'Profesyonel'
+            const response = await aiAPI.generateSummary(title, 'Mid-Level', theme.language || 'tr')
+
+            if (response.success && response.options) {
+                setAiOptions(response.options)
+            } else {
+                // Fallback to mock if API fails or returns no options (should use toast in real app)
+                setAiOptions([
+                    `${title} olarak deneyimli ve sonuç odaklı bir profesyonelim.`,
+                    `Kariyerimde ${title} olarak değer yaratmaya odaklandım.`,
+                    `Yenilikçi çözümlerle ${title} pozisyonunda fark yaratıyorum.`
+                ])
+            }
+        } catch (error) {
+            console.error('AI Error:', error)
+            setAiOptions([
+                "AI servisine şu an ulaşılamıyor, lütfen tekrar deneyin.",
+            ])
+        } finally {
+            setAiLoading(false)
+        }
     }
 
-    const generateAIExperience = (id, company, position) => {
+    const generateAIExperience = async (id, company, position) => {
         if (!user) {
             const btn = document.getElementById('auth-modal-trigger')
             if (btn) {
@@ -1099,14 +1124,30 @@ export default function CVForm({
             document.getElementById('premium-panel-trigger')?.click()
             return
         }
-        const suggestions = [
-            `${position} olarak ${company} bünyesinde verimliliği %25 artıran yeni süreçler tasarladım ve uyguladım.`,
-            "Çapraz fonksiyonel ekiplerle işbirliği yaparak projelerin zamanında ve bütçe dahilinde teslim edilmesini sağladım.",
-            "Modern teknolojileri kullanarak sistem performansını ölçeklendirdim ve kullanıcı memnuniyetini üst seviyeye çıkardım."
-        ]
-        const currentExp = cvData.experience.find(e => e.id === id)
-        const newDescription = (currentExp.description ? currentExp.description + "\n" : "") + suggestions[Math.floor(Math.random() * suggestions.length)]
-        updateExperience(id, 'description', newDescription)
+
+        try {
+            setAiLoading(true)
+            setShowAIModal(true)
+            setAiTarget({ type: 'experience', id })
+            setAiOptions([])
+
+            const response = await aiAPI.generateExperience(position, theme.language || 'tr')
+
+            if (response.success && response.options) {
+                setAiOptions(response.options)
+            } else {
+                setAiOptions([
+                    `${position} olarak ${company} bünyesinde verimliliği artıran süreçler geliştirdim.`,
+                    `Projelerin zamanında teslim edilmesini sağladım.`,
+                    `Yeni teknolojiler kullanarak sistem performansını iyileştirdim.`
+                ])
+            }
+        } catch (error) {
+            console.error('AI Error:', error)
+            setAiOptions(["AI servisine ulaşılamıyor."])
+        } finally {
+            setAiLoading(false)
+        }
     }
 
     const suggestSkills = () => {
@@ -2574,6 +2615,62 @@ export default function CVForm({
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Buluta Kaydedildi
             </div>
+            {/* AI Modal */}
+            {showAIModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="w-full max-w-lg bg-[#0f1115] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-cyan-400" />
+                                AI Asistanı
+                            </h3>
+                            <button onClick={() => setShowAIModal(false)} className="text-slate-400 hover:text-white">
+                                <XCircle className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                            {aiLoading ? (
+                                <div className="py-12 flex flex-col items-center justify-center gap-4 text-center">
+                                    <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                                    <p className="text-sm text-slate-400 animate-pulse">
+                                        Yapay zeka içeriğinizi oluşturuyor...
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    <p className="text-xs text-slate-500 font-medium mb-2 uppercase tracking-widest">
+                                        ÖNERİLEN İÇERİKLER
+                                    </p>
+                                    {aiOptions.map((option, idx) => (
+                                        <div
+                                            key={idx}
+                                            onClick={() => {
+                                                if (aiTarget?.type === 'summary') {
+                                                    updatePersonal('summary', option)
+                                                } else if (aiTarget?.type === 'experience' && aiTarget?.id) {
+                                                    const currentExp = cvData.experience.find(e => e.id === aiTarget.id)
+                                                    const newDesc = (currentExp?.description ? currentExp.description + "\n\n" : "") + option
+                                                    updateExperience(aiTarget.id, 'description', newDesc)
+                                                }
+                                                setShowAIModal(false)
+                                            }}
+                                            className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-cyan-500/10 hover:border-cyan-500/30 cursor-pointer transition-all group"
+                                        >
+                                            <p className="text-sm text-slate-300 group-hover:text-white leading-relaxed">
+                                                {option}
+                                            </p>
+                                        </div>
+                                    ))}
+                                    {aiOptions.length === 0 && (
+                                        <p className="text-center text-slate-500 py-4">Sonuç bulunamadı.</p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

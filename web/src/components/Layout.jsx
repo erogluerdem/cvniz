@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import React, { useState, useEffect, useRef } from 'react'
 import CookieConsent from './CookieConsent'
 import NotificationBell from './NotificationBell'
+import LanguageSwitcher from './LanguageSwitcher'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Layout() {
@@ -220,6 +221,11 @@ export default function Layout() {
                             </>
                         )}
 
+                        {/* Language Switcher */}
+                        <div className="hidden md:block">
+                            <LanguageSwitcher />
+                        </div>
+
                         {/* Theme Toggle */}
                         <button
                             onClick={toggleTheme}
@@ -278,6 +284,9 @@ export default function Layout() {
                                     Giriş Yap
                                 </Link>
                             )}
+                            <div className="px-4 py-2">
+                                <LanguageSwitcher />
+                            </div>
                         </nav>
                     </div>
                 )}

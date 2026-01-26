@@ -1,0 +1,40 @@
+{
+    "common": {
+        "loading": "Yükleniyor...",
+        "error": "Bir hata oluştu",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "back": "Geri",
+        "download": "İndir",
+        "share": "Paylaş",
+        "copy": "Kopyala",
+        "copied": "Kopyalandı",
+        "print": "Yazdır"
+    },
+    "nav": {
+        "dashboard": "Panel",
+        "cvs": "Özgeçmişler",
+        "templates": "Şablonlar",
+        "payment": "Ödemeler",
+        "settings": "Ayarlar",
+        "support": "Destek",
+        "admin": "Yönetici",
+        "logout": "Çıkış Yap"
+    },
+    "auth": {
+        "login": "Giriş Yap",
+        "register": "Kayıt Ol",
+        "email": "E-posta",
+        "password": "Şifre",
+        "forgotPassword": "Şifremi Unuttum"
+    },
+    "ai": {
+        "assistant": "AI Asistanı",
+        "generate": "Oluştur",
+        "improve": "İyileştir",
+        "summaryPrompt": "Özet Oluştur",
+        "experiencePrompt": "Deneyim Yaz"
+    }
+}

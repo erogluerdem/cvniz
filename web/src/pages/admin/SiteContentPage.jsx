@@ -66,10 +66,10 @@ export default function SiteContentPage() {
     const handleSave = async () => {
         setSaving(true)
         try {
-            const response = await adminAPI.updateSettings({
-                key: 'landing_page_content',
-                value: content
-            })
+            const response = await adminAPI.updateSetting(
+                'landing_page_content',
+                content
+            )
             if (response.success) {
                 alert('İçerik başarıyla güncellendi!')
             }

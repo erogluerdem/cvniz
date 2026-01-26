@@ -99,6 +99,7 @@ export default function EditorPage() {
     const [showVersionModal, setShowVersionModal] = useState(false)
     const [showLinkedInModal, setShowLinkedInModal] = useState(false)
     const [showCVImporter, setShowCVImporter] = useState(false)
+    const [showUpsellModal, setShowUpsellModal] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
 
     // Update local theme when template changes to use admin defaults

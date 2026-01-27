@@ -732,7 +732,7 @@ export default function EditorPage() {
                                 className={`shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all relative group ${isSelected ? selectedCard : defaultCard}`}
                                 title={t.name}
                             >
-                                <span className="text-xl mb-0.5">{t.emoji}</span>
+                                <span className="text-xl mb-0.5">{t.emoji || '📄'}</span>
                                 <div className="flex gap-0.5 w-6 h-[2px]">
                                     <div className={`h-full flex-1 rounded-full ${isSelected ? (isDayMode ? 'bg-slate-900' : 'bg-white') : isDayMode ? 'bg-slate-200 group-hover:bg-slate-300' : 'bg-slate-700 group-hover:bg-slate-500'}`} />
                                     <div className={`h-full flex-1 rounded-full ${isSelected ? (isDayMode ? 'bg-slate-500/60' : 'bg-white/50') : isDayMode ? 'bg-slate-100' : 'bg-slate-800'}`} />

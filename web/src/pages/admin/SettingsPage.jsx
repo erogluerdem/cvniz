@@ -60,6 +60,16 @@ export default function SettingsPage() {
                     ins_link: '',
                     li_link: '',
                     max_cv_per_user: '3',
+                    // Payment Defaults
+                    iyzico_api_key: '',
+                    iyzico_secret_key: '',
+                    iyzico_base_url: 'https://api.iyzipay.com',
+                    stripe_public_key: '',
+                    stripe_secret_key: '',
+                    stripe_webhook_secret: '',
+                    bank_name: '',
+                    bank_iban: '',
+                    bank_holder: '',
                     ...settingsMap
                 })
             }
@@ -281,16 +291,45 @@ export default function SettingsPage() {
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <div className="space-y-8">
                                         {renderSettingField('premium_price', 'PREMIUM FİYAT', 'Aylık Pro paket aboneliği ücreti', 'number')}
+                                        {renderSettingField('currency', 'PARA BİRİMİ', 'Ödeme sistemi için temel döviz kodu')}
+
+                                        <div className="pt-6 border-t border-white/5">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <CreditCard className="w-4 h-4 text-emerald-400" />
+                                                <span className="text-[10px] font-black text-white uppercase tracking-widest">Sanal POS (Iyzico)</span>
+                                            </div>
+                                            {renderSettingField('iyzico_api_key', 'IYZICO API KEY', 'Canlı veya Test API Anahtarı', 'password')}
+                                            {renderSettingField('iyzico_secret_key', 'IYZICO SECRET KEY', 'Güvenlik Anahtarı', 'password')}
+                                            {renderSettingField('iyzico_base_url', 'BASE URL', 'https://api.iyzipay.com')}
+                                        </div>
                                     </div>
                                     <div className="space-y-8">
-                                        {renderSettingField('currency', 'PARA BİRİMİ', 'Ödeme sistemi için temel döviz kodu')}
+                                        <div className="pt-0">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Globe className="w-4 h-4 text-emerald-400" />
+                                                <span className="text-[10px] font-black text-white uppercase tracking-widest">Stripe Entegrasyonu</span>
+                                            </div>
+                                            {renderSettingField('stripe_public_key', 'STRIPE PUBLIC KEY', 'Yayınlanabilir Anahtar')}
+                                            {renderSettingField('stripe_secret_key', 'STRIPE SECRET KEY', 'Gizli Anahtar', 'password')}
+                                            {renderSettingField('stripe_webhook_secret', 'WEBHOOK SECRET', 'Webhook İmzalama Anahtarı', 'password')}
+                                        </div>
+
+                                        <div className="pt-6 border-t border-white/5">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Database className="w-4 h-4 text-emerald-400" />
+                                                <span className="text-[10px] font-black text-white uppercase tracking-widest">Banka Havale Bilgileri</span>
+                                            </div>
+                                            {renderSettingField('bank_name', 'BANKA ADI', 'Örn: Ziraat Bankası')}
+                                            {renderSettingField('bank_iban', 'IBAN NO', 'TRXX ....')}
+                                            {renderSettingField('bank_holder', 'HESAP SAHİBİ', 'Ad Soyad / Firma Ünvanı')}
+                                        </div>
                                     </div>
                                     <div className="md:col-span-2 p-6 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10 flex items-center gap-5">
                                         <div className="p-3 rounded-2xl bg-emerald-500/20">
                                             <AlertTriangle className="w-6 h-6 text-emerald-400" />
                                         </div>
                                         <p className="text-[10px] text-emerald-200/60 font-black uppercase tracking-widest leading-relaxed">
-                                            Ödeme ayarlarındaki değişiklikler anında aktif olur. Lütfen POS sağlayıcınızla fiyatların eşleştiğinden emin olun.
+                                            Ödeme ayarlarındaki değişiklikler anında aktif olur. Lütfen POS sağlayıcınızla fiyatların eşleştiğinden emin olun. Hassas anahtarlar şifrelenerek saklanır.
                                         </p>
                                     </div>
                                 </div>

@@ -23,12 +23,7 @@ export default function CheckoutPage() {
 
     const [couponCode, setCouponCode] = useState('')
     const [couponError, setCouponError] = useState('')
-    const [cardData, setCardData] = useState({
-        cardNumber: '',
-        cardName: '',
-        expiry: '',
-        cvv: ''
-    })
+    const [iyzicoHtml, setIyzicoHtml] = useState(null) // New state for Iyzico content
     const [errors, setErrors] = useState({})
     const [paymentSuccess, setPaymentSuccess] = useState(false)
     const [paymentResult, setPaymentResult] = useState(null)
@@ -123,37 +118,22 @@ export default function CheckoutPage() {
         }
     }, [user, navigate])
 
-    const formatCardNumber = (value) => {
-        const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
-        const matches = v.match(/\d{4,16}/g)
-        const match = (matches && matches[0]) || ''
-        const parts = []
-        for (let i = 0, len = match.length; i < len; i += 4) {
-            parts.push(match.substring(i, i + 4))
+    // Script Execution Effect for Iyzico
+    useEffect(() => {
+        if (iyzicoHtml) {
+            const container = document.getElementById('iyzico-container');
+            if (container) {
+                container.innerHTML = iyzicoHtml;
+                const scripts = container.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            }
         }
-        return parts.length ? parts.join(' ') : value
-    }
-
-    const formatExpiry = (value) => {
-        const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
-        if (v.length >= 2) {
-            return v.substring(0, 2) + '/' + v.substring(2, 4)
-        }
-        return v
-    }
-
-    const handleCardChange = (field, value) => {
-        let formattedValue = value
-        if (field === 'cardNumber') {
-            formattedValue = formatCardNumber(value)
-        } else if (field === 'expiry') {
-            formattedValue = formatExpiry(value)
-        } else if (field === 'cvv') {
-            formattedValue = value.replace(/[^0-9]/g, '').slice(0, 4)
-        }
-        setCardData(prev => ({ ...prev, [field]: formattedValue }))
-        setErrors(prev => ({ ...prev, [field]: '' }))
-    }
+    }, [iyzicoHtml])
 
     const handleApplyCoupon = () => {
         if (!couponCode.trim()) return
@@ -166,41 +146,17 @@ export default function CheckoutPage() {
         }
     }
 
-    const validateForm = () => {
-        const newErrors = {}
-
-        if (!cardData.cardNumber || cardData.cardNumber.replace(/\s/g, '').length < 16) {
-            newErrors.cardNumber = 'Geçerli bir kart numarası girin'
-        }
-        if (!cardData.cardName || cardData.cardName.length < 3) {
-            newErrors.cardName = 'Kart üzerindeki ismi girin'
-        }
-        if (!cardData.expiry || cardData.expiry.length < 5) {
-            newErrors.expiry = 'Geçerli bir son kullanma tarihi girin'
-        }
-        if (!cardData.cvv || cardData.cvv.length < 3) {
-            newErrors.cvv = 'CVV kodunu girin'
-        }
-
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        if (!validateForm()) return
-
-        const result = await processPayment({
-            cardNumber: cardData.cardNumber.replace(/\s/g, ''),
-            cardName: cardData.cardName,
-            expiry: cardData.expiry,
-            cvv: cardData.cvv
-        })
+    const handlePaymentInit = async () => {
+        const result = await processPayment({}); // No card data needed anymore
 
         if (result.success) {
-            setPaymentSuccess(true)
-            setPaymentResult(result.payment)
+            if (result.htmlContent) {
+                setIyzicoHtml(result.htmlContent);
+            } else {
+                // Fallback if direct success (not likely for Iyzico)
+                setPaymentSuccess(true);
+                setPaymentResult(result.payment);
+            }
         } else {
             setErrors({ submit: result.error })
         }
@@ -362,25 +318,24 @@ export default function CheckoutPage() {
                             </div>
 
                             {paymentMethod === 'card' ? (
-                                <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in">
+                                <div className="space-y-4 animate-fade-in">
                                     <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-200 text-sm mb-4 flex items-start gap-3">
                                         <Shield className="w-5 h-5 shrink-0" />
-                                        <p>Ödemeniz <strong>Iyzico / PayTR</strong> güvencesiyle 256-bit SSL şifreleme ile işlenecektir. Kart bilgileriniz sistemimizde saklanmaz.</p>
+                                        <p>Ödemeniz <strong>Iyzico</strong> güvencesiyle işlenecektir. Aşağıdaki butona tıkladığınızda güvenli ödeme formu açılacaktır.</p>
                                     </div>
 
-                                    {/* Card input simulation (or redirect info) */}
-                                    <div className="text-center py-8">
-                                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <CreditCard className="w-8 h-8 text-gray-400" />
-                                        </div>
-                                        <p className="text-gray-300 text-sm mb-6 max-w-xs mx-auto">
-                                            "Öde" butonuna tıkladığınızda güvenli ödeme sayfasına yönlendirileceksiniz.
-                                        </p>
-
-                                        {/* Mock Simulation Buttons for Development */}
-                                        <div className="text-xs text-gray-500 mb-4 bg-black/20 p-2 rounded">
-                                            (Geliştirici Notu: Gerçek entegrasyonda burası Iyzico formunu açar)
-                                        </div>
+                                    {/* Iyzico Container */}
+                                    <div id="iyzico-container" className="min-h-[100px]">
+                                        {!iyzicoHtml && (
+                                            <div className="text-center py-8">
+                                                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <CreditCard className="w-8 h-8 text-gray-400" />
+                                                </div>
+                                                <p className="text-gray-300 text-sm mb-6 max-w-xs mx-auto">
+                                                    Devam etmek için aşağıdaki butona tıklayın.
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {errors.submit && (
@@ -390,24 +345,26 @@ export default function CheckoutPage() {
                                         </div>
                                     )}
 
-                                    <button
-                                        type="submit"
-                                        disabled={isProcessing}
-                                        className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-lg flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-purple-500 transition-all disabled:opacity-50 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95"
-                                    >
-                                        {isProcessing ? (
-                                            <>
-                                                <Loader2 className="w-5 h-5 animate-spin" />
-                                                Yönlendiriliyor...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Lock className="w-5 h-5" />
-                                                {finalPrice}₺ Güvenli Öde
-                                            </>
-                                        )}
-                                    </button>
-                                </form>
+                                    {!iyzicoHtml && (
+                                        <button
+                                            onClick={handlePaymentInit}
+                                            disabled={isProcessing}
+                                            className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-lg flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-purple-500 transition-all disabled:opacity-50 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95"
+                                        >
+                                            {isProcessing ? (
+                                                <>
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                    Ödeme Formu Hazırlanıyor...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Lock className="w-5 h-5" />
+                                                    {finalPrice}₺ Güvenli Öde
+                                                </>
+                                            )}
+                                        </button>
+                                    )}
+                                </div>
                             ) : (
                                 <div className="space-y-6 animate-fade-in">
                                     {/* Bank Accounts */}

@@ -14,6 +14,7 @@ const syncRoutes = require('./routes/sync');
 const userRoutes = require('./routes/user');
 const supportRoutes = require('./routes/support');
 const paymentRoutes = require('./routes/payment');
+const translationRoutes = require('./routes/translations');
 const adminRoutes = require('./routes/admin');
 const reviewRoutes = require('./routes/review');
 const contentRoutes = require('./routes/content');
@@ -31,11 +32,20 @@ const headshotRoutes = require('./routes/headshot');
 const aiRoutes = require('./routes/ai');
 const analyticsRoutes = require('./routes/analytics');
 const abTestRoutes = require('./routes/abtests');
+const seoRoutes = require('./routes/seo');
 
 const app = express();
 
 // Security Middleware
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable CSP for now to allow inline scripts/styles if needed
+}));
+
+// SEO Route (Must be before body parsers or API rate limits if we want it fast and separate?)
+// Actually, putting it before static files or API is good.
+// We mount it at /cv because users will share https://api.cvniz.com/cv/slug (or similar)
+// OR if using Nginx reverse proxy, request to /cv will come here.
+app.use('/cv', seoRoutes);
 
 // CORS Configuration
 const corsOptions = {
@@ -114,6 +124,7 @@ app.use('/api/sync', syncRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/translations', translationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/content', contentRoutes);
@@ -147,22 +158,27 @@ app.use((err, req, res, next) => {
     });
 });
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
+const startServer = async () => {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log('✅ MongoDB bağlantısı başarılı');
 
-        // Start Server
         const PORT = process.env.PORT || 3001;
-        app.listen(PORT, () => {
+        const server = app.listen(PORT, () => {
             console.log(`🚀 Server ${PORT} portunda çalışıyor`);
             console.log(`📍 Environment: ${process.env.NODE_ENV}`);
         });
-    })
-    .catch((err) => {
+        return server;
+    } catch (err) {
         console.error('❌ MongoDB bağlantı hatası:', err.message);
         process.exit(1);
-    });
+    }
+};
+
+// Only start server if run directly (not imported)
+if (require.main === module) {
+    startServer();
+}
 
 // Graceful Shutdown
 process.on('SIGTERM', () => {
@@ -174,3 +190,4 @@ process.on('SIGTERM', () => {
 });
 
 module.exports = app;
+

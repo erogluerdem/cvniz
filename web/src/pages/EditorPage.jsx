@@ -794,6 +794,7 @@ export default function EditorPage() {
                     {/* Download Button */}
                     <div className="relative" ref={exportMenuRef}>
                         <button
+                            id="download-btn"
                             onClick={() => setShowExportMenu(!showExportMenu)}
                             disabled={isExporting}
                             className={`flex items-center justify-center gap-2 p-2.5 md:px-6 md:py-2 rounded-xl text-xs font-black shadow-xl transition-all touch-target ${canDownload ? 'btn-premium shadow-cyan-500/20' : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/20'}`}
@@ -874,6 +875,7 @@ export default function EditorPage() {
                         {editorTabs.map((tab) => (
                             <button
                                 key={tab.id}
+                                id={`tab-${tab.id}`}
                                 onClick={() => {
                                     setActiveTab(tab.id)
                                     if (isMobile) {

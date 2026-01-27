@@ -544,5 +544,23 @@ export const templateAPI = {
         api.delete(`/templates/${id}`),
 };
 
+// ============ TRANSLATION API ============
+export const translationAPI = {
+    getAll: (locale) =>
+        api.get(`/translations/${locale}`),
+
+    getAllAdmin: () =>
+        api.get('/translations/admin/all'),
+
+    upsert: (data) =>
+        api.post('/translations', data),
+
+    delete: (id) =>
+        api.delete(`/translations/${id}`),
+
+    init: (translations) =>
+        api.post('/translations/init', { translations }),
+};
+
 export default api;
 

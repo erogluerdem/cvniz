@@ -8,8 +8,35 @@ export function TemplateProvider({ children }) {
     const [templates, setTemplates] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    const fetchTemplates = async () => {
+    // Cache duration: 24 hours
+    const CACHE_DURATION = 24 * 60 * 60 * 1000
+
+    const fetchTemplates = async (forceRefresh = false) => {
         setIsLoading(true)
+
+        // Try to load from cache first if not forcing refresh
+        if (!forceRefresh) {
+            const cached = localStorage.getItem('CVniz_templates_cache')
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached)
+                    const now = Date.now()
+                    if (now - parsed.timestamp < CACHE_DURATION) {
+                        setTemplates(parsed.data)
+                        setIsLoading(false)
+                        // Background refresh if cache is older than 1 hour to keep it fresh
+                        if (now - parsed.timestamp > 60 * 60 * 1000) {
+                            fetchTemplates(true).catch(console.error)
+                        }
+                        return
+                    }
+                } catch (e) {
+                    console.error('Cache parse error', e)
+                    localStorage.removeItem('CVniz_templates_cache')
+                }
+            }
+        }
+
         try {
             const response = await templateAPI.getAll()
             if (response.success) {
@@ -30,12 +57,20 @@ export function TemplateProvider({ children }) {
                     return staticT
                 })
                 setTemplates(merged)
+
+                // Save to cache
+                localStorage.setItem('CVniz_templates_cache', JSON.stringify({
+                    timestamp: Date.now(),
+                    data: merged
+                }))
             } else {
-                setTemplates(WEB_CV_TEMPLATES)
+                // If API fails but we have no cache or forced refresh, fallback to static
+                if (templates.length === 0) setTemplates(WEB_CV_TEMPLATES)
             }
         } catch (error) {
             console.error('Failed to fetch templates:', error)
-            setTemplates(WEB_CV_TEMPLATES)
+            // Fallback to static if empty
+            if (templates.length === 0) setTemplates(WEB_CV_TEMPLATES)
         } finally {
             setIsLoading(false)
         }
@@ -54,7 +89,7 @@ export function TemplateProvider({ children }) {
             templates,
             isLoading,
             getTemplateConfig,
-            refreshTemplates: fetchTemplates
+            refreshTemplates: () => fetchTemplates(true)
         }}>
             {children}
         </TemplateContext.Provider>

@@ -78,13 +78,79 @@ class AIService {
             : this.callOpenAI(client, prompt);
     }
 
-    async improveText(text, lang = 'tr') {
+    async improveText(text, lang = 'tr', mode = 'professional') {
         const client = await this.getClient();
         if (!client) return { options: [text, text + " (Improved)", text + " (Professional)"] };
 
+        let instruction = "";
+        if (lang === 'tr') {
+            switch (mode) {
+                case 'fix_grammar': instruction = "Gramer hatalarını düzelt ve akıcılığı artır."; break;
+                case 'shorter': instruction = "Metni daha kısa ve öz hale getir."; break;
+                case 'longer': instruction = "Metni daha detaylı ve açıklayıcı hale getir."; break;
+                case 'professional': default: instruction = "Metni CV için daha profesyonel, kurumsal ve etkileyici hale getir."; break;
+            }
+        } else {
+            switch (mode) {
+                case 'fix_grammar': instruction = "Fix grammar errors and improve flow."; break;
+                case 'shorter': instruction = "Make the text shorter and more concise."; break;
+                case 'longer': instruction = "Make the text more detailed and descriptive."; break;
+                case 'professional': default: instruction = "Make the text more professional and impactful for a CV."; break;
+            }
+        }
+
         const prompt = lang === 'tr'
-            ? `Aşağıdaki metni CV için daha profesyonel, kurumsal ve etkileyici hale getir. 3 farklı varyasyon üret. JSON formatında 'options' array'i dön:\n\n"${text}"\n\nSadece JSON dön.`
-            : `Rewrite the following text to be more professional and impactful for a CV. Generate 3 variations. Return a JSON object with an 'options' array:\n\n"${text}"\n\nReturn only JSON.`;
+            ? `${instruction} 3 farklı varyasyon üret. JSON formatında 'options' array'i dön. Metin: "${text}"\n\nSadece JSON dön.`
+            : `${instruction} Generate 3 variations. Return a JSON object with an 'options' array. Text: "${text}"\n\nReturn only JSON.`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    async generateCoverLetter(params) {
+        const { jobTitle, company, tone, cvData, lang = 'tr' } = params;
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const candidateName = cvData?.personal?.fullName || (lang === 'tr' ? 'Aday' : 'Candidate');
+        const experience = cvData?.experience || [];
+        const skills = cvData?.skills || [];
+
+        const prompt = lang === 'tr'
+            ? `Sen profesyonel bir CV ve Ön Yazı uzmanısın. Aşağıdaki bilgilere göre "${company}" şirketindeki "${jobTitle}" pozisyonu için etkileyici bir ön yazı (cover letter) yaz.
+            
+            ADAY BİLGİLERİ:
+            Ad: ${candidateName}
+            Deneyim: ${JSON.stringify(experience.slice(0, 2))}
+            Yetenekler: ${JSON.stringify(skills.slice(0, 8))}
+            
+            TON: ${tone || 'Kurumsal'} (Resmi, Samimi veya Özgüvenli olabilir)
+            
+            KURALLAR:
+            1. Ön yazı "Sayın Yetkili" veya benzeri uygun bir hitapla başlasın.
+            2. 3-4 paragraf olsun.
+            3. Adayın deneyimlerini iş ilanıyla ilişkilendir.
+            4. Şablonsal ifadelerden kaçın, özgün olsun.
+            5. JSON formatında "content" alanı içinde tek bir string olarak dön. Satır sonları için \\n kullan. Sadece JSON dön.`
+
+            : `You are a professional CV writer. Write an impressive cover letter for the "${jobTitle}" position at "${company}".
+            
+            CANDIDATE INFO:
+            Name: ${candidateName}
+            Experience: ${JSON.stringify(experience.slice(0, 2))}
+            Skills: ${JSON.stringify(skills.slice(0, 8))}
+            
+            TONE: ${tone || 'Professional'}
+            
+            RULES:
+            1. Start with appropriate greeting.
+            2. 3-4 paragraphs.
+            3. Connect experience to the job.
+            4. Return a JSON object with a single "content" field containing the letter. Use \\n for newlines. Return only JSON.`;
 
         return this.provider === 'google'
             ? this.callGoogle(prompt)

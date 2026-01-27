@@ -153,7 +153,7 @@ export function PaymentProvider({ children }) {
         setAppliedCoupon(null)
     }
 
-    // Process payment (simulation)
+    // Process payment (Real Iyzico Init)
     const processPayment = async (paymentData) => {
         if (!user) {
             return { success: false, error: 'Lütfen giriş yapın' }
@@ -165,45 +165,35 @@ export function PaymentProvider({ children }) {
 
         setIsProcessing(true)
 
-        // Simulate payment processing
-        await new Promise(resolve => setTimeout(resolve, 2000))
-
-        // Send to backend
         try {
-            const response = await paymentAPI.process({
+            const finalPrice = calculatePrice(selectedPlan, billingCycle, appliedCoupon);
+
+            const response = await paymentAPI.init({
                 planId: selectedPlan.id,
                 planName: selectedPlan.name,
                 billingCycle,
                 amount: finalPrice,
-                cardLast4: paymentData.cardNumber.slice(-4),
-                couponCode: appliedCoupon?.code || null
+                price: finalPrice.toString(), // Iyzico expects string usually, but verified backend handles it
+                user: user
             })
 
             if (response.success) {
-                const payment = response.payment
-                setPayments(prev => [payment, ...prev])
-
-                // Update auth context
-                if (updateUser) {
-                    updateUser({
-                        ...user,
-                        isPremium: true,
-                        premiumPlan: selectedPlan.id
-                    })
-                }
-
+                // Return the HTML content for CheckoutPage to render
                 setIsProcessing(false)
-                setSelectedPlan(null)
-                setAppliedCoupon(null)
-
-                return { success: true, payment }
+                return {
+                    success: true,
+                    htmlContent: response.htmlContent,
+                    paymentPageUrl: response.paymentPageUrl,
+                    token: response.token
+                }
             } else {
                 setIsProcessing(false)
-                return { success: false, error: response.error }
+                return { success: false, error: response.error || 'Ödeme başlatılamadı' }
             }
         } catch (error) {
             setIsProcessing(false)
-            return { success: false, error: error.message }
+            console.error(error);
+            return { success: false, error: error.message || 'Ödeme hatası' }
         }
     }
 

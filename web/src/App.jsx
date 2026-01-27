@@ -30,6 +30,7 @@ import { SubscriptionProvider } from './context/SubscriptionContext'
 import { GiftCardProvider } from './context/GiftCardContext'
 import { AffiliateProvider } from './context/AffiliateContext'
 import { TemplateProvider } from './context/TemplateContext'
+import { TourProvider } from './context/TourContext'
 
 // Layout
 import Layout from './components/Layout'
@@ -358,80 +359,82 @@ export default function App() {
                         <CVProvider>
                             <CoverLetterProvider>
                                 <TranslationProvider>
-                                    <AnalyticsProvider>
-                                        <HeatmapProvider>
-                                            <EnterpriseProvider>
-                                                <ReviewProvider>
-                                                    <JobBoardProvider>
-                                                        <WhiteLabelProvider>
-                                                            <PaymentProvider>
-                                                                <SubscriptionProvider>
-                                                                    <GiftCardProvider>
-                                                                        <AffiliateProvider>
-                                                                            <CampaignProvider>
-                                                                                <ABTestProvider>
-                                                                                    <SupportProvider>
-                                                                                        <AdminNotificationProvider>
-                                                                                            <SiteContentProvider>
-                                                                                                <InterviewProvider>
-                                                                                                    <SalaryProvider>
-                                                                                                        <CareerPathProvider>
-                                                                                                            <SkillsGapProvider>
-                                                                                                                <PortfolioProvider>
-                                                                                                                    <MarketingAutomationProvider>
-                                                                                                                        <PersistenceProvider>
-                                                                                                                            <ToastProvider>
-                                                                                                                                <TemplateProvider>
-                                                                                                                                    <div className={`min-h-screen transition-colors duration-500 ${isDayMode
-                                                                                                                                        ? 'bg-gradient-to-br from-white via-sky-50 to-amber-50 text-slate-900'
-                                                                                                                                        : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white'
-                                                                                                                                        }`}>
-                                                                                                                                        {/* Floating Orbs */}
-                                                                                                                                        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                                                                                                                                            <div className={`orb w-96 h-96 top-20 -left-48 animate-float ${isDayMode ? 'bg-sky-400/20' : 'bg-cyan-500/20'}`}></div>
-                                                                                                                                            <div className={`orb w-80 h-80 bottom-20 -right-40 animate-float-delayed ${isDayMode ? 'bg-amber-400/10' : 'bg-slate-200/10'}`}></div>
-                                                                                                                                            <div className={`orb w-64 h-64 top-1/2 left-1/3 animate-float ${isDayMode ? 'bg-sky-300/10' : 'bg-cyan-400/10'}`}></div>
+                                    <TourProvider>
+                                        <AnalyticsProvider>
+                                            <HeatmapProvider>
+                                                <EnterpriseProvider>
+                                                    <ReviewProvider>
+                                                        <JobBoardProvider>
+                                                            <WhiteLabelProvider>
+                                                                <PaymentProvider>
+                                                                    <SubscriptionProvider>
+                                                                        <GiftCardProvider>
+                                                                            <AffiliateProvider>
+                                                                                <CampaignProvider>
+                                                                                    <ABTestProvider>
+                                                                                        <SupportProvider>
+                                                                                            <AdminNotificationProvider>
+                                                                                                <SiteContentProvider>
+                                                                                                    <InterviewProvider>
+                                                                                                        <SalaryProvider>
+                                                                                                            <CareerPathProvider>
+                                                                                                                <SkillsGapProvider>
+                                                                                                                    <PortfolioProvider>
+                                                                                                                        <MarketingAutomationProvider>
+                                                                                                                            <PersistenceProvider>
+                                                                                                                                <ToastProvider>
+                                                                                                                                    <TemplateProvider>
+                                                                                                                                        <div className={`min-h-screen transition-colors duration-500 ${isDayMode
+                                                                                                                                            ? 'bg-gradient-to-br from-white via-sky-50 to-amber-50 text-slate-900'
+                                                                                                                                            : 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white'
+                                                                                                                                            }`}>
+                                                                                                                                            {/* Floating Orbs */}
+                                                                                                                                            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                                                                                                                                                <div className={`orb w-96 h-96 top-20 -left-48 animate-float ${isDayMode ? 'bg-sky-400/20' : 'bg-cyan-500/20'}`}></div>
+                                                                                                                                                <div className={`orb w-80 h-80 bottom-20 -right-40 animate-float-delayed ${isDayMode ? 'bg-amber-400/10' : 'bg-slate-200/10'}`}></div>
+                                                                                                                                                <div className={`orb w-64 h-64 top-1/2 left-1/3 animate-float ${isDayMode ? 'bg-sky-300/10' : 'bg-cyan-400/10'}`}></div>
+                                                                                                                                            </div>
+
+                                                                                                                                            {/* Scroll Progress */}
+                                                                                                                                            <ScrollToTop />
+
+                                                                                                                                            {/* Main Content */}
+                                                                                                                                            <div className="relative z-10">
+                                                                                                                                                <AppRoutes />
+                                                                                                                                            </div>
+
+                                                                                                                                            {/* Sales & Campaign Overlays */}
+                                                                                                                                            <ExitIntentPopup />
+                                                                                                                                            <StickyBottomCTA />
+                                                                                                                                            <WelcomePopup />
+                                                                                                                                            <AbandonedCartModal />
+                                                                                                                                            <MarketingPopup />
                                                                                                                                         </div>
-
-                                                                                                                                        {/* Scroll Progress */}
-                                                                                                                                        <ScrollToTop />
-
-                                                                                                                                        {/* Main Content */}
-                                                                                                                                        <div className="relative z-10">
-                                                                                                                                            <AppRoutes />
-                                                                                                                                        </div>
-
-                                                                                                                                        {/* Sales & Campaign Overlays */}
-                                                                                                                                        <ExitIntentPopup />
-                                                                                                                                        <StickyBottomCTA />
-                                                                                                                                        <WelcomePopup />
-                                                                                                                                        <AbandonedCartModal />
-                                                                                                                                        <MarketingPopup />
-                                                                                                                                    </div>
-                                                                                                                                </TemplateProvider>
-                                                                                                                            </ToastProvider>
-                                                                                                                        </PersistenceProvider>
-                                                                                                                    </MarketingAutomationProvider>
-                                                                                                                </PortfolioProvider>
-                                                                                                            </SkillsGapProvider>
-                                                                                                        </CareerPathProvider>
-                                                                                                    </SalaryProvider>
-                                                                                                </InterviewProvider>
-                                                                                            </SiteContentProvider>
-                                                                                        </AdminNotificationProvider>
-                                                                                    </SupportProvider>
-                                                                                </ABTestProvider>
-                                                                            </CampaignProvider>
-                                                                        </AffiliateProvider>
-                                                                    </GiftCardProvider>
-                                                                </SubscriptionProvider>
-                                                            </PaymentProvider>
-                                                        </WhiteLabelProvider>
-                                                    </JobBoardProvider>
-                                                </ReviewProvider>
-                                            </EnterpriseProvider>
-                                        </HeatmapProvider>
-                                    </AnalyticsProvider>
+                                                                                                                                    </TemplateProvider>
+                                                                                                                                </ToastProvider>
+                                                                                                                            </PersistenceProvider>
+                                                                                                                        </MarketingAutomationProvider>
+                                                                                                                    </PortfolioProvider>
+                                                                                                                </SkillsGapProvider>
+                                                                                                            </CareerPathProvider>
+                                                                                                        </SalaryProvider>
+                                                                                                    </InterviewProvider>
+                                                                                                </SiteContentProvider>
+                                                                                            </AdminNotificationProvider>
+                                                                                        </SupportProvider>
+                                                                                    </ABTestProvider>
+                                                                                </CampaignProvider>
+                                                                            </AffiliateProvider>
+                                                                        </GiftCardProvider>
+                                                                    </SubscriptionProvider>
+                                                                </PaymentProvider>
+                                                            </WhiteLabelProvider>
+                                                        </JobBoardProvider>
+                                                    </ReviewProvider>
+                                                </EnterpriseProvider>
+                                            </HeatmapProvider>
+                                        </AnalyticsProvider>
+                                    </TourProvider>
                                 </TranslationProvider>
                             </CoverLetterProvider>
                         </CVProvider>

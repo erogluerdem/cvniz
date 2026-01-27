@@ -3,6 +3,7 @@ import { Camera, Lock, User, Briefcase, GraduationCap, Wrench, Plus, Trash2, Lan
 import { templates } from '../data/templates'
 import { aiAPI } from '../services/api'
 import QRCodeDisplay from './QRCodeDisplay'
+import MagicWandButton from './MagicWandButton'
 
 export default function CVForm({
     cvData, setCvData, activeTab, setActiveTab, isPremium, cvName, setCvName,
@@ -1248,12 +1249,19 @@ export default function CVForm({
                             icon={Sparkles}
                             section="personal_summary"
                         />
-                        <button
-                            onClick={generateAISummary}
-                            className="absolute top-0 right-0 py-1 px-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex items-center gap-2"
-                        >
-                            <Sparkles className="w-3 h-3" /> AI İLE YAZ
-                        </button>
+                        <div className="absolute top-0 right-0 flex gap-2">
+                            <MagicWandButton
+                                text={cvData.personal.summary}
+                                onImprove={(newText) => updatePersonal('summary', newText)}
+                                className="bg-white/5"
+                            />
+                            <button
+                                onClick={generateAISummary}
+                                className="py-1 px-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex items-center gap-2"
+                            >
+                                <Sparkles className="w-3 h-3" /> AI İLE YAZ
+                            </button>
+                        </div>
                     </div>
                     <TextInput
                         label="Ünvan"
@@ -1373,12 +1381,19 @@ export default function CVForm({
                                         placeholder="Sorumluluklarınız ve elde ettiğiniz başarılar..."
                                         section="experience"
                                     />
-                                    <button
-                                        onClick={() => generateAIExperience(exp.id, exp.company, exp.position)}
-                                        className="absolute top-0 right-0 py-1 px-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest hover:bg-purple-500/20 transition-all flex items-center gap-2"
-                                    >
-                                        <Sparkles className="w-3 h-3" /> AI ÖNERİSİ
-                                    </button>
+                                    <div className="absolute top-0 right-0 flex gap-2">
+                                        <MagicWandButton
+                                            text={exp.description}
+                                            onImprove={(newText) => updateExperience(exp.id, 'description', newText)}
+                                            className="bg-white/5"
+                                        />
+                                        <button
+                                            onClick={() => generateAIExperience(exp.id, exp.company, exp.position)}
+                                            className="py-1 px-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest hover:bg-purple-500/20 transition-all flex items-center gap-2"
+                                        >
+                                            <Sparkles className="w-3 h-3" /> AI ÖNERİSİ
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

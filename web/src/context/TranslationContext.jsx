@@ -53,17 +53,52 @@ export function TranslationProvider({ children }) {
     const { user } = useAuth()
     const { saveCV } = useCV()
     const [translating, setTranslating] = useState(false)
+    const [dynamicTranslations, setDynamicTranslations] = useState({})
+    const [currentLang, setCurrentLang] = useState('tr')
 
-    // Simple translation function using dictionary
+    // Fetch translations on mount and when lang changes
+    useEffect(() => {
+        // Initial load for current lang
+        loadTranslations(currentLang)
+    }, [currentLang])
+
+    const loadTranslations = async (lang) => {
+        try {
+            const data = await import('../services/api').then(m => m.translationAPI.getAll(lang))
+            setDynamicTranslations(prev => ({
+                ...prev,
+                [lang]: data
+            }))
+        } catch (error) {
+            console.error('Failed to load translations:', error)
+        }
+    }
+
+    const changeLanguage = (lang) => {
+        if (SUPPORTED_LANGUAGES[lang]) {
+            setCurrentLang(lang)
+            loadTranslations(lang)
+        }
+    }
+
+    // Simple translation function using dictionary + dynamic backend data
     const translateText = (text, targetLang) => {
-        if (!text || targetLang === 'tr') return text
+        if (!text) return text
+        const lang = targetLang || currentLang
+        if (lang === 'tr') return text
+
+        // Check dynamic backend translations first
+        // Assuming backend returns { "Orjinal Metin": "Translated Text" } map
+        if (dynamicTranslations[lang] && dynamicTranslations[lang][text]) {
+            return dynamicTranslations[lang][text]
+        }
 
         let translated = text
 
-        // Replace known terms
+        // Fallback to static dictionary
         for (const [term, translations] of Object.entries(TRANSLATIONS)) {
-            if (translations[targetLang]) {
-                translated = translated.replace(new RegExp(term, 'gi'), translations[targetLang])
+            if (translations[lang]) {
+                translated = translated.replace(new RegExp(term, 'gi'), translations[lang])
             }
         }
 
@@ -166,7 +201,12 @@ export function TranslationProvider({ children }) {
             translating,
             translateCV,
             saveTranslatedCV,
-            translateText
+            translateCV,
+            saveTranslatedCV,
+            translateText,
+            currentLang,
+            changeLanguage,
+            t: (key) => translateText(key, currentLang) // Helper for direct UI translation
         }}>
             {children}
         </TranslationContext.Provider>

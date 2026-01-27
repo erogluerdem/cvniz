@@ -5,6 +5,14 @@ const User = require('../models/User');
 const { authenticate, adminOnly } = require('../middleware/auth');
 const emailService = require('../services/EmailService');
 const smsService = require('../services/SmsService');
+const Iyzipay = require('iyzipay');
+
+// Iyzico Configuration (Sandbox)
+const iyzipay = new Iyzipay({
+    apiKey: process.env.IYZICO_API_KEY || 'sandbox-api-key',
+    secretKey: process.env.IYZICO_SECRET_KEY || 'sandbox-secret-key',
+    uri: process.env.IYZICO_URI || 'https://sandbox-api.iyzipay.com'
+});
 
 // @desc    Get all payments (Admin only)
 // @route   GET /api/payments
@@ -30,36 +38,148 @@ router.get('/my', authenticate, async (req, res) => {
     }
 });
 
-// @desc    Initialize Iyzico/PayTR Payment (Mock for now)
+// @desc    Initialize Iyzico Payment Form
 // @route   POST /api/payments/init
 // @access  Private
 router.post('/init', authenticate, async (req, res) => {
     try {
-        const { planId, planName, billingCycle, amount, provider = 'iyzico' } = req.body;
+        const { planId, planName, price, billingCycle, user } = req.body;
 
-        // In a real scenario, you would call Iyzico/PayTR API here to get the HTML content or Token.
-        // We will simulate a successful initialization returning a mock HTML form or redirect URL.
+        // Ensure price is a string for Iyzico (e.g. '49.90')
+        const paidPrice = parseFloat(price).toFixed(2);
 
-        const mockHtmlContent = `
-            <div style="text-align: center; padding: 50px; font-family: sans-serif;">
-                <h2>${provider === 'iyzico' ? 'Iyzico' : 'PayTR'} Güvenli Ödeme</h2>
-                <p><strong>${planName}</strong> planı için <strong>${amount} ₺</strong> tutarında ödeme alınıyor.</p>
-                <div style="margin-top: 20px; padding: 20px; border: 1px dashed #ccc; background: #f9f9f9;">
-                    <p>Bu bir simülasyon ekranıdır. Gerçek entegrasyonda burada Banka/Kart formu yer alır.</p>
-                    <button onclick="window.parent.postMessage({ status: 'success', planId: '${planId}' }, '*')" style="background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Başarılı Ödeme Simüle Et</button>
-                    <button onclick="window.parent.postMessage({ status: 'failed' }, '*')" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">Hatalı Ödeme Simüle Et</button>
-                </div>
-            </div>
-        `;
+        const request = {
+            locale: Iyzipay.LOCALE.TR,
+            conversationId: `CVNIZ-${req.user._id}-${Date.now()}`,
+            price: paidPrice,
+            paidPrice: paidPrice,
+            currency: Iyzipay.CURRENCY.TRY,
+            basketId: `BASKET-${Date.now()}`,
+            paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
+            callbackUrl: `${process.env.API_URL || 'http://localhost:3001/api'}/payments/callback`,
+            enabledInstallments: [1, 2, 3, 6, 9],
+            buyer: {
+                id: req.user._id.toString(),
+                name: req.user.name || 'Misafir',
+                surname: 'Kullanıcı',
+                gsmNumber: req.user.phone || '+905555555555',
+                email: req.user.email,
+                identityNumber: '11111111111', // Sandbox dummy
+                lastLoginDate: '2024-01-01 12:00:00',
+                registrationDate: '2024-01-01 12:00:00',
+                registrationAddress: 'Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1',
+                ip: req.ip,
+                city: 'Istanbul',
+                country: 'Turkey',
+                zipCode: '34732'
+            },
+            shippingAddress: {
+                contactName: req.user.name || 'Misafir',
+                city: 'Istanbul',
+                country: 'Turkey',
+                address: 'Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1',
+                zipCode: '34732'
+            },
+            billingAddress: {
+                contactName: req.user.name || 'Misafir',
+                city: 'Istanbul',
+                country: 'Turkey',
+                address: 'Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1',
+                zipCode: '34732'
+            },
+            basketItems: [
+                {
+                    id: planId,
+                    name: planName,
+                    category1: 'Premium Membership',
+                    category2: billingCycle,
+                    itemType: Iyzipay.BASKET_ITEM_TYPE.VIRTUAL,
+                    price: paidPrice
+                }
+            ]
+        };
 
-        res.json({
-            success: true,
-            htmlContent: mockHtmlContent,
-            paymentId: `MOCK-${Date.now()}`
+        iyzipay.checkoutFormInitialize.create(request, (err, result) => {
+            if (err || result.status !== 'success') {
+                console.error('Iyzico Init Error:', err || result.errorMessage);
+                return res.status(500).json({ error: 'Ödeme başlatılamadı.' });
+            }
+
+            res.json({
+                success: true,
+                htmlContent: result.checkoutFormContent,
+                token: result.token,
+                paymentPageUrl: result.paymentPageUrl // Optional redirect usage
+            });
         });
 
     } catch (error) {
-        res.status(500).json({ error: 'Ödeme başlatılamadı' });
+        console.error('Payment Error:', error);
+        res.status(500).json({ error: 'Ödeme servisi hatası.' });
+    }
+});
+
+// @desc    Iyzico Callback (POST from Iyzico)
+// @route   POST /api/payments/callback
+// @access  Public (Called by Iyzico)
+router.post('/callback', async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        iyzipay.checkoutForm.retrieve({
+            locale: Iyzipay.LOCALE.TR,
+            token: token
+        }, async (err, result) => {
+            if (err || result.status !== 'success' || result.paymentStatus !== 'SUCCESS') {
+                // Payment failed or user cancelled, redirect to frontend failure page
+                return res.redirect(`${process.env.FRONTEND_URL}/dashboard?payment=failed`);
+            }
+
+            // Payment Successful
+            const conversationId = result.conversationId;
+            // Extract userId from conversationId (Format: CVNIZ-userId-timestamp)
+            const parts = conversationId.split('-');
+            const userId = parts[1];
+
+            // Calculate expiration
+            // Ideally we should store the plan details in a temp "Order" table before init, 
+            // but for now we default to 1 month or check basket items if needed.
+            // Let's assume 30 days for simplicity or fetch plan from result.basketItems
+            const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+            // Save Payment Record
+            const payment = await Payment.create({
+                userId: userId,
+                userEmail: result.buyerEmail || 'unknown@email.com',
+                userName: 'Iyzico User',
+                planId: 'premium',
+                planName: 'Premium Plan (Iyzico)',
+                amount: result.paidPrice,
+                status: 'completed',
+                provider: 'iyzico',
+                transactionId: result.paymentId,
+                billingCycle: 'monthly', // Default assumption
+                expiresAt
+            });
+
+            // Activate User
+            const user = await User.findByIdAndUpdate(userId, {
+                isPremium: true,
+                premiumExpiresAt: expiresAt
+            });
+
+            // NOTIFICATIONS
+            if (user) {
+                await emailService.sendPaymentSuccess(user, payment);
+            }
+
+            // Redirect to frontend success page
+            return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/dashboard?payment=success`);
+        });
+
+    } catch (error) {
+        console.error('Callback Error:', error);
+        res.redirect(`${process.env.FRONTEND_URL}/dashboard?payment=error`);
     }
 });
 
@@ -99,49 +219,6 @@ router.post('/bank-transfer', authenticate, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Bildirim oluşturulamadı' });
-    }
-});
-
-// @desc    Callback/Success Handler for Iyzico Mock
-// @route   POST /api/payments/success
-// @access  Private
-router.post('/success', authenticate, async (req, res) => {
-    try {
-        const { planId, planName, billingCycle, amount, paymentId } = req.body;
-
-        // Verify paymentId with provider in real app
-
-        const expiresAt = billingCycle === 'lifetime'
-            ? null
-            : new Date(Date.now() + (billingCycle === 'yearly' ? 365 : 30) * 24 * 60 * 60 * 1000);
-
-        const payment = await Payment.create({
-            userId: req.user._id,
-            userEmail: req.user.email,
-            userName: req.user.name,
-            planId,
-            planName,
-            billingCycle,
-            amount,
-            status: 'completed',
-            provider: 'iyzico', // or dynamic
-            transactionId: paymentId || `TRX-${Date.now()}`,
-            expiresAt
-        });
-
-        // Activate Premium
-        await User.findByIdAndUpdate(req.user._id, {
-            isPremium: true,
-            premiumExpiresAt: expiresAt
-        });
-
-        // NOTIFICATIONS
-        await emailService.sendPaymentSuccess(req.user, payment);
-        await smsService.sendPaymentSuccess(req.user, payment);
-
-        res.status(201).json({ success: true, payment });
-    } catch (error) {
-        res.status(500).json({ error: 'Ödeme kaydedilemedi' });
     }
 });
 

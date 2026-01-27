@@ -53,54 +53,56 @@ export function CoverLetterProvider({ children }) {
 
         setGenerating(true)
 
-        // Simulate AI generation (in production, this would call an API)
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        setGenerating(true)
 
-        const tonePreset = TONE_PRESETS[tone] || TONE_PRESETS.formal
-        const fullName = cvData?.personal?.fullName || 'Aday'
-        const currentTitle = cvData?.personal?.title || 'Profesyonel'
-        const skills = cvData?.skills?.slice(0, 5).map(s => s.name).join(', ') || 'çeşitli beceriler'
-        const experience = cvData?.experience?.[0]
-        const experienceText = experience
-            ? `${experience.company} şirketinde ${experience.position} olarak çalıştım`
-            : 'sektörde deneyim kazandım'
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/ai/generate-cover-letter`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('CVniz_token')}`
+                },
+                body: JSON.stringify({
+                    jobTitle,
+                    company,
+                    tone,
+                    cvData,
+                    lang: 'tr'
+                })
+            })
 
-        // Generate cover letter content based on inputs
-        const content = `${tonePreset.greeting}
+            const data = await response.json()
 
-${company ? `${company} bünyesinde açık olan ` : ''}${jobTitle} pozisyonu için başvurumu sunarım. ${currentTitle} olarak ${experienceText} ve bu deneyimlerimle ekibinize değer katabileceğime inanıyorum.
+            if (!response.ok) {
+                throw new Error(data.error || 'Ön yazı oluşturulamadı')
+            }
 
-${jobDescription ? `İlanınızda belirtilen gereksinimleri incelediğimde, ${skills} konularındaki yetkinliklerimin bu pozisyon için oldukça uygun olduğunu gördüm. ` : ''}Kariyerim boyunca edindiğim ${skills} becerileri, bu rol için beni güçlü bir aday yapmaktadır.
+            const coverLetter = {
+                id: Date.now().toString(),
+                userId: user.id,
+                jobTitle,
+                company: company || 'Belirtilmedi',
+                tone,
+                content: data.content, // Content comes from backend AI
+                cvId: params.cvId || null,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            }
 
-${experience ? `${experience.company} şirketindeki deneyimim sırasında ${experience.description?.substring(0, 100) || 'önemli projeler yürüttüm'}. Bu süreçte kazandığım problem çözme ve takım çalışması becerileri, yeni pozisyonda da başarılı olmamı sağlayacaktır.` : 'Profesyonel yaşamım boyunca edindiğim deneyimler, bu pozisyonda başarılı olmamı sağlayacak güçlü bir temel oluşturmaktadır.'}
+            // Save to localStorage
+            const allLetters = JSON.parse(localStorage.getItem('CVniz_cover_letters') || '[]')
+            allLetters.push(coverLetter)
+            localStorage.setItem('CVniz_cover_letters', JSON.stringify(allLetters))
+            loadUserCoverLetters()
 
-${company ? `${company}'ın vizyonu ve ` : 'Şirketinizin '}sektördeki konumu beni heyecanlandırıyor. Bu ekibin bir parçası olarak hem kişisel gelişimime katkıda bulunmak hem de şirketin hedeflerine ulaşmasında aktif rol almak istiyorum.
+            setGenerating(false)
+            return { success: true, coverLetter }
 
-Başvurumu değerlendirmeniz için teşekkür eder, görüşme fırsatı için sabırsızlanıyorum.
-
-${tonePreset.closing}
-${fullName}`
-
-        const coverLetter = {
-            id: Date.now().toString(),
-            userId: user.id,
-            jobTitle,
-            company: company || 'Belirtilmedi',
-            tone,
-            content,
-            cvId: params.cvId || null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+        } catch (error) {
+            console.error('Cover Letter Generation Error:', error)
+            setGenerating(false)
+            return { success: false, error: error.message }
         }
-
-        // Save to localStorage
-        const allLetters = JSON.parse(localStorage.getItem('CVniz_cover_letters') || '[]')
-        allLetters.push(coverLetter)
-        localStorage.setItem('CVniz_cover_letters', JSON.stringify(allLetters))
-        loadUserCoverLetters()
-
-        setGenerating(false)
-        return { success: true, coverLetter }
     }
 
     // Update cover letter

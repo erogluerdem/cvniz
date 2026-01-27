@@ -33,18 +33,37 @@ router.post('/generate-summary', async (req, res) => {
     }
 });
 
+// @desc    Generate Cover Letter
+// @route   POST /api/ai/generate-cover-letter
+// @access  Private
+router.post('/generate-cover-letter', async (req, res) => {
+    try {
+        const { jobTitle, company, tone, cvData, lang } = req.body;
+
+        if (!jobTitle) {
+            return res.status(400).json({ error: 'İş unvanı gereklidir.' });
+        }
+
+        const result = await aiService.generateCoverLetter({ jobTitle, company, tone, cvData, lang });
+        res.json({ success: true, ...result });
+    } catch (error) {
+        console.error('AI Cover Letter Error:', error);
+        res.status(500).json({ error: 'Ön yazı oluşturulamadı.' });
+    }
+});
+
 // @desc    Improve Text
 // @route   POST /api/ai/improve-text
 // @access  Private
 router.post('/improve-text', async (req, res) => {
     try {
-        const { text, lang } = req.body;
+        const { text, lang, mode } = req.body;
 
         if (!text || text.length < 10) {
             return res.status(400).json({ error: 'Lütfen en az 10 karakterlik metin girin.' });
         }
 
-        const result = await aiService.improveText(text, lang);
+        const result = await aiService.improveText(text, lang, mode);
         res.json({ success: true, ...result });
     } catch (error) {
         console.error('AI Route Error:', error);

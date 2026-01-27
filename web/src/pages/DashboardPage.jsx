@@ -49,6 +49,7 @@ import ApplicationCRM from '../components/ApplicationCRM'
 import AIHeadshot from '../components/AIHeadshot'
 import InterviewCoachPro from '../components/InterviewCoachPro'
 import SalaryBenchmark from '../components/SalaryBenchmark'
+import AnalyticsModal from '../components/AnalyticsModal'
 
 // Revenue Features
 import SubscriptionManager from '../components/SubscriptionManager'
@@ -146,6 +147,10 @@ export default function DashboardPage() {
 
     // CV Importer State
     const [showCVImporter, setShowCVImporter] = useState(false)
+
+    // Analytics
+    const [showAnalyticsModal, setShowAnalyticsModal] = useState(false)
+    const [selectedCVForAnalytics, setSelectedCVForAnalytics] = useState(null)
 
     // Sample notifications
     const notifications = [
@@ -347,6 +352,11 @@ export default function DashboardPage() {
             <CareerTestModal
                 isOpen={showCareerTest}
                 onClose={() => setShowCareerTest(false)}
+            />
+            <AnalyticsModal
+                isOpen={showAnalyticsModal}
+                onClose={() => setShowAnalyticsModal(false)}
+                cv={selectedCVForAnalytics}
             />
 
             {/* Header */}
@@ -653,10 +663,13 @@ export default function DashboardPage() {
                                                         {formatTimeAgo(cv.updatedAt)}
                                                     </div>
                                                     {getCVViewStats && getCVViewStats(cv.id)?.total > 0 && (
-                                                        <div className="flex items-center gap-1 text-[10px] font-bold text-cyan-500/80 bg-cyan-500/5 px-2 py-0.5 rounded-full">
+                                                        <button
+                                                            onClick={() => { setSelectedCVForAnalytics(cv); setShowAnalyticsModal(true); }}
+                                                            className="flex items-center gap-1 text-[10px] font-bold text-cyan-500/80 bg-cyan-500/5 px-2 py-0.5 rounded-full hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                                                        >
                                                             <Eye className="w-3 h-3" />
                                                             {getCVViewStats(cv.id).total} Görüntülenme
-                                                        </div>
+                                                        </button>
                                                     )}
                                                 </div>
                                                 <div className="flex gap-2">

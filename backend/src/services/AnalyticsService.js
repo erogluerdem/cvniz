@@ -1,6 +1,7 @@
 const CVVisit = require('../models/CVVisit');
-const geoip = require('geoip-lite');
+const GeoService = require('./GeoService'); // Use the new service
 const UAParser = require('ua-parser-js');
+const mongoose = require('mongoose');
 
 class AnalyticsService {
 
@@ -13,8 +14,8 @@ class AnalyticsService {
             const parser = new UAParser(uaString);
             const result = parser.getResult();
 
-            // GeoIP Lookup
-            const geo = geoip.lookup(ip);
+            // GeoIP Lookup via GeoService
+            const geo = GeoService.getLocation(ip);
 
             const visitData = {
                 cvId,
@@ -22,20 +23,21 @@ class AnalyticsService {
                 ip: ip === '::1' ? '127.0.0.1' : ip,
 
                 deviceType: result.device.type || 'desktop',
-                browser: result.browser.name,
-                os: result.os.name,
+                browser: result.browser.name || 'Unknown',
+                os: result.os.name || 'Unknown',
                 ua: uaString,
 
                 country: geo?.country || 'Unknown',
                 city: geo?.city || 'Unknown',
-                region: geo?.region || 'Unknown'
+                region: geo?.region || 'Unknown', // geoip-lite might return 'region' code
+                timestamp: new Date()
             };
 
             const visit = await CVVisit.create(visitData);
             return visit;
         } catch (error) {
             console.error('Analytics Track Error:', error);
-            return null; // Fail silently to not block the user
+            return null; // Fail silently
         }
     }
 
@@ -52,7 +54,7 @@ class AnalyticsService {
         try {
             const totalViews = await CVVisit.countDocuments({ cvId });
 
-            // Unique Visitors (approximate by visitorId or IP)
+            // Unique Visitors (approximate by IP)
             const uniqueViews = (await CVVisit.distinct('ip', { cvId })).length;
 
             // Device Stats
@@ -61,12 +63,20 @@ class AnalyticsService {
                 { $group: { _id: '$deviceType', count: { $sum: 1 } } }
             ]);
 
-            // Location Stats (Top 5)
+            // Location Stats (Top 10)
             const locationStats = await CVVisit.aggregate([
                 { $match: { cvId: new mongoose.Types.ObjectId(cvId) } },
-                { $group: { _id: '$country', count: { $sum: 1 } } },
+                { $group: { _id: { country: '$country', city: '$city' }, count: { $sum: 1 } } },
                 { $sort: { count: -1 } },
-                { $limit: 5 }
+                { $limit: 10 },
+                {
+                    $project: {
+                        country: '$_id.country',
+                        city: '$_id.city',
+                        count: '$count',
+                        _id: 0
+                    }
+                }
             ]);
 
             // Daily Stats (Last 30 Days)
@@ -92,8 +102,8 @@ class AnalyticsService {
             // Recent Views
             const recentViews = await CVVisit.find({ cvId })
                 .sort({ timestamp: -1 })
-                .limit(10)
-                .select('timestamp country city deviceType browser os');
+                .limit(20)
+                .select('timestamp country city deviceType browser os duration');
 
             return {
                 totalViews,
@@ -112,13 +122,13 @@ class AnalyticsService {
     formatDeviceStats(stats) {
         const result = { desktop: 0, mobile: 0, other: 0 };
         stats.forEach(s => {
-            if (!s._id || s._id === 'desktop') result.desktop += s.count;
-            else if (s._id === 'mobile' || s._id === 'tablet') result.mobile += s.count;
+            const type = s._id ? s._id.toLowerCase() : 'desktop'; // Assume desktop if null
+            if (type === 'mobile' || type === 'tablet') result.mobile += s.count;
+            else if (type === 'desktop') result.desktop += s.count;
             else result.other += s.count;
         });
         return result;
     }
 }
 
-const mongoose = require('mongoose');
 module.exports = new AnalyticsService();

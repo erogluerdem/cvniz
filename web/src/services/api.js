@@ -456,6 +456,15 @@ export const aiAPI = {
         api.post('/ai/generate-experience', { jobTitle, lang }),
 };
 
+// ============ ANALYTICS API ============
+export const analyticsAPI = {
+    // Track a visit (usually called by public view) - handled by page load
+    track: (cvId, data) => api.post(`/analytics/track/${cvId}`, data),
+
+    // Get stats for a CV (Owner/Admin)
+    getStats: (cvId) => api.get(`/analytics/stats/${cvId}`),
+};
+
 // ============ AB TEST API ============
 export const abTestAPI = {
     getActive: (key, visitorId) =>

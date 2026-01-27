@@ -647,10 +647,10 @@ export default function HomePage() {
                             </div>
                             <div className="absolute -top-4 -right-4 glass-card rounded-xl p-3 z-20 animate-float-delayed hidden lg:block">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex -space-x-2">
-                                        <div className="w-6 h-6 rounded-full bg-cyan-500"></div>
-                                        <div className="w-6 h-6 rounded-full bg-cyan-300"></div>
-                                        <div className="w-6 h-6 rounded-full bg-slate-300"></div>
+                                    <div className="flex -space-x-3">
+                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
                                     </div>
                                     <div className="flex items-center gap-0.5">
                                         {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />)}

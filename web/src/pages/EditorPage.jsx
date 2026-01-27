@@ -17,6 +17,7 @@ import { sampleCVData, emptyCV } from '../data/sampleData'
 import { exportToPDF, printCV, exportToPNG, exportToJSON, exportToHTML, exportToDOCX } from '../utils/pdfExport'
 import { preloadTemplate } from '../templates/templateLoader'
 import { useTemplates } from '../context/TemplateContext'
+import { templates as pdfTemplates } from '../data/templates'
 import TemplateSwitcher from '../components/TemplateSwitcher'
 import AuthRequiredModal from '../components/AuthRequiredModal'
 import VersionHistoryModal from '../components/VersionHistoryModal'
@@ -716,7 +717,7 @@ export default function EditorPage() {
                     ref={scrollRef}
                     className={`hidden xl:flex flex-1 max-w-4xl mx-12 items-center gap-4 overflow-x-auto no-scrollbar px-4 h-14 border-x cursor-grab active:cursor-grabbing select-none ${isDayMode ? 'border-slate-200/80 bg-white/60 rounded-[18px] shadow-inner text-slate-700' : 'border-white/5'}`}
                 >
-                    {templates.map((t) => {
+                    {pdfTemplates.map((t) => {
                         const isSelected = selectedTemplate === t.id
                         const selectedCard = isDayMode
                             ? 'bg-sky-100 border-sky-300 text-slate-900 shadow-lg shadow-sky-200/80'

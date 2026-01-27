@@ -40,20 +40,31 @@ app.use(helmet());
 // CORS Configuration
 const corsOptions = {
     origin: function (origin, callback) {
-        const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [
+        // Define hardcoded allowed origins
+        const defaultAllowed = [
             'http://localhost:5173',
             'http://localhost:5174',
             'http://localhost:5175',
             'http://localhost:3000',
             'https://cvniz.com',
             'https://www.cvniz.com',
-            'https://admin.cvniz.com'
+            'https://admin.cvniz.com',
+            'https://api.cvniz.com'
         ];
+
+        // Get environment allowed origins
+        const envAllowed = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+
+        // Combine and deduplicate
+        const allowedOrigins = [...new Set([...defaultAllowed, ...envAllowed])];
+
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
+
         if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
             callback(null, true);
         } else {
+            console.log('CORS Blocked Origin:', origin);
             callback(new Error('Not allowed by CORS'));
         }
     },

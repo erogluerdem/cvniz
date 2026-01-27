@@ -50,8 +50,8 @@ app.use('/cv', seoRoutes);
 // CORS Configuration
 const corsOptions = {
     origin: function (origin, callback) {
-        // Define hardcoded allowed origins
-        'http://localhost:5173',
+        const defaultAllowed = [
+            'http://localhost:5173',
             'http://localhost:5174',
             'http://localhost:5175',
             'http://localhost:3000',
@@ -59,7 +59,8 @@ const corsOptions = {
             'https://www.cvniz.com',
             'https://admin.cvniz.com',
             'https://api.cvniz.com',
-            'https://cvniz.coolify.app' // Just in case accessing via default domain
+            'https://cvniz.coolify.app'
+        ];
 
         // Get environment allowed origins
         const envAllowed = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];

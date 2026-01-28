@@ -69,7 +69,7 @@ export default function EditorPage() {
     // Check if current template is premium
     const isTemplatePremium = useMemo(() => {
         const currentTemplate = getTemplateConfig(selectedTemplate)
-        return currentTemplate?.premium ?? false
+        return currentTemplate?.isPremium ?? false
     }, [selectedTemplate, getTemplateConfig])
 
     // Can user download? (Free template OR premium user)
@@ -1135,7 +1135,7 @@ export default function EditorPage() {
                                 <CVPreview
                                     cvData={cvData}
                                     template={selectedTemplate}
-                                    showWatermark={!isPremium}
+                                    showWatermark={isTemplatePremium && !isPremium}
                                     theme={theme}
                                     highlightedField={highlightedField}
                                 />

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { FileText, Eye, Save, Image, Edit, Type, Link, PlusCircle, Layout, Zap, DollarSign, Share2, Globe, Check, Loader2, ChevronRight, Trash2, Plus, Info, Sparkles, Shield, Download, Star, Quote, HelpCircle, MessageSquare, Activity } from 'lucide-react'
 import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
 
 export default function SiteContentPage() {
+    const { toast } = useToast()
     const [activeSection, setActiveSection] = useState('hero')
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -71,10 +73,10 @@ export default function SiteContentPage() {
                 content
             )
             if (response.success) {
-                alert('İçerik başarıyla güncellendi!')
+                toast.success('İçerik başarıyla güncellendi!')
             }
         } catch (error) {
-            alert('Kaydetme hatası: ' + error.message)
+            toast.error('Kaydetme hatası: ' + error.message)
         } finally {
             setSaving(false)
         }

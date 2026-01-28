@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Camera, Lock, User, Briefcase, GraduationCap, Wrench, Plus, Trash2, Languages, Link as LinkIcon, Mail, Phone, MapPin, Globe, Sparkles, Palette, Type, History, Settings as SettingsIcon, ChevronUp, ChevronDown, FolderKanban, Award, Check, Users, Heart, Layout as LayoutIcon, Search, Copy, QrCode, Share2, Image as ImageIcon, CalendarClock, RotateCcw, Play, GitBranch, BarChart3, Activity, Bell, MailOpen, FileText, Video, Quote, GripVertical, XCircle, Linkedin, Github, PenTool, SquareStack, Table, RefreshCw } from 'lucide-react'
 import { templates } from '../data/templates'
-import { aiAPI } from '../services/api'
+import { aiAPI, mediaAPI } from '../services/api'
+import { useToast } from '../context/ToastContext'
 import QRCodeDisplay from './QRCodeDisplay'
 import MagicWandButton from './MagicWandButton'
 
@@ -10,6 +11,7 @@ export default function CVForm({
     theme, setTheme, handleClearAll, setHighlightedField, user,
     selectedTemplate, setSelectedTemplate, cvId, versions = []
 }) {
+    const { toast } = useToast()
     const [newSkill, setNewSkill] = useState('')
     const [templateCategory, setTemplateCategory] = useState('Tümü')
     const [templateSearch, setTemplateSearch] = useState('')
@@ -785,15 +787,39 @@ export default function CVForm({
         }))
     }
 
-    const handlePhotoChange = (e) => {
+    const handlePhotoChange = async (e) => {
         if (!isPremium) return
         const file = e.target.files[0]
         if (file) {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                updatePersonal('photo', reader.result)
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error('Dosya boyutu 5MB\'dan küçük olmalıdır.')
+                return
             }
-            reader.readAsDataURL(file)
+
+            try {
+                const formData = new FormData()
+                formData.append('file', file)
+
+                const loadingToast = toast.loading('Fotoğraf yükleniyor...')
+
+                const response = await mediaAPI.upload(formData)
+
+                toast.dismiss(loadingToast)
+
+                if (response.success && response.media) {
+                    // Construct full URL
+                    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+                    const baseUrl = apiUrl.replace(/\/api$/, '')
+                    const fullUrl = `${baseUrl}${response.media.path}`
+
+                    updatePersonal('photo', fullUrl)
+                    toast.success('Fotoğraf yüklendi')
+                }
+            } catch (error) {
+                console.error('Photo upload error:', error)
+                toast.error('Fotoğraf yüklenemedi: ' + (error.response?.data?.message || error.message))
+            }
         }
     }
 

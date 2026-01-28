@@ -41,7 +41,7 @@ router.get('/', authenticate, adminOnly, async (req, res) => {
 // @route   POST /api/media/upload
 // @desc    Upload a file
 // @access  Private/Admin
-router.post('/upload', authenticate, adminOnly, upload.single('file'), async (req, res) => {
+router.post('/upload', authenticate, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'No file uploaded' });

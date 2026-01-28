@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const abTestService = require('../services/ABTestService');
-const { authenticate, isAdmin } = require('../middleware/auth');
+const { authenticate, adminOnly } = require('../middleware/auth');
 
 // @desc    Get active variant for a test
 // @route   GET /api/abtests/active/:key
@@ -42,7 +42,7 @@ router.post('/track', async (req, res) => {
 // @desc    Get all tests
 // @route   GET /api/abtests/admin/all
 // @access  Admin
-router.get('/admin/all', authenticate, isAdmin, async (req, res) => {
+router.get('/admin/all', authenticate, adminOnly, async (req, res) => {
     try {
         const tests = await abTestService.getAllTests();
         res.json({ success: true, tests });
@@ -54,7 +54,7 @@ router.get('/admin/all', authenticate, isAdmin, async (req, res) => {
 // @desc    Create test
 // @route   POST /api/abtests/admin
 // @access  Admin
-router.post('/admin', authenticate, isAdmin, async (req, res) => {
+router.post('/admin', authenticate, adminOnly, async (req, res) => {
     try {
         const test = await abTestService.createTest(req.body);
         res.json({ success: true, test });
@@ -66,7 +66,7 @@ router.post('/admin', authenticate, isAdmin, async (req, res) => {
 // @desc    Update test
 // @route   PUT /api/abtests/admin/:id
 // @access  Admin
-router.put('/admin/:id', authenticate, isAdmin, async (req, res) => {
+router.put('/admin/:id', authenticate, adminOnly, async (req, res) => {
     try {
         const test = await abTestService.updateTest(req.params.id, req.body);
         res.json({ success: true, test });
@@ -78,7 +78,7 @@ router.put('/admin/:id', authenticate, isAdmin, async (req, res) => {
 // @desc    Delete test
 // @route   DELETE /api/abtests/admin/:id
 // @access  Admin
-router.delete('/admin/:id', authenticate, isAdmin, async (req, res) => {
+router.delete('/admin/:id', authenticate, adminOnly, async (req, res) => {
     try {
         await abTestService.deleteTest(req.params.id);
         res.json({ success: true });

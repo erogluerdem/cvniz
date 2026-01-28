@@ -300,7 +300,8 @@ router.post('/settings', authenticate, adminOnly, async (req, res) => {
         await logger({ action: 'Sistem Ayarı Güncellendi', module: 'Ayarlar', details: { key, value }, req });
         res.json({ success: true, setting });
     } catch (error) {
-        res.status(500).json({ error: 'Ayar kaydedilemedi' });
+        console.error('Settings update error:', error);
+        res.status(500).json({ error: 'Ayar kaydedilemedi: ' + error.message });
     }
 });
 

@@ -79,6 +79,7 @@ const corsOptions = {
         }
     },
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-platform', 'x-admin-request'],
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));

@@ -117,6 +117,10 @@ app.get('/health', (req, res) => {
 // Static Files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Serve Frontend Static Files (Fix for 404 on assets)
+// This ensures that if the request hits the backend, it can serve the build files
+app.use(express.static(path.join(__dirname, '../../web/dist')));
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/cvs', cvRoutes);

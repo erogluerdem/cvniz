@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { COLORS } from '../constants';
+import { linking, navigationLinkingOptions } from './DeepLinkingConfig';
+import { useDeepLinking, useNotificationDeepLinking } from '../services/DeepLinkingService';
 
 // Components
 import CustomTabBar from '../components/CustomTabBar';
@@ -96,6 +100,7 @@ export default function AppNavigator() {
     const { user, loading } = useAuth();
     const { colors } = useTheme();
     const [showOnboarding, setShowOnboarding] = useState(null);
+    const navigationRef = React.useRef();
 
     useEffect(() => {
         checkOnboarding();
@@ -117,6 +122,20 @@ export default function AppNavigator() {
     if (loading || showOnboarding === null) {
         return <LoadingScreen colors={colors} />;
     }
+
+    return (
+        <NavigationContainer
+            ref={navigationRef}
+            linking={linking}
+            fallback={<LoadingScreen colors={colors} />}
+        >
+            <StackNavigator user={user} showOnboarding={showOnboarding} onOnboardingComplete={handleOnboardingComplete} colors={colors} />
+        </NavigationContainer>
+    );
+}
+
+// Stack Navigator Component
+function StackNavigator({ user, showOnboarding, onOnboardingComplete, colors }) {
 
     return (
         <Stack.Navigator
@@ -147,7 +166,7 @@ export default function AppNavigator() {
                 </>
             ) : showOnboarding ? (
                 <Stack.Screen name="Auth" options={{ headerShown: false }}>
-                    {(props) => <AuthStack {...props} onOnboardingComplete={handleOnboardingComplete} />}
+                    {(props) => <AuthStack {...props} onOnboardingComplete={onOnboardingComplete} />}
                 </Stack.Screen>
             ) : (
                 <Stack.Screen name="Auth" options={{ headerShown: false }}>

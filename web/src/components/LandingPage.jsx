@@ -615,7 +615,7 @@ export default function LandingPage() {
                     </div>
                     <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="text-gray-500 text-sm">
-                            © 2024 CVniz. Tüm hakları saklıdır.
+                            © 2024 CVniz. Tüm hakları saklıdır. (v0.0.2-debug)
                         </div>
                         <div className="flex items-center gap-4">
                             <span className="text-xs text-gray-500">Türkiye'de 🇹🇷 ❤️ ile yapıldı</span>

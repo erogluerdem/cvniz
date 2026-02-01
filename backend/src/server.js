@@ -53,6 +53,7 @@ const abTestRoutes = require('./routes/abtests');
 const seoRoutes = require('./routes/seo');
 const announcementRoutes = require('./routes/announcements');
 const recommendationsRoutes = require('./routes/recommendations');
+const monitoringRoutes = require('./routes/monitoring');
 
 const app = express();
 
@@ -203,6 +204,7 @@ app.use('/api/applications', applicationsRoutes);
 app.use('/api/headshot', headshotRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
+app.use('/api/monitoring', monitoringRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/abtests', abTestRoutes);
 app.use('/api/announcements', announcementRoutes);

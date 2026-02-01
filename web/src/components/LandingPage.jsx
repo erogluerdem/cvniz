@@ -365,35 +365,35 @@ export default function LandingPage() {
 
                     <div className="glass-card rounded-3xl p-6 border border-white/10 shadow-[0_30px_90px_-50px_rgba(226,232,240,0.45)]">
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {templates.map((template) => (
-                            <div
-                                key={template.id}
-                                className="glass-card rounded-xl overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer group"
-                                onClick={() => handleStartCreating(template.id)}
-                            >
-                                <div className={`h-28 bg-gradient-to-br ${template.color} flex items-center justify-center relative`}>
-                                    <span className="text-4xl opacity-60">{template.preview}</span>
-                                    {template.isPremium && (
-                                        <div className="absolute top-2 right-2 flex items-center gap-1 bg-gradient-to-r from-cyan-300 to-slate-200 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-white/10">
-                                            <Crown className="w-2.5 h-2.5" />
-                                            <span className="text-[10px] font-bold">PRO</span>
+                            {templates.map((template) => (
+                                <div
+                                    key={template.id}
+                                    className="glass-card rounded-xl overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer group"
+                                    onClick={() => handleStartCreating(template.id)}
+                                >
+                                    <div className={`h-28 bg-gradient-to-br ${template.color} flex items-center justify-center relative`}>
+                                        <span className="text-4xl opacity-60">{template.preview}</span>
+                                        {template.isPremium && (
+                                            <div className="absolute top-2 right-2 flex items-center gap-1 bg-gradient-to-r from-cyan-300 to-slate-200 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-white/10">
+                                                <Crown className="w-2.5 h-2.5" />
+                                                <span className="text-[10px] font-bold">PRO</span>
+                                            </div>
+                                        )}
+                                        {!template.isPremium && (
+                                            <div className="absolute top-2 right-2 bg-white/85 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-black/10">
+                                                <span className="text-[10px] font-bold">FREE</span>
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span className="btn-premium text-xs py-2 px-4">Kullan</span>
                                         </div>
-                                    )}
-                                    {!template.isPremium && (
-                                        <div className="absolute top-2 right-2 bg-white/85 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-black/10">
-                                            <span className="text-[10px] font-bold">FREE</span>
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <span className="btn-premium text-xs py-2 px-4">Kullan</span>
+                                    </div>
+                                    <div className="p-3">
+                                        <h3 className="font-semibold text-sm">{template.name}</h3>
+                                        <p className="text-gray-500 text-xs">{template.description}</p>
                                     </div>
                                 </div>
-                                <div className="p-3">
-                                    <h3 className="font-semibold text-sm">{template.name}</h3>
-                                    <p className="text-gray-500 text-xs">{template.description}</p>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -560,15 +560,15 @@ export default function LandingPage() {
                 <div className="max-w-4xl mx-auto text-center glass-card rounded-3xl border border-white/10 p-12 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-slate-200/10"></div>
                     <div className="relative z-10">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                        Hayalinizdeki <span className="gradient-text">Kariyere</span> Bir Adım Daha Yakın
-                    </h2>
-                    <p className="text-gray-400 mb-8 text-lg">
-                        Hemen ücretsiz başlayın ve profesyonel CV'nizi dakikalar içinde oluşturun.
-                    </p>
-                    <button onClick={() => handleStartCreating('modern')} className="btn-premium text-lg px-10">
-                        Ücretsiz CV Oluştur
-                    </button>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                            Hayalinizdeki <span className="gradient-text">Kariyere</span> Bir Adım Daha Yakın
+                        </h2>
+                        <p className="text-gray-400 mb-8 text-lg">
+                            Hemen ücretsiz başlayın ve profesyonel CV'nizi dakikalar içinde oluşturun.
+                        </p>
+                        <button onClick={() => handleStartCreating('modern')} className="btn-premium text-lg px-10">
+                            Ücretsiz CV Oluştur
+                        </button>
                     </div>
                 </div>
             </section>
@@ -615,7 +615,7 @@ export default function LandingPage() {
                     </div>
                     <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="text-gray-500 text-sm">
-                            © 2024 CVniz. Tüm hakları saklıdır. (v0.0.2-debug)
+                            © 2024 CVniz. Tüm hakları saklıdır.
                         </div>
                         <div className="flex items-center gap-4">
                             <span className="text-xs text-gray-500">Türkiye'de 🇹🇷 ❤️ ile yapıldı</span>

@@ -55,6 +55,7 @@ const announcementRoutes = require('./routes/announcements');
 const recommendationsRoutes = require('./routes/recommendations');
 const monitoringRoutes = require('./routes/monitoring');
 const backupRoutes = require('./routes/backup');
+const featureFlagsRoutes = require('./routes/featureflags');
 
 const app = express();
 
@@ -207,6 +208,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api/monitoring', monitoringRoutes);
 app.use('/api/backup', backupRoutes);
+app.use('/api/experiments', featureFlagsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/abtests', abTestRoutes);
 app.use('/api/announcements', announcementRoutes);

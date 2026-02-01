@@ -27,7 +27,7 @@ export default defineConfig({
         // Split vendor code
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['framer-motion', 'recharts', 'tailwindcss'],
+          'ui-vendor': ['tailwindcss'],
           'utils-vendor': ['axios', 'date-fns', 'lodash'],
           'charts': ['recharts'],
           'animations': ['framer-motion']

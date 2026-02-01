@@ -201,8 +201,6 @@ export function TranslationProvider({ children }) {
             translating,
             translateCV,
             saveTranslatedCV,
-            translateCV,
-            saveTranslatedCV,
             translateText,
             currentLang,
             changeLanguage,

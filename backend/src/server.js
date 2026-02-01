@@ -61,6 +61,40 @@ const featureFlagsRoutes = require('./routes/featureflags');
 
 const app = express();
 
+// CORS Configuration (must be before helmet and other middleware)
+const corsOptions = {
+    origin: function (origin, callback) {
+        const defaultAllowed = [
+            'http://localhost:5173',
+            'http://localhost:5174',
+            'http://localhost:5175',
+            'http://localhost:3000',
+            'https://cvniz.com',
+            'https://www.cvniz.com',
+            'https://admin.cvniz.com',
+            'https://api.cvniz.com',
+            'https://cvniz.coolify.app'
+        ];
+
+        const envAllowed = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+        const allowedOrigins = [...new Set([...defaultAllowed, ...envAllowed])];
+
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+            callback(null, true);
+        } else {
+            console.log('CORS Blocked Origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 // Sentry Request Handler Middleware (must be early)
 if (process.env.SENTRY_DSN) {
     app.use(Sentry.Handlers.requestHandler());
@@ -100,38 +134,6 @@ const sanitizeInput = (req, res, next) => {
 
 // SEO Route
 app.use('/cv', seoRoutes);
-
-// CORS Configuration
-const corsOptions = {
-    origin: function (origin, callback) {
-        const defaultAllowed = [
-            'http://localhost:5173',
-            'http://localhost:5174',
-            'http://localhost:5175',
-            'http://localhost:3000',
-            'https://cvniz.com',
-            'https://www.cvniz.com',
-            'https://admin.cvniz.com',
-            'https://api.cvniz.com',
-            'https://cvniz.coolify.app'
-        ];
-
-        const envAllowed = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
-        const allowedOrigins = [...new Set([...defaultAllowed, ...envAllowed])];
-
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
-            callback(null, true);
-        } else {
-            console.log('CORS Blocked Origin:', origin);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-    optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
 
 // Enhanced Rate Limiting
 const limiter = rateLimit({

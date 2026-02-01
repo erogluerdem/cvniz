@@ -103,9 +103,10 @@ class ResponseCache {
 
                 // Intercept response
                 const originalJson = res.json.bind(res);
+                const self = this;
 
                 res.json = function(data) {
-                    const eTag = this.generateETag(data);
+                    const eTag = self.generateETag(data);
 
                     // Check conditions
                     let shouldCache = true;

@@ -21,6 +21,9 @@ export default defineConfig({
     }
   },
   build: {
+    // Output configuration
+    outDir: 'dist',
+    assetsDir: 'assets',
     // Code splitting configuration
     rollupOptions: {
       output: {

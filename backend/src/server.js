@@ -6,6 +6,24 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const * as Sentry from '@sentry/node';
+const xss = require('xss');
+
+// Sentry Initialization (must be early)
+if (process.env.SENTRY_DSN) {
+    Sentry.init({
+        dsn: process.env.SENTRY_DSN,
+        environment: process.env.NODE_ENV || 'development',
+        tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+        integrations: [
+            new Sentry.Integrations.Http({ tracing: true }),
+            new Sentry.Integrations.Express({
+                app: true,
+                request: true,
+            }),
+        ],
+    });
+}
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -37,15 +55,44 @@ const announcementRoutes = require('./routes/announcements');
 
 const app = express();
 
-// Security Middleware
+// Sentry Request Handler Middleware (must be early)
+if (process.env.SENTRY_DSN) {
+    app.use(Sentry.Handlers.requestHandler());
+    app.use(Sentry.Handlers.tracingHandler());
+}
+
+// Security Middleware - Enhanced
 app.use(helmet({
-    contentSecurityPolicy: false, // Disable CSP for now to allow inline scripts/styles if needed
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: true,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    dnsPrefetchControl: true,
+    frameguard: { action: 'deny' },
+    hidePoweredBy: true,
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+    },
+    noSniff: true,
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    xssFilter: true,
 }));
 
-// SEO Route (Must be before body parsers or API rate limits if we want it fast and separate?)
-// Actually, putting it before static files or API is good.
-// We mount it at /cv because users will share https://api.cvniz.com/cv/slug (or similar)
-// OR if using Nginx reverse proxy, request to /cv will come here.
+// XSS Protection Middleware
+const sanitizeInput = (req, res, next) => {
+    if (req.body) {
+        Object.keys(req.body).forEach(key => {
+            if (typeof req.body[key] === 'string') {
+                req.body[key] = xss(req.body[key]);
+            }
+        });
+    }
+    next();
+};
+
+// SEO Route
 app.use('/cv', seoRoutes);
 
 // CORS Configuration
@@ -63,13 +110,9 @@ const corsOptions = {
             'https://cvniz.coolify.app'
         ];
 
-        // Get environment allowed origins
         const envAllowed = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
-
-        // Combine and deduplicate
         const allowedOrigins = [...new Set([...defaultAllowed, ...envAllowed])];
 
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
         if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
@@ -84,26 +127,42 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Rate Limiting - Development modunda devre dışı bırakıldı
+// Enhanced Rate Limiting
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 1 * 60 * 1000, // 1 minute window
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 10000, // Çok yüksek limit
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 1 * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 10000,
     message: {
         error: 'Çok fazla istek gönderdiniz, lütfen daha sonra tekrar deneyin.'
     },
     standardHeaders: true,
     legacyHeaders: false,
-    skip: () => process.env.NODE_ENV === 'development' // Development'ta rate limit yok
+    skip: () => process.env.NODE_ENV === 'development',
+    keyGenerator: (req) => {
+        return req.user?.id || req.ip;
+    }
 });
-app.use('/api/', limiter);
 
-// Body Parser
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: { error: 'Çok fazla başarısız giriş denemesi. Lütfen 15 dakika sonra tekrar deneyin.' },
+    skip: () => process.env.NODE_ENV === 'development'
+});
+
+app.use('/api/', limiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+// Body Parser with Sanitization
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(sanitizeInput);
 
 // Logging
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
+} else {
+    app.use(morgan('combined'));
 }
 
 // Health Check
@@ -117,9 +176,6 @@ app.get('/health', (req, res) => {
 
 // Static Files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
-// Serve Frontend Static Files (Fix for 404 on assets)
-// This ensures that if the request hits the backend, it can serve the build files
 app.use(express.static(path.join(__dirname, '../../web/dist')));
 
 // API Routes
@@ -154,9 +210,19 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Endpoint bulunamadı' });
 });
 
+// Sentry Error Handler (must be after all routes)
+if (process.env.SENTRY_DSN) {
+    app.use(Sentry.Handlers.errorHandler());
+}
+
 // Error Handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
+    
+    if (process.env.SENTRY_DSN) {
+        Sentry.captureException(err);
+    }
+    
     res.status(err.status || 500).json({
         error: process.env.NODE_ENV === 'development'
             ? err.message
@@ -177,16 +243,17 @@ const startServer = async () => {
         return server;
     } catch (err) {
         console.error('❌ MongoDB bağlantı hatası:', err.message);
+        if (process.env.SENTRY_DSN) {
+            Sentry.captureException(err);
+        }
         process.exit(1);
     }
 };
 
-// Only start server if run directly (not imported)
 if (require.main === module) {
     startServer();
 }
 
-// Graceful Shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM alındı, kapatılıyor...');
     mongoose.connection.close(() => {

@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sentry/react": "^7.84.0",
+    "@sentry/tracing": "^7.84.0",
     "axios": "^1.13.2",
     "d3-scale": "^4.0.2",
     "framer-motion": "^12.23.26",

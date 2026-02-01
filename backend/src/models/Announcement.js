@@ -19,6 +19,24 @@ const announcementSchema = new mongoose.Schema({
         enum: ['all', 'premium', 'free'],
         default: 'all'
     },
+    imageUrl: {
+        type: String
+    },
+    buttonText: {
+        type: String
+    },
+    buttonLink: {
+        type: String
+    },
+    couponCode: {
+        type: String,
+        uppercase: true,
+        trim: true
+    },
+    startAfter: {
+        type: Number,
+        default: 3000 // ms delay before showing
+    },
     isActive: {
         type: Boolean,
         default: true

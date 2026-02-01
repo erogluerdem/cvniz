@@ -33,6 +33,7 @@ const aiRoutes = require('./routes/ai');
 const analyticsRoutes = require('./routes/analytics');
 const abTestRoutes = require('./routes/abtests');
 const seoRoutes = require('./routes/seo');
+const announcementRoutes = require('./routes/announcements');
 
 const app = express();
 
@@ -146,6 +147,7 @@ app.use('/api/headshot', headshotRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/abtests', abTestRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 // 404 Handler
 app.use((req, res) => {

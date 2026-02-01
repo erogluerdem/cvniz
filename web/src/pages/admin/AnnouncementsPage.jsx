@@ -15,7 +15,12 @@ export default function AnnouncementsPage() {
         content: '',
         type: 'info',
         target: 'all',
-        showUntil: ''
+        showUntil: '',
+        imageUrl: '',
+        buttonText: '',
+        buttonLink: '',
+        couponCode: '',
+        startAfter: 3000
     })
     const [submitting, setSubmitting] = useState(false)
 
@@ -45,7 +50,10 @@ export default function AnnouncementsPage() {
             if (response.success) {
                 setShowModal(false)
                 fetchAnnouncements()
-                setFormData({ title: '', content: '', type: 'info', target: 'all', showUntil: '' })
+                setFormData({
+                    title: '', content: '', type: 'info', target: 'all', showUntil: '',
+                    imageUrl: '', buttonText: '', buttonLink: '', couponCode: '', startAfter: 3000
+                })
             }
         } catch (error) {
             alert('Duyuru yayınlanamadı: ' + error.message)

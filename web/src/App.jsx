@@ -39,6 +39,7 @@ import { ExitIntentPopup, StickyBottomCTA } from './components/SalesPrompts'
 import WelcomePopup from './components/WelcomePopup'
 import AbandonedCartModal from './components/AbandonedCartModal'
 import MarketingPopup from './components/MarketingPopup'
+import AnnouncementModal from './components/AnnouncementModal'
 
 // Pages
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -409,6 +410,7 @@ export default function App() {
                                                                                                                                             <WelcomePopup />
                                                                                                                                             <AbandonedCartModal />
                                                                                                                                             <MarketingPopup />
+                                                                                                                                            <AnnouncementModal />
                                                                                                                                         </div>
                                                                                                                                     </TemplateProvider>
                                                                                                                                 </ToastProvider>

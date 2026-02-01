@@ -1,7 +1,7 @@
 const Job = require('../models/Job');
 const User = require('../models/User');
 const CacheService = require('./CacheService');
-const * as Sentry from '@sentry/node';
+const Sentry = require('@sentry/node');
 
 /**
  * Job Recommendations Engine

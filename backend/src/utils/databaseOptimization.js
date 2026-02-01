@@ -29,12 +29,6 @@ const optimizeDatabase = async () => {
         await JobModel.collection.createIndex({ skills: 1 });
         await JobModel.collection.createIndex({ company: 1 });
 
-        // Application Model Indexes
-        const ApplicationModel = require('../models/Application');
-        await ApplicationModel.collection.createIndex({ userId: 1, status: 1 });
-        await ApplicationModel.collection.createIndex({ jobId: 1, userId: 1 }, { unique: true });
-        await ApplicationModel.collection.createIndex({ createdAt: -1 });
-
         // Review Model Indexes
         const ReviewModel = require('../models/CVReview');
         await ReviewModel.collection.createIndex({ cvId: 1 });

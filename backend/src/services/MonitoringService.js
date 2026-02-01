@@ -1,5 +1,5 @@
 const CacheService = require('./CacheService');
-const * as Sentry from '@sentry/node';
+const Sentry = require('@sentry/node');
 
 /**
  * Advanced Monitoring & Analytics Service

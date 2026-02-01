@@ -6,7 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const * as Sentry from '@sentry/node';
+const Sentry = require('@sentry/node');
 const xss = require('xss');
 const responseCache = require('./middleware/responseCache');
 const { optimizeDatabase, configureConnectionPool } = require('./utils/databaseOptimization');

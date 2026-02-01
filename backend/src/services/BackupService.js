@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
-const * as Sentry from '@sentry/node';
+const Sentry = require('@sentry/node');
 const MonitoringService = require('./MonitoringService');
 const fs = require('fs').promises;
 const path = require('path');

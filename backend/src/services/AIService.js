@@ -230,6 +230,289 @@ class AIService {
             ]
         };
     }
-}
 
-module.exports = new AIService();
+    // ============================================
+    // PHASE 2: NEW AI FEATURES
+    // ============================================
+
+    /**
+     * Interview Preparation - Potential questions and answers
+     */
+    async generateInterviewPrep(jobTitle, experience, lang = 'tr') {
+        const client = await this.getClient();
+        if (!client) return this.mockInterviewPrep(jobTitle);
+
+        const prompt = lang === 'tr'
+            ? `Sen senior insan kaynakları danışmanısın. "${jobTitle}" pozisyonu için mülakat öncesi hazırlık materyali oluştur.
+            
+            ADAYIN DENEYİMİ: ${experience}
+            
+            JSON formatında aşağıdaki yapıda dön:
+            {
+              "likely_questions": ["Soru 1", "Soru 2", ...],
+              "answer_tips": ["İpucu 1", "İpucu 2", ...],
+              "body_language": "Vücut dili önerileri",
+              "common_mistakes": ["Hata 1", "Hata 2", ...],
+              "closing_questions": ["Kapanış sorusu 1", ...]
+            }
+            
+            Sadece JSON dön.`
+            : `You are a senior HR consultant. Create interview preparation materials for a ${jobTitle} position.
+            
+            Return a JSON object with:
+            {
+              "likely_questions": ["Question 1", "Question 2", ...],
+              "answer_tips": ["Tip 1", "Tip 2", ...],
+              "body_language": "Body language tips",
+              "common_mistakes": ["Mistake 1", ...],
+              "closing_questions": ["Question to ask them 1", ...]
+            }
+            
+            Return only JSON.`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    /**
+     * Skill Gap Analysis - Identify missing skills for job target
+     */
+    async analyzeSkillGap(currentSkills, targetJobTitle, lang = 'tr') {
+        const client = await this.getClient();
+        if (!client) return this.mockSkillGap(targetJobTitle);
+
+        const skillsList = Array.isArray(currentSkills) ? currentSkills.join(', ') : currentSkills;
+
+        const prompt = lang === 'tr'
+            ? `Kariyer danışmanı olarak "${targetJobTitle}" pozisyonu için yetenek analizi yap.
+            
+            MEVCUT YETENEKLERİ: ${skillsList}
+            
+            JSON formatında dön:
+            {
+              "gap_analysis": "Genel analiz (2-3 cümle)",
+              "missing_skills": [
+                { "skill": "Yetenek adı", "importance": "critical|high|medium", "learning_time": "2 hafta" }
+              ],
+              "strength_skills": ["Güçlü yetenek 1", ...],
+              "learning_path": ["Adım 1: ...", "Adım 2: ..."],
+              "resources": ["Kaynak 1 (tür)", "Kaynak 2 (tür)"],
+              "score": "0-100 arası uyum puanı"
+            }
+            
+            Sadece JSON dön.`
+            : `As a career consultant, analyze skill gaps for a ${targetJobTitle} position.
+            
+            Current Skills: ${skillsList}
+            
+            Return JSON with:
+            {
+              "gap_analysis": "General analysis",
+              "missing_skills": [
+                { "skill": "Skill name", "importance": "critical|high|medium", "learning_time": "2 weeks" }
+              ],
+              "strength_skills": ["Strength 1", ...],
+              "learning_path": ["Step 1: ...", "Step 2: ..."],
+              "resources": ["Resource 1 (type)", ...],
+              "score": "Match score 0-100"
+            }
+            
+            Return only JSON.`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    /**
+     * CV Score Analysis - Rate CV completeness and quality
+     */
+    async analyzeCVScore(cvData, lang = 'tr') {
+        const client = await this.getClient();
+        if (!client) return this.mockCVScore();
+
+        const cvSummary = {
+            hasPersonal: !!cvData?.personal,
+            hasPhoto: !!cvData?.personal?.photo,
+            experienceCount: cvData?.experience?.length || 0,
+            skillsCount: cvData?.skills?.length || 0,
+            educationCount: cvData?.education?.length || 0,
+            hasLanguages: !!cvData?.languages?.length,
+            hasCertifications: !!cvData?.certifications?.length
+        };
+
+        const prompt = lang === 'tr'
+            ? `CV kalite değerlendirmeci olarak verilen CV'yi analiz et.
+            
+            CV İçeriği:
+            ${JSON.stringify(cvSummary, null, 2)}
+            
+            JSON formatında dön:
+            {
+              "overall_score": "0-100 arası puan",
+              "category_scores": {
+                "personal_info": "Puan",
+                "experience": "Puan",
+                "skills": "Puan",
+                "education": "Puan",
+                "presentation": "Puan"
+              },
+              "strengths": ["Güçlü taraf 1", ...],
+              "improvements": [
+                { "area": "İyileştirilecek alan", "suggestion": "Spesifik öneriler" }
+              ],
+              "estimated_response_rate": "Tahmini başvuru geri dönüş oranı (%)"
+            }
+            
+            Sadece JSON dön.`
+            : `As a CV evaluator, analyze the provided CV.
+            
+            CV Structure:
+            ${JSON.stringify(cvSummary, null, 2)}
+            
+            Return JSON with:
+            {
+              "overall_score": "Score 0-100",
+              "category_scores": {
+                "personal_info": "Score",
+                "experience": "Score",
+                "skills": "Score",
+                "education": "Score",
+                "presentation": "Score"
+              },
+              "strengths": ["Strength 1", ...],
+              "improvements": [
+                { "area": "Area to improve", "suggestion": "Specific recommendations" }
+              ],
+              "estimated_response_rate": "Estimated response rate (%)"
+            }
+            
+            Return only JSON.`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    /**
+     * Resume Formatting Tips - Best practices for formatting
+     */
+    async getFormattingTips(lang = 'tr') {
+        const client = await this.getClient();
+        if (!client) return this.mockFormattingTips(lang);
+
+        const prompt = lang === 'tr'
+            ? `CV formatı ve tasarım uzmanı olarak CV'yi formatlarken dikkat edilmesi gereken en önemli noktaları sırayla liste halinde ver.
+            
+            JSON formatında dön:
+            {
+              "typography": ["Tavsiye 1", "Tavsiye 2", ...],
+              "layout": ["Tavsiye 1", "Tavsiye 2", ...],
+              "sections": ["Tavsiye 1", "Tavsiye 2", ...],
+              "dos": ["Yapılması gereken 1", ...],
+              "donts": ["Yapılmaması gereken 1", ...],
+              "color_psychology": "Renk seçimi hakkında bilgi"
+            }
+            
+            Sadece JSON dön.`
+            : `As a CV formatting expert, provide best practices for CV formatting.
+            
+            Return JSON with:
+            {
+              "typography": ["Tip 1", "Tip 2", ...],
+              "layout": ["Tip 1", "Tip 2", ...],
+              "sections": ["Tip 1", "Tip 2", ...],
+              "dos": ["Do 1", ...],
+              "donts": ["Don't 1", ...],
+              "color_psychology": "Info about color choice"
+            }
+            
+            Return only JSON.`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    // ============================================
+    // MOCK RESPONSES FOR PHASE 2
+    // ============================================
+
+    mockInterviewPrep(jobTitle) {
+        return {
+            mock: true,
+            likely_questions: [
+                `${jobTitle} pozisyonunda en başarılı proje neydi?`,
+                'Takım çalışmasında zorluk yaşadığınız bir durum var mı?',
+                'Kariyer hedefleriniz neler?',
+                'Neden bu şirkete katılmak istiyorsunuz?'
+            ],
+            answer_tips: [
+                'STAR metodu kullanın (Situation, Task, Action, Result)',
+                'Spesifik örnekler verin, genel cümlelerden kaçının',
+                'Şirketi araştırıp kültürüne uyum sağlayacağınızı gösterin'
+            ],
+            body_language: 'Düz oturun, göz kontağı sağlayın, gülümseyin',
+            common_mistakes: [
+                'Soru sormamak',
+                'Önceki işverenlerden şikayetçi olmak',
+                'Araştırmadan gelme'
+            ]
+        };
+    }
+
+    mockSkillGap(jobTitle) {
+        return {
+            mock: true,
+            gap_analysis: `${jobTitle} pozisyonu için bazı kritik beceriler eksik. Gelişim planı oluşturmanız önerilir.`,
+            missing_skills: [
+                { skill: 'Advanced SQL', importance: 'high', learning_time: '3 hafta' },
+                { skill: 'Python', importance: 'medium', learning_time: '4 hafta' }
+            ],
+            strength_skills: ['Project Management', 'Communication'],
+            score: 72
+        };
+    }
+
+    mockCVScore() {
+        return {
+            mock: true,
+            overall_score: 78,
+            category_scores: {
+                personal_info: 85,
+                experience: 75,
+                skills: 72,
+                education: 80,
+                presentation: 75
+            },
+            strengths: ['Deneyim bölümü detaylı', 'İyi organize edilmiş'],
+            improvements: [
+                { area: 'Yetenek bölümü', suggestion: 'Daha spesifik teknoloji adları ekleyin' }
+            ],
+            estimated_response_rate: '35-40%'
+        };
+    }
+
+    mockFormattingTips(lang = 'tr') {
+        return {
+            mock: true,
+            typography: [
+                lang === 'tr' ? '12-14px arası yazı boyutu ideal' : 'Font size 12-14px is ideal',
+                lang === 'tr' ? 'Maximum 2 farklı font kullanın' : 'Use maximum 2 fonts'
+            ],
+            layout: [
+                lang === 'tr' ? 'Marjinler 1cm olmalı' : 'Margins should be 1cm',
+                lang === 'tr' ? 'Tek sayfa (1-2 sayfa maks)' : 'One page (2 pages max)'
+            ],
+            dos: [
+                lang === 'tr' ? 'İstatistik ve sayılarla başarıları gösterin' : 'Show achievements with numbers',
+                lang === 'tr' ? 'PDF formatında gönderin' : 'Send as PDF'
+            ],
+            donts: [
+                lang === 'tr' ? 'Fotoğraf kullanmayın (talep edilmediği sürece)' : 'Don\'t use photo unless required',
+                lang === 'tr' ? 'Çok renkli tasarım yapmayın' : 'Don\'t use too many colors'
+            ]
+        };
+    }
+}

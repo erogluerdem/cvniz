@@ -277,7 +277,10 @@ const startServer = async () => {
 };
 
 if (require.main === module) {
-    startServer();
+    startServer().catch(err => {
+        console.error('❌ Server başlatma hatası:', err);
+        process.exit(1);
+    });
 }
 
 process.on('SIGTERM', () => {

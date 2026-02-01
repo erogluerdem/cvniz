@@ -8,6 +8,8 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const * as Sentry from '@sentry/node';
 const xss = require('xss');
+const responseCache = require('./middleware/responseCache');
+const { optimizeDatabase, configureConnectionPool } = require('./utils/databaseOptimization');
 
 // Sentry Initialization (must be early)
 if (process.env.SENTRY_DSN) {
@@ -157,6 +159,15 @@ app.use('/api/', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
+// Response Caching Middleware (before routes)
+app.use('/api/', responseCache.middleware({
+    duration: 3600, // 1 hour for most endpoints
+    excludePaths: ['/auth', '/payments', '/support'],
+    conditions: {
+        statusCode: 200
+    }
+}));
+
 // Body Parser with Sanitization
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -240,13 +251,18 @@ app.use((err, req, res, next) => {
 
 const startServer = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('✅ MongoDB bağlantısı başarılı');
+        // Configure connection pool first
+        await configureConnectionPool(process.env.MONGODB_URI);
+        console.log('✅ MongoDB bağlantısı başarılı (connection pool configured)');
+
+        // Optimize database indexes
+        await optimizeDatabase();
 
         const PORT = process.env.PORT || 3001;
         const server = app.listen(PORT, () => {
             console.log(`🚀 Server ${PORT} portunda çalışıyor`);
             console.log(`📍 Environment: ${process.env.NODE_ENV}`);
+            console.log(`📊 Cache Stats: ${JSON.stringify(responseCache.getStats())}`);
         });
         return server;
     } catch (err) {

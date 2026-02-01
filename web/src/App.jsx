@@ -238,6 +238,7 @@ function AppRoutes() {
                     <Route path="coupons" element={<AdminCouponsPage />} />
                     <Route path="emails" element={<AdminEmailsPage />} />
                     <Route path="media" element={<AdminMediaPage />} />
+                    <Route path="templates" element={<AdminTemplatesPage />} />
                     <Route path="theme" element={<AdminThemePage />} />
                     <Route path="reports" element={<AdminReportsPage />} />
                     <Route path="security" element={<AdminSecurityPage />} />

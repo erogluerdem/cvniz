@@ -939,6 +939,78 @@ export default function HomePage() {
                 </div>
             </AnimatedSection>
 
+            {/* Blog / Resources Section */}
+            <AnimatedSection className={`py-20 px-6 ${isDayMode ? 'bg-gradient-to-b from-white via-amber-50/40 to-white' : ''}`}>
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-12">
+                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 ${isDayMode ? 'bg-white border border-slate-200 text-sky-600 shadow-sm' : 'bg-cyan-500/10 border border-cyan-500/30'}`}>
+                            <FileText className={`w-4 h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
+                            <span className={`text-sm font-medium ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>Kariyer Rehberi</span>
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                            <span className="gradient-text">Faydalı İçerikler</span>
+                        </h2>
+                        <p className={`max-w-xl mx-auto ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                            CV hazırlama, mülakat teknikleri ve kariyer gelişimi hakkında uzman tavsiyeleri
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {[
+                            {
+                                title: 'Mükemmel CV Nasıl Yazılır?',
+                                description: 'İşverenlerin dikkatini çeken bir CV hazırlamanın 10 altın kuralı.',
+                                category: 'CV Hazırlama',
+                                readTime: '5 dk',
+                                image: '/images/blog-cv.jpg'
+                            },
+                            {
+                                title: 'Mülakat Soruları ve Cevapları',
+                                description: 'En sık sorulan 20 mülakat sorusu ve profesyonel cevap önerileri.',
+                                category: 'Mülakat',
+                                readTime: '8 dk',
+                                image: '/images/blog-interview.jpg'
+                            },
+                            {
+                                title: '2026 İş Piyasası Trendleri',
+                                description: 'Bu yıl en çok aranan yetenekler ve kariyer fırsatları.',
+                                category: 'Kariyer',
+                                readTime: '6 dk',
+                                image: '/images/blog-trends.jpg'
+                            }
+                        ].map((article, i) => (
+                            <div key={i} className={`glass-card rounded-2xl overflow-hidden group cursor-pointer hover:scale-[1.02] transition-all duration-300 ${isDayMode ? 'bg-white border border-slate-200/60 shadow-day' : 'border border-white/10 hover:border-cyan-500/30'}`}>
+                                <div className={`h-40 ${isDayMode ? 'bg-gradient-to-br from-sky-100 to-amber-50' : 'bg-gradient-to-br from-cyan-900/50 to-slate-800'} flex items-center justify-center`}>
+                                    <FileText className={`w-16 h-16 ${isDayMode ? 'text-sky-300' : 'text-cyan-500/50'}`} />
+                                </div>
+                                <div className="p-6">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className={`text-xs font-medium px-3 py-1 rounded-full ${isDayMode ? 'bg-sky-100 text-sky-600' : 'bg-cyan-500/20 text-cyan-300'}`}>
+                                            {article.category}
+                                        </span>
+                                        <span className={`text-xs ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>
+                                            {article.readTime} okuma
+                                        </span>
+                                    </div>
+                                    <h3 className={`font-bold text-lg mb-2 group-hover:text-cyan-400 transition-colors ${isDayMode ? 'text-slate-800' : 'text-white'}`}>
+                                        {article.title}
+                                    </h3>
+                                    <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>
+                                        {article.description}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-10">
+                        <Link to="/blog" className="btn-secondary inline-flex items-center gap-2 px-8 py-3">
+                            Tüm Yazıları Gör <ArrowRight className="w-5 h-5" />
+                        </Link>
+                    </div>
+                </div>
+            </AnimatedSection>
+
             {/* FAQ Section */}
             <AnimatedSection className={`py-20 px-6 ${isDayMode ? 'bg-gradient-to-b from-white via-sky-50 to-transparent' : 'bg-gradient-to-b from-cyan-950/10 to-transparent'}`}>
                 <div className="max-w-3xl mx-auto">
@@ -990,6 +1062,46 @@ export default function HomePage() {
                             </tbody>
                         </table>
                     </div>
+
+                    <div className="text-center mt-8">
+                        <Link to="/pricing" className="btn-secondary inline-flex items-center gap-2 px-8 py-3">
+                            Fiyatlandırma Detayları <ArrowRight className="w-5 h-5" />
+                        </Link>
+                    </div>
+                </div>
+            </AnimatedSection>
+
+            {/* Newsletter Section */}
+            <AnimatedSection className={`py-16 px-6 ${isDayMode ? 'bg-gradient-to-r from-sky-50 via-white to-amber-50/60' : 'bg-gradient-to-r from-cyan-950/20 via-slate-950 to-cyan-950/20'}`}>
+                <div className="max-w-3xl mx-auto text-center">
+                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 ${isDayMode ? 'bg-white border border-slate-200 text-sky-600 shadow-sm' : 'bg-cyan-500/10 border border-cyan-500/30'}`}>
+                        <Mail className={`w-4 h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
+                        <span className={`text-sm font-medium ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>Bültenimize Katılın</span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                        <span className="gradient-text">Kariyer İpuçları & Güncellemeler</span>
+                    </h2>
+                    <p className={`mb-8 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                        CV hazırlama ipuçları, iş arama stratejileri ve yeni özellikler hakkında haftalık güncellemeler alın.
+                    </p>
+                    <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
+                        <input
+                            type="email"
+                            placeholder="E-posta adresiniz"
+                            className={`flex-1 px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 ${isDayMode
+                                ? 'bg-white border-slate-200 text-slate-800 focus:ring-sky-400 placeholder-slate-400'
+                                : 'bg-white/5 border-white/10 text-white focus:ring-cyan-500 placeholder-gray-500'}`}
+                        />
+                        <button
+                            type="submit"
+                            className="btn-premium px-6 py-3 flex items-center justify-center gap-2 whitespace-nowrap"
+                        >
+                            <Send className="w-4 h-4" /> Abone Ol
+                        </button>
+                    </form>
+                    <p className={`text-xs mt-4 ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>
+                        Spam göndermeyiz. İstediğiniz zaman abonelikten çıkabilirsiniz.
+                    </p>
                 </div>
             </AnimatedSection>
 
@@ -1041,17 +1153,6 @@ export default function HomePage() {
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-8">
                         <h3 className="text-xl font-bold mb-4">Güvenilir Platform</h3>
-                        <div className={`flex items-center justify-center gap-4 text-sm flex-wrap ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
-                            <div className="flex items-center gap-2">
-                                <Globe className="w-4 h-4 text-cyan-300" />
-                                <span>127 Aktif Kullanıcı</span>
-                            </div>
-                            <div className="w-1 h-1 bg-gray-600 rounded-full hidden sm:block"></div>
-                            <div className="flex items-center gap-2">
-                                <TrendingUp className="w-4 h-4 text-green-400" />
-                                <span>%95 Memnuniyet</span>
-                            </div>
-                        </div>
                     </div>
 
                     <div className={`flex flex-wrap justify-center gap-6 md:gap-8 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>

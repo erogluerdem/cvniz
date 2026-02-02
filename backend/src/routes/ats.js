@@ -78,9 +78,6 @@ const SECTOR_KEYWORDS = {
         weight: { critical: 4, important: 2, bonus: 1 }
     }
 };
-    contactInfo: { weight: 5, check: 'İletişim bilgileri eksiksiz olmalı' },
-    appropriateLength: { weight: 3, check: 'CV uzunluğu 1-2 sayfa olmalı' }
-};
 
 // Free tier limits
 const FREE_SCAN_LIMIT = 3;

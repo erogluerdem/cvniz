@@ -76,11 +76,19 @@ export function SiteContentProvider({ children }) {
             try {
                 const response = await contentAPI.getLandingPageContent()
                 if (response.success && response.content) {
+                    const apiContent = response.content
                     const mergedContent = {
                         ...defaultContent,
-                        ...response.content,
+                        ...apiContent,
                         // Deep merge hero for safety
-                        hero: { ...defaultContent.hero, ...response.content.hero }
+                        hero: { ...defaultContent.hero, ...(apiContent.hero || {}) },
+                        // Use API arrays only if they have content, otherwise use defaults
+                        stats: apiContent.stats?.length ? apiContent.stats : defaultContent.stats,
+                        features: apiContent.features?.length ? apiContent.features : defaultContent.features,
+                        testimonials: apiContent.testimonials?.length ? apiContent.testimonials : defaultContent.testimonials,
+                        faqs: apiContent.faqs?.length ? apiContent.faqs : defaultContent.faqs,
+                        steps: apiContent.steps?.length ? apiContent.steps : defaultContent.steps,
+                        companies: apiContent.companies?.length ? apiContent.companies : defaultContent.companies
                     }
                     setContent(mergedContent)
                     localStorage.setItem('CVniz_site_content', JSON.stringify(mergedContent))

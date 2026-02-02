@@ -67,12 +67,16 @@ services:
     build:
       context: ../web
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://backend:3001/api
     container_name: cvniz-frontend
     restart: always
     ports:
       - "5173:5173"
     environment:
-      VITE_API_URL: http://localhost:3001/api
+      NODE_ENV: development
+    depends_on:
+      - backend
       VITE_APP_URL: http://localhost:5173
     depends_on:
       - backend

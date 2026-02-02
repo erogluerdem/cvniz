@@ -10,8 +10,9 @@ RUN npm run build
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh && apk add --no-cache curl
 EXPOSE 80
-RUN apk add --no-cache curl
 HEALTHCHECK --interval=30s --timeout=10s --start-period=3s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

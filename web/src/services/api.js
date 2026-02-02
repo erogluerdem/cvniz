@@ -168,8 +168,8 @@ export const syncAPI = {
 // ============ USER API ============
 export const userAPI = {
     updateUser: (data) => api.put('/user/profile', data),
-    getAnnouncements: () => api.get('/user/announcements/active'),
-    validateCoupon: (code) => api.get(`/user/coupons/validate/${code}`),
+    getAnnouncements: () => api.get('/users/announcements/active'),
+    validateCoupon: (code) => api.get(`/users/coupons/validate/${code}`),
     updateSettings: (settings) =>
         api.put('/users/settings', { settings }),
 

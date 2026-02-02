@@ -11,7 +11,7 @@ const { SCIMService } = require('../services/SCIMService');
 const { AuditLogService } = require('../services/AuditLogService');
 const Enterprise = require('../models/Enterprise');
 const User = require('../models/User');
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 
 /**
  * GET /api/enterprise/sso/providers
@@ -191,7 +191,7 @@ router.get('/audit-logs', requireOrgAdmin, async (req, res) => {
         const { startDate, endDate, action, limit = 50, skip = 0 } = req.query;
 
         const filters = {};
-        if (action) filters.action = action;
+        if (action) {filters.action = action;}
 
         const { logs, total } = await AuditLogService.getOrganizationAuditLog(
             req.user.organizationId,

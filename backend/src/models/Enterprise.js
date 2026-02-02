@@ -89,7 +89,7 @@ const enterpriseSchema = new mongoose.Schema({
 
 // Kullanım yüzdesi
 enterpriseSchema.virtual('usagePercentage').get(function () {
-    if (this.cvLimit === 0) return 0;
+    if (this.cvLimit === 0) {return 0;}
     return Math.round((this.usedCVs / this.cvLimit) * 100);
 });
 

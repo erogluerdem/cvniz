@@ -49,7 +49,7 @@ class EmailService {
             const EmailTemplate = require('../models/EmailTemplate');
             const template = await EmailTemplate.findOne({ slug, channel: 'email', status: 'active' });
 
-            if (!template) return null;
+            if (!template) {return null;}
 
             let subject = template.subject;
             let html = template.content; // Assuming content is HTML for now, or use htmlContent field

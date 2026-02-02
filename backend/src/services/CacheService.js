@@ -6,10 +6,10 @@ const memoryCache = new Map(); // Fallback cache
 
 const CacheService = {
     async connect() {
-        if (client) return client;
+        if (client) {return client;}
 
         const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-        
+
         try {
             client = redis.createClient({
                 url: redisUrl,
@@ -54,7 +54,7 @@ const CacheService = {
             // Try Redis first if connected
             if (isConnected && client) {
                 const value = await client.get(key);
-                if (value) return JSON.parse(value);
+                if (value) {return JSON.parse(value);}
             }
             // Fallback to memory cache
             const cached = memoryCache.get(key);

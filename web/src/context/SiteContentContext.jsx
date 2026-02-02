@@ -59,11 +59,29 @@ const defaultContent = {
     }
 }
 
+// Cache version - increment this to invalidate old cached data
+const CONTENT_CACHE_VERSION = 2
+
 export function SiteContentProvider({ children }) {
     const [content, setContent] = useState(() => {
         try {
+            const savedVersion = localStorage.getItem('CVniz_site_content_version')
+            // If version mismatch, clear old cache and use defaults
+            if (savedVersion !== String(CONTENT_CACHE_VERSION)) {
+                localStorage.removeItem('CVniz_site_content')
+                localStorage.setItem('CVniz_site_content_version', String(CONTENT_CACHE_VERSION))
+                return defaultContent
+            }
             const saved = localStorage.getItem('CVniz_site_content')
-            return saved ? JSON.parse(saved) : defaultContent
+            if (saved) {
+                const parsed = JSON.parse(saved)
+                // Validate that critical arrays exist and have content
+                if (!parsed.steps?.length || !parsed.stats?.length) {
+                    return defaultContent
+                }
+                return parsed
+            }
+            return defaultContent
         } catch (e) {
             return defaultContent
         }

@@ -67,7 +67,7 @@ const partnerSchema = new mongoose.Schema({
 
 // Dönüşüm oranı
 partnerSchema.virtual('conversionRate').get(function () {
-    if (this.referrals === 0) return 0;
+    if (this.referrals === 0) {return 0;}
     return ((this.conversions / this.referrals) * 100).toFixed(1);
 });
 

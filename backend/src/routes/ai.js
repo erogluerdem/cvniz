@@ -125,7 +125,7 @@ router.post('/skill-gap', async (req, res) => {
         }
 
         const result = await aiService.analyzeSkillGap(currentSkills, targetJobTitle, lang);
-        
+
         // Log AI usage
         await require('../services/EnhancedAnalyticsService').trackAIUsage(
             req.user.id,

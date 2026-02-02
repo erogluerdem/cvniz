@@ -70,7 +70,7 @@ apiKeySchema.statics.generateKey = function (environment = 'prod') {
 
 // Masked key
 apiKeySchema.virtual('maskedKey').get(function () {
-    if (!this.key) return '••••••••••••••••';
+    if (!this.key) { return '••••••••••••••••'; }
     return this.key.substring(0, 15) + '••••••••••••';
 });
 

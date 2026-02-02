@@ -303,19 +303,20 @@ function generateReferenceLetter(cvData, referenceType, targetPosition, referrer
     let content = '';
 
     switch (referenceType) {
-        case 'recommendation':
-            content = template.template(name, targetPosition || 'ilgili pozisyon', skills, achievements);
-            break;
-        case 'character':
-            content = template.template(name, targetPosition || 'ilgili pozisyon', qualities);
-            break;
-        case 'academic':
-            const degree = education[0]?.degree || 'lisans';
-            const institution = education[0]?.school || education[0]?.institution || '[Üniversite]';
-            content = template.template(name, degree, institution);
-            break;
-        default:
-            content = template.template(name, targetPosition, skills, achievements);
+    case 'recommendation':
+        content = template.template(name, targetPosition || 'ilgili pozisyon', skills, achievements);
+        break;
+    case 'character':
+        content = template.template(name, targetPosition || 'ilgili pozisyon', qualities);
+        break;
+    case 'academic': {
+        const degree = education[0]?.degree || 'lisans';
+        const institution = education[0]?.school || education[0]?.institution || '[Üniversite]';
+        content = template.template(name, degree, institution);
+        break;
+    }
+    default:
+        content = template.template(name, targetPosition, skills, achievements);
     }
 
     // Add referrer placeholders

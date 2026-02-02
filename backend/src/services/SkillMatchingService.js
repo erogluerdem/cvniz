@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const axios = require('axios');
 const { recordEvent } = require('../utils/logger');
 const { ChatbotService } = require('./ChatbotService');
@@ -20,7 +20,7 @@ const skillAssessmentSchema = new (require('mongoose')).Schema({
         required: true,
         index: true
     },
-    
+
     // Current skills assessment
     currentSkills: [{
         name: String,
@@ -137,7 +137,7 @@ class SkillMatchingService {
             const SkillAssessment = require('../models/SkillAssessment');
 
             const assessment = await SkillAssessment.findOne({ userId });
-            if (!assessment) throw new Error('Yeterlik değerlendirmesi bulunamadı');
+            if (!assessment) {throw new Error('Yeterlik değerlendirmesi bulunamadı');}
 
             const skillGap = [];
 
@@ -193,7 +193,7 @@ class SkillMatchingService {
             const Job = require('../models/Job');
 
             const assessment = await SkillAssessment.findOne({ userId }).lean();
-            if (!assessment) throw new Error('Yeterlik değerlendirmesi bulunamadı');
+            if (!assessment) {throw new Error('Yeterlik değerlendirmesi bulunamadı');}
 
             // Get available jobs
             const jobs = await Job.find({ status: 'active' })
@@ -261,7 +261,7 @@ class SkillMatchingService {
             const SkillAssessment = require('../models/SkillAssessment');
 
             const assessment = await SkillAssessment.findOne({ userId });
-            if (!assessment) throw new Error('Yeterlik değerlendirmesi bulunamadı');
+            if (!assessment) {throw new Error('Yeterlik değerlendirmesi bulunamadı');}
 
             const recommendations = [];
 
@@ -298,7 +298,7 @@ class SkillMatchingService {
      * Calculate match score (0-100)
      */
     static calculateMatchScore(userSkills, requiredSkills) {
-        if (!requiredSkills || requiredSkills.length === 0) return 100;
+        if (!requiredSkills || requiredSkills.length === 0) {return 100;}
 
         let matchedCount = 0;
 
@@ -319,10 +319,10 @@ class SkillMatchingService {
      * Estimate time to acquire skill
      */
     static estimateTimeToAcquire(gap) {
-        if (gap <= 2) return '1-2 weeks';
-        if (gap <= 4) return '1-2 months';
-        if (gap <= 6) return '3-6 months';
-        if (gap <= 8) return '6-12 months';
+        if (gap <= 2) {return '1-2 weeks';}
+        if (gap <= 4) {return '1-2 months';}
+        if (gap <= 6) {return '3-6 months';}
+        if (gap <= 8) {return '6-12 months';}
         return '1+ year';
     }
 
@@ -330,7 +330,7 @@ class SkillMatchingService {
      * Estimate time to qualify for job
      */
     static estimateTimeToQualify(requiredSkills, missingSkills) {
-        if (missingSkills.length === 0) return 'Ready now';
+        if (missingSkills.length === 0) {return 'Ready now';}
 
         let maxTime = 0;
         missingSkills.forEach(missing => {
@@ -341,9 +341,9 @@ class SkillMatchingService {
             maxTime = Math.max(maxTime, months);
         });
 
-        if (maxTime <= 1) return '1 week';
-        if (maxTime <= 4) return `${maxTime} weeks`;
-        if (maxTime <= 12) return `${Math.ceil(maxTime / 4)} months`;
+        if (maxTime <= 1) {return '1 week';}
+        if (maxTime <= 4) {return `${maxTime} weeks`;}
+        if (maxTime <= 12) {return `${Math.ceil(maxTime / 4)} months`;}
         return `${Math.ceil(maxTime / 12)}+ year`;
     }
 
@@ -416,10 +416,10 @@ class SkillMatchingService {
     static buildLearningRoadmap(skillName) {
         return [
             `Week 1-2: ${skillName} Fundamentals`,
-            `Week 3-4: Core Concepts & Theory`,
-            `Week 5-8: Practical Projects`,
-            `Week 9-12: Advanced Techniques`,
-            `Week 13+: Specialization & Mastery`
+            'Week 3-4: Core Concepts & Theory',
+            'Week 5-8: Practical Projects',
+            'Week 9-12: Advanced Techniques',
+            'Week 13+: Specialization & Mastery'
         ];
     }
 

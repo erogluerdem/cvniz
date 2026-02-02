@@ -55,7 +55,7 @@ router.post('/', authenticate, adminOnly, async (req, res) => {
 router.patch('/:id/toggle', authenticate, adminOnly, async (req, res) => {
     try {
         const template = await Template.findById(req.params.id);
-        if (!template) return res.status(404).json({ success: false, message: 'Template not found' });
+        if (!template) {return res.status(404).json({ success: false, message: 'Template not found' });}
 
         template.isActive = !template.isActive;
         await template.save();
@@ -72,7 +72,7 @@ router.patch('/:id/toggle', authenticate, adminOnly, async (req, res) => {
 router.delete('/:id', authenticate, adminOnly, async (req, res) => {
     try {
         const template = await Template.findByIdAndDelete(req.params.id);
-        if (!template) return res.status(404).json({ success: false, message: 'Template not found' });
+        if (!template) {return res.status(404).json({ success: false, message: 'Template not found' });}
         res.json({ success: true, message: 'Template deleted' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

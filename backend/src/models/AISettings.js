@@ -114,7 +114,7 @@ const aiSettingsSchema = new mongoose.Schema({
 
 // Masked API key
 aiSettingsSchema.virtual('maskedApiKey').get(function () {
-    if (!this.apiKey || this.apiKey.length < 8) return '••••••••••••••••';
+    if (!this.apiKey || this.apiKey.length < 8) { return '••••••••••••••••'; }
     return this.apiKey.substring(0, 4) + '••••••••••••' + this.apiKey.slice(-4);
 });
 

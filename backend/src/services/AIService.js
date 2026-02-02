@@ -46,7 +46,7 @@ class AIService {
     async getClient() {
         // Always refresh config to support dynamic changes
         const config = await this.getConfig();
-        if (!config || !config.apiKey) return null;
+        if (!config || !config.apiKey) {return null;}
 
         // If the client is already initialized with the current config, return it
         if (this.client && this.provider === config.provider && this.modelName === config.model) {
@@ -67,7 +67,7 @@ class AIService {
 
     async generateSummary(jobTitle, experienceLevel, lang = 'tr') {
         const client = await this.getClient();
-        if (!client) return this.mockSummary(jobTitle);
+        if (!client) {return this.mockSummary(jobTitle);}
 
         const prompt = lang === 'tr'
             ? `${jobTitle} pozisyonunda ${experienceLevel} seviyesinde bir çalışan için CV özeti (Professional Summary) yaz. 3 farklı kısa paragraf (max 50 kelime) üret. JSON formatında 'options' array'i dön. Yanıtın sadece JSON olsun.`
@@ -80,22 +80,22 @@ class AIService {
 
     async improveText(text, lang = 'tr', mode = 'professional') {
         const client = await this.getClient();
-        if (!client) return { options: [text, text + " (Improved)", text + " (Professional)"] };
+        if (!client) {return { options: [text, text + ' (Improved)', text + ' (Professional)'] };}
 
-        let instruction = "";
+        let instruction = '';
         if (lang === 'tr') {
             switch (mode) {
-                case 'fix_grammar': instruction = "Gramer hatalarını düzelt ve akıcılığı artır."; break;
-                case 'shorter': instruction = "Metni daha kısa ve öz hale getir."; break;
-                case 'longer': instruction = "Metni daha detaylı ve açıklayıcı hale getir."; break;
-                case 'professional': default: instruction = "Metni CV için daha profesyonel, kurumsal ve etkileyici hale getir."; break;
+            case 'fix_grammar': instruction = 'Gramer hatalarını düzelt ve akıcılığı artır.'; break;
+            case 'shorter': instruction = 'Metni daha kısa ve öz hale getir.'; break;
+            case 'longer': instruction = 'Metni daha detaylı ve açıklayıcı hale getir.'; break;
+            case 'professional': default: instruction = 'Metni CV için daha profesyonel, kurumsal ve etkileyici hale getir.'; break;
             }
         } else {
             switch (mode) {
-                case 'fix_grammar': instruction = "Fix grammar errors and improve flow."; break;
-                case 'shorter': instruction = "Make the text shorter and more concise."; break;
-                case 'longer': instruction = "Make the text more detailed and descriptive."; break;
-                case 'professional': default: instruction = "Make the text more professional and impactful for a CV."; break;
+            case 'fix_grammar': instruction = 'Fix grammar errors and improve flow.'; break;
+            case 'shorter': instruction = 'Make the text shorter and more concise.'; break;
+            case 'longer': instruction = 'Make the text more detailed and descriptive.'; break;
+            case 'professional': default: instruction = 'Make the text more professional and impactful for a CV.'; break;
             }
         }
 
@@ -159,7 +159,7 @@ class AIService {
 
     async generateExperience(jobTitle, lang = 'tr') {
         const client = await this.getClient();
-        if (!client) return this.mockExperience(jobTitle);
+        if (!client) {return this.mockExperience(jobTitle);}
 
         const prompt = lang === 'tr'
             ? `${jobTitle} pozisyonu için CV'de kullanılabilecek 5 adet etkileyici iş deneyimi maddesi (bullet point) yaz. Başarı odaklı olsun. JSON formatında 'options' array'i dön. Sadece JSON dön.`
@@ -174,11 +174,11 @@ class AIService {
         try {
             const completion = await client.chat.completions.create({
                 messages: [
-                    { role: "system", content: "You are a helpful career assistant. Return only valid JSON." },
-                    { role: "user", content: prompt }
+                    { role: 'system', content: 'You are a helpful career assistant. Return only valid JSON.' },
+                    { role: 'user', content: prompt }
                 ],
-                model: this.modelName || "gpt-3.5-turbo",
-                response_format: { type: "json_object" },
+                model: this.modelName || 'gpt-3.5-turbo',
+                response_format: { type: 'json_object' }
             });
 
             const content = completion.choices[0].message.content;
@@ -192,8 +192,8 @@ class AIService {
     async callGoogle(prompt) {
         try {
             const model = this.client.getGenerativeModel({
-                model: this.modelName || "gemini-1.5-flash",
-                generationConfig: { responseMimeType: "application/json" }
+                model: this.modelName || 'gemini-1.5-flash',
+                generationConfig: { responseMimeType: 'application/json' }
             });
 
             const result = await model.generateContent(prompt);
@@ -223,10 +223,10 @@ class AIService {
             mock: true,
             options: [
                 `${jobTitle} süreçlerini optimize ederek verimliliği %20 artırdım.`,
-                `Cross-functional ekiplerle çalışarak projeleri zamanında teslim ettim.`,
-                `Müşteri memnuniyetini artırmaya yönelik stratejiler geliştirdim.`,
-                `Yeni teknolojileri entegre ederek maliyetleri düşürdüm.`,
-                `Ekip içi eğitimler vererek performansı yükselttim.`
+                'Cross-functional ekiplerle çalışarak projeleri zamanında teslim ettim.',
+                'Müşteri memnuniyetini artırmaya yönelik stratejiler geliştirdim.',
+                'Yeni teknolojileri entegre ederek maliyetleri düşürdüm.',
+                'Ekip içi eğitimler vererek performansı yükselttim.'
             ]
         };
     }
@@ -240,7 +240,7 @@ class AIService {
      */
     async generateInterviewPrep(jobTitle, experience, lang = 'tr') {
         const client = await this.getClient();
-        if (!client) return this.mockInterviewPrep(jobTitle);
+        if (!client) {return this.mockInterviewPrep(jobTitle);}
 
         const prompt = lang === 'tr'
             ? `Sen senior insan kaynakları danışmanısın. "${jobTitle}" pozisyonu için mülakat öncesi hazırlık materyali oluştur.
@@ -280,7 +280,7 @@ class AIService {
      */
     async analyzeSkillGap(currentSkills, targetJobTitle, lang = 'tr') {
         const client = await this.getClient();
-        if (!client) return this.mockSkillGap(targetJobTitle);
+        if (!client) {return this.mockSkillGap(targetJobTitle);}
 
         const skillsList = Array.isArray(currentSkills) ? currentSkills.join(', ') : currentSkills;
 
@@ -330,7 +330,7 @@ class AIService {
      */
     async analyzeCVScore(cvData, lang = 'tr') {
         const client = await this.getClient();
-        if (!client) return this.mockCVScore();
+        if (!client) {return this.mockCVScore();}
 
         const cvSummary = {
             hasPersonal: !!cvData?.personal,
@@ -400,7 +400,7 @@ class AIService {
      */
     async getFormattingTips(lang = 'tr') {
         const client = await this.getClient();
-        if (!client) return this.mockFormattingTips(lang);
+        if (!client) {return this.mockFormattingTips(lang);}
 
         const prompt = lang === 'tr'
             ? `CV formatı ve tasarım uzmanı olarak CV'yi formatlarken dikkat edilmesi gereken en önemli noktaları sırayla liste halinde ver.

@@ -246,7 +246,7 @@ router.post('/social', [
                 // Link social account to existing user
                 user.authProvider = provider;
                 user.authProviderId = providerId;
-                if (avatar && !user.avatar) user.avatar = avatar;
+                if (avatar && !user.avatar) {user.avatar = avatar;}
             } else {
                 // Create new user
                 user = new User({

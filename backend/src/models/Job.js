@@ -73,7 +73,7 @@ const jobSchema = new mongoose.Schema({
 
 // Maaş aralığı formatı
 jobSchema.virtual('salaryRange').get(function () {
-    if (!this.salaryMin && !this.salaryMax) return null;
+    if (!this.salaryMin && !this.salaryMax) {return null;}
     if (this.salaryMin && this.salaryMax) {
         return `${this.salaryMin.toLocaleString()} - ${this.salaryMax.toLocaleString()} ${this.salaryCurrency}`;
     }

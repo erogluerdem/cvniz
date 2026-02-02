@@ -58,7 +58,7 @@ notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 
 notificationSchema.statics.getUserNotifications = function (userId, options = {}) {
     const { limit = 20, skip = 0, unreadOnly = false } = options;
     const query = { userId };
-    if (unreadOnly) query.isRead = false;
+    if (unreadOnly) {query.isRead = false;}
 
     return this.find(query)
         .sort({ createdAt: -1 })

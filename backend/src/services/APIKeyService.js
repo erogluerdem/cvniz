@@ -40,11 +40,11 @@ const APIKeyService = {
         try {
             // Check cache first
             const cached = await CacheService.get(`apikey:${keyString}:valid`);
-            if (cached !== null) return cached;
+            if (cached !== null) {return cached;}
 
             // Extract key from format cvniz_[hash]
             const [prefix, ...parts] = keyString.split('_');
-            if (prefix !== 'cvniz') return null;
+            if (prefix !== 'cvniz') {return null;}
 
             const key = parts.join('_');
             const hash = crypto.createHash('sha256').update(key).digest('hex');
@@ -84,7 +84,7 @@ const APIKeyService = {
     async getUserAPIKeys(userId) {
         try {
             const cached = await CacheService.get(`user:${userId}:api-keys`);
-            if (cached) return cached;
+            if (cached) {return cached;}
 
             const keys = await ApiKey.find({ userId }).select('_id name isActive lastUsed createdAt expiresAt permissions');
 
@@ -115,7 +115,7 @@ const APIKeyService = {
 
     // Check API key permissions
     hasPermission(apiKeyData, requiredPermission) {
-        if (!apiKeyData || !apiKeyData.permissions) return false;
+        if (!apiKeyData || !apiKeyData.permissions) {return false;}
         return apiKeyData.permissions.includes(requiredPermission) || apiKeyData.permissions.includes('*');
     }
 };

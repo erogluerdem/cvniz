@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
@@ -30,7 +30,7 @@ const documentProcessingSchema = new (require('mongoose')).Schema({
     fileName: String,
     fileSize: Number,
     uploadDate: Date,
-    
+
     // OCR Results
     ocr: {
         extracted_text: String,
@@ -345,8 +345,8 @@ class DocumentProcessingService {
         const syllables = (text.match(/[aeiouy]/gi) || []).length;
 
         // Flesch-Kincaid Grade Level
-        const gradeLevel = (0.39 * (words / sentences)) + 
-                          (11.8 * (syllables / words)) - 15.59;
+        const gradeLevel = (0.39 * (words / sentences)) +
+            (11.8 * (syllables / words)) - 15.59;
 
         // Simple score 0-100
         const score = Math.max(0, Math.min(100, 100 - (gradeLevel * 5)));
@@ -357,7 +357,7 @@ class DocumentProcessingService {
             suggestions: [
                 gradeLevel > 10 ? 'Dili daha basit hale getir' : null,
                 words / sentences > 20 ? 'Cümleleri kısa tutmalı' : null,
-                'Başlıklar ekle' 
+                'Başlıklar ekle'
             ].filter(Boolean)
         };
     }
@@ -419,7 +419,7 @@ Aşağıdaki formatta yorum yap:
         try {
             // Grammar and language check
             const grammarIssues = [];
-            
+
             // Simple patterns
             const patterns = [
                 { pattern: /\s{2,}/g, message: 'Çift boşluk kaldır' },
@@ -439,8 +439,8 @@ Aşağıdaki formatta yorum yap:
             const vocabularyDiversity = uniqueWords / wordCount;
 
             let vocabularyLevel = 'standard';
-            if (vocabularyDiversity > 0.7) vocabularyLevel = 'advanced';
-            else if (vocabularyDiversity < 0.3) vocabularyLevel = 'basic';
+            if (vocabularyDiversity > 0.7) { vocabularyLevel = 'advanced'; }
+            else if (vocabularyDiversity < 0.3) { vocabularyLevel = 'basic'; }
 
             return {
                 grammar_issues: grammarIssues,
@@ -468,8 +468,8 @@ Aşağıdaki formatta yorum yap:
         const informalCount = informalWords.filter(w => text.toLowerCase().includes(w)).length;
         const formalCount = formalWords.filter(w => text.toLowerCase().includes(w)).length;
 
-        if (formalCount > informalCount) return 'formal';
-        if (informalCount > formalCount) return 'informal';
+        if (formalCount > informalCount) { return 'formal'; }
+        if (informalCount > formalCount) { return 'informal'; }
         return 'semi-formal';
     }
 
@@ -479,10 +479,10 @@ Aşağıdaki formatta yorum yap:
     static detectTone(text) {
         const tones = [];
 
-        if (/[!]{2,}/g.test(text)) tones.push('enthusiastic');
-        if (/\?{2,}/g.test(text)) tones.push('questioning');
-        if (/achievement|success|excellent/i.test(text)) tones.push('positive');
-        if (/challenge|struggle|difficult/i.test(text)) tones.push('reflective');
+        if (/[!]{2,}/g.test(text)) { tones.push('enthusiastic'); }
+        if (/\?{2,}/g.test(text)) { tones.push('questioning'); }
+        if (/achievement|success|excellent/i.test(text)) { tones.push('positive'); }
+        if (/challenge|struggle|difficult/i.test(text)) { tones.push('reflective'); }
 
         return tones.length > 0 ? tones : ['neutral'];
     }
@@ -494,8 +494,8 @@ Aşağıdaki formatta yorum yap:
         const sentences = text.split(/[.!?]+/).length;
         const avgSentenceLength = text.split(/\s+/).length / sentences;
 
-        if (avgSentenceLength > 20) return 'complex';
-        if (avgSentenceLength < 10) return 'simple';
+        if (avgSentenceLength > 20) { return 'complex'; }
+        if (avgSentenceLength < 10) { return 'simple'; }
         return 'moderate';
     }
 
@@ -503,19 +503,13 @@ Aşağıdaki formatta yorum yap:
      * Find similar documents
      */
     static async findSimilarDocuments(userId, text, limit = 3) {
-        try {
-            // This would integrate with document similarity service
-            // Using cosine similarity or similar algorithms
-            
-            return {
-                similarDocuments: [],
-                keyDifferences: []
-            };
+        // This would integrate with document similarity service
+        // Using cosine similarity or similar algorithms
 
-        } catch (error) {
-            Sentry.captureException(error);
-            throw error;
-        }
+        return {
+            similarDocuments: [],
+            keyDifferences: []
+        };
     }
 
     /**
@@ -524,7 +518,7 @@ Aşağıdaki formatta yorum yap:
     static async batchProcessDocuments(userId, filePaths, documentType) {
         try {
             const results = [];
-            
+
             for (const filePath of filePaths) {
                 try {
                     const result = await DocumentProcessingService.processDocument(

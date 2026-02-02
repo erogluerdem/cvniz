@@ -105,10 +105,10 @@ cvSchema.methods.calculateCompleteness = function () {
     const data = this.data;
 
     // Personal Info (25 points)
-    if (data.personalInfo?.fullName) score += 5;
-    if (data.personalInfo?.email) score += 5;
-    if (data.personalInfo?.phone) score += 5;
-    if (data.personalInfo?.summary) score += 10;
+    if (data.personalInfo?.fullName) { score += 5; }
+    if (data.personalInfo?.email) { score += 5; }
+    if (data.personalInfo?.phone) { score += 5; }
+    if (data.personalInfo?.summary) { score += 10; }
 
     // Experience (25 points)
     if (data.experience?.length > 0) {
@@ -131,8 +131,8 @@ cvSchema.methods.calculateCompleteness = function () {
     }
 
     // Extras (5 points)
-    if (data.certifications?.length > 0) score += 2;
-    if (data.projects?.length > 0) score += 3;
+    if (data.certifications?.length > 0) { score += 2; }
+    if (data.projects?.length > 0) { score += 3; }
 
     this.metadata.completeness = Math.min(score, 100);
     return this.metadata.completeness;

@@ -72,16 +72,16 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
             },
             {
                 $group: {
-                    _id: { $month: "$createdAt" },
+                    _id: { $month: '$createdAt' },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         // Template Usage Distribution
         const templateUsage = await CV.aggregate([
-            { $group: { _id: "$template", count: { $sum: 1 } } },
+            { $group: { _id: '$template', count: { $sum: 1 } } },
             { $sort: { count: -1 } },
             { $limit: 5 }
         ]);
@@ -95,11 +95,11 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
             { $match: { createdAt: { $gte: sixMonthsAgo } } },
             {
                 $group: {
-                    _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } },
+                    _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id.year": 1, "_id.month": 1 } }
+            { $sort: { '_id.year': 1, '_id.month': 1 } }
         ]);
 
         res.json({
@@ -222,15 +222,15 @@ router.delete('/announcements/:id', authenticate, adminOnly, async (req, res) =>
 router.get('/logs', authenticate, adminOnly, async (req, res) => {
     try {
         const { module, admin, startDate, endDate, limit = 100 } = req.query;
-        let query = {};
+        const query = {};
 
-        if (module) query.module = module;
-        if (admin) query.adminEmail = { $regex: admin, $options: 'i' };
+        if (module) {query.module = module;}
+        if (admin) {query.adminEmail = { $regex: admin, $options: 'i' };}
 
         if (startDate || endDate) {
             query.createdAt = {};
-            if (startDate) query.createdAt.$gte = new Date(startDate);
-            if (endDate) query.createdAt.$lte = new Date(endDate);
+            if (startDate) {query.createdAt.$gte = new Date(startDate);}
+            if (endDate) {query.createdAt.$lte = new Date(endDate);}
         }
 
         const logs = await Log.find(query)
@@ -1000,14 +1000,14 @@ router.get('/security/login-logs', authenticate, adminOnly, async (req, res) => 
 router.post('/security/block-ip', authenticate, adminOnly, async (req, res) => {
     try {
         const { ip, reason } = req.body;
-        if (!ip) return res.status(400).json({ error: 'IP adresi gerekli' });
+        if (!ip) {return res.status(400).json({ error: 'IP adresi gerekli' });}
 
         let settings = await SecuritySettings.findOne();
-        if (!settings) settings = await SecuritySettings.create({});
+        if (!settings) {settings = await SecuritySettings.create({});}
 
         // Check if IP already blocked
         const exists = settings.blockedIPs.find(b => b.ip === ip);
-        if (exists) return res.status(400).json({ error: 'Bu IP zaten engellenmiş' });
+        if (exists) {return res.status(400).json({ error: 'Bu IP zaten engellenmiş' });}
 
         settings.blockedIPs.push({ ip, reason: reason || 'Manuel engel', blockedBy: req.user._id });
         await settings.save();
@@ -1022,8 +1022,8 @@ router.post('/security/block-ip', authenticate, adminOnly, async (req, res) => {
 router.delete('/security/block-ip/:ip', authenticate, adminOnly, async (req, res) => {
     try {
         const ip = decodeURIComponent(req.params.ip);
-        let settings = await SecuritySettings.findOne();
-        if (!settings) return res.status(404).json({ error: 'Ayarlar bulunamadı' });
+        const settings = await SecuritySettings.findOne();
+        if (!settings) {return res.status(404).json({ error: 'Ayarlar bulunamadı' });}
 
         settings.blockedIPs = settings.blockedIPs.filter(b => b.ip !== ip);
         await settings.save();
@@ -1292,12 +1292,12 @@ router.post('/themes/set-active', authenticate, adminOnly, async (req, res) => {
 router.get('/analytics', authenticate, adminOnly, async (req, res) => {
     try {
         const { range = '30d' } = req.query;
-        let startDate = new Date();
+        const startDate = new Date();
 
-        if (range === '7d') startDate.setDate(startDate.getDate() - 7);
-        else if (range === '30d') startDate.setDate(startDate.getDate() - 30);
-        else if (range === '90d') startDate.setDate(startDate.getDate() - 90);
-        else if (range === '1y') startDate.setFullYear(startDate.getFullYear() - 1);
+        if (range === '7d') {startDate.setDate(startDate.getDate() - 7);}
+        else if (range === '30d') {startDate.setDate(startDate.getDate() - 30);}
+        else if (range === '90d') {startDate.setDate(startDate.getDate() - 90);}
+        else if (range === '1y') {startDate.setFullYear(startDate.getFullYear() - 1);}
 
         // 1. Core Metrics Over Time
         const metrics = await CV.aggregate([
@@ -1305,12 +1305,12 @@ router.get('/analytics', authenticate, adminOnly, async (req, res) => {
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
                     },
                     cvCount: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         const signupMetrics = await User.aggregate([
@@ -1318,12 +1318,12 @@ router.get('/analytics', authenticate, adminOnly, async (req, res) => {
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
                     },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         const revenueMetrics = await Payment.aggregate([
@@ -1331,18 +1331,18 @@ router.get('/analytics', authenticate, adminOnly, async (req, res) => {
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
                     },
-                    amount: { $sum: "$amount" }
+                    amount: { $sum: '$amount' }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         // 2. Top Templates
         const topTemplates = await CV.aggregate([
             { $match: { createdAt: { $gte: startDate } } },
-            { $group: { _id: "$template", count: { $sum: 1 } } },
+            { $group: { _id: '$template', count: { $sum: 1 } } },
             { $sort: { count: -1 } },
             { $limit: 10 }
         ]);
@@ -1352,7 +1352,7 @@ router.get('/analytics', authenticate, adminOnly, async (req, res) => {
             { $match: { createdAt: { $gte: startDate } } },
             {
                 $group: {
-                    _id: { $cond: [{ $eq: ["$device.isMobile", true] }, "Mobile", "Desktop"] },
+                    _id: { $cond: [{ $eq: ['$device.isMobile', true] }, 'Mobile', 'Desktop'] },
                     count: { $sum: 1 }
                 }
             }
@@ -1408,7 +1408,7 @@ router.get('/live-stats', authenticate, adminOnly, async (req, res) => {
 
         // 3. Real PDF Generations (Download Count)
         const downloadStats = await CV.aggregate([
-            { $group: { _id: null, total: { $sum: "$metadata.downloadCount" } } }
+            { $group: { _id: null, total: { $sum: '$metadata.downloadCount' } } }
         ]);
         const pdfGenerations = downloadStats[0]?.total || 0;
 
@@ -1473,12 +1473,12 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
             { $match: { status: 'completed', createdAt: { $gte: startDate, $lte: endDate } } },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-                    amount: { $sum: "$amount" },
+                    _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                    amount: { $sum: '$amount' },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         // 2. User Growth Report
@@ -1486,11 +1486,11 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
             { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         // 3. CV Creation Report
@@ -1498,17 +1498,17 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
             { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         // 4. Template Usage Report
         const templateData = await CV.aggregate([
             { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
-            { $group: { _id: "$template", count: { $sum: 1 } } },
+            { $group: { _id: '$template', count: { $sum: 1 } } },
             { $sort: { count: -1 } }
         ]);
 

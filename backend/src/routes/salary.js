@@ -369,9 +369,9 @@ function calculateSalaryBenchmark(cvData, sectorId, location, companySize) {
 
     // Education bonus
     let educationBonus = 0;
-    if (education.hasMasters) educationBonus += 0.08;
-    if (education.hasPhd) educationBonus += 0.15;
-    if (education.topUniversity) educationBonus += 0.05;
+    if (education.hasMasters) {educationBonus += 0.08;}
+    if (education.hasPhd) {educationBonus += 0.15;}
+    if (education.topUniversity) {educationBonus += 0.05;}
 
     // Location multiplier
     const locationMultiplier = LOCATION_MULTIPLIERS[location.toLowerCase()] || LOCATION_MULTIPLIERS['default'];
@@ -511,10 +511,10 @@ function extractEducation(cvData) {
 }
 
 function getExperienceLevel(years) {
-    if (years >= 12) return 'director';
-    if (years >= 8) return 'lead';
-    if (years >= 5) return 'senior';
-    if (years >= 2) return 'mid';
+    if (years >= 12) {return 'director';}
+    if (years >= 8) {return 'lead';}
+    if (years >= 5) {return 'senior';}
+    if (years >= 2) {return 'mid';}
     return 'junior';
 }
 
@@ -557,9 +557,9 @@ function calculateMarketPosition(median, baseSalary) {
     const range = baseSalary.max - baseSalary.min;
     const position = ((median - baseSalary.min) / range) * 100;
 
-    if (position >= 80) return { percentile: 'Top 20%', label: 'Piyasanın üstünde', color: 'green' };
-    if (position >= 60) return { percentile: 'Top 40%', label: 'Ortalamanın üstü', color: 'cyan' };
-    if (position >= 40) return { percentile: 'Ortalama', label: 'Piyasa ortalaması', color: 'amber' };
+    if (position >= 80) {return { percentile: 'Top 20%', label: 'Piyasanın üstünde', color: 'green' };}
+    if (position >= 60) {return { percentile: 'Top 40%', label: 'Ortalamanın üstü', color: 'cyan' };}
+    if (position >= 40) {return { percentile: 'Ortalama', label: 'Piyasa ortalaması', color: 'amber' };}
     return { percentile: 'Alt %40', label: 'Ortalamanın altı', color: 'red' };
 }
 

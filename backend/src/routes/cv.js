@@ -173,10 +173,10 @@ router.put('/:id', authenticate, async (req, res) => {
         }
 
         // Update fields
-        if (name !== undefined) cv.name = name;
-        if (template !== undefined) cv.template = template;
-        if (data !== undefined) cv.data = data;
-        if (layout !== undefined) cv.layout = layout;
+        if (name !== undefined) {cv.name = name;}
+        if (template !== undefined) {cv.template = template;}
+        if (data !== undefined) {cv.data = data;}
+        if (layout !== undefined) {cv.layout = layout;}
         if (isPublic !== undefined) {
             cv.isPublic = isPublic;
             if (isPublic && !cv.publicUrl) {

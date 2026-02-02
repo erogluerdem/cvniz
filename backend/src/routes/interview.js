@@ -335,16 +335,16 @@ function evaluateAnswer(answer, questionType) {
     const wordCount = words.length;
 
     // Length score (ideal: 100-200 words)
-    if (wordCount >= 100 && wordCount <= 200) scores.length = 100;
-    else if (wordCount >= 50 && wordCount < 100) scores.length = 70;
-    else if (wordCount >= 200 && wordCount <= 300) scores.length = 80;
-    else if (wordCount < 50) scores.length = 30;
-    else scores.length = 60;
+    if (wordCount >= 100 && wordCount <= 200) {scores.length = 100;}
+    else if (wordCount >= 50 && wordCount < 100) {scores.length = 70;}
+    else if (wordCount >= 200 && wordCount <= 300) {scores.length = 80;}
+    else if (wordCount < 50) {scores.length = 30;}
+    else {scores.length = 60;}
 
     // Structure score (uses STAR-like structure)
     const lowerAnswer = answer.toLowerCase();
     QUALITY_KEYWORDS.structure.forEach(keyword => {
-        if (lowerAnswer.includes(keyword)) scores.structure += 20;
+        if (lowerAnswer.includes(keyword)) {scores.structure += 20;}
     });
     scores.structure = Math.min(100, scores.structure);
 
@@ -352,10 +352,10 @@ function evaluateAnswer(answer, questionType) {
     let positiveCount = 0;
     let negativeCount = 0;
     QUALITY_KEYWORDS.positive.forEach(kw => {
-        if (lowerAnswer.includes(kw)) positiveCount++;
+        if (lowerAnswer.includes(kw)) {positiveCount++;}
     });
     QUALITY_KEYWORDS.negative.forEach(kw => {
-        if (lowerAnswer.includes(kw)) negativeCount++;
+        if (lowerAnswer.includes(kw)) {negativeCount++;}
     });
     scores.positivity = Math.min(100, Math.max(0, 50 + (positiveCount * 10) - (negativeCount * 20)));
 
@@ -375,10 +375,10 @@ function evaluateAnswer(answer, questionType) {
 
     // Feedback
     const feedback = [];
-    if (scores.length < 50) feedback.push('Cevabınız çok kısa. Daha fazla detay ekleyin.');
-    if (scores.structure < 50) feedback.push('STAR metodunu kullanarak cevabınızı yapılandırın.');
-    if (scores.positivity < 60) feedback.push('Daha pozitif ve çözüm odaklı bir dil kullanın.');
-    if (scores.specificity < 50) feedback.push('Somut rakamlar ve örnekler ekleyin.');
+    if (scores.length < 50) {feedback.push('Cevabınız çok kısa. Daha fazla detay ekleyin.');}
+    if (scores.structure < 50) {feedback.push('STAR metodunu kullanarak cevabınızı yapılandırın.');}
+    if (scores.positivity < 60) {feedback.push('Daha pozitif ve çözüm odaklı bir dil kullanın.');}
+    if (scores.specificity < 50) {feedback.push('Somut rakamlar ve örnekler ekleyin.');}
 
     if (feedback.length === 0) {
         feedback.push('Harika bir cevap! Yapı, uzunluk ve içerik dengeli.');
@@ -395,11 +395,11 @@ function evaluateAnswer(answer, questionType) {
 }
 
 function getGrade(score) {
-    if (score >= 90) return { letter: 'A+', label: 'Mükemmel', color: 'green' };
-    if (score >= 80) return { letter: 'A', label: 'Çok İyi', color: 'green' };
-    if (score >= 70) return { letter: 'B', label: 'İyi', color: 'cyan' };
-    if (score >= 60) return { letter: 'C', label: 'Orta', color: 'amber' };
-    if (score >= 50) return { letter: 'D', label: 'Geliştirmeli', color: 'orange' };
+    if (score >= 90) {return { letter: 'A+', label: 'Mükemmel', color: 'green' };}
+    if (score >= 80) {return { letter: 'A', label: 'Çok İyi', color: 'green' };}
+    if (score >= 70) {return { letter: 'B', label: 'İyi', color: 'cyan' };}
+    if (score >= 60) {return { letter: 'C', label: 'Orta', color: 'amber' };}
+    if (score >= 50) {return { letter: 'D', label: 'Geliştirmeli', color: 'orange' };}
     return { letter: 'F', label: 'Zayıf', color: 'red' };
 }
 

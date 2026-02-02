@@ -78,16 +78,16 @@ const campaignSchema = new mongoose.Schema({
 
 // Dönüşüm oranı virtual
 campaignSchema.virtual('conversionRate').get(function () {
-    if (this.views === 0) return 0;
+    if (this.views === 0) {return 0;}
     return ((this.conversions / this.views) * 100).toFixed(2);
 });
 
 // Kampanya aktif mi kontrolü
 campaignSchema.virtual('isLive').get(function () {
-    if (this.status !== 'active') return false;
+    if (this.status !== 'active') {return false;}
     const now = new Date();
-    if (this.startDate && now < this.startDate) return false;
-    if (this.endDate && now > this.endDate) return false;
+    if (this.startDate && now < this.startDate) {return false;}
+    if (this.endDate && now > this.endDate) {return false;}
     return true;
 });
 

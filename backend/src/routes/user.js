@@ -1,10 +1,11 @@
 const express = require('express');
 const { body } = require('express-validator');
+const { authenticate, adminOnly } = require('../middleware/auth');
+const { logger } = require('../utils/logger');
 const User = require('../models/User');
 const Announcement = require('../models/Announcement');
 const Coupon = require('../models/Coupon');
 const CV = require('../models/CV');
-const { authenticate, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const router = express.Router();
 router.get('/', authenticate, adminOnly, async (req, res) => {
     try {
         const { search, role, isPremium, isActive } = req.query;
-        let query = {};
+        const query = {};
 
         // Search filter
         if (search) {
@@ -88,11 +89,11 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
             { $match: { createdAt: { $gte: sevenDaysAgo } } },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { "_id": 1 } }
+            { $sort: { '_id': 1 } }
         ]);
 
         res.json({
@@ -144,12 +145,12 @@ router.put('/:id', authenticate, adminOnly, async (req, res) => {
     try {
         const { name, email, role, isPremium, premiumExpiresAt, isActive } = req.body;
         const updates = {};
-        if (name) updates.name = name;
-        if (email) updates.email = email;
-        if (role) updates.role = role;
-        if (isPremium !== undefined) updates.isPremium = isPremium;
-        if (premiumExpiresAt) updates.premiumExpiresAt = premiumExpiresAt;
-        if (isActive !== undefined) updates.isActive = isActive;
+        if (name) { updates.name = name; }
+        if (email) { updates.email = email; }
+        if (role) { updates.role = role; }
+        if (isPremium !== undefined) { updates.isPremium = isPremium; }
+        if (premiumExpiresAt) { updates.premiumExpiresAt = premiumExpiresAt; }
+        if (isActive !== undefined) { updates.isActive = isActive; }
 
         const user = await User.findByIdAndUpdate(
             req.params.id,
@@ -199,7 +200,7 @@ router.post('/:id/reset-password', authenticate, adminOnly, async (req, res) => 
         }
 
         const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+        if (!user) { return res.status(404).json({ error: 'Kullanıcı bulunamadı' }); }
 
         user.password = password;
         await user.save();

@@ -103,90 +103,90 @@ router.post('/push', authenticate, async (req, res) => {
                 const { action, cvId, data, localSyncVersion } = change;
 
                 switch (action) {
-                    case 'create': {
-                        const newCV = new CV({
-                            userId: req.user._id,
-                            name: data.name || 'Adsız CV',
-                            template: data.template || 'modern',
-                            data: data.data || {},
-                            layout: data.layout || {},
-                            metadata: {
-                                lastEdited: req.headers['x-platform'] || 'mobile'
-                            }
-                        });
-                        await newCV.save();
-                        results.push({
-                            localId: change.localId,
-                            serverId: newCV._id,
-                            action: 'created',
-                            syncVersion: newCV.syncVersion
-                        });
-                        break;
-                    }
-
-                    case 'update': {
-                        const cv = await CV.findOne({
-                            _id: cvId,
-                            userId: req.user._id
-                        });
-
-                        if (!cv) {
-                            results.push({
-                                cvId,
-                                action: 'error',
-                                error: 'CV bulunamadı'
-                            });
-                            break;
+                case 'create': {
+                    const newCV = new CV({
+                        userId: req.user._id,
+                        name: data.name || 'Adsız CV',
+                        template: data.template || 'modern',
+                        data: data.data || {},
+                        layout: data.layout || {},
+                        metadata: {
+                            lastEdited: req.headers['x-platform'] || 'mobile'
                         }
+                    });
+                    await newCV.save();
+                    results.push({
+                        localId: change.localId,
+                        serverId: newCV._id,
+                        action: 'created',
+                        syncVersion: newCV.syncVersion
+                    });
+                    break;
+                }
 
-                        // Check for conflicts (optimistic locking)
-                        if (localSyncVersion && cv.syncVersion > localSyncVersion) {
-                            conflicts.push({
-                                cvId,
-                                serverVersion: cv.syncVersion,
-                                localVersion: localSyncVersion,
-                                serverData: cv.data,
-                                localData: data.data
-                            });
-                            break;
-                        }
+                case 'update': {
+                    const cv = await CV.findOne({
+                        _id: cvId,
+                        userId: req.user._id
+                    });
 
-                        // Apply updates
-                        if (data.name) cv.name = data.name;
-                        if (data.template) cv.template = data.template;
-                        if (data.data) cv.data = data.data;
-                        if (data.layout) cv.layout = data.layout;
-
-                        cv.metadata.lastEdited = req.headers['x-platform'] || 'mobile';
-                        cv.calculateCompleteness();
-                        await cv.save();
-
-                        results.push({
-                            cvId,
-                            action: 'updated',
-                            syncVersion: cv.syncVersion
-                        });
-                        break;
-                    }
-
-                    case 'delete': {
-                        await CV.findOneAndDelete({
-                            _id: cvId,
-                            userId: req.user._id
-                        });
-                        results.push({
-                            cvId,
-                            action: 'deleted'
-                        });
-                        break;
-                    }
-
-                    default:
+                    if (!cv) {
                         results.push({
                             cvId,
                             action: 'error',
-                            error: 'Bilinmeyen işlem'
+                            error: 'CV bulunamadı'
                         });
+                        break;
+                    }
+
+                    // Check for conflicts (optimistic locking)
+                    if (localSyncVersion && cv.syncVersion > localSyncVersion) {
+                        conflicts.push({
+                            cvId,
+                            serverVersion: cv.syncVersion,
+                            localVersion: localSyncVersion,
+                            serverData: cv.data,
+                            localData: data.data
+                        });
+                        break;
+                    }
+
+                    // Apply updates
+                    if (data.name) {cv.name = data.name;}
+                    if (data.template) {cv.template = data.template;}
+                    if (data.data) {cv.data = data.data;}
+                    if (data.layout) {cv.layout = data.layout;}
+
+                    cv.metadata.lastEdited = req.headers['x-platform'] || 'mobile';
+                    cv.calculateCompleteness();
+                    await cv.save();
+
+                    results.push({
+                        cvId,
+                        action: 'updated',
+                        syncVersion: cv.syncVersion
+                    });
+                    break;
+                }
+
+                case 'delete': {
+                    await CV.findOneAndDelete({
+                        _id: cvId,
+                        userId: req.user._id
+                    });
+                    results.push({
+                        cvId,
+                        action: 'deleted'
+                    });
+                    break;
+                }
+
+                default:
+                    results.push({
+                        cvId,
+                        action: 'error',
+                        error: 'Bilinmeyen işlem'
+                    });
                 }
             } catch (error) {
                 console.error('Push change error:', error);
@@ -268,22 +268,22 @@ router.post('/resolve-conflict', authenticate, async (req, res) => {
         }
 
         switch (resolution) {
-            case 'keep-server':
-                // Do nothing, server version is already current
-                break;
+        case 'keep-server':
+            // Do nothing, server version is already current
+            break;
 
-            case 'keep-local':
-            case 'merge':
-                if (!mergedData) {
-                    return res.status(400).json({ error: 'Veri gerekli' });
-                }
-                cv.data = mergedData;
-                cv.metadata.lastEdited = req.headers['x-platform'] || 'mobile';
-                await cv.save();
-                break;
+        case 'keep-local':
+        case 'merge':
+            if (!mergedData) {
+                return res.status(400).json({ error: 'Veri gerekli' });
+            }
+            cv.data = mergedData;
+            cv.metadata.lastEdited = req.headers['x-platform'] || 'mobile';
+            await cv.save();
+            break;
 
-            default:
-                return res.status(400).json({ error: 'Geçersiz çözüm tipi' });
+        default:
+            return res.status(400).json({ error: 'Geçersiz çözüm tipi' });
         }
 
         res.json({

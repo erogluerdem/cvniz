@@ -14,7 +14,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const Log = require('../models/Log');
 const { recordEvent } = require('../utils/logger');
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 
 /**
  * SSO Configuration
@@ -87,7 +87,7 @@ passport.use('google', new OAuth2Strategy(
             user.lastLogin = new Date();
             user.lastSSOProvider = 'google';
             user.ssoAccessToken = accessToken;
-            if (refreshToken) user.ssoRefreshToken = refreshToken;
+            if (refreshToken) {user.ssoRefreshToken = refreshToken;}
             await user.save();
 
             return done(null, user);
@@ -127,7 +127,7 @@ passport.use('microsoft', new OAuth2Strategy(
             user.lastLogin = new Date();
             user.lastSSOProvider = 'microsoft';
             user.ssoAccessToken = accessToken;
-            if (refreshToken) user.ssoRefreshToken = refreshToken;
+            if (refreshToken) {user.ssoRefreshToken = refreshToken;}
             await user.save();
 
             return done(null, user);
@@ -205,7 +205,7 @@ passport.use('azure-ad', new AzureAdOAuth2Strategy(
             user.lastLogin = new Date();
             user.lastSSOProvider = 'azure-ad';
             user.ssoAccessToken = accessToken;
-            if (refreshToken) user.ssoRefreshToken = refreshToken;
+            if (refreshToken) {user.ssoRefreshToken = refreshToken;}
             await user.save();
 
             return done(null, user);
@@ -343,15 +343,15 @@ class SSOService {
             const user = await User.findById(userId);
 
             switch (provider) {
-                case 'google':
-                    user.googleId = providerData.id;
-                    break;
-                case 'microsoft':
-                    user.microsoftId = providerData.id;
-                    break;
-                case 'azure-ad':
-                    user.azureId = providerData.id;
-                    break;
+            case 'google':
+                user.googleId = providerData.id;
+                break;
+            case 'microsoft':
+                user.microsoftId = providerData.id;
+                break;
+            case 'azure-ad':
+                user.azureId = providerData.id;
+                break;
             }
 
             user.ssoProvider = provider;
@@ -378,15 +378,15 @@ class SSOService {
             const user = await User.findById(userId);
 
             switch (provider) {
-                case 'google':
-                    user.googleId = null;
-                    break;
-                case 'microsoft':
-                    user.microsoftId = null;
-                    break;
-                case 'azure-ad':
-                    user.azureId = null;
-                    break;
+            case 'google':
+                user.googleId = null;
+                break;
+            case 'microsoft':
+                user.microsoftId = null;
+                break;
+            case 'azure-ad':
+                user.azureId = null;
+                break;
             }
 
             if (user.ssoProvider === provider) {
@@ -411,7 +411,7 @@ class SSOService {
     /**
      * Get user SSO providers
      */
-    static async getUserSSO Providers(userId) {
+    static async getUserSSOProviders(userId) {
         try {
             const user = await User.findById(userId);
 
@@ -452,7 +452,7 @@ class SSOService {
     /**
      * Disable SSO provider
      */
-    static async disableSSO Provider(userId, provider) {
+    static async disableSSOProvider(userId, provider) {
         try {
             await SSOService.unlinkSSOProvider(userId, provider);
 

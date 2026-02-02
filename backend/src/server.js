@@ -21,9 +21,9 @@ if (process.env.SENTRY_DSN) {
             new Sentry.Integrations.Http({ tracing: true }),
             new Sentry.Integrations.Express({
                 app: true,
-                request: true,
-            }),
-        ],
+                request: true
+            })
+        ]
     });
 }
 
@@ -79,7 +79,7 @@ const corsOptions = {
         const envAllowed = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
         const allowedOrigins = [...new Set([...defaultAllowed, ...envAllowed])];
 
-        if (!origin) return callback(null, true);
+        if (!origin) {return callback(null, true);}
 
         if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
             callback(null, true);
@@ -113,11 +113,11 @@ app.use(helmet({
     hsts: {
         maxAge: 31536000,
         includeSubDomains: true,
-        preload: true,
+        preload: true
     },
     noSniff: true,
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    xssFilter: true,
+    xssFilter: true
 }));
 
 // XSS Protection Middleware

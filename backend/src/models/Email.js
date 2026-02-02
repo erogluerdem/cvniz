@@ -79,13 +79,13 @@ const emailSchema = new mongoose.Schema({
 
 // Açılma oranı
 emailSchema.virtual('openRate').get(function () {
-    if (this.recipientCount === 0) return 0;
+    if (this.recipientCount === 0) {return 0;}
     return ((this.opened / this.recipientCount) * 100).toFixed(1);
 });
 
 // Tıklama oranı
 emailSchema.virtual('clickRate').get(function () {
-    if (this.opened === 0) return 0;
+    if (this.opened === 0) {return 0;}
     return ((this.clicked / this.opened) * 100).toFixed(1);
 });
 

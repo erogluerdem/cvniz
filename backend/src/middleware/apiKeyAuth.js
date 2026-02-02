@@ -42,8 +42,8 @@ const requirePermission = (requiredPermission) => {
         if (req.authType === 'api-key') {
             const APIKeyService = require('../services/APIKeyService');
             if (!APIKeyService.hasPermission(req.apiKey, requiredPermission)) {
-                return res.status(403).json({ 
-                    error: `Missing required permission: ${requiredPermission}` 
+                return res.status(403).json({
+                    error: `Missing required permission: ${requiredPermission}`
                 });
             }
         }

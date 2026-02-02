@@ -26,7 +26,7 @@ const AnalyticsService = {
         try {
             // Check cache first
             const cached = await CacheService.get(`user:${userId}:ai-stats`);
-            if (cached) return cached;
+            if (cached) {return cached;}
 
             const stats = await AIUsageLog.aggregate([
                 { $match: { userId } },
@@ -68,7 +68,7 @@ const AnalyticsService = {
     async getCVViewStats(cvId) {
         try {
             const cached = await CacheService.get(`cv:${cvId}:views`);
-            if (cached) return cached;
+            if (cached) {return cached;}
 
             const stats = await CVView.aggregate([
                 { $match: { cvId } },
@@ -102,7 +102,7 @@ const AnalyticsService = {
         try {
             const cacheKey = `user:${userId}:engagement`;
             const cached = await CacheService.get(cacheKey);
-            if (cached) return cached;
+            if (cached) {return cached;}
 
             const [user, cvViews, aiUsage] = await Promise.all([
                 User.findById(userId).select('createdAt lastLogin'),

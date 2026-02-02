@@ -21,9 +21,9 @@ router.get('/:publicUrl', async (req, res) => {
 
         if (cv && cv.data && cv.data.personalInfo) {
             const { fullName, title: jobTitle, photo, summary } = cv.data.personalInfo;
-            if (fullName) title = `${fullName} - ${jobTitle || 'Profesyonel CV'}`;
-            if (summary) description = summary.substring(0, 150) + '...';
-            if (photo && photo.startsWith('http')) image = photo; // Must be absolute URL
+            if (fullName) {title = `${fullName} - ${jobTitle || 'Profesyonel CV'}`;}
+            if (summary) {description = summary.substring(0, 150) + '...';}
+            if (photo && photo.startsWith('http')) {image = photo;} // Must be absolute URL
         }
 
         // 2. Read the index.html from the BUILD folder

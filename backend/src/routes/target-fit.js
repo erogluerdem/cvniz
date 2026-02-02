@@ -474,7 +474,7 @@ function tailorCVToJob(cvData, jobData) {
 }
 
 function enhanceSummary(summary, jobData) {
-    if (!summary) return summary;
+    if (!summary) {return summary;}
 
     let enhanced = summary;
     const jobKeywords = jobData.skills || [];
@@ -521,7 +521,7 @@ function enhanceExperience(experiences, jobData) {
     // Sort by relevance (highest first) while keeping chronological within similar scores
     const sorted = scored.sort((a, b) => {
         const scoreDiff = (b._relevanceScore || 0) - (a._relevanceScore || 0);
-        if (Math.abs(scoreDiff) > 10) return scoreDiff;
+        if (Math.abs(scoreDiff) > 10) {return scoreDiff;}
         // If similar scores, keep chronological (recent first)
         return new Date(b.startDate || 0) - new Date(a.startDate || 0);
     });

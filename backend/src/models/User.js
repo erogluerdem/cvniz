@@ -111,7 +111,7 @@ userSchema.index({ createdAt: -1 });
 
 // Pre-save: Hash password
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
+    if (!this.isModified('password')) {return next();}
 
     if (this.password) {
         this.password = await bcrypt.hash(this.password, 12);
@@ -126,19 +126,19 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 
 // Method: Check if premium is active
 userSchema.methods.hasPremiumAccess = function () {
-    if (this.role === 'admin') return true;
-    if (!this.isPremium) return false;
-    if (!this.premiumExpiresAt) return true; // Lifetime premium
+    if (this.role === 'admin') {return true;}
+    if (!this.isPremium) {return false;}
+    if (!this.premiumExpiresAt) {return true;} // Lifetime premium
     return new Date() < this.premiumExpiresAt;
 };
 
 // Static: Find by email with password
 userSchema.statics.findByCredentials = async function (email, password) {
     const user = await this.findOne({ email }).select('+password');
-    if (!user) return null;
+    if (!user) {return null;}
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) return null;
+    if (!isMatch) {return null;}
 
     return user;
 };

@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const { recordEvent } = require('../utils/logger');
 const User = require('../models/User');
 
@@ -93,7 +93,7 @@ const subscriptionSchema = new (require('mongoose')).Schema({
         default: 'USD'
     },
     invoices: [require('mongoose').Schema.Types.ObjectId],
-    
+
     // Usage tracking
     usageMetrics: {
         chatbotMessagesUsed: {
@@ -175,7 +175,7 @@ class PremiumService {
             const Subscription = require('../models/Subscription');
 
             const plan = await PremiumPlan.findById(planId);
-            if (!plan) throw new Error('Plan bulunamadı');
+            if (!plan) {throw new Error('Plan bulunamadı');}
 
             const price = plan.price[billingCycle] || plan.price.monthly;
 

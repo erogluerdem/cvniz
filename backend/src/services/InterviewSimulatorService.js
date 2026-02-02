@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const { recordEvent } = require('../utils/logger');
 const Interview = require('../models/Interview');
 const User = require('../models/User');
@@ -80,39 +80,39 @@ module.exports = interviewSchema;
 const interviewQuestions = {
     behavioral: {
         junior: [
-            "Grup projesi sırasında anlaşmazlıkla nasıl başa çıktınız?",
-            "Bir hata yaptığınızda neler öğrendiniz?",
-            "Zor bir deadlinede nasıl başa çıkarsınız?",
-            "Bir müdürün eleştirisine nasıl tepki verdiniz?"
+            'Grup projesi sırasında anlaşmazlıkla nasıl başa çıktınız?',
+            'Bir hata yaptığınızda neler öğrendiniz?',
+            'Zor bir deadlinede nasıl başa çıkarsınız?',
+            'Bir müdürün eleştirisine nasıl tepki verdiniz?'
         ],
         mid: [
-            "Başınızda gelen en büyük zorluk neydi ve nasıl çözdünüz?",
-            "Takımın dinamiklerini iyileştirmek için ne yaptınız?",
-            "İş stratejisine karşı çıktığınız bir an anlatın.",
-            "Bir başarısızlıktan sonra tekrar nasıl ayağa kalktınız?"
+            'Başınızda gelen en büyük zorluk neydi ve nasıl çözdünüz?',
+            'Takımın dinamiklerini iyileştirmek için ne yaptınız?',
+            'İş stratejisine karşı çıktığınız bir an anlatın.',
+            'Bir başarısızlıktan sonra tekrar nasıl ayağa kalktınız?'
         ],
         senior: [
-            "Kuruluşsal değişim yönetimi deneyiminizi anlatın.",
-            "Hangi kararınız en büyük etkiye sahipti?",
-            "Conflicting stakeholders arasında nasıl uzlaştırırsınız?",
-            "Mentorship verdiğiniz kimseyi ne kadar etkiledi?"
+            'Kuruluşsal değişim yönetimi deneyiminizi anlatın.',
+            'Hangi kararınız en büyük etkiye sahipti?',
+            'Conflicting stakeholders arasında nasıl uzlaştırırsınız?',
+            'Mentorship verdiğiniz kimseyi ne kadar etkiledi?'
         ]
     },
     technical: {
         junior: [
-            "Bir veri yapısı sorunu açıkla.",
-            "Algoritma karmaşıklığı hakkında bilgi ver.",
-            "OOP prensiplerini açıkla.",
-            "Database indexing nedir?"
+            'Bir veri yapısı sorunu açıkla.',
+            'Algoritma karmaşıklığı hakkında bilgi ver.',
+            'OOP prensiplerini açıkla.',
+            'Database indexing nedir?'
         ],
         mid: [
-            "Bir sistema scaling yapmak gerekirse nasıl yaklaşırsın?",
+            'Bir sistema scaling yapmak gerekirse nasıl yaklaşırsın?',
             "Performance bottleneck'i nasıl belirlersin?",
-            "CAP theorem nedir ve neden önemli?",
+            'CAP theorem nedir ve neden önemli?',
             "Microservices vs Monolith'i karşılaştır."
         ],
         senior: [
-            "Sistem mimarisini sıfırdan tasarla.",
+            'Sistem mimarisini sıfırdan tasarla.',
             "Data consistency vs availability trade-off'u açıkla.",
             "Distributed systems challenge'ları nelerdir?",
             "Technology selection process'ini açıkla."
@@ -120,15 +120,15 @@ const interviewQuestions = {
     },
     competency: {
         junior: [
-            "Liderlik becerin hakkında örnek ver.",
-            "Innovation proactif mi yoksa reactive mi?",
-            "İletişim tarzın nedir?",
-            "Risk alıyor musun?"
+            'Liderlik becerin hakkında örnek ver.',
+            'Innovation proactif mi yoksa reactive mi?',
+            'İletişim tarzın nedir?',
+            'Risk alıyor musun?'
         ],
         mid: [
-            "Strategic thinking hakkında örnek ver.",
+            'Strategic thinking hakkında örnek ver.',
             "Influence capability'ni göster.",
-            "Change management deneyini anlat.",
+            'Change management deneyini anlat.',
             "Kalite karşısında speed'i nasıl balansla?"
         ]
     }
@@ -329,9 +329,9 @@ Lütfen şu formatta değerlendir:
         const avgScore = scores.reduce((a, b) => a + b) / scores.length;
 
         let readinessLevel = 'not_ready';
-        if (avgScore >= 8) readinessLevel = 'expert';
-        else if (avgScore >= 7) readinessLevel = 'ready';
-        else if (avgScore >= 5) readinessLevel = 'developing';
+        if (avgScore >= 8) {readinessLevel = 'expert';}
+        else if (avgScore >= 7) {readinessLevel = 'ready';}
+        else if (avgScore >= 5) {readinessLevel = 'developing';}
 
         // Aggregate strengths and weaknesses
         const strengths = new Set();
@@ -438,15 +438,15 @@ Lütfen şu formatta değerlendir:
                     .filter(i => i.summary?.totalScore)
                     .map(i => i.summary.totalScore);
 
-                stats.averageScore = scores.length > 0 
+                stats.averageScore = scores.length > 0
                     ? (scores.reduce((a, b) => a + b) / scores.length).toFixed(1)
                     : 0;
 
                 // Type breakdown
                 const typeScores = {};
                 interviews.forEach(i => {
-                    if (!typeScores[i.type]) typeScores[i.type] = [];
-                    if (i.summary?.totalScore) typeScores[i.type].push(i.summary.totalScore);
+                    if (!typeScores[i.type]) {typeScores[i.type] = [];}
+                    if (i.summary?.totalScore) {typeScores[i.type].push(i.summary.totalScore);}
                 });
 
                 const typeAvgs = Object.keys(typeScores).map(t => ({

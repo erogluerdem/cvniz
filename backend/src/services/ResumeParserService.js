@@ -10,7 +10,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const pdf = require('pdf-parse');
 const mammoth = require('mammoth');
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const { recordEvent } = require('../utils/logger');
 const CV = require('../models/CV');
 const User = require('../models/User');
@@ -25,7 +25,7 @@ class ResumeParserService {
     static async parseResume(filePath, userId) {
         try {
             const fileContent = await ResumeParserService.extractText(filePath);
-            
+
             // Parse extracted text using NLP
             const parsedData = await ResumeParserService.parseText(fileContent);
 
@@ -118,13 +118,9 @@ class ResumeParserService {
      * Extract text from DOC (convert to DOCX first)
      */
     static async extractFromDOC(filePath) {
-        try {
-            // Use Aspose or similar API to convert DOC to DOCX
-            // For now, throw error
-            throw new Error('DOC format not directly supported. Convert to DOCX.');
-        } catch (error) {
-            throw error;
-        }
+        // Use Aspose or similar API to convert DOC to DOCX
+        // For now, throw error
+        throw new Error('DOC format not directly supported. Convert to DOCX.');
     }
 
     /**
@@ -155,13 +151,13 @@ class ResumeParserService {
 
             // Extract personal info using regex
             const emailMatch = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/);
-            if (emailMatch) parsed.personalInfo.email = emailMatch[1];
+            if (emailMatch) { parsed.personalInfo.email = emailMatch[1]; }
 
             const phoneMatch = text.match(/(\+?\d{1,3}[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9})/);
-            if (phoneMatch) parsed.personalInfo.phone = phoneMatch[1];
+            if (phoneMatch) { parsed.personalInfo.phone = phoneMatch[1]; }
 
             const linkedinMatch = text.match(/linkedin\.com\/in\/([a-zA-Z0-9-]+)/i);
-            if (linkedinMatch) parsed.personalInfo.linkedin = `https://linkedin.com/in/${linkedinMatch[1]}`;
+            if (linkedinMatch) { parsed.personalInfo.linkedin = `https://linkedin.com/in/${linkedinMatch[1]}`; }
 
             // Extract sections
             parsed.summary = ResumeParserService.extractSection(text, 'summary|about|objective');
@@ -172,12 +168,12 @@ class ResumeParserService {
 
             // Calculate confidence based on extracted fields
             let confidence = 0;
-            if (parsed.personalInfo.email) confidence += 0.1;
-            if (parsed.personalInfo.phone) confidence += 0.1;
-            if (parsed.summary) confidence += 0.1;
-            if (parsed.experience.length > 0) confidence += 0.25;
-            if (parsed.education.length > 0) confidence += 0.25;
-            if (parsed.skills.length > 0) confidence += 0.1;
+            if (parsed.personalInfo.email) { confidence += 0.1; }
+            if (parsed.personalInfo.phone) { confidence += 0.1; }
+            if (parsed.summary) { confidence += 0.1; }
+            if (parsed.experience.length > 0) { confidence += 0.25; }
+            if (parsed.education.length > 0) { confidence += 0.25; }
+            if (parsed.skills.length > 0) { confidence += 0.1; }
 
             parsed.confidence = Math.min(confidence, 1);
 
@@ -205,7 +201,7 @@ class ResumeParserService {
 
             if (inSection) {
                 // Stop when we hit another section header
-                if (/^[A-Z][A-Z\s]+:?$/.test(line.trim())) break;
+                if (/^[A-Z][A-Z\s]+:?$/.test(line.trim())) { break; }
                 content += line + ' ';
             }
         }

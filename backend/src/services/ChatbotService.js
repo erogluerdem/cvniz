@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const { recordEvent } = require('../utils/logger');
 const User = require('../models/User');
 const Conversation = require('../models/Conversation');
@@ -303,7 +303,7 @@ class ChatbotService {
 
             // Generate PDF with conversation
             // TODO: Implement PDF generation
-            
+
             return {
                 success: true,
                 format: 'pdf'

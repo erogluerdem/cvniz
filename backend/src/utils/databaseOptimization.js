@@ -74,7 +74,7 @@ const optimizeDatabase = async () => {
         console.log('✅ Database indexes created successfully');
 
         // Enable TTL for temporary data
-        const SessionModel = mongoose.model('Session', new mongoose.Schema({ 
+        mongoose.model('Session', new mongoose.Schema({
             expiresAt: { type: Date, expires: 0 }
         }), 'sessions');
 
@@ -111,11 +111,11 @@ const profileQuery = async (fn, label) => {
     try {
         const result = await fn();
         const duration = Date.now() - start;
-        
+
         if (duration > 100) {
             console.warn(`⚠️  Slow Query (${duration}ms): ${label}`);
         }
-        
+
         return result;
     } catch (error) {
         console.error(`❌ Query Error: ${label}`, error);

@@ -9,7 +9,7 @@ const User = require('../models/User');
 const Enterprise = require('../models/Enterprise');
 const Log = require('../models/Log');
 const { recordEvent } = require('../utils/logger');
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 
 /**
  * SCIM Configuration
@@ -159,7 +159,7 @@ router.get('/Users', async (req, res) => {
         } = req.query;
 
         // Parse filter (e.g., "userName eq \"user@example.com\"")
-        let query = {};
+        const query = {};
         if (filter) {
             const [field, operator, value] = filter.split(' ');
             const fieldMap = {
@@ -172,20 +172,20 @@ router.get('/Users', async (req, res) => {
             const mongoField = fieldMap[field] || field;
 
             switch (operator) {
-                case 'eq':
-                    query[mongoField] = value.replace(/"/g, '');
-                    break;
-                case 'contains':
-                    query[mongoField] = { $regex: value.replace(/"/g, ''), $options: 'i' };
-                    break;
-                case 'startsWith':
-                    query[mongoField] = { $regex: `^${value.replace(/"/g, '')}`, $options: 'i' };
-                    break;
+            case 'eq':
+                query[mongoField] = value.replace(/"/g, '');
+                break;
+            case 'contains':
+                query[mongoField] = { $regex: value.replace(/"/g, ''), $options: 'i' };
+                break;
+            case 'startsWith':
+                query[mongoField] = { $regex: `^${value.replace(/"/g, '')}`, $options: 'i' };
+                break;
             }
         }
 
         // Sort
-        let sortOptions = {};
+        const sortOptions = {};
         if (sortBy) {
             const mongoField = sortBy === 'userName' ? 'email' : sortBy;
             sortOptions[mongoField] = sortOrder === 'ascending' ? 1 : -1;

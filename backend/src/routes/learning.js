@@ -23,58 +23,58 @@ const progressService = new ProgressTrackingService();
  * Yeni kurs oluştur
  */
 router.post('/courses', auth, async (req, res) => {
-  try {
-    const {
-      title,
-      description,
-      category,
-      level,
-      thumbnail,
-      instructor,
-      instructorBio,
-      isPremium,
-      price,
-      learningOutcomes,
-      requirements,
-      tags,
-      duration
-    } = req.body;
+    try {
+        const {
+            title,
+            description,
+            category,
+            level,
+            thumbnail,
+            instructor,
+            instructorBio,
+            isPremium,
+            price,
+            learningOutcomes,
+            requirements,
+            tags,
+            duration
+        } = req.body;
 
-    if (!title || !description) {
-      return res.status(400).json({
-        success: false,
-        message: 'Başlık ve açıklama gerekli'
-      });
+        if (!title || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Başlık ve açıklama gerekli'
+            });
+        }
+
+        const course = courseService.createCourse({
+            userId: req.user.id,
+            title,
+            description,
+            category,
+            level,
+            thumbnail,
+            instructor: instructor || req.user.name,
+            instructorBio,
+            isPremium,
+            price,
+            learningOutcomes,
+            requirements,
+            tags,
+            duration
+        });
+
+        res.status(201).json({
+            success: true,
+            course
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    const course = courseService.createCourse({
-      userId: req.user.id,
-      title,
-      description,
-      category,
-      level,
-      thumbnail,
-      instructor: instructor || req.user.name,
-      instructorBio,
-      isPremium,
-      price,
-      learningOutcomes,
-      requirements,
-      tags,
-      duration
-    });
-
-    res.status(201).json({
-      success: true,
-      course
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -82,27 +82,27 @@ router.post('/courses', auth, async (req, res) => {
  * Kurs detaylarını al
  */
 router.get('/courses/:courseId', async (req, res) => {
-  try {
-    const course = courseService.getCourse(req.params.courseId);
+    try {
+        const course = courseService.getCourse(req.params.courseId);
 
-    if (!course) {
-      return res.status(404).json({
-        success: false,
-        message: 'Kurs bulunamadı'
-      });
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: 'Kurs bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            course
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      course
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -110,38 +110,38 @@ router.get('/courses/:courseId', async (req, res) => {
  * Kursları ara ve listele
  */
 router.get('/courses', async (req, res) => {
-  try {
-    const { search, category, level, isPremium, sortBy, page = 1 } = req.query;
+    try {
+        const { search, category, level, isPremium, sortBy, page = 1 } = req.query;
 
-    const courses = courseService.searchCourses({
-      search,
-      category,
-      level,
-      isPremium: isPremium === 'true',
-      sortBy
-    });
+        const courses = courseService.searchCourses({
+            search,
+            category,
+            level,
+            isPremium: isPremium === 'true',
+            sortBy
+        });
 
-    const limit = 20;
-    const skip = (page - 1) * limit;
-    const paginated = courses.slice(skip, skip + limit);
+        const limit = 20;
+        const skip = (page - 1) * limit;
+        const paginated = courses.slice(skip, skip + limit);
 
-    res.json({
-      success: true,
-      courses: paginated,
-      pagination: {
-        page: parseInt(page),
-        limit,
-        total: courses.length,
-        pages: Math.ceil(courses.length / limit)
-      }
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.json({
+            success: true,
+            courses: paginated,
+            pagination: {
+                page: parseInt(page),
+                limit,
+                total: courses.length,
+                pages: Math.ceil(courses.length / limit)
+            }
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 /**
@@ -149,27 +149,27 @@ router.get('/courses', async (req, res) => {
  * Kursa kayıt ol
  */
 router.post('/courses/:courseId/enroll', auth, async (req, res) => {
-  try {
-    const enrollment = courseService.enrollInCourse(req.params.courseId, req.user.id);
+    try {
+        const enrollment = courseService.enrollInCourse(req.params.courseId, req.user.id);
 
-    if (!enrollment) {
-      return res.status(404).json({
-        success: false,
-        message: 'Kurs bulunamadı'
-      });
+        if (!enrollment) {
+            return res.status(404).json({
+                success: false,
+                message: 'Kurs bulunamadı'
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            enrollment
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.status(201).json({
-      success: true,
-      enrollment
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -177,27 +177,27 @@ router.post('/courses/:courseId/enroll', auth, async (req, res) => {
  * Kullanıcının enrolmentlerini al
  */
 router.get('/enrollments', auth, async (req, res) => {
-  try {
-    const { status, page = 1 } = req.query;
+    try {
+        const { status, page = 1 } = req.query;
 
-    const result = courseService.getUserEnrollments(req.user.id, {
-      status,
-      page: parseInt(page),
-      limit: 20
-    });
+        const result = courseService.getUserEnrollments(req.user.id, {
+            status,
+            page: parseInt(page),
+            limit: 20
+        });
 
-    res.json({
-      success: true,
-      enrollments: result.enrollments,
-      pagination: result.pagination
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.json({
+            success: true,
+            enrollments: result.enrollments,
+            pagination: result.pagination
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 // ============================================
@@ -209,28 +209,28 @@ router.get('/enrollments', auth, async (req, res) => {
  * Video yükle
  */
 router.post('/videos', auth, async (req, res) => {
-  try {
-    const { lessonId, title, description, duration, thumbnailUrl } = req.body;
+    try {
+        const { lessonId, title, description, duration, thumbnailUrl } = req.body;
 
-    const video = videoService.uploadVideo({
-      lessonId,
-      title,
-      description,
-      duration,
-      thumbnailUrl
-    });
+        const video = videoService.uploadVideo({
+            lessonId,
+            title,
+            description,
+            duration,
+            thumbnailUrl
+        });
 
-    res.status(201).json({
-      success: true,
-      video
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.status(201).json({
+            success: true,
+            video
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 /**
@@ -238,27 +238,27 @@ router.post('/videos', auth, async (req, res) => {
  * Video detaylarını al
  */
 router.get('/videos/:videoId', async (req, res) => {
-  try {
-    const video = videoService.getVideo(req.params.videoId);
+    try {
+        const video = videoService.getVideo(req.params.videoId);
 
-    if (!video) {
-      return res.status(404).json({
-        success: false,
-        message: 'Video bulunamadı'
-      });
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'Video bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            video
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      video
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -266,33 +266,33 @@ router.get('/videos/:videoId', async (req, res) => {
  * Streaming oturumunu başlat
  */
 router.post('/videos/:videoId/stream', auth, async (req, res) => {
-  try {
-    const { bandwidth, deviceType, resumeAt } = req.body;
+    try {
+        const { bandwidth, deviceType, resumeAt } = req.body;
 
-    const session = videoService.startStreamSession(
-      req.params.videoId,
-      req.user.id,
-      { bandwidth, deviceType, resumeAt }
-    );
+        const session = videoService.startStreamSession(
+            req.params.videoId,
+            req.user.id,
+            { bandwidth, deviceType, resumeAt }
+        );
 
-    if (!session) {
-      return res.status(404).json({
-        success: false,
-        message: 'Video bulunamadı'
-      });
+        if (!session) {
+            return res.status(404).json({
+                success: false,
+                message: 'Video bulunamadı'
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            session
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.status(201).json({
-      success: true,
-      session
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -300,27 +300,27 @@ router.post('/videos/:videoId/stream', auth, async (req, res) => {
  * Streaming oturumunu güncelle
  */
 router.post('/stream/:sessionId', auth, async (req, res) => {
-  try {
-    const session = videoService.updateStreamSession(req.params.sessionId, req.body);
+    try {
+        const session = videoService.updateStreamSession(req.params.sessionId, req.body);
 
-    if (!session) {
-      return res.status(404).json({
-        success: false,
-        message: 'Oturum bulunamadı'
-      });
+        if (!session) {
+            return res.status(404).json({
+                success: false,
+                message: 'Oturum bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            session
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      session
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -328,27 +328,27 @@ router.post('/stream/:sessionId', auth, async (req, res) => {
  * Streaming oturumunu sonlandır
  */
 router.post('/stream/:sessionId/end', auth, async (req, res) => {
-  try {
-    const session = videoService.endStreamSession(req.params.sessionId);
+    try {
+        const session = videoService.endStreamSession(req.params.sessionId);
 
-    if (!session) {
-      return res.status(404).json({
-        success: false,
-        message: 'Oturum bulunamadı'
-      });
+        if (!session) {
+            return res.status(404).json({
+                success: false,
+                message: 'Oturum bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            session
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      session
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -356,27 +356,27 @@ router.post('/stream/:sessionId/end', auth, async (req, res) => {
  * Video istatistiklerini al
  */
 router.get('/videos/:videoId/stats', async (req, res) => {
-  try {
-    const stats = videoService.getVideoStats(req.params.videoId);
+    try {
+        const stats = videoService.getVideoStats(req.params.videoId);
 
-    if (!stats) {
-      return res.status(404).json({
-        success: false,
-        message: 'Video bulunamadı'
-      });
+        if (!stats) {
+            return res.status(404).json({
+                success: false,
+                message: 'Video bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            stats
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      stats
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 // ============================================
@@ -388,42 +388,42 @@ router.get('/videos/:videoId/stats', async (req, res) => {
  * Quiz oluştur
  */
 router.post('/quizzes', auth, async (req, res) => {
-  try {
-    const {
-      lessonId,
-      title,
-      description,
-      type,
-      passingScore,
-      timeLimit,
-      showFeedback,
-      showCorrectAnswers,
-      difficulty
-    } = req.body;
+    try {
+        const {
+            lessonId,
+            title,
+            description,
+            type,
+            passingScore,
+            timeLimit,
+            showFeedback,
+            showCorrectAnswers,
+            difficulty
+        } = req.body;
 
-    const quiz = quizService.createQuiz({
-      lessonId,
-      title,
-      description,
-      type,
-      passingScore,
-      timeLimit,
-      showFeedback,
-      showCorrectAnswers,
-      difficulty
-    });
+        const quiz = quizService.createQuiz({
+            lessonId,
+            title,
+            description,
+            type,
+            passingScore,
+            timeLimit,
+            showFeedback,
+            showCorrectAnswers,
+            difficulty
+        });
 
-    res.status(201).json({
-      success: true,
-      quiz
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.status(201).json({
+            success: true,
+            quiz
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 /**
@@ -431,51 +431,51 @@ router.post('/quizzes', auth, async (req, res) => {
  * Quiz'e soru ekle
  */
 router.post('/quizzes/:quizId/questions', auth, async (req, res) => {
-  try {
-    const {
-      text,
-      type,
-      points,
-      difficulty,
-      explanation,
-      imageUrl,
-      options,
-      correctAnswers,
-      caseSensitive,
-      rubric
-    } = req.body;
+    try {
+        const {
+            text,
+            type,
+            points,
+            difficulty,
+            explanation,
+            imageUrl,
+            options,
+            correctAnswers,
+            caseSensitive,
+            rubric
+        } = req.body;
 
-    const question = quizService.addQuestion(req.params.quizId, {
-      text,
-      type,
-      points,
-      difficulty,
-      explanation,
-      imageUrl,
-      options,
-      correctAnswers,
-      caseSensitive,
-      rubric
-    });
+        const question = quizService.addQuestion(req.params.quizId, {
+            text,
+            type,
+            points,
+            difficulty,
+            explanation,
+            imageUrl,
+            options,
+            correctAnswers,
+            caseSensitive,
+            rubric
+        });
 
-    if (!question) {
-      return res.status(404).json({
-        success: false,
-        message: 'Quiz bulunamadı'
-      });
+        if (!question) {
+            return res.status(404).json({
+                success: false,
+                message: 'Quiz bulunamadı'
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            question
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.status(201).json({
-      success: true,
-      question
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -483,27 +483,27 @@ router.post('/quizzes/:quizId/questions', auth, async (req, res) => {
  * Quiz denemesini başlat
  */
 router.post('/quizzes/:quizId/start', auth, async (req, res) => {
-  try {
-    const attempt = quizService.startAttempt(req.params.quizId, req.user.id);
+    try {
+        const attempt = quizService.startAttempt(req.params.quizId, req.user.id);
 
-    if (!attempt) {
-      return res.status(404).json({
-        success: false,
-        message: 'Quiz bulunamadı'
-      });
+        if (!attempt) {
+            return res.status(404).json({
+                success: false,
+                message: 'Quiz bulunamadı'
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            attempt
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.status(201).json({
-      success: true,
-      attempt
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -511,29 +511,29 @@ router.post('/quizzes/:quizId/start', auth, async (req, res) => {
  * Soruya cevap ver
  */
 router.post('/attempts/:attemptId/answer', auth, async (req, res) => {
-  try {
-    const { questionId, answer } = req.body;
+    try {
+        const { questionId, answer } = req.body;
 
-    const attempt = quizService.answerQuestion(req.params.attemptId, questionId, answer);
+        const attempt = quizService.answerQuestion(req.params.attemptId, questionId, answer);
 
-    if (!attempt) {
-      return res.status(404).json({
-        success: false,
-        message: 'Deneme bulunamadı'
-      });
+        if (!attempt) {
+            return res.status(404).json({
+                success: false,
+                message: 'Deneme bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            attempt
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      attempt
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -541,27 +541,27 @@ router.post('/attempts/:attemptId/answer', auth, async (req, res) => {
  * Quiz denemesini gönder
  */
 router.post('/attempts/:attemptId/submit', auth, async (req, res) => {
-  try {
-    const attempt = quizService.submitAttempt(req.params.attemptId);
+    try {
+        const attempt = quizService.submitAttempt(req.params.attemptId);
 
-    if (!attempt) {
-      return res.status(404).json({
-        success: false,
-        message: 'Deneme bulunamadı'
-      });
+        if (!attempt) {
+            return res.status(404).json({
+                success: false,
+                message: 'Deneme bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            attempt
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      attempt
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -569,27 +569,27 @@ router.post('/attempts/:attemptId/submit', auth, async (req, res) => {
  * Deneme sonuçlarını al
  */
 router.get('/attempts/:attemptId/results', auth, async (req, res) => {
-  try {
-    const results = quizService.getAttemptResults(req.params.attemptId);
+    try {
+        const results = quizService.getAttemptResults(req.params.attemptId);
 
-    if (!results) {
-      return res.status(404).json({
-        success: false,
-        message: 'Deneme bulunamadı'
-      });
+        if (!results) {
+            return res.status(404).json({
+                success: false,
+                message: 'Deneme bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            results
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      results
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 // ============================================
@@ -601,20 +601,20 @@ router.get('/attempts/:attemptId/results', auth, async (req, res) => {
  * Sertifika ver
  */
 router.post('/certificates', auth, async (req, res) => {
-  try {
-    const certificate = certificateService.issueCertificate(req.body);
+    try {
+        const certificate = certificateService.issueCertificate(req.body);
 
-    res.status(201).json({
-      success: true,
-      certificate
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.status(201).json({
+            success: true,
+            certificate
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 /**
@@ -622,27 +622,27 @@ router.post('/certificates', auth, async (req, res) => {
  * Sertifika detaylarını al
  */
 router.get('/certificates/:certificateId', async (req, res) => {
-  try {
-    const certificate = certificateService.getCertificate(req.params.certificateId);
+    try {
+        const certificate = certificateService.getCertificate(req.params.certificateId);
 
-    if (!certificate) {
-      return res.status(404).json({
-        success: false,
-        message: 'Sertifika bulunamadı'
-      });
+        if (!certificate) {
+            return res.status(404).json({
+                success: false,
+                message: 'Sertifika bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            certificate
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      certificate
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -650,25 +650,25 @@ router.get('/certificates/:certificateId', async (req, res) => {
  * Sertifikayı doğrula
  */
 router.post('/certificates/:certificateId/verify', async (req, res) => {
-  try {
-    const { verificationCode } = req.body;
+    try {
+        const { verificationCode } = req.body;
 
-    const result = certificateService.verifyCertificate(
-      req.params.certificateId,
-      verificationCode
-    );
+        const result = certificateService.verifyCertificate(
+            req.params.certificateId,
+            verificationCode
+        );
 
-    res.json({
-      success: result.isValid,
-      result
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.json({
+            success: result.isValid,
+            result
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 /**
@@ -676,20 +676,20 @@ router.post('/certificates/:certificateId/verify', async (req, res) => {
  * Kullanıcının sertifikalarını al
  */
 router.get('/my-certificates', auth, async (req, res) => {
-  try {
-    const certificates = certificateService.getUserCertificates(req.user.id);
+    try {
+        const certificates = certificateService.getUserCertificates(req.user.id);
 
-    res.json({
-      success: true,
-      certificates
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.json({
+            success: true,
+            certificates
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 // ============================================
@@ -701,27 +701,27 @@ router.get('/my-certificates', auth, async (req, res) => {
  * İlerleme kaydını al
  */
 router.get('/progress/:recordId', auth, async (req, res) => {
-  try {
-    const record = progressService.getProgressRecord(req.params.recordId);
+    try {
+        const record = progressService.getProgressRecord(req.params.recordId);
 
-    if (!record) {
-      return res.status(404).json({
-        success: false,
-        message: 'İlerleme kaydı bulunamadı'
-      });
+        if (!record) {
+            return res.status(404).json({
+                success: false,
+                message: 'İlerleme kaydı bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            record
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      record
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -729,27 +729,27 @@ router.get('/progress/:recordId', auth, async (req, res) => {
  * İlerleme güncelle
  */
 router.post('/progress/:recordId/update', auth, async (req, res) => {
-  try {
-    const record = progressService.updateProgress(req.params.recordId, req.body);
+    try {
+        const record = progressService.updateProgress(req.params.recordId, req.body);
 
-    if (!record) {
-      return res.status(404).json({
-        success: false,
-        message: 'İlerleme kaydı bulunamadı'
-      });
+        if (!record) {
+            return res.status(404).json({
+                success: false,
+                message: 'İlerleme kaydı bulunamadı'
+            });
+        }
+
+        res.json({
+            success: true,
+            record
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    res.json({
-      success: true,
-      record
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 });
 
 /**
@@ -757,20 +757,20 @@ router.post('/progress/:recordId/update', auth, async (req, res) => {
  * Kullanıcının istatistiklerini al
  */
 router.get('/stats', auth, async (req, res) => {
-  try {
-    const stats = progressService.getUserStats(req.user.id);
+    try {
+        const stats = progressService.getUserStats(req.user.id);
 
-    res.json({
-      success: true,
-      stats
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.json({
+            success: true,
+            stats
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 /**
@@ -778,20 +778,20 @@ router.get('/stats', auth, async (req, res) => {
  * İlerleme raporu oluştur
  */
 router.get('/report', auth, async (req, res) => {
-  try {
-    const report = progressService.generateProgressReport(req.user.id);
+    try {
+        const report = progressService.generateProgressReport(req.user.id);
 
-    res.json({
-      success: true,
-      report
-    });
-  } catch (error) {
-    Sentry.captureException(error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
+        res.json({
+            success: true,
+            report
+        });
+    } catch (error) {
+        Sentry.captureException(error);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 export default router;

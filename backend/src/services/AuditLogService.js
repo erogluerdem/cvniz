@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const { recordEvent } = require('../utils/logger');
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 
 /**
  * Audit Log Schema

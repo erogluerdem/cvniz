@@ -33,19 +33,19 @@ const loginLogSchema = new mongoose.Schema({
 
 // Konum string'i
 loginLogSchema.virtual('locationString').get(function () {
-    if (!this.location) return 'Bilinmiyor';
+    if (!this.location) {return 'Bilinmiyor';}
     const parts = [];
-    if (this.location.city) parts.push(this.location.city);
-    if (this.location.countryCode) parts.push(this.location.countryCode);
+    if (this.location.city) {parts.push(this.location.city);}
+    if (this.location.countryCode) {parts.push(this.location.countryCode);}
     return parts.length > 0 ? parts.join(', ') : 'Bilinmiyor';
 });
 
 // Cihaz string'i
 loginLogSchema.virtual('deviceString').get(function () {
-    if (!this.device) return this.userAgent || 'Bilinmiyor';
+    if (!this.device) {return this.userAgent || 'Bilinmiyor';}
     const parts = [];
-    if (this.device.browser) parts.push(this.device.browser);
-    if (this.device.os) parts.push(this.device.os);
+    if (this.device.browser) {parts.push(this.device.browser);}
+    if (this.device.os) {parts.push(this.device.os);}
     return parts.length > 0 ? parts.join(' / ') : 'Bilinmiyor';
 });
 

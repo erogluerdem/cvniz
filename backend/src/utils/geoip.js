@@ -23,20 +23,20 @@ function parseUserAgent(userAgent) {
 
     // Detect browser
     let browser = 'Bilinmiyor';
-    if (ua.includes('edg/')) browser = 'Edge';
-    else if (ua.includes('chrome')) browser = 'Chrome';
-    else if (ua.includes('firefox')) browser = 'Firefox';
-    else if (ua.includes('safari')) browser = 'Safari';
-    else if (ua.includes('opera') || ua.includes('opr')) browser = 'Opera';
-    else if (ua.includes('msie') || ua.includes('trident')) browser = 'Internet Explorer';
+    if (ua.includes('edg/')) {browser = 'Edge';}
+    else if (ua.includes('chrome')) {browser = 'Chrome';}
+    else if (ua.includes('firefox')) {browser = 'Firefox';}
+    else if (ua.includes('safari')) {browser = 'Safari';}
+    else if (ua.includes('opera') || ua.includes('opr')) {browser = 'Opera';}
+    else if (ua.includes('msie') || ua.includes('trident')) {browser = 'Internet Explorer';}
 
     // Detect OS
     let os = 'Bilinmiyor';
-    if (ua.includes('windows')) os = 'Windows';
-    else if (ua.includes('mac os')) os = 'macOS';
-    else if (ua.includes('linux')) os = 'Linux';
-    else if (ua.includes('android')) os = 'Android';
-    else if (ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
+    if (ua.includes('windows')) {os = 'Windows';}
+    else if (ua.includes('mac os')) {os = 'macOS';}
+    else if (ua.includes('linux')) {os = 'Linux';}
+    else if (ua.includes('android')) {os = 'Android';}
+    else if (ua.includes('iphone') || ua.includes('ipad')) {os = 'iOS';}
 
     return { browser, os, isMobile };
 }

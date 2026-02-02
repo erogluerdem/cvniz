@@ -25,7 +25,6 @@ class ResponseCache {
         const userId = req.user?.id || 'anonymous';
         const method = req.method;
         const path = req.originalUrl || req.url;
-        
         // Include query params but not pagination
         const queryStr = Object.keys(req.query)
             .filter(k => !['page', 'limit', 'offset', '_'].includes(k))
@@ -92,10 +91,9 @@ class ResponseCache {
                     res.set('ETag', eTag);
                     res.set('X-Cache', 'HIT');
                     res.set('Cache-Control', `public, max-age=${duration}`);
-                    
+
                     // Add cache metadata
                     res.set('X-Cache-Age', Math.floor((Date.now() - cached.timestamp) / 1000));
-                    
                     return res.json(cached.data);
                 }
 
@@ -105,7 +103,7 @@ class ResponseCache {
                 const originalJson = res.json.bind(res);
                 const self = this;
 
-                res.json = function(data) {
+                res.json = function (data) {
                     const eTag = self.generateETag(data);
 
                     // Check conditions

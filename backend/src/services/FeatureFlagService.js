@@ -107,8 +107,8 @@ class FeatureFlagService {
      * Check rollout percentage using consistent hashing
      */
     checkRollout(featureName, userId, rolloutPercent) {
-        if (rolloutPercent >= 100) return true;
-        if (rolloutPercent <= 0) return false;
+        if (rolloutPercent >= 100) {return true;}
+        if (rolloutPercent <= 0) {return false;}
 
         // Use consistent hashing for stable rollout
         const hash = this.hashCode(`${featureName}:${userId || 'anonymous'}`);
@@ -165,7 +165,7 @@ class FeatureFlagService {
      */
     async isBetaTester(userId) {
         try {
-            if (!userId) return false;
+            if (!userId) {return false;}
 
             const betaKey = `beta_tester:${userId}`;
             const isBeta = await CacheService.get(betaKey);
@@ -203,7 +203,7 @@ class FeatureFlagService {
      */
     getFlag(featureName) {
         const flag = this.flags.get(featureName);
-        if (!flag) return null;
+        if (!flag) {return null;}
 
         return {
             name: featureName,
@@ -217,7 +217,7 @@ class FeatureFlagService {
     async setFlag(featureName, config) {
         try {
             const existingFlag = this.flags.get(featureName);
-            
+
             const updatedFlag = {
                 ...existingFlag,
                 ...config,
@@ -269,8 +269,8 @@ class FeatureFlagService {
      * Gradually roll out feature (increase percentage)
      */
     async rolloutFeature(featureName, percentage) {
-        if (percentage > 100) percentage = 100;
-        if (percentage < 0) percentage = 0;
+        if (percentage > 100) {percentage = 100;}
+        if (percentage < 0) {percentage = 0;}
 
         return this.setFlag(featureName, {
             enabled: true,
@@ -284,7 +284,7 @@ class FeatureFlagService {
     async getStats(featureName) {
         try {
             const flag = this.flags.get(featureName);
-            if (!flag) return null;
+            if (!flag) {return null;}
 
             // Get usage from cache
             const usageKey = `flag_usage:${featureName}`;
@@ -295,8 +295,8 @@ class FeatureFlagService {
                 name: featureName,
                 ...flag,
                 usage,
-                enabledPercentage: usage.enabled + usage.disabled > 0 
-                    ? (usage.enabled / (usage.enabled + usage.disabled)) * 100 
+                enabledPercentage: usage.enabled + usage.disabled > 0
+                    ? (usage.enabled / (usage.enabled + usage.disabled)) * 100
                     : 0
             };
         } catch (err) {

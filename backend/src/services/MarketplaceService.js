@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const { recordEvent } = require('../utils/logger');
 
 /**
@@ -280,9 +280,9 @@ class MarketplaceService {
                 status: 'active'
             };
 
-            if (category) filter.category = category;
-            if (level) filter.level = level;
-            if (rating > 0) filter['rating.average'] = { $gte: rating };
+            if (category) {filter.category = category;}
+            if (level) {filter.level = level;}
+            if (rating > 0) {filter['rating.average'] = { $gte: rating };}
 
             filter['pricing.amount'] = { $gte: minPrice, $lte: maxPrice };
 
@@ -320,7 +320,7 @@ class MarketplaceService {
             const MarketplaceOrder = require('../models/MarketplaceOrder');
 
             const service = await ServiceListing.findById(serviceId);
-            if (!service) throw new Error('Hizmet bulunamadı');
+            if (!service) {throw new Error('Hizmet bulunamadı');}
 
             const order = await MarketplaceOrder.create({
                 serviceId,
@@ -521,8 +521,8 @@ class MarketplaceService {
             return {
                 totalEarnings,
                 completedOrders: completedOrders.length,
-                averageOrderValue: completedOrders.length > 0 
-                    ? totalEarnings / completedOrders.length 
+                averageOrderValue: completedOrders.length > 0
+                    ? totalEarnings / completedOrders.length
                     : 0
             };
         } catch (error) {

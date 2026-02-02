@@ -51,27 +51,27 @@ const BUNDLE_PRICE = 449; // 3 photos
 const BIO_TEMPLATES = {
     tech: {
         keywords: ['teknoloji', 'yazılım', 'geliştirici', 'mühendis'],
-        template: `{years} yılı aşkın deneyime sahip {title} olarak, {skills} alanlarında uzmanlaşmış bulunuyorum. {company} gibi önde gelen firmalarda çalışarak {achievement} başarılarına imza attım. Sürekli öğrenme ve yenilikçi çözümler üretme tutkusuyla, ekiplere ve projelere değer katmaya devam ediyorum.`
+        template: '{years} yılı aşkın deneyime sahip {title} olarak, {skills} alanlarında uzmanlaşmış bulunuyorum. {company} gibi önde gelen firmalarda çalışarak {achievement} başarılarına imza attım. Sürekli öğrenme ve yenilikçi çözümler üretme tutkusuyla, ekiplere ve projelere değer katmaya devam ediyorum.'
     },
     finance: {
         keywords: ['finans', 'bankacılık', 'muhasebe', 'yatırım'],
-        template: `{years} yıllık finans sektörü deneyimiyle, {skills} konularında derin uzmanlık geliştirdim. {company} bünyesinde {achievement} katkılarıyla şirket hedeflerine ulaşılmasında önemli rol oynadım. Stratejik düşünce ve analitik yaklaşımımla kurumsal değer yaratmaya odaklanıyorum.`
+        template: '{years} yıllık finans sektörü deneyimiyle, {skills} konularında derin uzmanlık geliştirdim. {company} bünyesinde {achievement} katkılarıyla şirket hedeflerine ulaşılmasında önemli rol oynadım. Stratejik düşünce ve analitik yaklaşımımla kurumsal değer yaratmaya odaklanıyorum.'
     },
     marketing: {
         keywords: ['pazarlama', 'dijital', 'marka', 'içerik'],
-        template: `Yaratıcı ve veri odaklı bir {title} olarak, {years} yıldır markaların büyüme hikayelerine katkıda bulunuyorum. {skills} stratejileriyle {achievement} sonuçlar elde ettim. Yenilikçi kampanyalar ve ölçülebilir başarılarla sektörde fark yaratıyorum.`
+        template: 'Yaratıcı ve veri odaklı bir {title} olarak, {years} yıldır markaların büyüme hikayelerine katkıda bulunuyorum. {skills} stratejileriyle {achievement} sonuçlar elde ettim. Yenilikçi kampanyalar ve ölçülebilir başarılarla sektörde fark yaratıyorum.'
     },
     general: {
         keywords: [],
-        template: `{years} yıllık profesyonel deneyimime dayanan {title} kariyerimde, {skills} konularında kendimi geliştirdim. {company} deneyimimde {achievement} başarılarla ekibime ve şirket hedeflerine katkı sağladım. Sürekli gelişim odaklı yaklaşımımla yeni fırsatlar arıyorum.`
+        template: '{years} yıllık profesyonel deneyimime dayanan {title} kariyerimde, {skills} konularında kendimi geliştirdim. {company} deneyimimde {achievement} başarılarla ekibime ve şirket hedeflerine katkı sağladım. Sürekli gelişim odaklı yaklaşımımla yeni fırsatlar arıyorum.'
     }
 };
 
 // Elevator pitch templates (30 seconds)
 const ELEVATOR_TEMPLATES = {
-    jobseeker: `Merhaba, ben {name}. {years} yıllık {field} deneyimine sahip bir {title}'ım. {skills} konularında uzmanlaştım ve son olarak {company}'de {achievement} başardım. Şu an {goal} arıyorum ve sizin için nasıl değer katabileceğimi konuşmayı çok isterim.`,
-    networking: `Ben {name}, {title} olarak {years} yıldır {field} sektöründeyim. En büyük tutkum {passion}. Son projemde {achievement} ve bu beni çok heyecanlandırdı. Siz ne üzerinde çalışıyorsunuz?`,
-    interview: `{name} olarak, {years} yıllık {field} tecrübemle bu pozisyon için güçlü bir aday olduğuma inanıyorum. {company}'de {achievement} başarısına imza attım. {skills} konularındaki uzmanlığımı şirketinize taşımak ve birlikte büyümek istiyorum.`
+    jobseeker: 'Merhaba, ben {name}. {years} yıllık {field} deneyimine sahip bir {title}\'ım. {skills} konularında uzmanlaştım ve son olarak {company}\'de {achievement} başardım. Şu an {goal} arıyorum ve sizin için nasıl değer katabileceğimi konuşmayı çok isterim.',
+    networking: 'Ben {name}, {title} olarak {years} yıldır {field} sektöründeyim. En büyük tutkum {passion}. Son projemde {achievement} ve bu beni çok heyecanlandırdı. Siz ne üzerinde çalışıyorsunuz?',
+    interview: '{name} olarak, {years} yıllık {field} tecrübemle bu pozisyon için güçlü bir aday olduğuma inanıyorum. {company}\'de {achievement} başarısına imza attım. {skills} konularındaki uzmanlığımı şirketinize taşımak ve birlikte büyümek istiyorum.'
 };
 
 // POST /api/headshot/upload - Upload selfie for processing
@@ -314,7 +314,7 @@ function generateElevatorPitch(cvData, purpose, targetCompany) {
 
     const template = ELEVATOR_TEMPLATES[purpose] || ELEVATOR_TEMPLATES.jobseeker;
 
-    let pitch = template
+    const pitch = template
         .replace(/{name}/g, name)
         .replace(/{years}/g, years)
         .replace(/{title}/g, title)
@@ -349,7 +349,7 @@ function extractTopAchievement(experiences) {
     for (const exp of experiences) {
         const desc = exp.description || '';
         const match = desc.match(/(\d+%[^.]*)|(\d+\s*(kişi|proje|müşteri)[^.]*)/i);
-        if (match) return match[0].trim();
+        if (match) {return match[0].trim();}
     }
     return null;
 }
@@ -357,9 +357,9 @@ function extractTopAchievement(experiences) {
 function detectIndustry(cvData) {
     const allText = JSON.stringify(cvData).toLowerCase();
 
-    if (/yazılım|developer|mühendis|react|python|node/.test(allText)) return 'tech';
-    if (/finans|banka|muhasebe|yatırım/.test(allText)) return 'finance';
-    if (/pazarlama|marketing|dijital|marka/.test(allText)) return 'marketing';
+    if (/yazılım|developer|mühendis|react|python|node/.test(allText)) {return 'tech';}
+    if (/finans|banka|muhasebe|yatırım/.test(allText)) {return 'finance';}
+    if (/pazarlama|marketing|dijital|marka/.test(allText)) {return 'marketing';}
 
     return 'general';
 }

@@ -128,7 +128,7 @@ class MonitoringService {
         try {
             const cacheKey = 'metrics:feature_adoption';
             const cached = await CacheService.get(cacheKey);
-            if (cached) return JSON.parse(cached);
+            if (cached) {return JSON.parse(cached);}
 
             const features = [
                 'ai_summary',
@@ -171,7 +171,7 @@ class MonitoringService {
         try {
             const cacheKey = 'metrics:user_retention';
             const cached = await CacheService.get(cacheKey);
-            if (cached) return JSON.parse(cached);
+            if (cached) {return JSON.parse(cached);}
 
             const now = Date.now();
             const day = 86400000;
@@ -320,7 +320,7 @@ class MonitoringService {
         try {
             const cacheKey = 'system:health';
             const cached = await CacheService.get(cacheKey);
-            if (cached) return JSON.parse(cached);
+            if (cached) {return JSON.parse(cached);}
 
             // Collect all metrics
             const health = {

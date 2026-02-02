@@ -5,7 +5,7 @@ class SmsService {
     }
 
     async sendSms(phone, message) {
-        if (!phone) return { success: false, error: 'No phone number' };
+        if (!phone) {return { success: false, error: 'No phone number' };}
 
         // Real integration would go here (Netgsm, Twilio etc.)
         console.log(`📱 [MOCK SMS] To: ${phone} | Message: ${message}`);
@@ -18,7 +18,7 @@ class SmsService {
             const EmailTemplate = require('../models/EmailTemplate');
             const template = await EmailTemplate.findOne({ slug, channel: 'sms', status: 'active' });
 
-            if (!template) return null;
+            if (!template) {return null;}
 
             let message = template.content;
 
@@ -36,7 +36,7 @@ class SmsService {
     }
 
     async sendPaymentSuccess(user, payment) {
-        if (!user.phone) return;
+        if (!user.phone) {return;}
 
         const replacements = { amount: payment.amount };
         const dbMessage = await this.getTemplate('payment-success', replacements);
@@ -46,12 +46,12 @@ class SmsService {
     }
 
     async sendBankTransferApproved(user, payment) {
-        if (!user.phone) return;
+        if (!user.phone) {return;}
 
         const replacements = { name: user.name };
         const dbMessage = await this.getTemplate('bank-transfer-approved', replacements);
 
-        const message = dbMessage || `CVniz: Havale isleminiz onaylandi. Premium uyeliginiz basladi.`;
+        const message = dbMessage || 'CVniz: Havale isleminiz onaylandi. Premium uyeliginiz basladi.';
         return this.sendSms(user.phone, message);
     }
 }

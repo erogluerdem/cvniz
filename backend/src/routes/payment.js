@@ -142,7 +142,7 @@ router.post('/callback', async (req, res) => {
             const userId = parts[1];
 
             // Calculate expiration
-            // Ideally we should store the plan details in a temp "Order" table before init, 
+            // Ideally we should store the plan details in a temp "Order" table before init,
             // but for now we default to 1 month or check basket items if needed.
             // Let's assume 30 days for simplicity or fetch plan from result.basketItems
             const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -264,7 +264,7 @@ router.put('/:id/reject', authenticate, adminOnly, async (req, res) => {
         const { adminNote } = req.body;
         const payment = await Payment.findById(req.params.id);
 
-        if (!payment) return res.status(404).json({ error: 'Ödeme bulunamadı' });
+        if (!payment) {return res.status(404).json({ error: 'Ödeme bulunamadı' });}
 
         payment.status = 'rejected';
         payment.adminNote = adminNote;

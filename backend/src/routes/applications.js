@@ -321,8 +321,8 @@ function calculateStats(applications) {
 
         // Recent applications
         const appliedDate = new Date(app.appliedAt);
-        if (appliedDate > weekAgo) stats.thisWeek++;
-        if (appliedDate > monthAgo) stats.thisMonth++;
+        if (appliedDate > weekAgo) {stats.thisWeek++;}
+        if (appliedDate > monthAgo) {stats.thisMonth++;}
 
         // Rates
         if (['screening', 'interview', 'offer', 'rejected'].includes(app.status)) {
@@ -368,9 +368,9 @@ function detectCompanyType(companyName) {
     const startupIndicators = ['startup', 'labs', 'io', 'hub', 'ventures'];
     const financeIndicators = ['bank', 'finans', 'sigorta', 'yatırım', 'capital'];
 
-    if (techCompanies.some(t => lower.includes(t))) return 'tech';
-    if (startupIndicators.some(s => lower.includes(s))) return 'startup';
-    if (financeIndicators.some(f => lower.includes(f))) return 'finance';
+    if (techCompanies.some(t => lower.includes(t))) {return 'tech';}
+    if (startupIndicators.some(s => lower.includes(s))) {return 'startup';}
+    if (financeIndicators.some(f => lower.includes(f))) {return 'finance';}
 
     return 'general';
 }

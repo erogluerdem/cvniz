@@ -25,7 +25,7 @@ class RecommendationService {
         // 1. Skills Matching (40%)
         const cvSkills = (cvData?.skills || []).map(s => s.toLowerCase());
         const jobSkills = (job.skills || []).map(s => s.toLowerCase());
-        
+
         if (jobSkills.length > 0) {
             const matchedSkills = jobSkills.filter(skill =>
                 cvSkills.some(cvSkill =>
@@ -49,7 +49,7 @@ class RecommendationService {
         // 3. Location Preference (15%)
         const userLocation = cvData?.personal?.location?.toLowerCase() || '';
         const jobLocation = job.location?.toLowerCase() || '';
-        
+
         if (job.locationType === 'remote') {
             score += weights.location; // Remote is universally attractive
         } else if (userLocation && jobLocation) {
@@ -88,12 +88,12 @@ class RecommendationService {
         const s1 = str1.toLowerCase();
         const s2 = str2.toLowerCase();
 
-        if (s1 === s2) return 1.0;
+        if (s1 === s2) { return 1.0; }
 
         const longer = s1.length > s2.length ? s1 : s2;
         const shorter = s1.length > s2.length ? s2 : s1;
 
-        if (longer.length === 0) return 1.0;
+        if (longer.length === 0) { return 1.0; }
 
         const editDistance = this.levenshteinDistance(longer, shorter);
         return (longer.length - editDistance) / longer.length;
@@ -118,7 +118,7 @@ class RecommendationService {
                     lastValue = newValue;
                 }
             }
-            if (i > 0) costs[s2.length] = lastValue;
+            if (i > 0) { costs[s2.length] = lastValue; }
         }
         return costs[s2.length];
     }
@@ -130,10 +130,10 @@ class RecommendationService {
         const experience = cvData?.experience || [];
         const totalYears = experience.length;
 
-        if (totalYears === 0) return 'entry';
-        if (totalYears <= 2) return 'junior';
-        if (totalYears <= 5) return 'mid';
-        if (totalYears <= 10) return 'senior';
+        if (totalYears === 0) { return 'entry'; }
+        if (totalYears <= 2) { return 'junior'; }
+        if (totalYears <= 5) { return 'mid'; }
+        if (totalYears <= 10) { return 'senior'; }
         return 'lead';
     }
 
@@ -172,7 +172,7 @@ class RecommendationService {
         try {
             const cacheKey = `recommendations:${userId}:${limit}`;
             const cached = await CacheService.get(cacheKey);
-            if (cached) return cached;
+            if (cached) { return cached; }
 
             // Get user's CV data
             const user = await User.findById(userId).select('skills preferences');
@@ -192,7 +192,7 @@ class RecommendationService {
             }
 
             // Build query filters
-            let query = {
+            const query = {
                 status: 'active',
                 expiryDate: { $gt: new Date() }
             };
@@ -262,20 +262,7 @@ class RecommendationService {
         }
     }
 
-    /**
-     * Get skills that match between user and job
-     */
-    getMatchedSkills(userSkills, jobSkills) {
-        if (!userSkills || !jobSkills) return [];
 
-        const matched = jobSkills.filter(jobSkill =>
-            userSkills.some(userSkill =>
-                this.skillSimilarity(userSkill.toLowerCase(), jobSkill.toLowerCase()) > 0.7
-            )
-        );
-
-        return matched.slice(0, 5); // Return top 5 matched skills
-    }
 
     /**
      * Get salary prediction for a specific role
@@ -284,7 +271,7 @@ class RecommendationService {
         try {
             const cacheKey = `salary:${jobTitle}:${experienceLevel}:${location}`;
             const cached = await CacheService.get(cacheKey);
-            if (cached) return cached;
+            if (cached) { return cached; }
 
             // Get similar jobs and calculate average
             const jobs = await Job.find({
@@ -342,9 +329,9 @@ class RecommendationService {
         try {
             const cacheKey = `trending:${skills.join('-')}:${limit}`;
             const cached = await CacheService.get(cacheKey);
-            if (cached) return cached;
+            if (cached) { return cached; }
 
-            let query = {
+            const query = {
                 status: 'active',
                 expiryDate: { $gt: new Date() }
             };
@@ -518,7 +505,7 @@ class RecommendationService {
         try {
             const cacheKey = `skill-recommendations:${targetRole}`;
             const cached = await CacheService.get(cacheKey);
-            if (cached) return JSON.parse(cached);
+            if (cached) { return JSON.parse(cached); }
 
             // Mock trending skills by role (in production, analyze from job postings)
             const skillsByRole = {
@@ -531,7 +518,7 @@ class RecommendationService {
 
             const recommendedSkills = skillsByRole[targetRole?.toLowerCase()] || [];
             const missingSkills = recommendedSkills.filter(skill =>
-                !currentSkills.some(cs => 
+                !currentSkills.some(cs =>
                     this.skillSimilarity(cs.toLowerCase(), skill.toLowerCase()) > 0.6
                 )
             );

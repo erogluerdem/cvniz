@@ -107,7 +107,7 @@ router.post('/analyze', optionalAuth, async (req, res) => {
         }
 
         // Check usage limits for non-premium users
-        let usageInfo = { used: 0, limit: FREE_SCAN_LIMIT, isPremium: false };
+        const usageInfo = { used: 0, limit: FREE_SCAN_LIMIT, isPremium: false };
 
         if (userId) {
             const user = await User.findById(userId);
@@ -255,9 +255,9 @@ function analyzeContact(cvData) {
     const score = Object.values(checks).filter(Boolean).length * 20;
     const suggestions = [];
 
-    if (!checks.email) suggestions.push({ category: 'contact', text: 'E-posta adresi ekleyin', priority: 'critical', impact: 10 });
-    if (!checks.phone) suggestions.push({ category: 'contact', text: 'Telefon numarası ekleyin', priority: 'high', impact: 8 });
-    if (!checks.linkedin) suggestions.push({ category: 'contact', text: 'LinkedIn profil linki ekleyin', priority: 'medium', impact: 5 });
+    if (!checks.email) {suggestions.push({ category: 'contact', text: 'E-posta adresi ekleyin', priority: 'critical', impact: 10 });}
+    if (!checks.phone) {suggestions.push({ category: 'contact', text: 'Telefon numarası ekleyin', priority: 'high', impact: 8 });}
+    if (!checks.linkedin) {suggestions.push({ category: 'contact', text: 'LinkedIn profil linki ekleyin', priority: 'medium', impact: 5 });}
 
     return { score: Math.min(100, score), checks, suggestions };
 }
@@ -269,11 +269,11 @@ function analyzeSummary(cvData) {
     let score = 0;
     const suggestions = [];
 
-    if (length >= 200) score = 100;
-    else if (length >= 150) score = 85;
-    else if (length >= 100) score = 70;
-    else if (length >= 50) score = 40;
-    else if (length > 0) score = 20;
+    if (length >= 200) {score = 100;}
+    else if (length >= 150) {score = 85;}
+    else if (length >= 100) {score = 70;}
+    else if (length >= 50) {score = 40;}
+    else if (length > 0) {score = 20;}
 
     if (length < 100) {
         suggestions.push({
@@ -302,10 +302,10 @@ function analyzeExperience(cvData) {
     const suggestions = [];
 
     // Base score on count
-    if (experiences.length >= 4) score = 60;
-    else if (experiences.length >= 3) score = 50;
-    else if (experiences.length >= 2) score = 40;
-    else if (experiences.length >= 1) score = 25;
+    if (experiences.length >= 4) {score = 60;}
+    else if (experiences.length >= 3) {score = 50;}
+    else if (experiences.length >= 2) {score = 40;}
+    else if (experiences.length >= 1) {score = 25;}
 
     // Check for descriptions with achievements
     let hasDescriptions = 0;
@@ -314,9 +314,9 @@ function analyzeExperience(cvData) {
 
     experiences.forEach(exp => {
         const desc = exp.description || '';
-        if (desc.length > 50) hasDescriptions++;
-        if (/\d+%|\d+\s*(kişi|proje|müşteri|yıl|bin|milyon)/i.test(desc)) hasNumbers++;
-        if (exp.startDate) hasDates++;
+        if (desc.length > 50) {hasDescriptions++;}
+        if (/\d+%|\d+\s*(kişi|proje|müşteri|yıl|bin|milyon)/i.test(desc)) {hasNumbers++;}
+        if (exp.startDate) {hasDates++;}
     });
 
     if (experiences.length > 0) {
@@ -351,9 +351,9 @@ function analyzeEducation(cvData) {
     let score = 0;
     const suggestions = [];
 
-    if (educations.length >= 1) score = 70;
-    if (educations.some(e => e.degree)) score = 85;
-    if (educations.some(e => e.gpa || e.grade)) score = 100;
+    if (educations.length >= 1) {score = 70;}
+    if (educations.some(e => e.degree)) {score = 85;}
+    if (educations.some(e => e.gpa || e.grade)) {score = 100;}
 
     if (educations.length === 0) {
         suggestions.push({ category: 'education', text: 'Eğitim bilgilerinizi ekleyin', priority: 'high', impact: 8 });
@@ -369,12 +369,12 @@ function analyzeSkills(cvData) {
     let score = 0;
     const suggestions = [];
 
-    if (skillNames.length >= 15) score = 100;
-    else if (skillNames.length >= 10) score = 85;
-    else if (skillNames.length >= 7) score = 70;
-    else if (skillNames.length >= 5) score = 55;
-    else if (skillNames.length >= 3) score = 35;
-    else if (skillNames.length >= 1) score = 15;
+    if (skillNames.length >= 15) {score = 100;}
+    else if (skillNames.length >= 10) {score = 85;}
+    else if (skillNames.length >= 7) {score = 70;}
+    else if (skillNames.length >= 5) {score = 55;}
+    else if (skillNames.length >= 3) {score = 35;}
+    else if (skillNames.length >= 1) {score = 15;}
 
     if (skillNames.length < 5) {
         suggestions.push({
@@ -472,10 +472,10 @@ function analyzeFormatting(cvData) {
     const hasSkills = (cvData?.skills || []).length > 0;
     const hasContact = cvData?.personal || cvData?.personalInfo;
 
-    if (!hasExperience) score -= 15;
-    if (!hasEducation) score -= 10;
-    if (!hasSkills) score -= 15;
-    if (!hasContact) score -= 20;
+    if (!hasExperience) {score -= 15;}
+    if (!hasEducation) {score -= 10;}
+    if (!hasSkills) {score -= 15;}
+    if (!hasContact) {score -= 20;}
 
     // Word count estimation
     const allText = extractAllText(cvData);
@@ -539,11 +539,11 @@ function extractAllText(cvData) {
 }
 
 function getGrade(score) {
-    if (score >= 90) return { letter: 'A+', label: 'Mükemmel', color: 'green' };
-    if (score >= 80) return { letter: 'A', label: 'Çok İyi', color: 'green' };
-    if (score >= 70) return { letter: 'B', label: 'İyi', color: 'cyan' };
-    if (score >= 60) return { letter: 'C', label: 'Orta', color: 'amber' };
-    if (score >= 50) return { letter: 'D', label: 'Zayıf', color: 'orange' };
+    if (score >= 90) {return { letter: 'A+', label: 'Mükemmel', color: 'green' };}
+    if (score >= 80) {return { letter: 'A', label: 'Çok İyi', color: 'green' };}
+    if (score >= 70) {return { letter: 'B', label: 'İyi', color: 'cyan' };}
+    if (score >= 60) {return { letter: 'C', label: 'Orta', color: 'amber' };}
+    if (score >= 50) {return { letter: 'D', label: 'Zayıf', color: 'orange' };}
     return { letter: 'F', label: 'Yetersiz', color: 'red' };
 }
 

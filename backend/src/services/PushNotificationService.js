@@ -22,9 +22,9 @@ const PushNotificationService = {
     async registerDeviceToken(userId, token, device = {}) {
         try {
             const user = await User.findById(userId);
-            if (!user) throw new Error('User not found');
+            if (!user) {throw new Error('User not found');}
 
-            if (!user.devices) user.devices = [];
+            if (!user.devices) {user.devices = [];}
             user.devices = user.devices.filter(d => d.token !== token);
 
             user.devices.push({
@@ -45,7 +45,7 @@ const PushNotificationService = {
     },
 
     async sendToUser(userId, notification) {
-        if (!firebaseInitialized) return { error: 'Firebase not configured' };
+        if (!firebaseInitialized) {return { error: 'Firebase not configured' };}
 
         try {
             const user = await User.findById(userId);
@@ -109,8 +109,8 @@ const PushNotificationService = {
         for (const userId of userIds) {
             try {
                 const result = await this.sendToUser(userId, notification);
-                if (result.sent > 0) results.successful++;
-                else results.failed++;
+                if (result.sent > 0) {results.successful++;}
+                else {results.failed++;}
             } catch (error) {
                 results.failed++;
             }
@@ -121,7 +121,7 @@ const PushNotificationService = {
     },
 
     async sendToTopic(topic, notification) {
-        if (!firebaseInitialized) return { error: 'Firebase not configured' };
+        if (!firebaseInitialized) {return { error: 'Firebase not configured' };}
 
         try {
             const { title, body, data = {}, priority = 'high' } = notification;
@@ -142,16 +142,16 @@ const PushNotificationService = {
     },
 
     async subscribeToTopic(userId, topic) {
-        if (!firebaseInitialized) return { error: 'Firebase not configured' };
+        if (!firebaseInitialized) {return { error: 'Firebase not configured' };}
 
         try {
             const user = await User.findById(userId);
-            if (!user?.devices?.length) return { subscribed: 0 };
+            if (!user?.devices?.length) {return { subscribed: 0 };}
 
             const tokens = user.devices.map(d => d.token);
             await admin.messaging().subscribeToTopic(tokens, topic);
 
-            if (!user.notificationTopics) user.notificationTopics = [];
+            if (!user.notificationTopics) {user.notificationTopics = [];}
             if (!user.notificationTopics.includes(topic)) {
                 user.notificationTopics.push(topic);
                 await user.save();
@@ -166,11 +166,11 @@ const PushNotificationService = {
     },
 
     async unsubscribeFromTopic(userId, topic) {
-        if (!firebaseInitialized) return { error: 'Firebase not configured' };
+        if (!firebaseInitialized) {return { error: 'Firebase not configured' };}
 
         try {
             const user = await User.findById(userId);
-            if (!user?.devices?.length) return { unsubscribed: 0 };
+            if (!user?.devices?.length) {return { unsubscribed: 0 };}
 
             const tokens = user.devices.map(d => d.token);
             await admin.messaging().unsubscribeFromTopic(tokens, topic);

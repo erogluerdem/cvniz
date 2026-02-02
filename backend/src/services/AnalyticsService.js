@@ -42,7 +42,7 @@ class AnalyticsService {
     }
 
     async updateDuration(visitId, duration) {
-        if (!visitId) return;
+        if (!visitId) {return;}
         try {
             await CVVisit.findByIdAndUpdate(visitId, { duration });
         } catch (error) {
@@ -92,7 +92,7 @@ class AnalyticsService {
                 },
                 {
                     $group: {
-                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+                        _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } },
                         count: { $sum: 1 }
                     }
                 },
@@ -123,9 +123,9 @@ class AnalyticsService {
         const result = { desktop: 0, mobile: 0, other: 0 };
         stats.forEach(s => {
             const type = s._id ? s._id.toLowerCase() : 'desktop'; // Assume desktop if null
-            if (type === 'mobile' || type === 'tablet') result.mobile += s.count;
-            else if (type === 'desktop') result.desktop += s.count;
-            else result.other += s.count;
+            if (type === 'mobile' || type === 'tablet') {result.mobile += s.count;}
+            else if (type === 'desktop') {result.desktop += s.count;}
+            else {result.other += s.count;}
         });
         return result;
     }

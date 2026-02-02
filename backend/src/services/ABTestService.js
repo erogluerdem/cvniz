@@ -7,7 +7,7 @@ class ABTestService {
     async getVariant(key, userId = null) {
         const test = await ABTest.findOne({ key, status: 'active' });
 
-        if (!test) return null;
+        if (!test) {return null;}
 
         // If no user tracking, simple random
         let variantIndex = 0;
@@ -62,7 +62,7 @@ class ABTestService {
 
     async trackConversion(key, variantName) {
         const test = await ABTest.findOne({ key });
-        if (!test) return false;
+        if (!test) {return false;}
 
         // Find the variant by name or ID
         const variantMatch = test.variants.find(v => v.name === variantName);

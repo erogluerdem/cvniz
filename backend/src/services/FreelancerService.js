@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const * as Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const { recordEvent } = require('../utils/logger');
 
 /**
@@ -49,7 +49,7 @@ const freelancerProfileSchema = new (require('mongoose')).Schema({
         expiryDate: Date,
         credentialId: String
     }],
-    
+
     // Rating & Reviews
     rating: {
         average: { type: Number, default: 0, min: 0, max: 5 },
@@ -120,12 +120,12 @@ const projectSchema = new (require('mongoose')).Schema({
         ref: 'User',
         index: true
     },
-    
+
     title: String,
     description: String,
     category: String,
     skills: [String],
-    
+
     budget: {
         type: {
             type: String,
@@ -160,7 +160,7 @@ const projectSchema = new (require('mongoose')).Schema({
     }],
 
     attachments: [String],
-    
+
     milestones: [{
         title: String,
         description: String,
@@ -351,7 +351,7 @@ class FreelancerService {
             const Project = require('../models/Project');
 
             const project = await Project.findById(projectId);
-            if (!project) throw new Error('Proje bulunamadı');
+            if (!project) {throw new Error('Proje bulunamadı');}
 
             const proposal = {
                 freelancerId,
@@ -383,10 +383,10 @@ class FreelancerService {
             const Project = require('../models/Project');
 
             const project = await Project.findOne({ _id: projectId, clientId });
-            if (!project) throw new Error('Proje bulunamadı');
+            if (!project) {throw new Error('Proje bulunamadı');}
 
             const proposal = project.proposals.find(p => p.freelancerId.toString() === freelancerId);
-            if (!proposal) throw new Error('Teklif bulunamadı');
+            if (!proposal) {throw new Error('Teklif bulunamadı');}
 
             await Project.updateOne(
                 { _id: projectId },
@@ -461,7 +461,7 @@ class FreelancerService {
             const Project = require('../models/Project');
 
             const project = await Project.findOne({ _id: projectId }).lean();
-            if (!project?.feedback?.clientRating) return;
+            if (!project?.feedback?.clientRating) {return;}
 
             const freelancerProjects = await Project.find({
                 freelancerId,

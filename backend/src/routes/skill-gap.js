@@ -574,7 +574,7 @@ function personalizeRoadmap(roadmap, currentPosition, targetYears) {
         const idx = roadmap.timeline.findIndex(step =>
             step.title.toLowerCase().includes(currentPosition.toLowerCase())
         );
-        if (idx >= 0) startIndex = idx;
+        if (idx >= 0) {startIndex = idx;}
     }
 
     return {

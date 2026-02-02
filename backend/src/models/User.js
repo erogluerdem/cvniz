@@ -105,7 +105,6 @@ userSchema.virtual('cvCount', {
 });
 
 // Index for search and queries
-userSchema.index({ email: 1 });
 userSchema.index({ 'authProvider': 1, 'authProviderId': 1 });
 userSchema.index({ createdAt: -1 });
 

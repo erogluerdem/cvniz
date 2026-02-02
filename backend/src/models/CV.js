@@ -87,7 +87,6 @@ const cvSchema = new mongoose.Schema({
 // Indexes for efficient queries
 cvSchema.index({ userId: 1, createdAt: -1 });
 cvSchema.index({ userId: 1, isArchived: 1 });
-cvSchema.index({ publicUrl: 1 });
 cvSchema.index({ lastSyncedAt: 1 });
 
 // Pre-save: Update syncVersion on changes

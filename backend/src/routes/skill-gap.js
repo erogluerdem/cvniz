@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate, optionalAuth } = require('../middleware/auth');
+const { optionalAuth } = require('../middleware/auth');
 
 // Comprehensive position requirements with career paths
 const POSITION_REQUIREMENTS = {
@@ -326,7 +326,7 @@ router.get('/positions', (req, res) => {
 // POST /api/skill-gap/analyze - AI-powered skill gap analysis
 router.post('/analyze', optionalAuth, async (req, res) => {
     try {
-        const { cvData, targetPosition, currentTitle } = req.body;
+        const { cvData, targetPosition } = req.body;
 
         if (!cvData || !targetPosition) {
             return res.status(400).json({ error: 'CV verisi ve hedef pozisyon gerekli' });

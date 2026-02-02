@@ -43,7 +43,7 @@ router.get('/my', authenticate, async (req, res) => {
 // @access  Private
 router.post('/init', authenticate, async (req, res) => {
     try {
-        const { planId, planName, price, billingCycle, user } = req.body;
+        const { planId, planName, price, billingCycle } = req.body;
 
         // Ensure price is a string for Iyzico (e.g. '49.90')
         const paidPrice = parseFloat(price).toFixed(2);

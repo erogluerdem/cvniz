@@ -202,7 +202,6 @@ function generateCoverLetter(cvData, jobData, style, customInstructions) {
     const jobTitle = jobData?.title || 'ilgili pozisyon';
     const company = jobData?.company || 'şirketiniz';
     const jobSkills = jobData?.skills || [];
-    const jobKeywords = jobData?.keywords || [];
 
     // Build the letter
     const parts = [];

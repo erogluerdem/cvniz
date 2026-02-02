@@ -128,7 +128,7 @@ router.post('/evaluate-answer', authenticate, async (req, res) => {
 // POST /api/interview/complete-session - Save session results
 router.post('/complete-session', authenticate, async (req, res) => {
     try {
-        const { questions, answers, scores, targetPosition } = req.body;
+        const { questions, scores, targetPosition } = req.body;
 
         const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
 
@@ -186,8 +186,6 @@ function generateCVBasedQuestions(cvData, targetPosition, difficulty) {
     // Extract CV data
     const experiences = cvData?.experience || [];
     const skills = extractSkills(cvData);
-    const education = cvData?.education || [];
-    const personal = cvData?.personal || cvData?.personalInfo || {};
 
     // 1. Analyze experience gaps
     const gaps = findExperienceGaps(experiences);
@@ -323,7 +321,7 @@ function findAchievements(experiences) {
 
 // ============ Answer Evaluation Logic ============
 
-function evaluateAnswer(answer, questionType) {
+function evaluateAnswer(answer, _questionType) {
     const scores = {
         length: 0,
         structure: 0,

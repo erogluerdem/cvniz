@@ -263,7 +263,6 @@ function generateLinkedInBio(cvData, tone, maxLength) {
     const skills = cvData?.skills || [];
 
     // Extract info
-    const name = personal.fullName || personal.name || '';
     const title = personal.title || experiences[0]?.position || 'Profesyonel';
     const years = calculateYears(experiences);
     const topSkills = extractSkillNames(skills).slice(0, 3).join(', ');

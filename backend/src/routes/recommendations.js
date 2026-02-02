@@ -183,7 +183,7 @@ router.post('/interact', [
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { jobId, type, duration } = req.body;
+        const { jobId, type } = req.body;
 
         await recommendationService.recordJobInteraction(
             req.user.id,

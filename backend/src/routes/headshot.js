@@ -242,7 +242,7 @@ function generateId() {
     return 'hs_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
 }
 
-async function simulateHeadshotGeneration(originalPath, style) {
+async function simulateHeadshotGeneration(originalPath, _style) {
     // In production: Call AI API like Replicate or Stable Diffusion
     // Example with Replicate:
     // const replicate = new Replicate({ auth: process.env.REPLICATE_API_TOKEN });

@@ -78,16 +78,6 @@ const SECTOR_KEYWORDS = {
         weight: { critical: 4, important: 2, bonus: 1 }
     }
 };
-
-// ATS formatting rules
-const ATS_RULES = {
-    noTables: { weight: 5, check: 'Tablo kullanımından kaçınılmalı' },
-    noGraphics: { weight: 5, check: 'Grafik/resim yerine metin tercih edilmeli' },
-    standardFonts: { weight: 3, check: 'Standart fontlar kullanılmalı (Arial, Calibri, Times)' },
-    clearHeadings: { weight: 5, check: 'Bölüm başlıkları açık olmalı (Deneyim, Eğitim, Beceriler)' },
-    reverseChronological: { weight: 4, check: 'Tarihler ters kronolojik sırada olmalı' },
-    quantifiedResults: { weight: 5, check: 'Başarılar sayılarla ifade edilmeli' },
-    keywordDensity: { weight: 5, check: 'Sektörel anahtar kelimeler yeterli olmalı' },
     contactInfo: { weight: 5, check: 'İletişim bilgileri eksiksiz olmalı' },
     appropriateLength: { weight: 3, check: 'CV uzunluğu 1-2 sayfa olmalı' }
 };
@@ -310,13 +300,11 @@ function analyzeExperience(cvData) {
     // Check for descriptions with achievements
     let hasDescriptions = 0;
     let hasNumbers = 0;
-    let hasDates = 0;
 
     experiences.forEach(exp => {
         const desc = exp.description || '';
         if (desc.length > 50) {hasDescriptions++;}
         if (/\d+%|\d+\s*(kişi|proje|müşteri|yıl|bin|milyon)/i.test(desc)) {hasNumbers++;}
-        if (exp.startDate) {hasDates++;}
     });
 
     if (experiences.length > 0) {

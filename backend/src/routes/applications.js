@@ -385,7 +385,7 @@ function generatePrepMessage(company, daysUntil) {
     }
 }
 
-function generateChecklist(interview, daysUntil) {
+function generateChecklist(interview, _daysUntil) {
     const items = [];
 
     if (interview.type === 'video') {

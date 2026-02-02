@@ -1,10 +1,10 @@
 const express = require('express');
-const { body, param, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const CV = require('../models/CV');
 const CVView = require('../models/CVView');
 const Notification = require('../models/Notification');
-const { authenticate, optionalAuth, premiumOnly } = require('../middleware/auth');
+const { authenticate, optionalAuth } = require('../middleware/auth');
 const { getLocationFromIP, getClientIP, parseUserAgent } = require('../utils/geoip');
 
 const router = express.Router();
@@ -431,7 +431,7 @@ router.get('/public/:publicUrl', optionalAuth, async (req, res) => {
         ]);
 
         // Create view record
-        const cvView = await CVView.create({
+        await CVView.create({
             cvId: cv._id,
             userId: cv.userId,
             viewerIp: clientIP,

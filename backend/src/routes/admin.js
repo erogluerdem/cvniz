@@ -24,7 +24,6 @@ const AISettings = require('../models/AISettings');
 const AIUsageLog = require('../models/AIUsageLog');
 const Theme = require('../models/Theme');
 const CVView = require('../models/CVView');
-const CVReview = require('../models/CVReview');
 const logger = require('../utils/logger');
 const { authenticate, adminOnly } = require('../middleware/auth');
 
@@ -66,7 +65,7 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
         // Growth Calculation (CVs MoM)
         const lastMonth = new Date();
         lastMonth.setMonth(lastMonth.getMonth() - 1);
-        const monthlyCVsCount = await CV.aggregate([
+        await CV.aggregate([
             {
                 $match: { createdAt: { $gte: lastMonth } }
             },

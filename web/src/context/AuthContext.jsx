@@ -27,7 +27,17 @@ export function AuthProvider({ children }) {
                         localStorage.setItem('CVniz_user', JSON.stringify(response.user))
                     }
                 } catch (error) {
-                    console.log('Token verification failed, using cached user')
+                    console.log('Token verification failed:', error)
+                    if (error.response && error.response.status === 401) {
+                        // Token invalid/expired and refresh failed
+                        console.log('Session invalid, logging out...')
+                        setAuthToken(null)
+                        localStorage.removeItem('CVniz_refresh_token')
+                        localStorage.removeItem('CVniz_user')
+                        localStorage.removeItem('CVniz_auth_token')
+                        setUser(null)
+                    }
+                    // For other errors (network, 500), keep cached user to allow offline usage
                 }
             }
         } catch (error) {

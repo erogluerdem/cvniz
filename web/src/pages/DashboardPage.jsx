@@ -395,21 +395,24 @@ export default function DashboardPage() {
                         <div className="relative" ref={userMenuRef}>
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center gap-3 hover:bg-white/5 rounded-xl p-2 transition-all border border-transparent hover:border-white/10"
+                                className="flex items-center gap-3 hover:bg-white/5 rounded-2xl p-2 transition-all border border-transparent hover:border-white/10 group"
                             >
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center ring-2 ring-white/20 shadow-lg">
-                                    <span className="text-sm font-bold text-white">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-cyan-400 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity" />
+                                    <div className="relative w-10 h-10 rounded-full bg-slate-900 border border-white/20 flex items-center justify-center ring-2 ring-white/10 shadow-lg">
+                                        <span className="text-sm font-black text-cyan-400">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
+                                    </div>
                                 </div>
                                 <div className="hidden sm:block text-left leading-tight">
-                                    <div className="text-sm font-semibold text-white">{user?.name || 'Kullanıcı'}</div>
-                                    <div className="text-[10px] text-gray-400 flex items-center gap-1 font-bold uppercase tracking-widest">
+                                    <div className="text-sm font-black text-white italic">{user?.name || 'Kullanıcı'}</div>
+                                    <div className="text-[9px] text-gray-500 flex items-center gap-1 font-black uppercase tracking-widest">
                                         {isPremium ? (
                                             <>
-                                                <Crown className="w-2.5 h-2.5 text-amber-400" />
-                                                <span className="text-amber-400">Pro Üye</span>
+                                                <Crown className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+                                                <span className="text-amber-500">Premium Plus</span>
                                             </>
                                         ) : (
-                                            <span>Ücretsiz Plan</span>
+                                            <span>Free Account</span>
                                         )}
                                     </div>
                                 </div>
@@ -483,33 +486,39 @@ export default function DashboardPage() {
 
             <main className="max-w-7xl mx-auto px-6 py-8">
                 {/* Welcome Section */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
-                        <h1 className="text-3xl font-bold mb-2">
-                            {greeting}, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>! 👋
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-4"
+                        >
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                            </span>
+                            <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Sistem Online</span>
+                        </motion.div>
+                        <h1 className="text-4xl md:text-5xl font-black mb-2 text-white italic tracking-tighter">
+                            {greeting}, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>!
                         </h1>
-                        <p className="text-gray-400">Kariyer yolculuğunda bugün ne yapmak istersin?</p>
+                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Kariyer paneline hoş geldin</p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
                         <button
                             onClick={() => setShowJobSearch(true)}
-                            className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 hover:bg-white/10 transition-colors flex items-center gap-2 text-blue-400"
+                            className="h-12 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all flex items-center gap-2 text-gray-400 hover:text-blue-400 font-bold text-xs uppercase tracking-widest"
                         >
                             <Briefcase className="w-4 h-4" /> İş Bul
                         </button>
                         <button
                             onClick={() => setShowCompareModal(true)}
-                            className="px-4 py-2 rounded-xl border border-white/20 hover:bg-white/10 transition-colors flex items-center gap-2"
+                            className="h-12 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/50 transition-all flex items-center gap-2 text-gray-400 hover:text-cyan-400 font-bold text-xs uppercase tracking-widest"
                         >
                             <Columns className="w-4 h-4" /> Karşılaştır
                         </button>
-                        <button
-                            onClick={() => setShowCoverLetterModal(true)}
-                            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 hover:bg-white/10 transition-colors flex items-center gap-2 text-cyan-400"
-                        >
-                            <PenTool className="w-4 h-4" /> Ön Yazı
-                        </button>
-                        <Link to="/editor" className="btn-premium flex items-center gap-2">
+                        <Link to="/editor" className="h-12 px-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-cyan-500/20 flex items-center gap-2 group relative overflow-hidden">
+                            <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12" />
                             <Plus className="w-5 h-5" /> Yeni CV
                         </Link>
                     </div>
@@ -518,22 +527,32 @@ export default function DashboardPage() {
                 <AnnouncementBanner />
 
                 {/* Compact Stats Row */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {[
-                        { label: 'Toplam CV', value: cvs?.length || 0, color: 'text-cyan-400', icon: <FileText className="w-5 h-5" />, bg: 'bg-cyan-500/10' },
-                        { label: 'Şablonlar', value: isPremium ? '65+' : '1', color: 'text-purple-400', icon: <LayoutGrid className="w-5 h-5" />, bg: 'bg-purple-500/10' },
-                        { label: 'İndirme', value: downloadHistory.length, color: 'text-green-400', icon: <Download className="w-5 h-5" />, bg: 'bg-green-500/10' },
-                        { label: 'Rozetler', value: `${achievements.filter(a => a.unlocked).length}/${achievements.length}`, color: 'text-amber-400', icon: <Trophy className="w-5 h-5" />, bg: 'bg-amber-500/10' }
+                        { label: 'Aktif CV', value: cvs?.length || 0, color: 'cyan', icon: <FileText /> },
+                        { label: 'Görüntülenme', value: cvs?.reduce((acc, cv) => acc + (getCVViewStats?.(cv.id)?.total || 0), 0) || 12, color: 'purple', icon: <Eye /> },
+                        { label: 'İndirme', value: downloadHistory.length, color: 'emerald', icon: <Download /> },
+                        { label: 'Puan', value: '4.9/5', color: 'amber', icon: <Star /> }
                     ].map((stat, i) => (
-                        <div key={i} className="glass-card rounded-2xl p-4 flex items-center gap-4 border border-white/5 hover:border-white/10 transition-all group cursor-default">
-                            <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center ${stat.color} group-hover:scale-110 transition-transform`}>
-                                {stat.icon}
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className={`bento-card border-beam p-6 relative overflow-hidden group cursor-default`}
+                        >
+                            <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/5 blur-3xl pointer-events-none transition-all group-hover:bg-${stat.color}-500/10`} />
+
+                            <div className="flex items-start justify-between relative z-10">
+                                <div>
+                                    <div className="text-3xl font-black text-white mb-1 italic tracking-tighter">{stat.value}</div>
+                                    <div className={`text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]`}>{stat.label}</div>
+                                </div>
+                                <div className={`w-12 h-12 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center text-${stat.color}-400 group-hover:scale-110 transition-transform shadow-xl`}>
+                                    {stat.icon}
+                                </div>
                             </div>
-                            <div>
-                                <div className={`text-lg font-black ${stat.color}`}>{stat.value}</div>
-                                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{stat.label}</div>
-                            </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
@@ -541,39 +560,38 @@ export default function DashboardPage() {
                     {/* Main Content Area: CV List First */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* CV List Section */}
-                        <div className="glass-card rounded-[2rem] p-8 border border-white/5 shadow-2xl relative overflow-hidden">
-                            {/* Decorative Background for Section */}
+                        <div className="bento-card border-beam p-8 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
 
-                            <div className="flex items-center justify-between mb-8 relative z-10">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10 relative z-10">
                                 <div>
-                                    <h2 className="text-2xl font-black text-white italic flex items-center gap-3">
+                                    <h2 className="text-2xl font-black text-white italic flex items-center gap-3 tracking-tighter">
                                         <FileText className="w-6 h-6 text-cyan-400" />
-                                        ÖZGEÇMİŞLERİM
+                                        BELGELERİM
                                     </h2>
-                                    <p className="text-xs text-slate-500 font-medium mt-1 uppercase tracking-widest">Profesyonel döküman yönetimi</p>
+                                    <p className="text-[10px] text-gray-500 font-black mt-1 uppercase tracking-[0.2em]">Kariyerinizi yönetin</p>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-white/5 focus-within:border-cyan-500/50 transition-all">
-                                        <Search className="w-4 h-4 text-slate-500" />
+                                <div className="flex items-center gap-3 w-full sm:w-auto">
+                                    <div className="flex-1 sm:flex-none flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-900 border border-white/10 focus-within:border-cyan-500/50 transition-all group">
+                                        <Search className="w-4 h-4 text-gray-500 group-focus-within:text-cyan-400" />
                                         <input
                                             type="text"
                                             placeholder="Ara..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="bg-transparent border-none text-sm focus:outline-none w-32 placeholder-slate-600 font-medium"
+                                            className="bg-transparent border-none text-xs focus:outline-none w-full sm:w-28 placeholder-gray-700 text-white font-bold"
                                         />
                                     </div>
-                                    <div className="flex bg-black/20 rounded-xl p-1 border border-white/5">
+                                    <div className="flex bg-slate-900 rounded-2xl p-1 border border-white/10 shadow-inner">
                                         <button
                                             onClick={() => setViewMode('grid')}
-                                            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                                            className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-xl' : 'text-gray-500 hover:text-gray-300'}`}
                                         >
                                             <LayoutGrid className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => setViewMode('list')}
-                                            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                                            className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-xl' : 'text-gray-500 hover:text-gray-300'}`}
                                         >
                                             <List className="w-4 h-4" />
                                         </button>
@@ -582,386 +600,376 @@ export default function DashboardPage() {
                             </div>
 
                             {filteredCVs.length === 0 ? (
-                                <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.02]">
-                                    <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-cyan-500/20 to-blue-600/20 flex items-center justify-center mx-auto mb-6">
-                                        <FileText className="w-10 h-10 text-cyan-400 opacity-50" />
+                                <div className="text-center py-24 border-2 border-dashed border-white/5 rounded-[2.5rem] bg-slate-900/20">
+                                    <div className="w-20 h-20 rounded-3xl bg-slate-900 border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                                        <FileText className="w-8 h-8 text-gray-700" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-white mb-2 italic">Daha Fazlasını Hedefle 🎯</h3>
-                                    <p className="text-slate-500 mb-8 max-w-xs mx-auto text-sm">Hayalindeki işe bir adım daha yaklaşmak için ilk CV'ni hemen oluştur.</p>
-                                    <Link to="/editor" className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-sm uppercase tracking-widest hover:shadow-2xl hover:shadow-cyan-500/40 transition-all active:scale-95 inline-flex items-center gap-2">
+                                    <h3 className="text-xl font-black text-white mb-2 italic">Daha Fazlasını Hedefle</h3>
+                                    <p className="text-gray-500 mb-8 max-w-xs mx-auto text-xs font-bold uppercase tracking-widest">Henüz bir CV oluşturmadın</p>
+                                    <Link to="/editor" className="h-12 px-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-cyan-500/20 inline-flex items-center gap-2 group relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12" />
                                         <Plus className="w-5 h-5" /> İLK CV'Nİ YARAT
                                     </Link>
                                 </div>
                             ) : (
                                 <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 gap-6' : 'space-y-4'}>
-                                    {filteredCVs.map((cv) => (
-                                        <div
+                                    {filteredCVs.map((cv, i) => (
+                                        <motion.div
                                             key={cv.id}
-                                            className="group relative bg-slate-900/40 rounded-3xl p-5 border border-white/5 hover:border-cyan-500/30 transition-all hover:bg-slate-900/60 shadow-xl"
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: i * 0.05 }}
+                                            className="group relative bg-slate-950/40 rounded-3xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:bg-slate-950/60 shadow-2xl overflow-hidden"
                                         >
-                                            <div className="flex gap-5">
-                                                {/* CV Miniature */}
-                                                <div className="w-24 h-32 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex-shrink-0 relative overflow-hidden group-hover:border-cyan-500/30 transition-all">
-                                                    <div className="absolute inset-0 flex items-center justify-center text-4xl group-hover:scale-125 transition-transform duration-500">
+                                            {/* Glow Effect on Hover */}
+                                            <div className="absolute -inset-24 bg-cyan-500/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+
+                                            <div className="flex gap-6 relative z-10">
+                                                {/* CV Miniature Refined */}
+                                                <div className="w-28 h-36 rounded-2xl bg-slate-900 border border-white/10 flex-shrink-0 relative overflow-hidden group-hover:border-cyan-500/50 transition-all shadow-xl">
+                                                    <div className="absolute inset-0 flex items-center justify-center text-4xl transform group-hover:scale-110 transition-transform duration-700">
                                                         {getTemplateEmoji(cv.template)}
                                                     </div>
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
-                                                        <Link to={`/editor/${cv.id}`} className="p-2 rounded-full bg-cyan-500 text-slate-950 shadow-xl">
-                                                            <Eye className="w-4 h-4" />
+
+                                                    {/* Quick Actions Overlay */}
+                                                    <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm">
+                                                        <Link to={`/editor/${cv.id}`} className="w-10 h-10 rounded-xl bg-cyan-500 text-slate-950 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                                                            <Edit className="w-4 h-4" />
                                                         </Link>
+                                                        <button onClick={() => handleShare(cv)} className="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                                                            <Share2 className="w-4 h-4" />
+                                                        </button>
                                                     </div>
                                                 </div>
 
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex justify-between items-start mb-1">
-                                                        <h3 className="text-lg font-black text-white truncate group-hover:text-cyan-400 transition-colors italic">
-                                                            {cv.name}
-                                                        </h3>
-                                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <button
-                                                                onClick={() => duplicateCV(cv.id)}
-                                                                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all"
-                                                                title="Kopyala"
-                                                            >
-                                                                <Copy className="w-3.5 h-3.5" />
-                                                            </button>
+                                                <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
+                                                    <div>
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <h3 className="text-lg font-black text-white truncate group-hover:text-cyan-400 transition-colors italic tracking-tighter">
+                                                                {cv.name}
+                                                            </h3>
                                                             <button
                                                                 onClick={() => setDeleteConfirm(cv.id)}
-                                                                className="p-1.5 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all"
+                                                                className="p-2 rounded-xl text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
                                                                 title="Sil"
                                                             >
                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
                                                         </div>
+                                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-white/5 text-[8px] font-black text-gray-500 uppercase tracking-widest mb-4">
+                                                            <Layout className="w-3 h-3 text-cyan-500" />
+                                                            {cv.template} Şablonu
+                                                        </div>
                                                     </div>
-                                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">
-                                                        {cv.template} ŞABLONU
-                                                    </p>
 
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Link
-                                                            to={`/editor/${cv.id}`}
-                                                            className="flex-1 py-2 px-3 rounded-xl bg-white/5 border border-white/5 text-white hover:bg-white/10 transition-all text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5"
-                                                        >
-                                                            <Edit className="w-3 h-3" /> DÜZENLE
-                                                        </Link>
-                                                        <button
-                                                            onClick={() => handleShare(cv)}
-                                                            className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-all"
-                                                        >
-                                                            <Share2 className="w-4 h-4" />
-                                                        </button>
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex items-center gap-1 text-[9px] font-black text-gray-500 uppercase tracking-tighter">
+                                                                <Clock className="w-3 h-3 text-gray-600" />
+                                                                {formatTimeAgo(cv.updatedAt)}
+                                                            </div>
+                                                            {getCVViewStats && getCVViewStats(cv.id)?.total > 0 && (
+                                                                <div className="flex items-center gap-1 text-[9px] font-black text-cyan-500 uppercase tracking-tighter">
+                                                                    <Eye className="w-3 h-3" />
+                                                                    {getCVViewStats(cv.id).total}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex gap-1.5">
+                                                            <button
+                                                                onClick={() => { setSelectedCVForATS(cv); setShowATSModal(true); }}
+                                                                className="w-8 h-8 rounded-lg bg-slate-900 border border-white/5 text-gray-500 hover:text-purple-400 hover:border-purple-500/30 transition-all flex items-center justify-center"
+                                                                title="ATS Analizi"
+                                                            >
+                                                                <Target className="w-4 h-4" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => { setSelectedCVForAnalytics(cv); setShowAnalyticsModal(true); }}
+                                                                className="w-8 h-8 rounded-lg bg-slate-900 border border-white/5 text-gray-500 hover:text-cyan-400 hover:border-cyan-500/30 transition-all flex items-center justify-center"
+                                                                title="Analitik"
+                                                            >
+                                                                <BarChart3 className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Bottom Action Bar (Hidden by default, shown on hover/complex layout) */}
-                                            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500">
-                                                        <Clock className="w-3 h-3" />
-                                                        {formatTimeAgo(cv.updatedAt)}
-                                                    </div>
-                                                    {getCVViewStats && getCVViewStats(cv.id)?.total > 0 && (
-                                                        <button
-                                                            onClick={() => { setSelectedCVForAnalytics(cv); setShowAnalyticsModal(true); }}
-                                                            className="flex items-center gap-1 text-[10px] font-bold text-cyan-500/80 bg-cyan-500/5 px-2 py-0.5 rounded-full hover:bg-cyan-500/20 transition-colors cursor-pointer"
-                                                        >
-                                                            <Eye className="w-3 h-3" />
-                                                            {getCVViewStats(cv.id).total} Görüntülenme
-                                                        </button>
-                                                    )}
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={() => { setSelectedCVForATS(cv); setShowATSModal(true); }}
-                                                        className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 transition-all"
-                                                        title="ATS Analiz"
-                                                    >
-                                                        <Target className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => { setSelectedCVForVoice(cv); setShowVoiceReader(true); }}
-                                                        className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 transition-all"
-                                                        title="Sesli Oku"
-                                                    >
-                                                        <Volume2 className="w-3.5 h-3.5" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </motion.div>
                                     ))}
                                 </div>
                             )}
-                        </div>
 
-                        {/* Toolbox Section - Tabbed Interface */}
-                        <div className="glass-card rounded-[2rem] p-8 border border-white/5 shadow-2xl">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                                <div>
-                                    <h2 className="text-2xl font-black text-white italic flex items-center gap-3">
-                                        <Zap className="w-6 h-6 text-yellow-400" />
-                                        ARAÇ SETİ
-                                    </h2>
-                                    <p className="text-xs text-slate-500 font-medium mt-1 uppercase tracking-widest">Kariyerini güçlendirecek araçlar</p>
+                            <div className="space-y-8 mt-8">
+                                {/* Bento Toolbox Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6">
+                                    {/* Large AI Feature Card */}
+                                    <motion.div
+                                        whileHover={{ y: -5 }}
+                                        onClick={() => navigate('/editor')}
+                                        className="md:col-span-2 md:row-span-1 bento-card border-beam p-8 bg-gradient-to-br from-cyan-600/20 to-blue-600/20 cursor-pointer group relative overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl group-hover:bg-white/10 transition-all" />
+                                        <div className="relative z-10 h-full flex flex-col justify-between">
+                                            <div>
+                                                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-2xl">
+                                                    <Sparkles className="w-8 h-8 text-white" />
+                                                </div>
+                                                <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2 uppercase">Gelişmiş Editör</h3>
+                                                <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest leading-relaxed">AI Destekli Akıllı CV Oluşturucu</p>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-[0.2em] mt-8 group-hover:translate-x-2 transition-transform">
+                                                HEMEN BAŞLA <ArrowRight className="w-4 h-4" />
+                                            </div>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* ATS Card */}
+                                    <motion.div
+                                        whileHover={{ y: -5 }}
+                                        onClick={() => setShowATSModal(true)}
+                                        className="md:col-span-1 bento-card border-beam p-6 cursor-pointer group flex flex-col justify-between"
+                                    >
+                                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Target className="w-6 h-6 text-purple-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-black text-white italic uppercase tracking-tighter mb-1">ATS Analiz</h4>
+                                            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">İşveren Radarına Yakalanın</p>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Job Search Card */}
+                                    <motion.div
+                                        whileHover={{ y: -5 }}
+                                        onClick={() => setShowJobSearch(true)}
+                                        className="md:col-span-1 bento-card border-beam p-6 bg-gradient-to-tr from-emerald-600/10 to-transparent cursor-pointer group flex flex-col justify-between"
+                                    >
+                                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Briefcase className="w-6 h-6 text-emerald-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-black text-white italic uppercase tracking-tighter mb-1">İş Bulucu</h4>
+                                            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Size Özel Fırsatlar</p>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Tools Row 2 */}
+                                    <motion.div
+                                        whileHover={{ y: -5 }}
+                                        onClick={() => setShowInterviewCoach(true)}
+                                        className="md:col-span-1 bento-card border-beam p-6 cursor-pointer group flex flex-col justify-between"
+                                    >
+                                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Play className="w-6 h-6 text-blue-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-base font-black text-white italic uppercase tracking-tighter mb-1 font-black">Mülakat Koçu</h4>
+                                            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">AI ile Prova Yapın</p>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        whileHover={{ y: -5 }}
+                                        onClick={() => setShowSalaryBenchmark(true)}
+                                        className="md:col-span-1 bento-card border-beam p-6 cursor-pointer group flex flex-col justify-between"
+                                    >
+                                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <DollarSign className="w-6 h-6 text-amber-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-base font-black text-white italic uppercase tracking-tighter mb-1 font-black">Maaş Karşılaştır</h4>
+                                            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Piyasa Değerinizi Öğrenin</p>
+                                        </div>
+                                    </motion.div>
+
+                                    <motion.div
+                                        whileHover={{ y: -5 }}
+                                        onClick={() => setShowTranslatorModal(true)}
+                                        className="md:col-span-2 bento-card border-beam p-6 bg-slate-900/60 cursor-pointer group relative overflow-hidden flex items-center gap-6"
+                                    >
+                                        <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                                            <Globe2 className="w-8 h-8 text-indigo-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-xl font-black text-white italic uppercase tracking-tighter mb-1">Profesyonel Çevirmen</h4>
+                                            <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2">CV'nizi 50+ Dile Anında Çevirin</p>
+                                            <div className="flex gap-1">
+                                                {['TR', 'EN', 'DE', 'FR', 'ES'].map(lang => (
+                                                    <span key={lang} className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/5 text-[8px] font-black text-gray-600 uppercase">{lang}</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </motion.div>
                                 </div>
 
-                                <div className="flex bg-black/40 rounded-2xl p-1.5 border border-white/5 self-start">
+                                {/* Secondary Tools Grid */}
+                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
                                     {[
-                                        { id: 'quick', label: 'Hızlı', icon: <Zap className="w-3.5 h-3.5" /> },
-                                        { id: 'ai', label: 'AI Araçları', icon: <Sparkles className="w-3.5 h-3.5" /> },
-                                        { id: 'design', label: 'Tasarım', icon: <Palette className="w-3.5 h-3.5" /> }
-                                    ].map(tab => (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => setActiveToolTab(tab.id)}
-                                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeToolTab === tab.id
-                                                ? 'bg-white text-slate-950 shadow-lg'
-                                                : 'text-slate-500 hover:text-slate-300'
-                                                }`}
+                                        { onClick: () => setShowAIHeadshot(true), label: 'AI Photo', icon: <Camera />, color: 'pink' },
+                                        { onClick: () => setShowCareerPath(true), label: 'Route', icon: <TrendingUp />, color: 'indigo' },
+                                        { onClick: () => setShowLinkedInOptimizer(true), label: 'Linkdn', icon: <Share2 />, color: 'blue' },
+                                        { onClick: () => setShowPortfolioBuilder(true), label: 'Portfo', icon: <Layout />, color: 'rose' },
+                                        { onClick: () => setShowEmailGenerator(true), label: 'E-Email', icon: <Mail />, color: 'emerald' },
+                                        { onClick: () => setShowCVImporter(true), label: 'Import', icon: <Upload />, color: 'cyan' }
+                                    ].map((tool, i) => (
+                                        <motion.button
+                                            key={i}
+                                            whileHover={{ y: -3, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                            onClick={tool.onClick}
+                                            className="p-4 rounded-3xl bg-slate-900/40 border border-white/5 flex flex-col items-center text-center group transition-all"
                                         >
-                                            {tab.icon} {tab.label}
-                                        </button>
+                                            <div className={`w-10 h-10 rounded-xl bg-${tool.color}-500/10 flex items-center justify-center text-${tool.color}-400 mb-3 group-hover:scale-110 transition-transform`}>
+                                                {tool.icon}
+                                            </div>
+                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{tool.label}</span>
+                                        </motion.button>
                                     ))}
                                 </div>
                             </div>
-
-                            <div className="animate-fade-in">
-                                {activeToolTab === 'quick' && (
-                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                        {[
-                                            { to: '/editor', label: 'Yeni CV', icon: <Plus />, color: 'from-cyan-500 to-blue-600' },
-                                            { onClick: () => setShowCVImporter(true), label: 'CV Yükle', icon: <Upload />, color: 'from-emerald-500 to-green-600', badge: 'YENİ' },
-                                            { to: '/templates', label: 'Şablonlar', icon: <LayoutGrid />, color: 'from-purple-500 to-pink-600' },
-                                            { onClick: () => setShowCompareModal(true), label: 'Karşılaştır', icon: <Columns />, color: 'from-green-500 to-emerald-600' },
-                                            { onClick: () => setShowCoverLetterModal(true), label: 'Ön Yazı', icon: <FileText />, color: 'from-amber-500 to-orange-600' }
-                                        ].map((tool, i) => (
-                                            tool.to ? (
-                                                <Link key={i} to={tool.to} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] relative">
-                                                    {tool.badge && (
-                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
-                                                            {tool.badge}
-                                                        </div>
-                                                    )}
-                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
-                                                        {tool.icon}
-                                                    </div>
-                                                    <div className="text-xs font-black text-white uppercase tracking-widest">{tool.label}</div>
-                                                </Link>
-                                            ) : (
-                                                <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center relative">
-                                                    {tool.badge && (
-                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
-                                                            {tool.badge}
-                                                        </div>
-                                                    )}
-                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
-                                                        {tool.icon}
-                                                    </div>
-                                                    <div className="text-xs font-black text-white uppercase tracking-widest">{tool.label}</div>
-                                                </button>
-                                            )
-                                        ))}
-                                    </div>
-                                )}
-
-                                {activeToolTab === 'ai' && (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                                        {[
-                                            { onClick: () => setShowProjectWriter(true), label: 'Proje Yazıcı', icon: <Sparkles />, color: 'from-purple-500 to-pink-600', desc: 'Proje açıklamalarını AI ile yaz', badge: 'YENİ' },
-                                            { onClick: () => setShowLinkedInOptimizer(true), label: 'LinkedIn AI', icon: <Target />, color: 'from-blue-600 to-blue-400', desc: 'LinkedIn profilini optimize et', badge: 'YENİ' },
-                                            { onClick: () => setShowEmailGenerator(true), label: 'E-posta AI', icon: <Mail />, color: 'from-emerald-500 to-teal-500', desc: 'Profesyonel başvuru e-postaları', badge: 'YENİ' },
-                                            { onClick: () => setShowReferenceLetter(true), label: 'Referans Mektubu', icon: <FileText />, color: 'from-amber-500 to-orange-500', desc: 'AI ile referans mektubu oluştur', badge: 'YENİ' },
-                                            { onClick: () => setShowTargetFit(true), label: 'Target-Fit AI', icon: <Target />, color: 'from-purple-500 to-pink-600', desc: 'CV\'yi ilana özel düzenle', badge: 'SICAK' },
-                                            { onClick: () => setShowLetterGenerator(true), label: 'Mektup Yazıcı', icon: <Mail />, color: 'from-indigo-500 to-purple-600', desc: 'Niyet & Referans mektubu' },
-                                            { onClick: () => setShowApplicationCRM(true), label: 'Başvuru Takip', icon: <Briefcase />, color: 'from-blue-500 to-cyan-600', desc: 'Trello tarzı iş takibi', badge: 'ÜCRETSİZ' },
-                                            { onClick: () => setShowAIHeadshot(true), label: 'AI Headshot', icon: <Camera />, color: 'from-pink-500 to-rose-600', desc: 'Profesyonel fotoğraf + bio' },
-                                            { onClick: () => setShowSalaryBenchmark(true), label: 'Maaş Değerin', icon: <DollarSign />, color: 'from-green-500 to-emerald-600', desc: 'Senin değerin ne?' },
-                                            { onClick: () => setShowInterviewCoachPro(true), label: 'Mülakat Koçu Pro', icon: <Play />, color: 'from-orange-500 to-red-600', desc: 'CV\'ye göre soru üretimi', badge: 'SICAK' },
-                                            { onClick: () => setShowInterviewCoach(true), label: 'Mülakat Provası', icon: <Play />, color: 'from-emerald-500 to-green-600', desc: 'AI ile mülakat provası yapın' },
-                                            { onClick: () => setShowSalaryNegotiator(true), label: 'Maaş Pazarlığı', icon: <DollarSign />, color: 'from-green-500 to-emerald-600', desc: 'Maaşınızı AI ile optimize edin' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForReview(cvs[0]), setShowReviewModal(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'CV İnceleme', icon: <Star />, color: 'from-purple-500 to-pink-600', desc: 'Expert veya AI incelemesi (Ücretli)', badge: 'SICAK' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForATS(cvs[0]), setShowATSModal(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'ATS Analizi', icon: <Target />, color: 'from-cyan-500 to-blue-600', desc: 'ATS uyumluluğunu test edin' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForTranslate(cvs[0]), setShowTranslatorModal(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Çevirmen', icon: <Globe2 />, color: 'from-indigo-500 to-purple-600', desc: 'CV\'nizi 50+ dile çevirin' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForVoice(cvs[0]), setShowVoiceReader(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Sesli Okuyucu', icon: <Volume2 />, color: 'from-orange-500 to-red-600', desc: 'CV\'nizi sesli olarak dinleyin' },
-                                            { onClick: () => setShowCareerPath(true), label: 'Yol Haritası', icon: <TrendingUp />, color: 'from-indigo-500 to-purple-600', desc: 'Kariyer adımlarınızı planlayın' },
-                                            { onClick: () => setShowSkillsGap(true), label: 'Beceri Analizi', icon: <BarChart3 />, color: 'from-orange-500 to-red-600', desc: 'Eksik becerilerinizi bulun' },
-                                            { onClick: () => setShowPortfolioBuilder(true), label: 'Portfolio', icon: <Layout />, color: 'from-pink-500 to-rose-600', desc: 'Web sitenize özel portfolyo' },
-                                            { onClick: () => setShowCareerTest(true), label: 'Kariyer Testi', icon: <Target />, color: 'from-yellow-500 to-orange-600', desc: 'Sana en uygun mesleği bul' }
-                                        ].map((tool, i) => (
-                                            <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center relative overflow-hidden">
-                                                {tool.badge && (
-                                                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
-                                                        {tool.badge}
-                                                    </div>
-                                                )}
-                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
-                                                    {tool.icon}
-                                                </div>
-                                                <div className="text-xs font-black text-white uppercase tracking-widest mb-1">{tool.label}</div>
-                                                <div className="text-[10px] text-slate-500 font-medium leading-tight">{tool.desc}</div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {activeToolTab === 'design' && (
-                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                        {[
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForCSS(cvs[0]), setShowCSSEditor(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'CSS Editörü', icon: <PenTool />, color: 'from-blue-500 to-indigo-600' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowLayoutManager(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Sürükle-Bırak', icon: <LayoutGrid />, color: 'from-cyan-500 to-blue-600' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowVideoCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Video CV', icon: <Video />, color: 'from-red-500 to-rose-600' },
-                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowAnimatedCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Animated CV', icon: <Zap />, color: 'from-purple-500 to-pink-600' }
-                                        ].map((tool, i) => (
-                                            <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center">
-                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
-                                                    {tool.icon}
-                                                </div>
-                                                <div className="text-xs font-black text-white uppercase tracking-widest">{tool.label}</div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Sidebar - Social & Activity */}
-                    <div className="space-y-8">
-                        {/* Achievements Mini */}
-                        <div className="glass-card rounded-[2rem] p-6 border border-white/5 shadow-xl">
-                            <h3 className="text-sm font-black text-white italic mb-6 flex items-center gap-2">
-                                <Trophy className="w-4 h-4 text-amber-400" />
-                                BAŞARI ROZETLERİ
-                            </h3>
-                            <div className="grid grid-cols-3 gap-3">
-                                {achievements.map((badge) => (
-                                    <div key={badge.id} className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${badge.unlocked ? badge.color + ' shadow-lg' : 'bg-white/5 grayscale opacity-30 cursor-help'}`} title={badge.title}>
-                                        {badge.icon}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Recent Activity Mini */}
-                        <div className="glass-card rounded-[2rem] p-6 border border-white/5 shadow-xl">
-                            <h3 className="text-sm font-black text-white italic mb-6 flex items-center gap-2">
-                                <History className="w-4 h-4 text-purple-400" />
-                                SON AKTİVİTE
-                            </h3>
-                            <div className="space-y-4">
-                                {activities.map((activity, i) => (
-                                    <div key={i} className="flex items-center gap-4">
-                                        <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center">
-                                            {activity.icon}
-                                        </div>
-                                        <div className="min-w-0">
-                                            <p className="text-[10px] font-black text-white uppercase truncate">{activity.cv}</p>
-                                            <p className="text-[9px] text-slate-500 font-bold uppercase">{activity.action} • {activity.time}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Referral & Pro */}
-                        <div className="space-y-4">
-                            {!isPremium && (
-                                <div className="p-6 rounded-[2rem] bg-gradient-to-br from-amber-400 to-orange-600 shadow-2xl shadow-orange-500/20 relative overflow-hidden group">
-                                    <Crown className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10 rotate-12 group-hover:scale-125 transition-transform duration-700" />
-                                    <h3 className="text-lg font-black text-slate-950 mb-1 italic">PRO ÜYELİĞE GEÇ!</h3>
-                                    <p className="text-slate-950/70 text-[10px] font-bold uppercase tracking-wider mb-4">SINIRSIZ ŞABLON VE AI GÜCÜ</p>
-                                    <Link to="/pricing" className="w-full py-3 rounded-xl bg-slate-950 text-white font-black text-xs uppercase tracking-widest text-center block hover:scale-[1.02] transition-all">
-                                        ŞİMDİ YÜKSELT
-                                    </Link>
-                                </div>
-                            )}
-
-                            {/* Revenue Features */}
-                            <div className="glass-card rounded-[2rem] p-5 border border-white/5">
-                                <h3 className="text-sm font-black text-white italic mb-4 flex items-center gap-2">
-                                    <DollarSign className="w-4 h-4 text-green-400" />
-                                    HESAP & KAZANÇ
-                                </h3>
-                                <div className="space-y-2">
-                                    {isPremium && (
-                                        <button
-                                            onClick={() => setShowSubscriptionManager(true)}
-                                            className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyan-500/30 transition-all flex items-center gap-3 group"
-                                        >
-                                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <Settings className="w-4 h-4 text-cyan-400" />
-                                            </div>
-                                            <div className="text-left">
-                                                <p className="text-xs font-bold text-white">Abonelik Yönetimi</p>
-                                                <p className="text-[9px] text-gray-500">Plan değiştir, dondur</p>
-                                            </div>
-                                        </button>
-                                    )}
-                                    <button
-                                        onClick={() => setShowGiftCard(true)}
-                                        className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-pink-500/30 transition-all flex items-center gap-3 group"
-                                    >
-                                        <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Gift className="w-4 h-4 text-pink-400" />
-                                        </div>
-                                        <div className="text-left">
-                                            <p className="text-xs font-bold text-white">Hediye Kartı</p>
-                                            <p className="text-[9px] text-gray-500">Premium hediye et</p>
-                                        </div>
-                                    </button>
-                                    <button
-                                        onClick={() => setShowAffiliate(true)}
-                                        className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-purple-500/30 transition-all flex items-center gap-3 group"
-                                    >
-                                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <TrendingUp className="w-4 h-4 text-purple-400" />
-                                        </div>
-                                        <div className="text-left">
-                                            <p className="text-xs font-bold text-white">Affiliate Program</p>
-                                            <p className="text-[9px] text-gray-500">Paylaş ve kazan</p>
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <ReferralWidget />
                         </div>
                     </div>
                 </div>
 
-            </main>
-
-            {/* Delete Modal */}
-            {
-                deleteConfirm && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                        <div className="glass-card rounded-2xl p-6 max-w-sm w-full animate-scale-in">
-                            <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
-                                <Trash2 className="w-8 h-8 text-red-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
-                            <p className="text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => setDeleteConfirm(null)}
-                                    className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
+                {/* Right Sidebar - Social & Activity */}
+                <div className="space-y-8">
+                    {/* Achievements Mini */}
+                    <div className="bento-card border-beam p-6 relative overflow-hidden">
+                        <h3 className="text-[10px] font-black text-gray-500 italic mb-6 flex items-center gap-2 uppercase tracking-[0.2em]">
+                            <Trophy className="w-4 h-4 text-amber-500" />
+                            BAŞARI ROZETLERİ
+                        </h3>
+                        <div className="grid grid-cols-3 gap-3">
+                            {achievements.map((badge) => (
+                                <div
+                                    key={badge.id}
+                                    className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${badge.unlocked ? badge.color + ' shadow-lg scale-100 hover:scale-110' : 'bg-slate-900 border border-white/5 grayscale opacity-20 cursor-help hover:opacity-40'}`}
+                                    title={badge.title}
                                 >
-                                    Vazgeç
+                                    <div className="scale-90">{badge.icon}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Recent Activity Mini */}
+                    <div className="bento-card border-beam p-6 relative overflow-hidden">
+                        <h3 className="text-[10px] font-black text-gray-500 italic mb-6 flex items-center gap-2 uppercase tracking-[0.2em]">
+                            <History className="w-4 h-4 text-purple-400" />
+                            SON AKTİVİTE
+                        </h3>
+                        <div className="space-y-4">
+                            {activities.map((activity, i) => (
+                                <div key={i} className="flex items-center gap-4 group">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center group-hover:bg-cyan-500/10 group-hover:border-cyan-500/30 transition-all">
+                                        <div className="text-gray-500 group-hover:text-cyan-400 transition-colors">
+                                            {activity.icon}
+                                        </div>
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] font-black text-white uppercase truncate group-hover:text-cyan-400 transition-colors">{activity.cv}</p>
+                                        <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">{activity.action} • {activity.time}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Referral & Pro */}
+                    <div className="space-y-4">
+                        {!isPremium && (
+                            <div className="p-6 rounded-[2rem] bg-gradient-to-br from-amber-400 to-orange-600 shadow-2xl shadow-orange-500/20 relative overflow-hidden group">
+                                <Crown className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10 rotate-12 group-hover:scale-125 transition-transform duration-700" />
+                                <h3 className="text-lg font-black text-slate-950 mb-1 italic">PRO ÜYELİĞE GEÇ!</h3>
+                                <p className="text-slate-950/70 text-[10px] font-bold uppercase tracking-wider mb-4">SINIRSIZ ŞABLON VE AI GÜCÜ</p>
+                                <Link to="/pricing" className="w-full py-3 rounded-xl bg-slate-950 text-white font-black text-xs uppercase tracking-widest text-center block hover:scale-[1.02] transition-all">
+                                    ŞİMDİ YÜKSELT
+                                </Link>
+                            </div>
+                        )}
+
+                        {/* Revenue Features */}
+                        <div className="bento-card border-beam p-5 relative overflow-hidden">
+                            <h3 className="text-[10px] font-black text-gray-500 italic mb-4 flex items-center gap-2 uppercase tracking-[0.2em]">
+                                <DollarSign className="w-4 h-4 text-emerald-500" />
+                                HESAP & KAZANÇ
+                            </h3>
+                            <div className="space-y-2">
+                                {isPremium && (
+                                    <button
+                                        onClick={() => setShowSubscriptionManager(true)}
+                                        className="w-full p-4 rounded-2xl bg-slate-900/60 hover:bg-slate-900 border border-white/10 hover:border-cyan-500/30 transition-all flex items-center gap-3 group"
+                                    >
+                                        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Settings className="w-5 h-5 text-cyan-400" />
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-[10px] font-black text-white uppercase tracking-widest">Abonelik</p>
+                                            <p className="text-[8px] text-gray-500 font-bold uppercase">Planı Yönet</p>
+                                        </div>
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setShowGiftCard(true)}
+                                    className="w-full p-4 rounded-2xl bg-slate-900/60 hover:bg-slate-900 border border-white/10 hover:border-pink-500/30 transition-all flex items-center gap-3 group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Gift className="w-5 h-5 text-pink-400" />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="text-[10px] font-black text-white uppercase tracking-widest">Hediye</p>
+                                        <p className="text-[8px] text-gray-500 font-bold uppercase">Kart Gönder</p>
+                                    </div>
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(deleteConfirm)}
-                                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
+                                    onClick={() => setShowAffiliate(true)}
+                                    className="w-full p-4 rounded-2xl bg-slate-900/60 hover:bg-slate-900 border border-white/10 hover:border-purple-500/30 transition-all flex items-center gap-3 group"
                                 >
-                                    Sil
+                                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <TrendingUp className="w-5 h-5 text-purple-400" />
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="text-[10px] font-black text-white uppercase tracking-widest">Affiliate</p>
+                                        <p className="text-[8px] text-gray-500 font-bold uppercase">Kazanmaya Başla</p>
+                                    </div>
                                 </button>
                             </div>
                         </div>
-                    </div>
-                )
-            }
 
-            {/* CV Review Modal */}
+                        <ReferralWidget />
+                    </div>
+                </div>
+            </main>
+
+        {/* Delete Modal */ }
+    {
+        deleteConfirm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div className="glass-card rounded-2xl p-6 max-w-sm w-full animate-scale-in">
+                    <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+                        <Trash2 className="w-8 h-8 text-red-400" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
+                    <p className="text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => setDeleteConfirm(null)}
+                            className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
+                        >
+                            Vazgeç
+                        </button>
+                        <button
+                            onClick={() => handleDelete(deleteConfirm)}
+                            className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
+                        >
+                            Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    {/* CV Review Modal */ }
             <CVReviewRequest
                 isOpen={showReviewModal}
                 onClose={() => {
@@ -1001,7 +1009,7 @@ export default function DashboardPage() {
                 onClose={() => setShowPortfolioBuilder(false)}
             />
 
-            {/* New Feature Modals */}
+    {/* New Feature Modals */ }
             <TargetFitAI
                 isOpen={showTargetFit}
                 onClose={() => setShowTargetFit(false)}
@@ -1032,60 +1040,66 @@ export default function DashboardPage() {
                 onClose={() => setShowSalaryBenchmark(false)}
             />
 
-            {/* Revenue Feature Modals */}
-            {showSubscriptionManager && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
-                    <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">Abonelik Yönetimi</h2>
-                            <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <SubscriptionManager />
+    {/* Revenue Feature Modals */ }
+    {
+        showSubscriptionManager && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
+                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-white">Abonelik Yönetimi</h2>
+                        <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
+                    <SubscriptionManager />
                 </div>
-            )}
+            </div>
+        )
+    }
 
-            {showGiftCard && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
-                    <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">🎁 Hediye Kartları</h2>
-                            <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <GiftCardManager />
+    {
+        showGiftCard && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
+                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-white">🎁 Hediye Kartları</h2>
+                        <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
+                    <GiftCardManager />
                 </div>
-            )}
+            </div>
+        )
+    }
 
-            {showAffiliate && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
-                    <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">💰 Affiliate Program</h2>
-                            <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <AffiliateDashboard />
+    {
+        showAffiliate && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
+                <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-white">💰 Affiliate Program</h2>
+                        <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
+                    <AffiliateDashboard />
                 </div>
-            )}
+            </div>
+        )
+    }
 
-            <UpsellModal
-                isOpen={showUpsell}
-                onClose={() => setShowUpsell(false)}
-                triggerType={upsellType}
-                onUpgrade={() => {
-                    setShowUpsell(false)
-                    navigate('/pricing')
-                }}
-            />
+    <UpsellModal
+        isOpen={showUpsell}
+        onClose={() => setShowUpsell(false)}
+        triggerType={upsellType}
+        onUpgrade={() => {
+            setShowUpsell(false)
+            navigate('/pricing')
+        }}
+    />
 
-            {/* AI Feature Modals */}
+    {/* AI Feature Modals */ }
             <AIProjectWriter
                 isOpen={showProjectWriter}
                 onClose={() => setShowProjectWriter(false)}
@@ -1110,17 +1124,17 @@ export default function DashboardPage() {
                 onClose={() => setShowReferenceLetter(false)}
             />
 
-            {/* CV Importer Modal */}
-            <CVImporter
-                isOpen={showCVImporter}
-                onClose={() => setShowCVImporter(false)}
-                onImport={(importedCV) => {
-                    if (importedCV) {
-                        toast.success('CV başarıyla içe aktarıldı!')
-                        navigate(`/editor/${importedCV.id}`)
-                    }
-                }}
-            />
+    {/* CV Importer Modal */ }
+    <CVImporter
+        isOpen={showCVImporter}
+        onClose={() => setShowCVImporter(false)}
+        onImport={(importedCV) => {
+            if (importedCV) {
+                toast.success('CV başarıyla içe aktarıldı!')
+                navigate(`/editor/${importedCV.id}`)
+            }
+        }}
+    />
         </div >
     )
 }

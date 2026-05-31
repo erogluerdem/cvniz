@@ -1,7 +1,8 @@
 import { Suspense, useEffect } from 'react'
 import { getLazyTemplate, preloadTemplate } from '../templates/templateLoader'
+import CVWatermark from './CVWatermark'
 
-export default function CVPreview({ cvData, template, showWatermark, theme, highlightedField }) {
+export default function CVPreview({ cvData, template, showWatermark, theme, highlightedField, isPremium = false, userName = '', userEmail = '' }) {
     useEffect(() => {
         preloadTemplate(template)
     }, [template])
@@ -52,15 +53,16 @@ export default function CVPreview({ cvData, template, showWatermark, theme, high
                     )}
                 </Suspense>
 
-                {/* Watermark for non-premium users */}
+                {/* Enhanced Watermark for non-premium users */}
                 {showWatermark && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                        <div
-                            className="text-6xl font-black text-gray-400/[0.07] rotate-[-35deg] select-none uppercase tracking-[0.3em]"
-                        >
-                            CVniz.com
-                        </div>
-                    </div>
+                    <CVWatermark
+                        isPremium={isPremium}
+                        userName={userName || cvData?.personal?.fullName}
+                        userEmail={userEmail || cvData?.personal?.email}
+                        watermarkText="CVniz.com"
+                        opacity={0.30}
+                        density="high"
+                    />
                 )}
             </div>
         </div>

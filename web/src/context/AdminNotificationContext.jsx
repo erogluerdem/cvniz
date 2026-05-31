@@ -17,7 +17,16 @@ export function AdminNotificationProvider({ children }) {
     useEffect(() => {
         // Periyodik olarak backend'den verileri tazele (canlılık için)
         const interval = setInterval(() => {
-            loadAllTicketsAdmin?.()
+            // Sadece admin ise admin biletlerini yükle
+            const storedUser = localStorage.getItem('CVniz_user')
+            if (storedUser) {
+                try {
+                    const parsed = JSON.parse(storedUser)
+                    if (parsed.role === 'admin') {
+                        loadAllTicketsAdmin?.()
+                    }
+                } catch(e) {}
+            }
             // Diğer kaynaklar için (ödeme vb.) refreshNotifications manuel çağrılabilir
             refreshNotifications()
         }, 30000)

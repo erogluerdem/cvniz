@@ -192,3 +192,49 @@ export async function testAPIConnection() {
     }
 }
 
+// Translate Entire CV
+export async function translateCV(cvData, targetLanguage) {
+    const apiKey = getApiKey()
+    if (!apiKey) {
+        throw new Error('API key bulunamadı.')
+    }
+
+    const prompt = `You are an expert translator. Translate the following CV JSON data to ${targetLanguage}. 
+    - KEEP all JSON keys exactly the same.
+    - ONLY translate the string values.
+    - DO NOT translate proper nouns like company names, locations, or degree names if they shouldn't be translated.
+    - Return ONLY valid JSON, no markdown formatting.
+    
+    Here is the CV JSON:
+    ${JSON.stringify(cvData)}`;
+
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { 
+                temperature: 0.1, 
+                maxOutputTokens: 8192,
+                responseMimeType: "application/json"
+            }
+        })
+    })
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || 'AI API hatası');
+    }
+
+    const data = await response.json();
+    const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    
+    try {
+        return JSON.parse(resultText);
+    } catch (e) {
+        // Fallback cleanup if Gemini returned markdown formatting despite instructions
+        const cleanJson = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(cleanJson);
+    }
+}
+

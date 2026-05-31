@@ -1,0 +1,247 @@
+import { useState } from 'react'
+import { ArrowLeft, Download, Eye, Printer, ChevronLeft, ChevronRight } from 'lucide-react'
+import CVForm from './CVForm'
+import CVPreview from './CVPreview'
+import { sampleCVData, emptyCV } from '../data/sampleData'
+import { exportToPDF, printCV } from '../utils/pdfExport'
+
+const templates = [
+    { id: 'modern', name: 'Modern', isPremium: false, emoji: '🎨' },
+    { id: 'minimalist', name: 'Minimalist', isPremium: true, emoji: '⚡' },
+    { id: 'corporate', name: 'Kurumsal', isPremium: true, emoji: '🏢' },
+    { id: 'creative', name: 'Yaratıcı', isPremium: true, emoji: '🌈' },
+    { id: 'tech', name: 'Teknoloji', isPremium: true, emoji: '💻' },
+    { id: 'executive', name: 'Yönetici', isPremium: true, emoji: '👔' },
+    { id: 'elegant', name: 'Zarif', isPremium: true, emoji: '✨' },
+    { id: 'healthcare', name: 'Sağlık', isPremium: true, emoji: '🏥' },
+    { id: 'academic', name: 'Akademik', isPremium: true, emoji: '📚' },
+    { id: 'finance', name: 'Finans', isPremium: true, emoji: '💰' },
+    { id: 'legal', name: 'Hukuk', isPremium: true, emoji: '⚖️' },
+    { id: 'marketing', name: 'Pazarlama', isPremium: true, emoji: '📢' },
+    { id: 'engineer', name: 'Mühendis', isPremium: true, emoji: '⚙️' },
+    { id: 'retail', name: 'Satış', isPremium: true, emoji: '🛍️' },
+    { id: 'hospitality', name: 'Turizm', isPremium: true, emoji: '🏨' },
+    { id: 'government', name: 'Kamu', isPremium: true, emoji: '🏛️' },
+    { id: 'freelancer', name: 'Freelancer', isPremium: true, emoji: '💼' },
+    { id: 'startup', name: 'Startup', isPremium: true, emoji: '🚀' },
+    { id: 'international', name: 'Uluslararası', isPremium: true, emoji: '🌍' },
+    { id: 'portfolio', name: 'Portfolyo', isPremium: true, emoji: '🖼️' }
+]
+
+export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBackToHome }) {
+    const [cvData, setCvData] = useState(sampleCVData)
+    const [showPreview, setShowPreview] = useState(true)
+    const [isExporting, setIsExporting] = useState(false)
+    const [showPaymentModal, setShowPaymentModal] = useState(false)
+    const [isPremiumUser, setIsPremiumUser] = useState(false)
+
+    const currentTemplate = templates.find(t => t.id === selectedTemplate)
+    const needsPayment = currentTemplate?.isPremium && !isPremiumUser
+
+    const handleExportPDF = async () => {
+        if (needsPayment) {
+            setShowPaymentModal(true)
+            return
+        }
+
+        setIsExporting(true)
+        try {
+            await exportToPDF('cv-preview', `${cvData.personal.fullName || 'cv'}.pdf`, isPremiumUser)
+        } catch (error) {
+            console.error('Export failed:', error)
+        }
+        setIsExporting(false)
+    }
+
+    const handlePrint = () => {
+        printCV('cv-preview')
+    }
+
+    const handleLoadSample = () => {
+        setCvData(sampleCVData)
+    }
+
+    const handleClearAll = () => {
+        setCvData(emptyCV)
+    }
+
+    const handleUnlockPremium = () => {
+        // In production, this would open a payment flow
+        setIsPremiumUser(true)
+        setShowPaymentModal(false)
+    }
+
+    return (
+        <div className="min-h-screen">
+            {/* Header */}
+            <header className="fixed top-0 left-0 right-0 z-50 glass">
+                <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={onBackToHome}
+                            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span className="hidden sm:inline">Geri</span>
+                        </button>
+                        <div className="h-6 w-px bg-white/20"></div>
+                        <h1 className="font-semibold gradient-text">CV Editör</h1>
+                    </div>
+
+                    {/* Template Selector */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => {
+                                const currentIndex = templates.findIndex(t => t.id === selectedTemplate)
+                                const prevIndex = (currentIndex - 1 + templates.length) % templates.length
+                                setSelectedTemplate(templates[prevIndex].id)
+                            }}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-lg glass-card">
+                            <span className="text-sm">{currentTemplate?.name}</span>
+                            {currentTemplate?.isPremium && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500">
+                                    PRO
+                                </span>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => {
+                                const currentIndex = templates.findIndex(t => t.id === selectedTemplate)
+                                const nextIndex = (currentIndex + 1) % templates.length
+                                setSelectedTemplate(templates[nextIndex].id)
+                            }}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setShowPreview(!showPreview)}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors md:hidden"
+                            title="Önizleme"
+                        >
+                            <Eye className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={handlePrint}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors hidden sm:flex"
+                            title="Yazdır"
+                        >
+                            <Printer className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={handleExportPDF}
+                            disabled={isExporting}
+                            className="btn-premium text-sm flex items-center gap-2"
+                        >
+                            <Download className="w-4 h-4" />
+                            <span className="hidden sm:inline">
+                                {isExporting ? 'İşleniyor...' : 'PDF İndir'}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <div className="pt-20 pb-8 px-4">
+                <div className="max-w-[1800px] mx-auto">
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        {/* Left Side - Form */}
+                        <div className={`lg:w-[45%] ${!showPreview ? 'w-full' : 'hidden lg:block'}`}>
+                            <div className="glass-card rounded-2xl p-6 sticky top-24">
+                                {/* Quick Actions */}
+                                <div className="flex gap-2 mb-6">
+                                    <button
+                                        onClick={handleLoadSample}
+                                        className="flex-1 py-2 px-4 rounded-lg border border-white/20 text-sm hover:bg-white/10 transition-colors"
+                                    >
+                                        Örnek Yükle
+                                    </button>
+                                    <button
+                                        onClick={handleClearAll}
+                                        className="flex-1 py-2 px-4 rounded-lg border border-white/20 text-sm hover:bg-white/10 transition-colors"
+                                    >
+                                        Temizle
+                                    </button>
+                                </div>
+
+                                <CVForm cvData={cvData} setCvData={setCvData} />
+                            </div>
+                        </div>
+
+                        {/* Right Side - Preview */}
+                        <div className={`lg:w-[55%] ${showPreview ? 'w-full' : 'hidden lg:block'}`}>
+                            <div className="sticky top-24">
+                                <CVPreview
+                                    cvData={cvData}
+                                    template={selectedTemplate}
+                                    showWatermark={!isPremiumUser}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Preview Toggle */}
+            <button
+                onClick={() => setShowPreview(!showPreview)}
+                className="fixed bottom-6 right-6 lg:hidden btn-premium rounded-full p-4 shadow-2xl"
+            >
+                <Eye className="w-6 h-6" />
+            </button>
+
+            {/* Payment Modal */}
+            {showPaymentModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="glass-card rounded-2xl p-8 max-w-md w-full animate-slide-up">
+                        <h3 className="text-2xl font-bold mb-4 gradient-text">Premium Şablonu Aç</h3>
+                        <p className="text-gray-400 mb-6">
+                            Bu şablonu kullanmak ve watermark'sız PDF indirmek için Pro sürüme yükseltin.
+                        </p>
+
+                        <div className="glass rounded-xl p-6 mb-6">
+                            <div className="flex items-baseline gap-2 mb-4">
+                                <span className="text-4xl font-bold gradient-text">29₺</span>
+                                <span className="text-gray-400">tek seferlik</span>
+                            </div>
+                            <ul className="space-y-2 text-sm text-gray-300">
+                                <li>✓ Tüm Premium Şablonlar</li>
+                                <li>✓ Watermark'sız PDF</li>
+                                <li>✓ 1 CV İndirme Hakkı</li>
+                            </ul>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowPaymentModal(false)}
+                                className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
+                            >
+                                Vazgeç
+                            </button>
+                            <button
+                                onClick={handleUnlockPremium}
+                                className="flex-1 btn-premium"
+                            >
+                                Satın Al
+                            </button>
+                        </div>
+
+                        {/* Demo Mode Notice */}
+                        <p className="text-xs text-gray-500 text-center mt-4">
+                            Demo: "Satın Al" butonuna tıklayarak test edebilirsiniz
+                        </p>
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}

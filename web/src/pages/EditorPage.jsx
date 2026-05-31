@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
-import {
-    ArrowLeft, Download, Eye, Printer, ChevronLeft, ChevronRight, Save, LogIn, Crown, Sparkles,
-    UserPlus, Lock, Shield, Check, X, AlertTriangle, Layout, Type, Palette, Settings as SettingsIcon,
+import { 
+    Download, Play, HelpCircle, UserPlus, Lock, Shield, Check, X, AlertTriangle, Layout, Type, Palette, Settings as SettingsIcon,
     History, Share2, ZoomIn, ZoomOut, Maximize2, Monitor, Laptop, Tablet, Smartphone, Search,
     User, Briefcase, GraduationCap, Wrench, Menu, Trophy, FolderKanban, Award, Users, Heart, GitBranch, Linkedin, FileText, Globe2,
-    Edit3, PanelLeft
+    Edit3, PanelLeft, GripVertical, DownloadCloud, ArrowLeft, Save, ChevronRight, Sparkles, Eye
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -14,7 +13,7 @@ import CVForm from '../components/CVForm'
 import CVPreview from '../components/CVPreview'
 import PremiumFeaturesPanel from '../components/PremiumFeaturesPanel'
 import { sampleCVData, emptyCV } from '../data/sampleData'
-import { exportToPDF, printCV, exportToPNG, exportToJSON, exportToHTML, exportToDOCX } from '../utils/pdfExport'
+import { exportToPDF, printCV, exportToPNG, exportToJSON, exportToHTML, exportToDOCX, PDF_PAGE_FORMAT, PDF_PAGE_FORMATS, getPdfPageFormatLabel, getPdfPageSizeMm } from '../utils/pdfExport'
 import { preloadTemplate } from '../templates/templateLoader'
 import { useTemplates } from '../context/TemplateContext'
 import { templates as pdfTemplates } from '../data/templates'
@@ -22,12 +21,27 @@ import TemplateSwitcher from '../components/TemplateSwitcher'
 import AuthRequiredModal from '../components/AuthRequiredModal'
 import VersionHistoryModal from '../components/VersionHistoryModal'
 import LinkedInImport from '../components/LinkedInImport'
+
 import CVImporter from '../components/CVImporter'
 import { usePersistence } from '../context/PersistenceContext'
 import { Undo2, Redo2, Cloud, CloudOff, RefreshCw, Wifi, WifiOff } from 'lucide-react'
 import UpsellModal from '../components/UpsellModal'
+import AISmartFillModal from '../components/AISmartFillModal'
+import KeyboardShortcutsModal from '../components/KeyboardShortcutsModal'
+import CollaborationBadge from '../components/CollaborationBadge'
+import TargetFitAI from '../components/TargetFitAI'
+import SplitView from '../components/SplitView'
+import FloatingEditor from '../components/FloatingEditor'
+import { TemplatePreviewTooltip, TemplateQuickAccess } from '../components/TemplatePreviewTooltip'
+import AISidebarAssistant from '../components/AISidebarAssistant'
+import RichTextEditor from '../components/RichTextEditor'
+import SmartFields, { SmartDateRange, SmartCompanyInput, SmartLocationInput, SmartSkillInput } from '../components/SmartFields'
+import GitHubIntegration from '../components/GitHubIntegration'
+import SectionReorder from '../components/SectionReorder'
+import RealTimeATSPanel from '../components/RealTimeATSPanel'
+import LiveShare from '../components/LiveShare'
 
-const editorTabs = [
+const DEFAULT_EDITOR_TABS = [
     { id: 'personal', label: 'Kişisel', icon: <User className="w-5 h-5" /> },
     { id: 'experience', label: 'Deneyim', icon: <Briefcase className="w-5 h-5" /> },
     { id: 'education', label: 'Eğitim', icon: <GraduationCap className="w-5 h-5" /> },
@@ -41,6 +55,19 @@ const editorTabs = [
     { id: 'styling', label: 'Görünüm', icon: <Palette className="w-5 h-5" /> },
     { id: 'settings', label: 'Ayarlar', icon: <SettingsIcon className="w-5 h-5" /> }
 ]
+
+const EDITORIAL_TYPOGRAPHY_TEMPLATES = new Set([
+    'academic_serif',
+    'elegant',
+    'fashion',
+    'luxury_matte',
+    'luxury_velvet',
+    'magazine_vogue',
+    'magazine-editorial',
+    'newspaper_class',
+    'vintage_class',
+    'vogue_elite'
+])
 
 export default function EditorPage() {
     const { cvId } = useParams()
@@ -102,6 +129,216 @@ export default function EditorPage() {
     const [showCVImporter, setShowCVImporter] = useState(false)
     const [showUpsellModal, setShowUpsellModal] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
+
+    // New UI States
+    const [showSmartFillModal, setShowSmartFillModal] = useState(false)
+    const [showShortcutsModal, setShowShortcutsModal] = useState(false)
+    const [showCollabPopover, setShowCollabPopover] = useState(false)
+    const [showTargetFitAI, setShowTargetFitAI] = useState(false)
+    const [hoverTemplate, setHoverTemplate] = useState(null)
+    const [touchStartX, setTouchStartX] = useState(null)
+    const [showPreviewGrid, setShowPreviewGrid] = useState(true)
+    const [pdfPageFormat, setPdfPageFormat] = useState(PDF_PAGE_FORMAT)
+    
+    // Faz 1: Split View State
+    const [viewMode, setViewMode] = useState('split') // 'split' | 'form' | 'preview'
+    const [splitPosition, setSplitPosition] = useState(45)
+    
+    // Faz 1: Floating Editor States
+    const [floatingEditors, setFloatingEditors] = useState([])
+    const [activeFloatingEditor, setActiveFloatingEditor] = useState(null)
+    
+    // Faz 1: Advanced Template Preview States
+    const [showTemplatePreview, setShowTemplatePreview] = useState(false)
+    const [previewTemplateData, setPreviewTemplateData] = useState(null)
+    const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 })
+    const [compareMode, setCompareMode] = useState(false)
+    const [compareTemplateData, setCompareTemplateData] = useState(null)
+    const [favoriteTemplates, setFavoriteTemplates] = useState(() => {
+        const stored = localStorage.getItem('CVniz_favorite_templates')
+        return stored ? JSON.parse(stored) : []
+    })
+    
+    // Sidebar Drag & Drop States
+    const [tabsOrder, setTabsOrder] = useState(DEFAULT_EDITOR_TABS)
+    const [draggedTabId, setDraggedTabId] = useState(null)
+
+    const previewTemplate = hoverTemplate || selectedTemplate
+    const previewTemplateName = useMemo(() => {
+        const match = pdfTemplates.find((t) => t.id === previewTemplate)
+        return match?.name || previewTemplate
+    }, [previewTemplate])
+    const previewTemplateCategory = useMemo(() => {
+        const match = pdfTemplates.find((t) => t.id === previewTemplate)
+        return match?.category || 'default'
+    }, [previewTemplate])
+    const isEditorialTypography = useMemo(
+        () => EDITORIAL_TYPOGRAPHY_TEMPLATES.has(previewTemplate),
+        [previewTemplate]
+    )
+    const isPreviewWebTemplate = useMemo(
+        () => typeof previewTemplate === 'string' && previewTemplate.toLowerCase().includes('web'),
+        [previewTemplate]
+    )
+    const previewFormatLabel = isPreviewWebTemplate
+        ? 'WEB'
+        : getPdfPageFormatLabel(pdfPageFormat)
+    const previewBadgeLabel = `${previewFormatLabel} • ${previewTemplateName}`
+    const previewBadgeLabelShort = `${previewFormatLabel}`
+    const previewBadgeCategory = useMemo(() => {
+        const normalized = String(previewTemplateCategory || '').toLowerCase()
+        if (normalized.includes('professional')) return 'professional'
+        if (normalized.includes('modern')) return 'modern'
+        if (normalized.includes('creative')) return 'creative'
+        if (normalized.includes('tech')) return 'tech'
+        if (normalized.includes('industry')) return 'industry'
+        if (normalized.includes('seasonal')) return 'seasonal'
+        if (normalized.includes('portfolio')) return 'portfolio'
+        return 'default'
+    }, [previewTemplateCategory])
+    const previewBadgeClass = `editor-preview-badge editor-preview-badge--${previewBadgeCategory}`
+    const previewPageSize = useMemo(() => getPdfPageSizeMm(pdfPageFormat), [pdfPageFormat])
+    const previewBadgeIcon = useMemo(() => {
+        if (isPreviewWebTemplate) return Globe2
+        switch (previewBadgeCategory) {
+            case 'professional':
+                return Briefcase
+            case 'modern':
+                return Layout
+            case 'creative':
+                return Sparkles
+            case 'tech':
+                return Laptop
+            case 'industry':
+                return Award
+            case 'seasonal':
+                return Heart
+            case 'portfolio':
+                return Globe2
+            default:
+                return FileText
+        }
+    }, [isPreviewWebTemplate, previewBadgeCategory])
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        const storedFormat = window.localStorage.getItem('CVniz_pdf_page_format')
+        if (storedFormat && PDF_PAGE_FORMATS[storedFormat]) {
+            setPdfPageFormat(storedFormat)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        window.localStorage.setItem('CVniz_pdf_page_format', pdfPageFormat)
+    }, [pdfPageFormat])
+    
+    // Faz 1: Save favorite templates to localStorage
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        localStorage.setItem('CVniz_favorite_templates', JSON.stringify(favoriteTemplates))
+    }, [favoriteTemplates])
+
+    const handleDragStart = (e, id) => {
+        setDraggedTabId(id)
+        e.dataTransfer.effectAllowed = 'move'
+    }
+
+    const handleDragOver = (e, targetId) => {
+        e.preventDefault()
+        if (draggedTabId === targetId || !draggedTabId) return
+
+        const draggedIndex = tabsOrder.findIndex(t => t.id === draggedTabId)
+        const targetIndex = tabsOrder.findIndex(t => t.id === targetId)
+
+        const newTabs = [...tabsOrder]
+        const [removed] = newTabs.splice(draggedIndex, 1)
+        newTabs.splice(targetIndex, 0, removed)
+        
+        setTabsOrder(newTabs)
+    }
+
+    const handleDragEnd = () => {
+        setDraggedTabId(null)
+    }
+
+    // Spellcheck function
+    const handleSpellcheck = () => {
+        setIsExporting(true) // Reuse this state as a loading indicator for the UI
+        setTimeout(() => {
+            setCvData(prev => ({
+                ...prev,
+                personal: {
+                    ...prev.personal,
+                    summary: prev.personal.summary ? prev.personal.summary.replace(/yapiyorum/g, 'yapıyorum').replace(/deil/g, 'değil') : ''
+                }
+            }))
+            setIsExporting(false)
+        }, 1500)
+    }
+    
+    // Faz 1: Template Preview Handlers
+    const handleTemplateHover = (templateId, e) => {
+        if (!templateId) {
+            setShowTemplatePreview(false)
+            return
+        }
+        const template = pdfTemplates.find(t => t.id === templateId)
+        if (template) {
+            setPreviewTemplateData(template)
+            setPreviewPosition({ x: e?.clientX + 20 || 100, y: e?.clientY || 100 })
+            setShowTemplatePreview(true)
+        }
+    }
+    
+    const handleTemplatePreviewClose = () => {
+        setShowTemplatePreview(false)
+        setPreviewTemplateData(null)
+        setCompareMode(false)
+        setCompareTemplateData(null)
+    }
+    
+    const handleToggleCompare = () => {
+        if (!compareMode && previewTemplateData) {
+            // Find a different template to compare
+            const otherTemplate = pdfTemplates.find(t => 
+                t.id !== previewTemplateData.id && t.category === previewTemplateData.category
+            ) || pdfTemplates[0]
+            setCompareTemplateData(otherTemplate)
+        }
+        setCompareMode(!compareMode)
+    }
+    
+    const handleToggleFavorite = (templateId) => {
+        setFavoriteTemplates(prev => {
+            if (prev.includes(templateId)) {
+                return prev.filter(id => id !== templateId)
+            }
+            return [...prev, templateId]
+        })
+    }
+    
+    // Faz 1: Floating Editor Helpers
+    const openFloatingEditor = (type, data = {}) => {
+        const id = Date.now().toString()
+        const newEditor = {
+            id,
+            type,
+            title: data.title || 'Editör',
+            data,
+            isOpen: true
+        }
+        setFloatingEditors(prev => [...prev, newEditor])
+        setActiveFloatingEditor(id)
+        return id
+    }
+    
+    const closeFloatingEditor = (id) => {
+        setFloatingEditors(prev => prev.filter(e => e.id !== id))
+        if (activeFloatingEditor === id) {
+            setActiveFloatingEditor(null)
+        }
+    }
 
     // Update local theme when template changes to use admin defaults
     useEffect(() => {
@@ -564,11 +801,21 @@ export default function EditorPage() {
         try {
             const rawName = cvData.personal.fullName || 'Özgeçmiş'
             const safeName = rawName.trim().replace(/\s+/g, '_')
-            const filename = `${safeName}_CV.${format}`
+            const isPdfExport = format === 'pdf' || format === 'pdf-a4' || format === 'pdf-letter'
+            const pdfFormat = format === 'pdf-letter'
+                ? 'letter'
+                : format === 'pdf-a4'
+                    ? 'a4'
+                    : pdfPageFormat
+            const fileExtension = isPdfExport ? 'pdf' : format
+            const filename = `${safeName}_CV.${fileExtension}`
 
             switch (format) {
                 case 'pdf':
-                    await exportToPDF('cv-preview-frame', filename, isPremium)
+                case 'pdf-a4':
+                case 'pdf-letter':
+                    setPdfPageFormat(pdfFormat)
+                    await exportToPDF('cv-preview-frame', filename, isPremium, pdfFormat)
                     break
                 case 'png':
                     await exportToPNG('cv-preview-frame', filename)
@@ -621,8 +868,261 @@ export default function EditorPage() {
         ? 'bg-white/90 border-slate-200/80 text-slate-700 shadow-day'
         : 'bg-[#0f1115]/40 border-white/5 text-slate-300'
 
+    // Faz 1: Render Preview Area helper function
+    const renderPreviewArea = () => (
+        <>
+            {/* Viewport Toolbar */}
+            <div className={`hidden md:flex h-14 border-b items-center justify-between px-8 z-20 backdrop-blur-2xl editor-preview-toolbar ${toolbarClasses}`}>
+                <div className="flex items-center gap-8">
+                    {/* Device Mode Switcher */}
+                    <div className={`flex items-center rounded-[14px] p-1 border shadow-inner ${isDayMode ? 'bg-white border-slate-200/70' : 'bg-black/40 border-white/5'}`}>
+                        {[
+                            { id: 'desktop', icon: Monitor, label: 'Masaüstü' },
+                            { id: 'laptop', icon: Laptop, label: 'Dizüstü' },
+                            { id: 'tablet', icon: Tablet, label: 'Tablet' },
+                            { id: 'mobile', icon: Smartphone, label: 'Mobil' }
+                        ].map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => setViewportMode(item.id)}
+                                className={`p-2 rounded-xl transition-all duration-300 relative group ${viewportMode === item.id
+                                    ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
+                                    : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                                    }`}
+                                title={item.label}
+                            >
+                                <item.icon className="w-4 h-4" />
+                                {viewportMode === item.id && (
+                                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="h-4 w-px bg-white/10" />
+
+                    {/* Zoom Controls */}
+                    <div className={`flex items-center gap-1 rounded-xl px-2 py-1 border ${isDayMode ? 'bg-white border-slate-200/70 text-slate-600' : 'bg-black/20 border-white/5'}`}>
+                        <button
+                            onClick={() => setZoom(z => Math.max(z - 10, 30))}
+                            className="p-1.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                        >
+                            <ZoomOut className="w-4 h-4" />
+                        </button>
+                        <div className="px-3 min-w-[60px] text-center">
+                            <span className="text-[10px] font-black text-cyan-400/80 uppercase tracking-[0.2em]">{zoom}%</span>
+                        </div>
+                        <button
+                            onClick={() => setZoom(z => Math.min(z + 10, 200))}
+                            className="p-1.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                        >
+                            <ZoomIn className="w-4 h-4" />
+                        </button>
+
+                        <button
+                            onClick={() => setZoom(100)}
+                            className="ml-2 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-[8px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-all"
+                        >
+                            SIFIRLA
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={() => setShowPreviewGrid((prev) => !prev)}
+                        className={`ml-2 flex items-center gap-1 px-2 py-1 rounded-xl border text-[9px] font-black uppercase tracking-[0.2em] transition-all ${showPreviewGrid
+                            ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400'
+                            : (isDayMode ? 'bg-white border-slate-200/70 text-slate-500' : 'bg-black/20 border-white/10 text-slate-500')
+                            }`}
+                        aria-pressed={showPreviewGrid}
+                        title={showPreviewGrid ? 'Grid Gizle' : 'Grid Goster'}
+                    >
+                        <Layout className="w-3.5 h-3.5" />
+                        GRID
+                    </button>
+
+                    {!isPreviewWebTemplate && (
+                        <div className={`ml-2 flex items-center rounded-xl p-1 border shadow-inner ${isDayMode ? 'bg-white border-slate-200/70' : 'bg-black/20 border-white/10'}`}>
+                            {[
+                                { id: 'a4', label: 'A4' },
+                                { id: 'letter', label: 'Letter' }
+                            ].map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setPdfPageFormat(item.id)}
+                                    className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] transition-all ${pdfPageFormat === item.id
+                                        ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
+                                        : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                                        }`}
+                                >
+                                    {item.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Status Indicator */}
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 group cursor-help">
+                        <div className="relative">
+                            <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+                            <div className="absolute inset-0 w-2 h-2 bg-emerald-500 rounded-full animate-ping opacity-75" />
+                        </div>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-emerald-400 transition-colors">
+                            Canlı Önizleme Aktif
+                        </span>
+                    </div>
+                    <div className="h-4 w-px bg-white/10" />
+                    <button
+                        onClick={calculateATSScore}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 transition-all font-black text-[10px] uppercase tracking-widest"
+                    >
+                        <Sparkles className="w-3 h-3" /> ATS SKORU
+                    </button>
+                    <div className="h-4 w-px bg-white/10" />
+                    <button className="p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+                        <Maximize2 className="w-4 h-4" />
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Preview Header */}
+            {isMobile && mobilePreviewMode && (
+                <div className={`h-12 border-b flex items-center justify-between px-4 editor-preview-toolbar editor-preview-toolbar-mobile ${toolbarClasses}`}>
+                    <span className={`text-sm font-bold ${isDayMode ? 'text-slate-700' : 'text-white'}`}>
+                        Önizleme
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setZoom(z => Math.max(z - 10, 30))}
+                            className="p-2 rounded-lg hover:bg-white/10 text-slate-400 touch-target"
+                        >
+                            <ZoomOut className="w-4 h-4" />
+                        </button>
+                        <span className="text-[10px] font-black text-cyan-400">{zoom}%</span>
+                        <button
+                            onClick={() => setZoom(z => Math.min(z + 10, 200))}
+                            className="p-2 rounded-lg hover:bg-white/10 text-slate-400 touch-target"
+                        >
+                            <ZoomIn className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setShowPreviewGrid((prev) => !prev)}
+                            className={`p-2 rounded-lg border transition-all ${showPreviewGrid
+                                ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400'
+                                : (isDayMode ? 'bg-white border-slate-200/70 text-slate-500' : 'bg-black/20 border-white/10 text-slate-500')
+                                }`}
+                            aria-pressed={showPreviewGrid}
+                            title={showPreviewGrid ? 'Grid Gizle' : 'Grid Goster'}
+                        >
+                            <Layout className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Infinite Canvas Container */}
+            <div
+                className={`flex-1 overflow-auto p-4 md:p-12 lg:p-24 relative flex justify-center custom-scrollbar editor-preview-canvas bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] ${isMobile ? 'pb-24' : ''}`}
+                onContextMenu={(e) => {
+                    if (!isPremium) {
+                        e.preventDefault()
+                        setContextMenu({ visible: true, x: e.clientX, y: e.clientY })
+                    }
+                }}
+                onClick={() => setContextMenu({ visible: false, x: 0, y: 0 })}
+            >
+                <div className={`editor-preview-grid ${showPreviewGrid ? '' : 'is-hidden'}`} aria-hidden="true" />
+                <div className={previewBadgeClass} aria-hidden="true" data-tooltip={previewBadgeLabel}>
+                    <span className="editor-preview-badge-icon">
+                        <previewBadgeIcon className="w-3 h-3" />
+                    </span>
+                    <span className="editor-preview-badge-text">{previewBadgeLabel}</span>
+                    <span className="editor-preview-badge-text-short">{previewBadgeLabelShort}</span>
+                </div>
+                <div
+                    className={`transition-all duration-300 origin-top shadow-[0_30px_100px_rgba(0,0,0,0.5)] border border-white/5 rounded-sm overflow-hidden bg-white flex flex-col editor-preview-frame ${isEditorialTypography ? 'editorial-preview-type' : ''}`}
+                    style={{
+                        width: isMobile ? '100%' : (viewportMode === 'mobile' ? '375px' : viewportMode === 'tablet' ? '768px' : `${previewPageSize.widthMm}mm`),
+                        maxWidth: isMobile ? '100%' : 'none',
+                        minHeight: viewportMode === 'mobile' ? '667px' : viewportMode === 'tablet' ? '1024px' : `${previewPageSize.heightMm}mm`,
+                        transform: isMobile ? `scale(${Math.min(zoom / 100, 0.9)})` : `scale(${zoom / 100})`,
+                        transformOrigin: 'top center',
+                        height: 'fit-content'
+                    }}
+                >
+                    <div id="cv-preview-frame" className="h-full">
+                        <CVPreview
+                            cvData={cvData}
+                            template={hoverTemplate || selectedTemplate}
+                            showWatermark={isTemplatePremium && !isPremium}
+                            theme={theme}
+                            highlightedField={highlightedField}
+                        />
+                    </div>
+                </div>
+
+                {/* Right-click Context Menu for Free Users */}
+                {contextMenu.visible && (
+                    <div
+                        className="fixed z-[200] glass-card rounded-xl border border-white/20 shadow-2xl py-2 min-w-[200px] animate-scale-in"
+                        style={{ left: contextMenu.x, top: contextMenu.y }}
+                    >
+                        <button
+                            onClick={() => {
+                                setContextMenu({ visible: false, x: 0, y: 0 })
+                                setShowPremiumPanel(true)
+                            }}
+                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-colors text-left"
+                        >
+                            <Crown className="w-5 h-5 text-amber-400" />
+                            <div>
+                                <div className="font-bold text-sm">Premium'a Geç</div>
+                                <div className="text-xs text-gray-400">Watermark'sız PDF indir</div>
+                            </div>
+                        </button>
+                        <button
+                            onClick={() => {
+                                setContextMenu({ visible: false, x: 0, y: 0 })
+                                navigate('/checkout?plan=pro&cycle=yearly')
+                            }}
+                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-colors text-left"
+                        >
+                            <Sparkles className="w-5 h-5 text-cyan-400" />
+                            <div>
+                                <div className="font-bold text-sm">200+ Şablon Aç</div>
+                                <div className="text-xs text-gray-400">Tüm premium şablonlar</div>
+                            </div>
+                        </button>
+                        <div className="border-t border-white/10 my-2" />
+                        <button
+                            onClick={() => setContextMenu({ visible: false, x: 0, y: 0 })}
+                            className="w-full px-4 py-2 flex items-center gap-3 hover:bg-white/10 transition-colors text-left text-gray-400 text-sm"
+                        >
+                            <X className="w-4 h-4" />
+                            Kapat
+                        </button>
+                    </div>
+                )}
+            </div>
+        </>
+    )
+
     return (
-        <div className={`fixed inset-0 flex flex-col overflow-hidden editor-page-shell mobile-full-height ${shellClasses} ${selectionColor}`}>
+        <div 
+            className={`fixed inset-0 flex flex-col overflow-hidden editor-page-shell mobile-full-height editor-theme-${uiTheme} ${isDayMode ? 'editor-theme-editorial' : ''} ${shellClasses} ${selectionColor}`}
+            onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+            onTouchEnd={(e) => {
+                if (!touchStartX) return;
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) setMobilePreviewMode(true); // swipe left
+                    else setMobilePreviewMode(false); // swipe right
+                }
+                setTouchStartX(null);
+            }}
+        >
             {/* Mobile Backdrop for Sidebar */}
             {isMobile && (
                 <div
@@ -635,7 +1135,17 @@ export default function EditorPage() {
             <header className={`h-14 md:h-20 border-b backdrop-blur-xl flex items-center justify-between px-3 md:px-6 shrink-0 z-50 ${headerClasses}`}>
                 {/* Left Section */}
                 <div className="flex items-center gap-2 md:gap-6">
-                    {/* Mobile: Hamburger Menu */}
+
+
+                    {/* Collaboration Badge */}
+                    <CollaborationBadge
+                        cvId={cvId}
+                        cvName={cvName || 'İsimsiz CV'}
+                        isOpen={showCollabPopover}
+                        onToggle={() => setShowCollabPopover(!showCollabPopover)}
+                    />
+
+                    {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="p-2.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-all md:hidden touch-target"
@@ -700,9 +1210,15 @@ export default function EditorPage() {
 
                         {/* Quick Actions - Hidden on Mobile */}
                         <div className="hidden lg:flex gap-2 mt-1">
+                            <button onClick={() => setShowTargetFitAI(true)} className="text-[9px] font-black text-purple-400 hover:text-purple-300 uppercase tracking-widest border border-purple-500/20 px-2 py-0.5 rounded bg-purple-500/5 transition-all active:scale-95 flex items-center gap-1">
+                                İlana Uyarla
+                            </button>
+                            <button onClick={handleSpellcheck} className="text-[9px] font-black text-amber-400 hover:text-amber-300 uppercase tracking-widest border border-amber-500/20 px-2 py-0.5 rounded bg-amber-500/5 transition-all active:scale-95 flex items-center gap-1">
+                                Yazım Denetimi
+                            </button>
                             <button onClick={handleLoadSample} className="text-[9px] font-black text-cyan-400 hover:text-cyan-300 uppercase tracking-widest border border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 transition-all active:scale-95">Örnek Doldur</button>
                             <button onClick={() => setShowCVImporter(true)} className="text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest border border-emerald-500/20 px-2 py-0.5 rounded bg-emerald-500/5 transition-all active:scale-95 flex items-center gap-1">
-                                <FileText className="w-3 h-3" /> CV Yükle
+                                CV Yükle
                             </button>
                             <button onClick={() => setShowLinkedInModal(true)} className="text-[9px] font-black text-blue-400 hover:text-blue-300 uppercase tracking-widest border border-blue-500/20 px-2 py-0.5 rounded bg-blue-500/5 transition-all active:scale-95 flex items-center gap-1">
                                 <Linkedin className="w-3 h-3" /> LinkedIn
@@ -712,60 +1228,43 @@ export default function EditorPage() {
                     </div>
                 </div>
 
-                {/* Mini Template Gallery - Hidden on Mobile/Tablet */}
-                <div
-                    ref={scrollRef}
-                    className={`hidden xl:flex flex-1 max-w-4xl mx-12 items-center gap-4 overflow-x-auto no-scrollbar px-4 h-14 border-x cursor-grab active:cursor-grabbing select-none ${isDayMode ? 'border-slate-200/80 bg-white/60 rounded-[18px] shadow-inner text-slate-700' : 'border-white/5'}`}
-                >
-                    {pdfTemplates.map((t) => {
-                        const isSelected = selectedTemplate === t.id
-                        const selectedCard = isDayMode
-                            ? 'bg-sky-100 border-sky-300 text-slate-900 shadow-lg shadow-sky-200/80'
-                            : 'bg-cyan-500/20 border-cyan-500 text-white shadow-lg shadow-cyan-500/20'
-                        const defaultCard = isDayMode
-                            ? 'bg-white border border-slate-200 text-slate-600 hover:border-sky-200 hover:bg-slate-50 shadow-sm'
-                            : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/20 hover:bg-white/10'
-                        return (
-                            <button
-                                key={t.id}
-                                onClick={() => setSelectedTemplate(t.id)}
-                                className={`shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all relative group ${isSelected ? selectedCard : defaultCard}`}
-                                title={t.name}
-                            >
-                                <span className="text-xl mb-0.5">{t.emoji || '📄'}</span>
-                                <div className="flex gap-0.5 w-6 h-[2px]">
-                                    <div className={`h-full flex-1 rounded-full ${isSelected ? (isDayMode ? 'bg-slate-900' : 'bg-white') : isDayMode ? 'bg-slate-200 group-hover:bg-slate-300' : 'bg-slate-700 group-hover:bg-slate-500'}`} />
-                                    <div className={`h-full flex-1 rounded-full ${isSelected ? (isDayMode ? 'bg-slate-500/60' : 'bg-white/50') : isDayMode ? 'bg-slate-100' : 'bg-slate-800'}`} />
-                                </div>
-                                {isSelected && (
-                                    <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black border-2 ${isDayMode ? 'bg-sky-500 text-white border-white' : 'bg-cyan-500 text-slate-950 border-[#0f1115]'}`}>
-                                        <Check className="w-2.5 h-2.5" />
-                                    </div>
-                                )}
-                            </button>
-                        )
-                    })}
-                    <button
-                        onClick={() => setShowTemplateModal(true)}
-                        className={`shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl border border-dashed transition-all ${isDayMode
-                            ? 'bg-white text-slate-500 border-slate-200 hover:border-sky-200 hover:text-slate-700 hover:bg-slate-50 shadow-sm'
-                            : 'bg-white/5 text-slate-500 border-white/20 hover:text-white hover:border-white/40 hover:bg-white/10'
-                            }`}
-                    >
-                        <Layout className="w-5 h-5 mb-1" />
-                        <span className="text-[8px] font-black uppercase tracking-tight">Daha Fazla</span>
-                    </button>
+                {/* Faz 1: Advanced Template Quick Access */}
+                <div className="hidden xl:flex flex-1 max-w-4xl mx-12 items-center">
+                    <TemplateQuickAccess
+                        templates={pdfTemplates}
+                        selectedTemplate={selectedTemplate}
+                        onSelect={(id) => setSelectedTemplate(id)}
+                        onHover={(template) => {
+                            if (template) {
+                                setPreviewTemplateData(template)
+                                setShowTemplatePreview(true)
+                            } else {
+                                // Delay closing to prevent flickering
+                                setTimeout(() => setShowTemplatePreview(false), 100)
+                            }
+                        }}
+                        favorites={favoriteTemplates}
+                        onToggleFavorite={handleToggleFavorite}
+                        isDayMode={isDayMode}
+                    />
                 </div>
 
                 {/* Right Section - Action Buttons */}
                 <div className="flex items-center gap-2 md:gap-3">
+                    {/* AI Smart Fill Button */}
+                    <button
+                        onClick={() => setShowSmartFillModal(true)}
+                        className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 hover:from-violet-500/30 hover:to-fuchsia-500/30 text-fuchsia-400 border border-fuchsia-500/30 transition-all font-bold text-[10px] whitespace-nowrap"
+                    >
+                        AI DOLDUR
+                    </button>
+
                     {/* AI Button - Desktop Only */}
                     <button
                         id="premium-panel-trigger"
                         onClick={() => setShowPremiumPanel(true)}
-                        className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-cyan-400 border border-cyan-500/20 transition-all font-bold text-xs"
+                        className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all font-bold text-[10px] ${isDayMode ? 'bg-white border-cyan-200 text-cyan-600 hover:bg-cyan-50' : 'bg-white/5 border-cyan-500/20 text-cyan-400 hover:bg-white/10'}`}
                     >
-                        <Sparkles className="w-4 h-4" />
                         AI
                     </button>
 
@@ -813,12 +1312,41 @@ export default function EditorPage() {
                         </button>
 
                         {showExportMenu && (
-                            <div className={`absolute top-full right-0 mt-2 w-56 rounded-2xl border shadow-2xl py-2 overflow-hidden z-[100] animate-scale-in ${isDayMode
+                            <div className={`absolute top-full right-0 mt-2 w-60 rounded-2xl border shadow-2xl py-2 overflow-hidden z-[100] animate-scale-in ${isDayMode
                                 ? 'bg-white border-slate-200 shadow-lg'
                                 : 'bg-[#1a1d24] border-white/20'
                                 }`}>
+                                {!isPreviewWebTemplate && (
+                                    <>
+                                        <div className="px-4 pt-2 pb-3">
+                                            <div className={`text-[10px] font-black uppercase tracking-[0.3em] ${isDayMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                                Format
+                                            </div>
+                                            <div className={`mt-2 flex items-center rounded-xl p-1 border ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'}`}>
+                                                {[
+                                                    { id: 'a4', label: 'A4' },
+                                                    { id: 'letter', label: 'Letter' }
+                                                ].map((item) => (
+                                                    <button
+                                                        key={item.id}
+                                                        onClick={() => setPdfPageFormat(item.id)}
+                                                        className={`flex-1 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] transition-all ${pdfPageFormat === item.id
+                                                            ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
+                                                            : (isDayMode ? 'text-slate-500 hover:text-slate-800 hover:bg-white' : 'text-slate-500 hover:text-white hover:bg-white/10')
+                                                            }`}
+                                                    >
+                                                        {item.label}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className={`border-t ${isDayMode ? 'border-slate-200' : 'border-white/10'}`} />
+                                    </>
+                                )}
+
                                 {[
-                                    { id: 'pdf', label: 'PDF Olarak İndir', icon: <FileText className="w-4 h-4" /> },
+                                    { id: 'pdf', label: `PDF Olarak İndir (${getPdfPageFormatLabel(pdfPageFormat)})`, icon: <FileText className="w-4 h-4" /> },
                                     { id: 'png', label: 'Resim (PNG)', icon: <Layout className="w-4 h-4" /> },
                                     { id: 'html', label: 'Web (HTML)', icon: <Globe2 className="w-4 h-4" /> },
                                     { id: 'docx', label: 'Word (DOCX)', icon: <Briefcase className="w-4 h-4" /> },
@@ -852,7 +1380,7 @@ export default function EditorPage() {
                 <nav className={`
                     ${isMobile
                         ? `fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`
-                        : 'relative w-20 lg:w-64'
+                        : viewMode === 'preview' ? 'hidden' : 'relative w-20 lg:w-64'
                     } 
                     border-r flex flex-col shrink-0 ${sidebarClasses}
                 `}>
@@ -872,10 +1400,14 @@ export default function EditorPage() {
                     )}
 
                     <div className="flex-1 py-4 md:py-8 flex flex-col gap-2 px-3 md:px-4 overflow-y-auto custom-scrollbar">
-                        {editorTabs.map((tab) => (
+                        {tabsOrder.map((tab) => (
                             <button
                                 key={tab.id}
                                 id={`tab-${tab.id}`}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, tab.id)}
+                                onDragOver={(e) => handleDragOver(e, tab.id)}
+                                onDragEnd={handleDragEnd}
                                 onClick={() => {
                                     setActiveTab(tab.id)
                                     if (isMobile) {
@@ -886,9 +1418,12 @@ export default function EditorPage() {
                                 className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative touch-target ${activeTab === tab.id
                                     ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
                                     : 'text-slate-500 hover:bg-white/5 hover:text-slate-300 border border-transparent'
-                                    }`}
+                                    } ${draggedTabId === tab.id ? 'opacity-50' : ''}`}
                             >
-                                <div className={`${activeTab === tab.id ? 'text-cyan-400 scale-110' : 'text-slate-500 group-hover:scale-110'} transition-transform`}>
+                                <div className="absolute left-1 md:left-2 opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing text-slate-600 transition-opacity">
+                                    <GripVertical className="w-3 h-3" />
+                                </div>
+                                <div className={`${activeTab === tab.id ? 'text-cyan-400 scale-110' : 'text-slate-500 group-hover:scale-110'} transition-transform ml-2 md:ml-4`}>
                                     {tab.icon}
                                 </div>
                                 <span className={`text-sm font-bold tracking-tight whitespace-nowrap ${isMobile ? 'opacity-100' : (sidebarCollapsed ? 'opacity-0 lg:hidden' : 'opacity-100')}`}>
@@ -954,238 +1489,102 @@ export default function EditorPage() {
                     </div>
                 </nav>
 
-                {/* Form Editor Area - Conditional on Mobile */}
-                <main className={`
-                    ${isMobile
-                        ? `absolute inset-0 transition-transform duration-300 ${mobilePreviewMode ? '-translate-x-full' : 'translate-x-0'}`
-                        : 'relative w-full lg:w-[480px] shrink-0'
-                    } 
-                    border-r flex flex-col overflow-hidden ${formPanelClasses}
-                `}>
-                    <div className={`flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar editor-form-container ${isMobile ? 'pb-24' : ''}`}>
-                        <div className="max-w-md mx-auto">
-                            <h2 className={`text-xl md:text-2xl font-black mb-2 tracking-tight uppercase italic flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
-                                {editorTabs.find(t => t.id === activeTab)?.label}
-                            </h2>
-                            <div className="text-slate-500 text-xs md:text-sm mb-6 md:mb-10 font-bold uppercase tracking-widest flex items-center gap-3">
-                                <div className={`w-6 md:w-8 h-px ${isDayMode ? 'bg-slate-300' : 'bg-slate-800'}`} />
-                                <span className="hidden sm:inline">Profesyonel Editör Çekirdeği</span>
-                                <span className="sm:hidden">Editör</span>
-                            </div>
-
-                            <CVForm
-                                cvData={cvData}
-                                setCvData={setCvData}
-                                activeTab={activeTab}
-                                setActiveTab={setActiveTab}
-                                isPremium={isPremium}
-                                cvName={cvName}
-                                setCvName={setCvName}
-                                theme={theme}
-                                setTheme={setTheme}
-                                handleClearAll={handleClearAll}
-                                setHighlightedField={setHighlightedField}
-                                user={user}
-                                selectedTemplate={selectedTemplate}
-                                setSelectedTemplate={setSelectedTemplate}
-                                cvId={cvId}
-                                versions={versionOptions}
-                            />
-                        </div>
-                    </div>
-                </main>
-
-                {/* Preview Area - Conditional on Mobile */}
-                <section className={`
-                    ${isMobile
-                        ? `absolute inset-0 transition-transform duration-300 ${mobilePreviewMode ? 'translate-x-0' : 'translate-x-full'}`
-                        : 'relative flex-1'
-                    } 
-                    overflow-hidden flex flex-col ${previewClasses}
-                `}>
-                    {/* Viewport Toolbar - Hidden on Mobile */}
-                    <div className={`hidden md:flex h-14 border-b items-center justify-between px-8 z-20 backdrop-blur-2xl ${toolbarClasses}`}>
-                        <div className="flex items-center gap-8">
-                            {/* Device Mode Switcher */}
-                            <div className={`flex items-center rounded-[14px] p-1 border shadow-inner ${isDayMode ? 'bg-white border-slate-200/70' : 'bg-black/40 border-white/5'}`}>
-                                {[
-                                    { id: 'desktop', icon: Monitor, label: 'Masaüstü' },
-                                    { id: 'laptop', icon: Laptop, label: 'Dizüstü' },
-                                    { id: 'tablet', icon: Tablet, label: 'Tablet' },
-                                    { id: 'mobile', icon: Smartphone, label: 'Mobil' }
-                                ].map((item) => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => setViewportMode(item.id)}
-                                        className={`p-2 rounded-xl transition-all duration-300 relative group ${viewportMode === item.id
-                                            ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-                                            : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
-                                            }`}
-                                        title={item.label}
-                                    >
-                                        <item.icon className="w-4 h-4" />
-                                        {viewportMode === item.id && (
-                                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="h-4 w-px bg-white/10" />
-
-                            {/* Zoom Controls */}
-                            <div className={`flex items-center gap-1 rounded-xl px-2 py-1 border ${isDayMode ? 'bg-white border-slate-200/70 text-slate-600' : 'bg-black/20 border-white/5'}`}>
-                                <button
-                                    onClick={() => setZoom(z => Math.max(z - 10, 30))}
-                                    className="p-1.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-                                >
-                                    <ZoomOut className="w-4 h-4" />
-                                </button>
-                                <div className="px-3 min-w-[60px] text-center">
-                                    <span className="text-[10px] font-black text-cyan-400/80 uppercase tracking-[0.2em]">{zoom}%</span>
-                                </div>
-                                <button
-                                    onClick={() => setZoom(z => Math.min(z + 10, 200))}
-                                    className="p-1.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-                                >
-                                    <ZoomIn className="w-4 h-4" />
-                                </button>
-
-                                <button
-                                    onClick={() => setZoom(100)}
-                                    className="ml-2 px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-[8px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-all"
-                                >
-                                    SIFIRLA
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Status Indicator */}
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 group cursor-help">
-                                <div className="relative">
-                                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-                                    <div className="absolute inset-0 w-2 h-2 bg-emerald-500 rounded-full animate-ping opacity-75" />
-                                </div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-emerald-400 transition-colors">
-                                    Canlı Önizleme Aktif
-                                </span>
-                            </div>
-                            <div className="h-4 w-px bg-white/10" />
-                            <button
-                                onClick={calculateATSScore}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 transition-all font-black text-[10px] uppercase tracking-widest"
-                            >
-                                <Sparkles className="w-3 h-3" /> ATS SKORU
-                            </button>
-                            <div className="h-4 w-px bg-white/10" />
-                            <button className="p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
-                                <Maximize2 className="w-4 h-4" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Mobile Preview Header */}
-                    {isMobile && mobilePreviewMode && (
-                        <div className={`h-12 border-b flex items-center justify-between px-4 ${toolbarClasses}`}>
-                            <span className={`text-sm font-bold ${isDayMode ? 'text-slate-700' : 'text-white'}`}>
-                                Önizleme
-                            </span>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setZoom(z => Math.max(z - 10, 30))}
-                                    className="p-2 rounded-lg hover:bg-white/10 text-slate-400 touch-target"
-                                >
-                                    <ZoomOut className="w-4 h-4" />
-                                </button>
-                                <span className="text-[10px] font-black text-cyan-400">{zoom}%</span>
-                                <button
-                                    onClick={() => setZoom(z => Math.min(z + 10, 200))}
-                                    className="p-2 rounded-lg hover:bg-white/10 text-slate-400 touch-target"
-                                >
-                                    <ZoomIn className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Infinite Canvas Container */}
-                    <div
-                        className={`flex-1 overflow-auto p-4 md:p-12 lg:p-24 relative flex justify-center custom-scrollbar bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] ${isMobile ? 'pb-24' : ''}`}
-                        onContextMenu={(e) => {
-                            if (!isPremium) {
-                                e.preventDefault()
-                                setContextMenu({ visible: true, x: e.clientX, y: e.clientY })
-                            }
-                        }}
-                        onClick={() => setContextMenu({ visible: false, x: 0, y: 0 })}
-                    >
-                        <div
-                            className="transition-all duration-300 origin-top shadow-[0_30px_100px_rgba(0,0,0,0.5)] border border-white/5 rounded-sm overflow-hidden bg-white flex flex-col"
-                            style={{
-                                width: isMobile ? '100%' : (viewportMode === 'mobile' ? '375px' : viewportMode === 'tablet' ? '768px' : '210mm'),
-                                maxWidth: isMobile ? '100%' : 'none',
-                                minHeight: viewportMode === 'mobile' ? '667px' : viewportMode === 'tablet' ? '1024px' : '297mm',
-                                transform: isMobile ? `scale(${Math.min(zoom / 100, 0.9)})` : `scale(${zoom / 100})`,
-                                transformOrigin: 'top center',
-                                height: 'fit-content'
-                            }}
-                        >
-                            <div id="cv-preview-frame" className="h-full">
-                                <CVPreview
-                                    cvData={cvData}
-                                    template={selectedTemplate}
-                                    showWatermark={isTemplatePremium && !isPremium}
-                                    theme={theme}
-                                    highlightedField={highlightedField}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Right-click Context Menu for Free Users */}
-                        {contextMenu.visible && (
-                            <div
-                                className="fixed z-[200] glass-card rounded-xl border border-white/20 shadow-2xl py-2 min-w-[200px] animate-scale-in"
-                                style={{ left: contextMenu.x, top: contextMenu.y }}
-                            >
-                                <button
-                                    onClick={() => {
-                                        setContextMenu({ visible: false, x: 0, y: 0 })
-                                        setShowPremiumPanel(true)
-                                    }}
-                                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-colors text-left"
-                                >
-                                    <Crown className="w-5 h-5 text-amber-400" />
-                                    <div>
-                                        <div className="font-bold text-sm">Premium'a Geç</div>
-                                        <div className="text-xs text-gray-400">Watermark'sız PDF indir</div>
+                {/* Faz 1: SplitView ile Form ve Preview Yönetimi */}
+                {isMobile ? (
+                    <>
+                        {/* Mobile: Eski davranışı koru */}
+                        {/* Form Editor Area */}
+                        <main className={`
+                            absolute inset-0 transition-transform duration-300 ${mobilePreviewMode ? '-translate-x-full' : 'translate-x-0'}
+                            border-r flex flex-col overflow-hidden ${formPanelClasses}
+                        `}>
+                            <div className={`flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar editor-form-container pb-24`}>
+                                <div className="max-w-md mx-auto">
+                                    <h2 className={`text-xl md:text-2xl font-black mb-2 tracking-tight uppercase italic flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                        {tabsOrder.find(t => t.id === activeTab)?.label}
+                                    </h2>
+                                    <div className="text-slate-500 text-xs md:text-sm mb-6 md:mb-10 font-bold uppercase tracking-widest flex items-center gap-3">
+                                        <div className={`w-6 md:w-8 h-px ${isDayMode ? 'bg-slate-300' : 'bg-slate-800'}`} />
+                                        <span className="sm:hidden">Editör</span>
                                     </div>
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setContextMenu({ visible: false, x: 0, y: 0 })
-                                        navigate('/checkout?plan=pro&cycle=yearly')
-                                    }}
-                                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-colors text-left"
-                                >
-                                    <Sparkles className="w-5 h-5 text-cyan-400" />
-                                    <div>
-                                        <div className="font-bold text-sm">200+ Şablon Aç</div>
-                                        <div className="text-xs text-gray-400">Tüm premium şablonlar</div>
-                                    </div>
-                                </button>
-                                <div className="border-t border-white/10 my-2" />
-                                <button
-                                    onClick={() => setContextMenu({ visible: false, x: 0, y: 0 })}
-                                    className="w-full px-4 py-2 flex items-center gap-3 hover:bg-white/10 transition-colors text-left text-gray-400 text-sm"
-                                >
-                                    <X className="w-4 h-4" />
-                                    Kapat
-                                </button>
+
+                                    <CVForm
+                                        cvData={cvData}
+                                        setCvData={setCvData}
+                                        activeTab={activeTab}
+                                        setActiveTab={setActiveTab}
+                                        isPremium={isPremium}
+                                        cvName={cvName}
+                                        setCvName={setCvName}
+                                        theme={theme}
+                                        setTheme={setTheme}
+                                        handleClearAll={handleClearAll}
+                                        setHighlightedField={setHighlightedField}
+                                        user={user}
+                                        selectedTemplate={selectedTemplate}
+                                        setSelectedTemplate={setSelectedTemplate}
+                                        cvId={cvId}
+                                        versions={versionOptions}
+                                    />
+                                </div>
                             </div>
-                        )}
-                    </div>
-                </section>
+                        </main>
+
+                        {/* Preview Area */}
+                        <section className={`
+                            absolute inset-0 transition-transform duration-300 ${mobilePreviewMode ? 'translate-x-0' : 'translate-x-full'}
+                            overflow-hidden flex flex-col ${previewClasses}
+                        `}>
+                            {renderPreviewArea()}
+                        </section>
+                    </>
+                ) : (
+                    <SplitView
+                        leftPanel={
+                            <main className={`h-full border-r flex flex-col overflow-hidden ${formPanelClasses}`}>
+                                <div className={`flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar editor-form-container`}>
+                                    <div className="max-w-md mx-auto">
+                                        <h2 className={`text-xl md:text-2xl font-black mb-2 tracking-tight uppercase italic flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                            {tabsOrder.find(t => t.id === activeTab)?.label}
+                                        </h2>
+                                        <div className="text-slate-500 text-xs md:text-sm mb-6 md:mb-10 font-bold uppercase tracking-widest flex items-center gap-3">
+                                            <div className={`w-6 md:w-8 h-px ${isDayMode ? 'bg-slate-300' : 'bg-slate-800'}`} />
+                                            <span className="hidden sm:inline">Profesyonel Editör Çekirdeği</span>
+                                            <span className="sm:hidden">Editör</span>
+                                        </div>
+
+                                        <CVForm
+                                            cvData={cvData}
+                                            setCvData={setCvData}
+                                            activeTab={activeTab}
+                                            setActiveTab={setActiveTab}
+                                            isPremium={isPremium}
+                                            cvName={cvName}
+                                            setCvName={setCvName}
+                                            theme={theme}
+                                            setTheme={setTheme}
+                                            handleClearAll={handleClearAll}
+                                            setHighlightedField={setHighlightedField}
+                                            user={user}
+                                            selectedTemplate={selectedTemplate}
+                                            setSelectedTemplate={setSelectedTemplate}
+                                            cvId={cvId}
+                                            versions={versionOptions}
+                                        />
+                                    </div>
+                                </div>
+                            </main>
+                        }
+                        rightPanel={
+                            <section className={`h-full overflow-hidden flex flex-col ${previewClasses}`}>
+                                {renderPreviewArea()}
+                            </section>
+                        }
+                        defaultSplit={splitPosition}
+                        isDayMode={isDayMode}
+                        isMobile={isMobile}
+                    />
+                )}
 
                 {/* Mobile Bottom Toggle Bar */}
                 {isMobile && (
@@ -1467,6 +1866,55 @@ export default function EditorPage() {
                 }}
             />
 
+            {/* Faz 2: AI Sidebar Assistant */}
+            <AISidebarAssistant
+                cvData={cvData}
+                setCvData={setCvData}
+                activeTab={activeTab}
+                isDayMode={isDayMode}
+                isPremium={isPremium}
+                onOpenUpsell={() => {
+                    setUpsellTriggerType('ai')
+                    setShowUpsellModal(true)
+                }}
+            />
+
+            {/* Faz 1: Template Preview Tooltip */}
+            <TemplatePreviewTooltip
+                template={previewTemplateData}
+                cvData={cvData}
+                isVisible={showTemplatePreview}
+                position={previewPosition}
+                onClose={handleTemplatePreviewClose}
+                onSelect={(id) => {
+                    setSelectedTemplate(id)
+                    handleTemplatePreviewClose()
+                }}
+                isDayMode={isDayMode}
+                isPremium={isPremium}
+                compareMode={compareMode}
+                compareTemplate={compareTemplateData}
+                onCompareToggle={handleToggleCompare}
+            />
+
+            {/* Faz 1: Floating Editors */}
+            {floatingEditors.map((editor, index) => (
+                <FloatingEditor
+                    key={editor.id}
+                    isOpen={editor.isOpen}
+                    onClose={() => closeFloatingEditor(editor.id)}
+                    title={editor.title}
+                    defaultPosition={{ x: 100 + index * 30, y: 100 + index * 30 }}
+                    isDayMode={isDayMode}
+                >
+                    <div className="p-4">
+                        <p className="text-sm text-slate-400">
+                            Floating Editor: {editor.type}
+                        </p>
+                    </div>
+                </FloatingEditor>
+            ))}
+
             {/* Upsell Modal */}
             <UpsellModal
                 isOpen={showUpsellModal}
@@ -1478,7 +1926,6 @@ export default function EditorPage() {
                 }}
             />
         </div>
-        // End of EditorPage component - Fixed ReferenceError upsell v2
     )
 }
 

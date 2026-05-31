@@ -1,8 +1,30 @@
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 
-export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = false) => {
-    const element = document.getElementById(elementId)
+export const PDF_PAGE_FORMAT = 'a4'
+export const PDF_PAGE_FORMATS = {
+    a4: { label: 'A4', widthMm: 210, heightMm: 297 },
+    letter: { label: 'Letter', widthMm: 216, heightMm: 279 }
+}
+
+export const getPdfPageFormatLabel = (format) => PDF_PAGE_FORMATS[format]?.label || 'A4'
+export const getPdfPageSizeMm = (format) => {
+    const config = PDF_PAGE_FORMATS[format] || PDF_PAGE_FORMATS.a4
+    return { widthMm: config.widthMm, heightMm: config.heightMm }
+}
+
+export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = false, pageFormat = PDF_PAGE_FORMAT) => {
+    let element = document.getElementById(elementId)
+    let isIframe = false;
+
+    // If not found in main document, check if it's inside our iframe
+    if (!element) {
+        const iframe = document.getElementById('cv-preview-iframe');
+        if (iframe && iframe.contentDocument) {
+            element = iframe.contentDocument.getElementById(elementId);
+            isIframe = true;
+        }
+    }
 
     if (!element) {
         console.error('Element not found')
@@ -21,15 +43,14 @@ export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = fa
         })
 
         // Calculate dimensions for A4
-        const imgWidth = 210 // A4 width in mm
-        const pageHeight = 297 // A4 height in mm
+        const { widthMm: imgWidth, heightMm: pageHeight } = getPdfPageSizeMm(pageFormat)
         const imgHeight = (canvas.height * imgWidth) / canvas.width
 
         // Create PDF with compression enabled
         const pdf = new jsPDF({
             orientation: 'p',
             unit: 'mm',
-            format: 'a4',
+            format: pageFormat,
             compress: true
         })
 
@@ -77,7 +98,13 @@ export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = fa
 }
 
 export const exportToPNG = async (elementId, filename = 'cv.png') => {
-    const element = document.getElementById(elementId)
+    let element = document.getElementById(elementId)
+    if (!element) {
+        const iframe = document.getElementById('cv-preview-iframe');
+        if (iframe && iframe.contentDocument) {
+            element = iframe.contentDocument.getElementById(elementId);
+        }
+    }
     if (!element) return false
 
     try {
@@ -113,7 +140,13 @@ export const exportToJSON = (cvData, filename = 'cv.json') => {
 }
 
 export const exportToHTML = (elementId, filename = 'cv.html') => {
-    const element = document.getElementById(elementId)
+    let element = document.getElementById(elementId)
+    if (!element) {
+        const iframe = document.getElementById('cv-preview-iframe');
+        if (iframe && iframe.contentDocument) {
+            element = iframe.contentDocument.getElementById(elementId);
+        }
+    }
     if (!element) return false
 
     try {

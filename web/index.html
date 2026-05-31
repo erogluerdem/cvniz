@@ -56,26 +56,88 @@
     #root {
       min-height: 100vh;
     }
-    /* Premium Loading State */
+    /* Premium Loading Screen */
     .loading-screen {
       position: fixed;
       inset: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #030712 0%, #0f172a 50%, #030712 100%);
+      background: #030712;
       z-index: 9999;
     }
-    .loading-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
-      animation: pulse-glow 2s ease-in-out infinite;
+    .loader-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 120px;
     }
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); transform: scale(1); }
-      50% { box-shadow: 0 0 60px rgba(124, 58, 237, 0.6); transform: scale(1.05); }
+    .loader-outer-ring {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #00d4ff;
+      border-bottom-color: #7c3aed;
+      animation: rotate-clockwise 2s linear infinite;
+    }
+    .loader-inner-ring {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-left-color: #fbbf24;
+      border-right-color: #ec4899;
+      animation: rotate-counter-clockwise 1.5s linear infinite;
+    }
+    .loader-core {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #090d16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: pulse-core 2s ease-in-out infinite;
+    }
+    .loader-core svg {
+      width: 24px;
+      height: 24px;
+    }
+    .loading-text {
+      margin-top: 24px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #ffffff, #64748b, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: text-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes rotate-clockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes rotate-counter-clockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+    @keyframes pulse-core {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+      50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(124, 58, 237, 0.6); }
+    }
+    @keyframes text-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
     }
   </style>
 </head>
@@ -84,7 +146,22 @@
   <div id="root">
     <!-- Loading state while JS loads -->
     <div class="loading-screen">
-      <div class="loading-logo"></div>
+      <div class="loader-container">
+        <div class="loader-outer-ring"></div>
+        <div class="loader-inner-ring"></div>
+        <div class="loader-core">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L14.8 8.6L22 10L16.8 14.8L18.2 22L12 18.2L5.8 22L7.2 14.8L2 10L9.2 8.6L12 2Z" fill="url(#star-grad)" />
+            <defs>
+              <linearGradient id="star-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00d4ff" />
+                <stop offset="100%" stop-color="#7c3aed" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <div class="loading-text">CVniz Yükleniyor</div>
     </div>
   </div>
   <script type="module" src="/src/main.jsx"></script>

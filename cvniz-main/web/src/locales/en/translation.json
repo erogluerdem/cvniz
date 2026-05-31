@@ -1,0 +1,40 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "back": "Back",
+        "download": "Download",
+        "share": "Share",
+        "copy": "Copy",
+        "copied": "Copied",
+        "print": "Print"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "cvs": "Resumes",
+        "templates": "Templates",
+        "payment": "Payments",
+        "settings": "Settings",
+        "support": "Support",
+        "admin": "Admin",
+        "logout": "Logout"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot Password"
+    },
+    "ai": {
+        "assistant": "AI Assistant",
+        "generate": "Generate",
+        "improve": "Improve",
+        "summaryPrompt": "Generate Summary",
+        "experiencePrompt": "Write Experience"
+    }
+}

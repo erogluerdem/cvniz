@@ -31,6 +31,7 @@ import { GiftCardProvider } from './context/GiftCardContext'
 import { AffiliateProvider } from './context/AffiliateContext'
 import { TemplateProvider } from './context/TemplateContext'
 import { TourProvider } from './context/TourContext'
+import LoadingSpinner from './components/LoadingSpinner'
 
 // Layout
 import Layout from './components/Layout'
@@ -44,6 +45,7 @@ import AnnouncementModal from './components/AnnouncementModal'
 // Pages
 const HomePage = lazy(() => import('./pages/HomePage'))
 const TemplatesPage = lazy(() => import('./pages/TemplatesPage'))
+const TemplateShowcasePage = lazy(() => import('./pages/TemplateShowcasePage'))
 const FeaturesPage = lazy(() => import('./pages/FeaturesPage'))
 const PricingPage = lazy(() => import('./pages/PricingPage'))
 const FAQPage = lazy(() => import('./pages/FAQPage'))
@@ -120,8 +122,8 @@ function ProtectedRoute({ children, adminOnly = false }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="min-h-screen flex items-center justify-center bg-slate-950">
+                <LoadingSpinner size="lg" text="Giriş Kontrol Ediliyor" />
             </div>
         )
     }
@@ -143,8 +145,8 @@ function GuestRoute({ children }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="min-h-screen flex items-center justify-center bg-slate-950">
+                <LoadingSpinner size="lg" text="Giriş Kontrol Ediliyor" />
             </div>
         )
     }
@@ -160,8 +162,8 @@ function AppRoutes() {
     return (
         <Suspense
             fallback={
-                <div className="min-h-screen flex items-center justify-center">
-                    <div className="w-10 h-10 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                <div className="min-h-screen flex items-center justify-center bg-slate-950">
+                    <LoadingSpinner size="lg" text="Sayfa Yükleniyor" />
                 </div>
             }
         >
@@ -171,6 +173,7 @@ function AppRoutes() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/features" element={<FeaturesPage />} />
                     <Route path="/templates" element={<TemplatesPage />} />
+                    <Route path="/sablonlar/:templateId" element={<TemplateShowcasePage />} />
                     <Route path="/pricing" element={<PricingPage />} />
                     <Route path="/faq" element={<FAQPage />} />
 

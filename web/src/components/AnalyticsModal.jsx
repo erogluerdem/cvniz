@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Globe2, Smartphone, Calendar, Eye, MapPin, MousePointer, Clock } from 'lucide-react';
 import WorldMap from './Analytics/WorldMap';
 import DeviceChart from './Analytics/DeviceChart';
-import { analyticsAPI } from '../services/api';
+import { getCVAnalytics } from '../services/AnalyticsService';
 
 const AnalyticsModal = ({ isOpen, onClose, cv }) => {
     const [stats, setStats] = useState(null);
@@ -19,10 +19,24 @@ const AnalyticsModal = ({ isOpen, onClose, cv }) => {
     const fetchStats = async () => {
         setLoading(true);
         try {
-            // Fetch stats from backend
-            const response = await analyticsAPI.getStats(cv.id);
-            if (response.success) {
-                setStats(response.analytics);
+            // Fetch stats from local service
+            const data = getCVAnalytics(cv.id);
+            if (data) {
+                // Mocking the structure expected by the rest of the component
+                setStats({
+                    totalViews: data.totalViews,
+                    uniqueViews: data.totalViews > 0 ? Math.ceil(data.totalViews * 0.8) : 0, // Mock unique
+                    locationStats: [
+                        { country: 'Türkiye', city: 'İstanbul', count: data.totalViews }
+                    ],
+                    deviceStats: [
+                        { type: 'Desktop', count: Math.ceil(data.totalViews * 0.7) },
+                        { type: 'Mobile', count: Math.floor(data.totalViews * 0.3) }
+                    ],
+                    recentViews: data.totalViews > 0 ? [
+                        { timestamp: data.lastViewed, city: 'İstanbul', country: 'Türkiye', deviceType: 'Desktop', browser: 'Chrome', os: 'Windows' }
+                    ] : []
+                });
             }
         } catch (error) {
             console.error('Failed to fetch analytics', error);

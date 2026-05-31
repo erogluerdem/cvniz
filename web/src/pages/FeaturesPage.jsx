@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Sparkles, FileText, Download, Zap, Shield, Clock, Users, Check, Palette, Languages, Share2, TrendingUp, Award, Target, ArrowRight, Rocket, Heart, Play, Minus, X, CheckCircle } from 'lucide-react'
 import React, { useState, useEffect, useRef } from 'react'
+import VideoPlayerModal from '../components/VideoPlayerModal'
 
 // Animated Counter
 function AnimatedCounter({ end, suffix = '', duration = 2000 }) {
@@ -92,6 +93,7 @@ const features = [
 
 export default function FeaturesPage() {
     const [theme, setTheme] = useState('day')
+    const [videoModalOpen, setVideoModalOpen] = useState(false)
     const isDayMode = theme === 'day'
 
     useEffect(() => {
@@ -150,7 +152,7 @@ export default function FeaturesPage() {
                                     <Rocket className="w-5 h-5" /> Ücretsiz Başla
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
-                                <button className={secondaryCtaClasses}>
+                                <button onClick={() => setVideoModalOpen(true)} className={secondaryCtaClasses}>
                                     <Play className={`w-5 h-5 ${isDayMode ? 'text-sky-500 fill-sky-500' : 'text-cyan-400 fill-cyan-400'}`} />
                                     <span className="font-semibold">Tanıtımı İzle</span>
                                 </button>
@@ -504,6 +506,7 @@ export default function FeaturesPage() {
                     </div>
                 </div>
             </section>
+            <VideoPlayerModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
         </div>
     )
 }

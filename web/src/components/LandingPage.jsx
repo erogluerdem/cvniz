@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Sparkles, FileText, Download, Zap, Star, Check, ArrowRight, Crown, ChevronDown, ChevronUp, Mail, Shield, Clock, Users, Play, Quote, User, LogOut } from 'lucide-react'
+import VideoPlayerModal from '../components/VideoPlayerModal'
 
 const templates = [
     { id: 'modern', name: 'Modern', description: 'Renkli ve dinamik', isPremium: false, color: 'from-cyan-500 to-blue-600', preview: '🎨' },
@@ -60,7 +61,19 @@ const pricingPlans = [
     { name: 'Kurumsal', price: '99', period: '/ay', features: ['Tüm Pro Özellikleri', 'Sınırsız İndirme', 'Öncelikli Destek', 'Takım Yönetimi', 'API Erişimi'], notIncluded: [], buttonText: 'İletişime Geç', highlighted: false }
 ]
 
-const companyLogos = ['LinkedIn', 'Indeed', 'Kariyer.net', 'Glassdoor', 'Monster']
+const companyLogos = [
+    { name: 'Amazon', src: '/images/logo/Amazon_2024.svg.png' },
+    { name: 'Ford Otosan', src: '/images/logo/Ford_Otosan_logo.svg.png' },
+    { name: 'Hepsiburada', src: '/images/logo/Hepsiburada_logo_official.svg.png' },
+    { name: 'Koç Holding', src: '/images/logo/Koc-Holding-Logo.png' },
+    { name: 'Microsoft', src: '/images/logo/Microsoft_logo_(2012).svg.png' },
+    { name: 'Netflix', src: '/images/logo/Netflix_2015_logo.svg.png' },
+    { name: 'Sabancı', src: '/images/logo/Sabancı_Holding_logo.svg.png' },
+    { name: 'Tesla', src: '/images/logo/Tesla_Motors.svg.png' },
+    { name: 'Trendyol', src: '/images/logo/Trendyol_logo.svg.png' },
+    { name: 'Turkish Airlines', src: '/images/logo/Turkish_Airlines_logo_2019_compact.svg.png' },
+    { name: 'Tüpraş', src: '/images/logo/Tüpraş_logo.svg.png' },
+]
 
 function FAQItem({ question, answer }) {
     const [isOpen, setIsOpen] = useState(false)
@@ -77,6 +90,7 @@ function FAQItem({ question, answer }) {
 
 export default function LandingPage() {
     const [email, setEmail] = useState('')
+    const [videoModalOpen, setVideoModalOpen] = useState(false)
     const { user, logout, isAdmin } = useAuth()
     const navigate = useNavigate()
 
@@ -183,7 +197,7 @@ export default function LandingPage() {
                                 <button onClick={() => handleStartCreating('modern')} className="btn-premium text-lg flex items-center justify-center gap-2 group shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)]">
                                     Ücretsiz Başla <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </button>
-                                <button className="btn-secondary px-8 py-3 flex items-center justify-center gap-2">
+                                <button onClick={() => setVideoModalOpen(true)} className="btn-secondary px-8 py-3 flex items-center justify-center gap-2">
                                     <Play className="w-5 h-5" /> Demo İzle
                                 </button>
                             </div>
@@ -261,11 +275,24 @@ export default function LandingPage() {
             {/* Company Logos */}
             <section className="py-12 px-6">
                 <div className="max-w-6xl mx-auto glass-card rounded-3xl border border-white/10 px-8 py-10 text-center shadow-[0_30px_120px_-80px_rgba(226,232,240,0.7)]">
-                    <p className="text-center text-gray-400 text-xs uppercase tracking-[0.4em] mb-8">Kullanıcılarımız bu şirketlerde</p>
-                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-                        {companyLogos.map((logo, i) => (
-                            <span key={i} className="text-xl font-semibold tracking-[0.15em] text-slate-200/70 hover:text-white transition-colors">{logo}</span>
-                        ))}
+                    <p className="text-center text-gray-400 text-xs uppercase tracking-[0.4em] mb-8">Kullanıcılarımız bu şirketlerde çalışıyor</p>
+                    <div className="relative overflow-hidden py-4 group">
+                        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-[#020617] to-transparent z-10 pointer-events-none" />
+                        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-[#020617] to-transparent z-10 pointer-events-none" />
+                        <div className="flex animate-scroll-left group-hover:[animation-play-state:paused]">
+                            {[...companyLogos, ...companyLogos].map((logo, i) => (
+                                <div
+                                    key={i}
+                                    className="flex-shrink-0 mx-4 md:mx-6 px-5 py-3 rounded-xl bg-white/95 border border-white/10 hover:scale-105 transition-transform duration-300 flex items-center justify-center h-16 w-40"
+                                >
+                                    <img
+                                        src={logo.src}
+                                        alt={logo.name}
+                                        className="h-8 w-auto object-contain max-w-[120px]"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -623,6 +650,7 @@ export default function LandingPage() {
                     </div>
                 </div>
             </footer>
+            <VideoPlayerModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
         </div>
     )
 }

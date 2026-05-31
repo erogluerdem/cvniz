@@ -23,20 +23,25 @@ export default function AnnouncementModal() {
 
             // Fetch active announcement
             const res = await fetch(`${import.meta.env.VITE_API_URL}/announcements/active`);
-            const data = await res.json();
+            
+            // Sadece başarılı ve JSON yanıtıysa parse et
+            const contentType = res.headers.get("content-type");
+            if (res.ok && contentType && contentType.indexOf("application/json") !== -1) {
+                const data = await res.json();
+                
+                if (data.success && data.announcement) {
+                    // If it's a new announcement or different ID
+                    if (lastSeen !== data.announcement._id) {
+                        setAnnouncement(data.announcement);
 
-            if (data.success && data.announcement) {
-                // If it's a new announcement or different ID
-                if (lastSeen !== data.announcement._id) {
-                    setAnnouncement(data.announcement);
-
-                    // Delay showing based on config (default 3s)
-                    const delay = data.announcement.startAfter || 3000;
-                    setTimeout(() => setIsOpen(true), delay);
+                        // Delay showing based on config (default 3s)
+                        const delay = data.announcement.startAfter || 3000;
+                        setTimeout(() => setIsOpen(true), delay);
+                    }
                 }
             }
         } catch (error) {
-            console.error('Error checking announcements:', error);
+            // Sessizce yoksay, kritik olmayan bir özellik
         }
     };
 

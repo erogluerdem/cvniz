@@ -179,7 +179,7 @@ const parseTextToCV = (text) => {
                 // Parse skills - could be comma/bullet separated
                 const skillsText = content.join(' ')
                 const skillsRaw = skillsText.split(/[,;•●○◦▪▫–-]|\n/).map(s => s.trim()).filter(s => s && s.length < 50)
-                cvData.skills = skillsRaw.slice(0, 20).map(name => ({ name, level: 80 }))
+                cvData.skills = skillsRaw.slice(0, 20)
                 break
 
             case 'languages':
@@ -441,9 +441,9 @@ const parseDocxXml = (xmlContent) => {
     return text
 }
 
-export default function CVImporter({ isOpen, onClose, onImport }) {
+export default function CVImporter({ isOpen, onClose, onImport, isEditor = false }) {
     const { isPremium } = useAuth()
-    const { createCV } = useCV()
+    const { saveCV } = useCV()
     const { toast } = useToast()
     
     const fileInputRef = useRef(null)
@@ -527,22 +527,24 @@ export default function CVImporter({ isOpen, onClose, onImport }) {
     const handleImport = async () => {
         if (!parsedData) return
         
+        if (isEditor) {
+            toast.success('CV bilgileri başarıyla ayrıştırıldı!')
+            if (onImport) onImport(parsedData)
+            onClose()
+            return
+        }
+
         try {
             // Create new CV with parsed data
-            const newCV = await createCV({
-                ...parsedData,
-                templateId: 'modern',
-                createdAt: new Date().toISOString(),
-                importedFrom: file?.name
-            })
+            const response = await saveCV(parsedData, 'modern', file?.name || 'İçe Aktarılan CV')
             
-            toast.success('CV başarıyla içe aktarıldı!')
-            
-            if (onImport) {
-                onImport(newCV)
+            if (response.success) {
+                toast.success('CV başarıyla içe aktarıldı!')
+                if (onImport) onImport(response.cv)
+                onClose()
+            } else {
+                toast.error(response.error || 'CV oluşturulurken bir hata oluştu')
             }
-            
-            onClose()
         } catch (err) {
             toast.error('CV oluşturulurken hata oluştu')
         }

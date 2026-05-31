@@ -1,5 +1,5 @@
-import { Link, Outlet, useLocation } from 'react-router-dom'
-import { FileText, User, LogOut, Menu, X, Sun, Moon, Sparkles, Zap, ChevronDown } from 'lucide-react'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { FileText, User, LogOut, Menu, X, Sun, Moon, Sparkles, Zap, ChevronDown, Plus, LayoutGrid, Settings as SettingsIcon, Home as HomeIcon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import React, { useState, useEffect, useRef } from 'react'
 import CookieConsent from './CookieConsent'
@@ -96,40 +96,45 @@ export default function Layout() {
             <CookieConsent />
 
             {/* Premium Header */}
-            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                ? 'py-2 glass border-b border-white/10 shadow-lg shadow-black/5'
-                : 'py-4 bg-transparent'
+            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-smooth ${scrolled
+                ? 'py-3 glass border-b border-white/5 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.5)]'
+                : 'py-6 bg-transparent'
                 }`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-3 group">
                         <div className="relative">
-                            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center ring-2 ring-white/10 group-hover:ring-cyan-400/50 transition-all duration-300 group-hover:scale-110">
-                                <FileText className="w-5 h-5 text-white" />
+                            <div className="w-11 h-11 rounded-2xl bg-slate-900 border border-white/20 flex items-center justify-center ring-2 ring-white/10 group-hover:ring-cyan-400 group-hover:border-cyan-400/50 transition-all duration-500 group-hover:scale-110 shadow-2xl overflow-hidden">
+                                <FileText className="w-5 h-5 text-cyan-400" />
+                                <div className="absolute inset-x-0 bottom-0 h-1 bg-cyan-400 opacity-20 group-hover:opacity-100 transition-opacity" />
                             </div>
-                            <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 opacity-0 group-hover:opacity-30 blur-lg transition-opacity duration-300" />
+                            <div className="absolute -inset-2 rounded-2xl bg-cyan-400 opacity-0 group-hover:opacity-10 blur-xl transition-opacity animate-pulse" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xl font-bold gradient-text">CVniz</span>
-                            <span className="text-[10px] text-gray-400 -mt-1 hidden sm:block">AI-Powered CV Builder</span>
+                            <span className="text-xl font-black text-white italic tracking-tighter group-hover:text-cyan-400 transition-colors">CVniz</span>
+                            <span className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] -mt-1 hidden sm:block">AI Architect</span>
                         </div>
                     </Link>
 
                     {/* Desktop Nav */}
                     <nav className="hidden lg:flex items-center">
-                        <div className="flex items-center gap-1 p-1.5 rounded-2xl glass">
+                        <div className="flex items-center gap-1 p-1.5 rounded-2xl glass-card border-white/5">
                             {navLinks.map(link => (
                                 <Link
                                     key={link.path}
                                     to={link.path}
-                                    className={`relative text-sm px-4 py-2 rounded-xl transition-all duration-300 font-medium ${isActive(link.path)
-                                        ? 'text-white bg-gradient-to-r from-cyan-500/20 to-purple-500/20 ring-1 ring-cyan-500/30'
+                                    className={`relative text-sm px-5 py-2.5 rounded-xl transition-all duration-500 font-bold tracking-tight ${isActive(link.path)
+                                        ? 'text-white'
                                         : 'text-gray-400 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
-                                    {link.label}
+                                    <span className="relative z-10">{link.label}</span>
                                     {isActive(link.path) && (
-                                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full" />
+                                        <motion.div 
+                                            layoutId="nav-active"
+                                            className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 rounded-xl"
+                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        />
                                     )}
                                 </Link>
                             ))}
@@ -248,48 +253,102 @@ export default function Layout() {
                             {isDayMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                         </button>
 
-                        {/* Mobile Menu Button */}
-                        <button
+                        {/* Mobile Menu Button - Enhanced */}
+                        <motion.button
+                            whileTap={{ scale: 0.9 }}
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="lg:hidden p-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                            className="lg:hidden p-2.5 rounded-xl glass-card border-white/10 text-gray-400 hover:text-white"
                         >
-                            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                        </button>
+                            <AnimatePresence mode="wait">
+                                {mobileMenuOpen ? (
+                                    <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                                        <X className="w-6 h-6" />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                                        <Menu className="w-6 h-6" />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.button>
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
-                {mobileMenuOpen && (
-                    <div className="lg:hidden absolute top-full left-0 right-0 glass border-t border-white/10 animate-slide-down">
-                        <nav className="flex flex-col p-4 gap-1">
-                            {navLinks.map(link => (
-                                <Link
-                                    key={link.path}
-                                    to={link.path}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={`py-3 px-4 rounded-xl transition-colors ${isActive(link.path)
-                                        ? 'text-cyan-300 bg-cyan-500/10 font-medium'
-                                        : 'text-gray-300 hover:bg-white/5'
-                                        }`}
-                                >
-                                    {link.label}
+                {/* Immersive Mobile Menu Overlay */}
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="lg:hidden fixed inset-0 z-[60] bg-slate-950/90 backdrop-blur-2xl flex flex-col p-8 pt-24 overflow-y-auto"
+                        >
+                            {/* Close Button Inside Menu */}
+                            <button 
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="absolute top-8 right-8 p-3 rounded-full bg-white/5 border border-white/10"
+                            >
+                                <X className="w-6 h-6 text-white" />
+                            </button>
+
+                            <div className="flex flex-col gap-6">
+                                <Link to="/" onClick={() => setMobileMenuOpen(false)} className="group flex flex-col">
+                                    <span className="text-4xl font-black text-white group-hover:text-cyan-400 transition-colors">Ana Sayfa</span>
+                                    <span className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-1">Giriş ve Dashboard</span>
                                 </Link>
-                            ))}
-                            {!user && (
-                                <Link
-                                    to="/login"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="py-3 px-4 rounded-xl text-gray-300 hover:bg-white/5"
-                                >
-                                    Giriş Yap
-                                </Link>
-                            )}
-                            <div className="px-4 py-2">
-                                <LanguageSwitcher />
+                                
+                                {navLinks.map((link, i) => (
+                                    <Link
+                                        key={link.path}
+                                        to={link.path}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="group flex flex-col"
+                                    >
+                                        <motion.div
+                                            initial={{ x: -20, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            transition={{ delay: i * 0.05 }}
+                                        >
+                                            <span className={`text-4xl font-black transition-colors ${isActive(link.path) ? 'text-cyan-400' : 'text-white/60 group-hover:text-white'}`}>
+                                                {link.label}
+                                            </span>
+                                        </motion.div>
+                                    </Link>
+                                ))}
+
+                                <div className="mt-12 pt-8 border-t border-white/10">
+                                    {!user ? (
+                                        <Link
+                                            to="/login"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="btn-premium w-full py-5 text-xl font-black"
+                                        >
+                                            Giriş Yap
+                                        </Link>
+                                    ) : (
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center font-black text-white">
+                                                    {user.name?.[0]?.toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="text-white font-bold">{user.name}</p>
+                                                    <p className="text-xs text-gray-500">{user.email}</p>
+                                                </div>
+                                            </div>
+                                            <button 
+                                                onClick={() => { logout(); setMobileMenuOpen(false); }}
+                                                className="w-full py-4 text-red-400 font-bold hover:bg-red-500/10 rounded-2xl transition-all"
+                                            >
+                                                Güvenli Çıkış
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </nav>
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </header>
 
             {/* Main Content */}
@@ -306,23 +365,23 @@ export default function Layout() {
 
                 <div className={`relative ${isDayMode ? 'border-t border-slate-200/70 bg-white/70 backdrop-blur' : 'border-t border-white/10'}`}>
                     {/* Newsletter Section */}
-                    <div className={`py-12 px-6 border-b ${isDayMode ? 'border-slate-200/70' : 'border-white/5'}`}>
-                        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div>
-                                <h3 className={`text-xl font-bold mb-2 ${footerHeadingText}`}>📬 Kariyer İpuçları Al</h3>
-                                <p className={`${footerMutedText} text-sm`}>Haftalık CV ve kariyer önerileri için bültenimize katılın.</p>
+                    <div className={`py-16 px-6 relative overflow-hidden ${isDayMode ? 'border-b border-slate-200/70' : 'border-b border-white/5'}`}>
+                        <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+                            <div className="text-center md:text-left">
+                                <h3 className={`text-3xl font-black mb-3 italic tracking-tighter ${footerHeadingText}`}>📬 Kariyer İpuçları Al</h3>
+                                <p className={`${footerMutedText} text-lg font-medium opacity-80`}>Haftalık CV ve kariyer önerileri için 50.000+ profesyonele katılın.</p>
                             </div>
-                            <div className="flex gap-3 w-full md:w-auto">
+                            <div className="flex gap-4 w-full md:w-auto p-2 glass-card rounded-2xl border-white/5">
                                 <input
                                     type="email"
                                     placeholder="E-posta adresiniz"
-                                    className={`flex-1 md:w-64 px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 transition ${isDayMode
-                                        ? 'bg-white border border-slate-200/70 text-slate-900 placeholder:text-slate-400 focus:ring-sky-100 shadow-day'
-                                        : 'bg-white/5 border border-white/10 text-white placeholder:text-gray-400 focus:ring-cyan-500/30'
+                                    className={`flex-1 md:w-80 px-6 py-4 rounded-xl text-lg focus:outline-none transition-all ${isDayMode
+                                        ? 'bg-slate-50 border border-slate-200/70 text-slate-900 placeholder:text-slate-400 focus:bg-white'
+                                        : 'bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10'
                                         }`}
                                 />
-                                <button className="btn-premium text-sm whitespace-nowrap">
-                                    Abone Ol
+                                <button className="btn-premium px-8 py-4 text-lg font-black tracking-tight">
+                                    KATIL
                                 </button>
                             </div>
                         </div>
@@ -449,6 +508,34 @@ export default function Layout() {
                 </div>
             </footer >
 
+            {/* Mobile Bottom Navigation Bar - Only on smaller screens */}
+            <div className="lg:hidden fixed-bottom-nav px-8 py-4 flex items-center justify-between gap-4">
+                <Link to="/" className={`flex flex-col items-center gap-1.5 flex-1 transition-all ${isActive('/') ? 'text-cyan-400 scale-110' : 'text-gray-500 hover:text-white'}`}>
+                    <div className={`p-2 rounded-xl ${isActive('/') ? 'bg-cyan-500/10' : ''}`}>
+                        <HomeIcon className="w-5 h-5" />
+                    </div>
+                </Link>
+                <Link to={isAdmin ? '/admin' : '/dashboard'} className={`flex flex-col items-center gap-1.5 flex-1 transition-all ${location.pathname.includes('dashboard') || location.pathname.includes('admin') ? 'text-cyan-400 scale-110' : 'text-gray-500 hover:text-white'}`}>
+                    <div className={`p-2 rounded-xl ${location.pathname.includes('dashboard') || location.pathname.includes('admin') ? 'bg-cyan-500/10' : ''}`}>
+                        <LayoutGrid className="w-5 h-5" />
+                    </div>
+                </Link>
+                <Link to="/editor" className="flex flex-col items-center gap-1 flex-1 -mt-12 group">
+                    <div className="w-16 h-16 rounded-3xl bg-slate-950 border-4 border-slate-900 flex items-center justify-center text-cyan-400 shadow-[0_0_40px_-5px_rgba(34,211,238,0.4)] transition-transform group-active:scale-95">
+                        <Plus className="w-9 h-9" />
+                    </div>
+                </Link>
+                <Link to="/templates" className={`flex flex-col items-center gap-1.5 flex-1 transition-all ${isActive('/templates') ? 'text-cyan-400 scale-110' : 'text-gray-500 hover:text-white'}`}>
+                    <div className={`p-2 rounded-xl ${isActive('/templates') ? 'bg-cyan-500/10' : ''}`}>
+                        <FileText className="w-5 h-5" />
+                    </div>
+                </Link>
+                <button onClick={toggleTheme} className="flex flex-col items-center gap-1.5 flex-1 text-gray-500">
+                    <div className="p-2">
+                        {isDayMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-amber-500" />}
+                    </div>
+                </button>
+            </div>
         </div >
     )
 }

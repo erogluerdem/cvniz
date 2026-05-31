@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useAnalytics } from '../context/AnalyticsContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     Download, Share2, Mail, Phone, MapPin, Globe, Linkedin, Github,
@@ -16,6 +17,7 @@ export default function LivingCVPage() {
     const [error, setError] = useState(null)
     const [showShareModal, setShowShareModal] = useState(false)
     const [copied, setCopied] = useState(false)
+    const { recordCVView } = useAnalytics() || {}
 
     useEffect(() => {
         fetchCV()
@@ -32,6 +34,35 @@ export default function LivingCVPage() {
 
             const data = await response.json()
             setCv(data.cv)
+            
+            // 1. Log CV View for Analytics Dashboard
+            if (recordCVView) {
+                recordCVView(data.cv?._id || publicUrl)
+            }
+            
+            // 2. Set Dynamic OpenGraph Tags for Social Media Sharing
+            const fullName = data.cv?.data?.personalInfo?.fullName || 'Profesyonel CV'
+            const title = `${fullName} - Yaşayan CV`
+            document.title = title
+            
+            let ogTitle = document.querySelector('meta[property="og:title"]')
+            if (!ogTitle) {
+                ogTitle = document.createElement('meta')
+                ogTitle.setAttribute('property', 'og:title')
+                document.head.appendChild(ogTitle)
+            }
+            ogTitle.setAttribute('content', title)
+            
+            const photoUrl = data.cv?.data?.personalInfo?.photo
+            if (photoUrl) {
+                let ogImage = document.querySelector('meta[property="og:image"]')
+                if (!ogImage) {
+                    ogImage = document.createElement('meta')
+                    ogImage.setAttribute('property', 'og:image')
+                    document.head.appendChild(ogImage)
+                }
+                ogImage.setAttribute('content', photoUrl)
+            }
         } catch (err) {
             setError(err.message)
         } finally {

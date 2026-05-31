@@ -5,6 +5,7 @@ import { aiAPI, mediaAPI } from '../services/api'
 import { useToast } from '../context/ToastContext'
 import QRCodeDisplay from './QRCodeDisplay'
 import MagicWandButton from './MagicWandButton'
+import AIHeadshotModal from './AIHeadshotModal'
 
 export default function CVForm({
     cvData, setCvData, activeTab, setActiveTab, isPremium, cvName, setCvName,
@@ -20,6 +21,7 @@ export default function CVForm({
 
     // AI States
     const [showAIModal, setShowAIModal] = useState(false)
+    const [showHeadshotModal, setShowHeadshotModal] = useState(false)
     const [aiOptions, setAiOptions] = useState([])
     const [aiLoading, setAiLoading] = useState(false)
     const [aiTarget, setAiTarget] = useState(null) // { type: 'summary' | 'experience', id: optional }
@@ -1207,8 +1209,36 @@ export default function CVForm({
         }
     }
 
+    const sectionTips = {
+        personal: { icon: User, title: 'Kişisel Bilgiler', text: 'İletişim bilgilerinizin güncel ve profesyonel olmasına dikkat edin. Fotoğrafınız net ve aydınlık olmalı.' },
+        experience: { icon: Briefcase, title: 'İş Deneyimi', text: 'Deneyimlerinizi en sondan geriye doğru sıralayın. Elde ettiğiniz somut başarıları ve metrikleri (örn. "%20 artış sağladım") vurgulayın.' },
+        education: { icon: GraduationCap, title: 'Eğitim', text: 'Yeni mezunsanız eğitimi üst sıralara taşıyabilirsiniz. İlgili dersler veya bitirme projenizi eklemeyi unutmayın.' },
+        skills: { icon: Wrench, title: 'Beceriler', text: 'İş ilanlarındaki anahtar kelimelerle eşleşen becerilere öncelik verin. Hard-skill ve soft-skill olarak gruplayabilirsiniz.' },
+        projects: { icon: FolderKanban, title: 'Projeler', text: 'Rolünüzü, kullandığınız teknolojileri ve projenin sonucunu açıkça belirtin. Varsa canlı link veya GitHub reposu ekleyin.' },
+        certifications: { icon: Award, title: 'Sertifikalar', text: 'Aldığınız eğitimleri ve başarı belgelerini buraya ekleyin. Doğrulanabilir linkler (örn. Credly) güven verir.' }
+    }
+
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative pb-20">
+            {/* Section Helper Tooltip */}
+            {sectionTips[activeTab] && (
+                <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-4 flex gap-4 items-start animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
+                    <div className="p-2.5 rounded-xl bg-cyan-500/20 shrink-0 mt-0.5">
+                        {(() => {
+                            const Icon = sectionTips[activeTab].icon;
+                            return <Icon className="w-5 h-5 text-cyan-400" />
+                        })()}
+                    </div>
+                    <div>
+                        <h4 className="text-sm font-bold text-cyan-400 mb-1 flex items-center gap-2">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            {sectionTips[activeTab].title} İpuçları
+                        </h4>
+                        <p className="text-xs text-slate-400 leading-relaxed max-w-2xl">{sectionTips[activeTab].text}</p>
+                    </div>
+                </div>
+            )}
+
             {/* Tab Content */}
             {activeTab === 'personal' && (
                 <div className="space-y-6">
@@ -1230,13 +1260,24 @@ export default function CVForm({
                             )}
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-sm font-black text-white uppercase tracking-widest mb-1 flex items-center gap-2">
-                                Profil Fotoğrafı
-                                {!isPremium && <Lock className="w-3 h-3 text-amber-500" />}
-                            </h3>
+                            <div className="flex items-center justify-between mb-1">
+                                <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                    Profil Fotoğrafı
+                                    {!isPremium && <Lock className="w-3 h-3 text-amber-500" />}
+                                </h3>
+                                {isPremium && (
+                                    <button
+                                        onClick={() => setShowHeadshotModal(true)}
+                                        className="text-[10px] font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
+                                    >
+                                        <Sparkles className="w-3 h-3" />
+                                        AI Headshot
+                                    </button>
+                                )}
+                            </div>
                             <p className="text-[10px] text-slate-500 font-medium">
                                 {isPremium
-                                    ? 'Özgeçmişinizi kişiselleştirmek için bir fotoğraf yükleyin.'
+                                    ? 'Özgeçmişinizi kişiselleştirmek için bir fotoğraf yükleyin veya yapay zeka ile profesyonel bir portre oluşturun.'
                                     : 'Fotoğraf özelliği Premium üyeler içindir.'}
                             </p>
                             {!isPremium && (
@@ -2712,6 +2753,11 @@ export default function CVForm({
                     </div>
                 </div>
             )}
+            <AIHeadshotModal 
+                isOpen={showHeadshotModal} 
+                onClose={() => setShowHeadshotModal(false)} 
+                onSelectImage={(img) => updatePersonal('photo', img)}
+            />
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import {
     FileText,
@@ -12,17 +13,23 @@ import {
     ShieldCheck,
     Sparkles,
     Zap,
-    Star,
-    CheckCircle,
-    Globe
+    Users,
+    Briefcase,
+    Target,
+    ChevronRight,
+    Fingerprint,
+    Globe,
+    Award,
+    Sun,
+    Moon
 } from 'lucide-react'
 import { socialProviders } from '../data/authProviders'
 
-const features = [
-    { icon: Sparkles, text: 'AI-Powered CV Builder' },
-    { icon: Globe, text: '40+ Dil Desteği' },
-    { icon: ShieldCheck, text: 'KVKK Uyumlu' },
-    { icon: Zap, text: 'Anında PDF Export' }
+const stats = [
+    { number: '250K+', label: 'Kullanıcı', icon: Users },
+    { number: '50K+', label: 'CV Hazır', icon: Briefcase },
+    { number: '95%', label: 'Başarı', icon: Target },
+    { number: '24/7', label: 'AI Destek', icon: Sparkles }
 ]
 
 export default function LoginPage() {
@@ -32,9 +39,25 @@ export default function LoginPage() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [socialLoading, setSocialLoading] = useState(null)
-    const [focusedInput, setFocusedInput] = useState(null)
     const { login, socialLogin } = useAuth()
     const navigate = useNavigate()
+
+    const [theme, setTheme] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return window.localStorage.getItem('CVniz-home-theme') || 'day'
+        }
+        return 'day'
+    })
+    const isDayMode = theme === 'day'
+
+    const toggleTheme = () => {
+        const nextTheme = isDayMode ? 'night' : 'day'
+        setTheme(nextTheme)
+        if (typeof window !== 'undefined') {
+            window.localStorage.setItem('CVniz-home-theme', nextTheme)
+            window.dispatchEvent(new CustomEvent('CVniz-theme-change', { detail: nextTheme }))
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -54,7 +77,7 @@ export default function LoginPage() {
         setSocialLoading(provider.id)
         setError('')
         await new Promise(resolve => setTimeout(resolve, 800))
-        const result = socialLogin(provider.id, provider.mockUser)
+        const result = await socialLogin(provider.id, provider.mockUser)
         if (result.success) {
             navigate('/dashboard')
         } else {
@@ -64,259 +87,293 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-[#030712]">
-            {/* Animated Background */}
-            <div className="absolute inset-0">
-                {/* Primary gradient orbs */}
-                <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/10 to-transparent rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-                <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gradient-to-tl from-purple-600/20 via-pink-500/10 to-transparent rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-cyan-400/10 to-purple-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
+        <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 selection:bg-cyan-500/30 ${
+            isDayMode 
+                ? 'bg-gradient-to-br from-white via-sky-50 to-amber-50 text-slate-900' 
+                : 'bg-[#020617] text-white'
+        }`}>
+            {/* Cinematic Animated Background */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <div className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ${
+                    isDayMode 
+                        ? 'bg-[radial-gradient(circle_at_50%_-20%,#0ea5e915,#ffffff00)]' 
+                        : 'bg-[radial-gradient(circle_at_50%_-20%,#3b82f630,#000000)]'
+                }`} />
+                
+                {/* Dynamic Orbs */}
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.2, 1],
+                        opacity: [0.2, 0.4, 0.2],
+                        x: [0, 50, 0],
+                        y: [0, -30, 0]
+                    }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                    className={`absolute -top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full blur-[120px] ${
+                        isDayMode ? 'bg-sky-400/5' : 'bg-cyan-500/10'
+                    }`} 
+                />
+                <motion.div 
+                    animate={{ 
+                        scale: [1.2, 1, 1.2],
+                        opacity: [0.1, 0.3, 0.1],
+                        x: [0, -40, 0],
+                        y: [0, 40, 0]
+                    }}
+                    transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                    className={`absolute -bottom-1/4 -right-1/4 w-[800px] h-[800px] rounded-full blur-[120px] ${
+                        isDayMode ? 'bg-amber-300/5' : 'bg-purple-600/10'
+                    }`} 
+                />
 
-                {/* Grid pattern overlay */}
-                <div className="absolute inset-0 opacity-[0.02]" style={{
-                    backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-                    backgroundSize: '50px 50px'
+                {/* Grid Overlay */}
+                <div className={`absolute inset-0 transition-opacity duration-500 ${isDayMode ? 'opacity-[0.02]' : 'opacity-[0.05]'}`} style={{
+                    backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px'
                 }} />
-
-                {/* Floating particles */}
-                <div className="absolute top-20 left-[20%] w-2 h-2 bg-cyan-400/60 rounded-full animate-bounce" style={{ animationDuration: '3s' }} />
-                <div className="absolute top-40 right-[30%] w-1.5 h-1.5 bg-purple-400/60 rounded-full animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }} />
-                <div className="absolute bottom-32 left-[40%] w-2 h-2 bg-pink-400/60 rounded-full animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }} />
             </div>
 
-            <div className="relative z-10 min-h-screen flex">
-                {/* Left Side - Branding & Features */}
-                <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-16 xl:px-24">
-                    {/* Logo */}
-                    <Link to="/" className="inline-flex items-center gap-3 mb-12 group">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-                            <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center shadow-2xl">
-                                <FileText className="w-7 h-7 text-white" />
-                            </div>
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-bold text-white">CVniz</h1>
-                            <p className="text-sm text-slate-400">Kariyer Platformu</p>
-                        </div>
-                    </Link>
+            {/* Floating Theme Toggle */}
+            <div className="absolute top-6 right-6 z-50">
+                <button
+                    onClick={toggleTheme}
+                    className={`p-3 rounded-2xl border transition-all duration-300 shadow-lg backdrop-blur-md flex items-center justify-center ${
+                        isDayMode 
+                            ? 'bg-white/80 border-slate-200 text-slate-800 hover:bg-slate-100 hover:scale-105' 
+                            : 'bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-cyan-500/50 hover:scale-105'
+                    }`}
+                    title={isDayMode ? 'Gece Moduna Geç' : 'Gündüz Moduna Geç'}
+                >
+                    {isDayMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-amber-400" />}
+                </button>
+            </div>
 
-                    {/* Main Heading */}
-                    <div className="space-y-6 mb-12">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20">
-                            <Star className="w-4 h-4 text-cyan-400" />
-                            <span className="text-sm text-cyan-300">250.000+ Mutlu Kullanıcı</span>
-                        </div>
-
-                        <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight">
-                            Geleceğin CV'sini
-                            <span className="block mt-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                                Bugünden Hazırlayın
-                            </span>
-                        </h2>
-
-                        <p className="text-lg text-slate-400 max-w-md">
-                            Yapay zeka destekli araçlarımızla dakikalar içinde profesyonel CV'nizi oluşturun ve kariyer hedeflerinize ulaşın.
-                        </p>
-                    </div>
-
-                    {/* Feature List */}
-                    <div className="grid grid-cols-2 gap-4">
-                        {features.map((feature, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 group"
-                            >
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center group-hover:from-cyan-500/30 group-hover:to-purple-500/30 transition-all">
-                                    <feature.icon className="w-5 h-5 text-cyan-400" />
+            <main className="relative z-10 flex h-screen overflow-hidden">
+                {/* Left Side: Branding (Desktop Only) */}
+                <div className={`hidden lg:flex flex-col justify-between w-1/2 p-10 xl:p-16 border-r h-full overflow-y-auto backdrop-blur-3xl transition-colors duration-500 ${
+                    isDayMode 
+                        ? 'border-slate-200/50 bg-slate-50/60' 
+                        : 'border-white/5 bg-white/[0.02]'
+                }`}>
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <Link to="/" className="flex items-center gap-3 group">
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-cyan-400 blur-lg opacity-40 group-hover:opacity-70 transition-all duration-500" />
+                                <div className="relative w-10 h-10 bg-slate-900 border border-white/20 rounded-xl flex items-center justify-center">
+                                    <FileText className="w-5 h-5 text-cyan-400" />
                                 </div>
-                                <span className="text-sm font-medium text-slate-300">{feature.text}</span>
                             </div>
-                        ))}
+                            <span className={`text-xl font-black tracking-tighter italic ${isDayMode ? 'text-slate-900' : 'text-white'}`}>CVniz</span>
+                        </Link>
+                    </motion.div>
+
+                    <div className="space-y-8 my-auto py-6">
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4, duration: 0.8 }}
+                        >
+                            <h1 className={`text-4xl xl:text-5xl font-black leading-none tracking-tighter mb-4 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                KARİYERİNİ <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">MODERNLEŞTİR.</span>
+                            </h1>
+                            <p className={`text-sm font-medium leading-relaxed ${isDayMode ? 'text-slate-600' : 'text-slate-300'}`}>
+                                Yapay zeka gücüyle dakikalar içinde profesyonel bir CV oluşturun ve istediğiniz pozisyona bir adım daha yaklaşın.
+                            </p>
+                        </motion.div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            {stats.map((stat, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.6 + (i * 0.1) }}
+                                    className={`p-4 rounded-xl border transition-all duration-500 group ${
+                                        isDayMode 
+                                            ? 'bg-white border-slate-200/80 shadow-sm hover:border-sky-300' 
+                                            : 'bg-white/5 border-white/10 hover:border-cyan-500/40'
+                                    }`}
+                                >
+                                    <stat.icon className="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform" />
+                                    <div className={`text-lg font-black mb-0.5 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{stat.number}</div>
+                                    <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">{stat.label}</div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Trust badges */}
-                    <div className="flex items-center gap-6 mt-12 pt-8 border-t border-white/[0.06]">
-                        <div className="flex items-center gap-2">
-                            <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                            <span className="text-sm text-slate-400">ISO 27001</span>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1 }}
+                        className="flex items-center gap-4"
+                    >
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border ${isDayMode ? 'border-emerald-500/20' : 'border-emerald-500/20'}`}>
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                            <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">SSL Güvenli</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-emerald-400" />
-                            <span className="text-sm text-slate-400">SSL Korumalı</span>
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border ${isDayMode ? 'border-blue-500/20' : 'border-blue-500/20'}`}>
+                            <Globe className="w-3.5 h-3.5 text-blue-400" />
+                            <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest">Global Standart</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Star className="w-5 h-5 text-amber-400" />
-                            <span className="text-sm text-slate-400">4.9/5 Puan</span>
-                        </div>
-                    </div>
+                    </motion.div>
                 </div>
 
-                {/* Right Side - Login Form */}
-                <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
-                    <div className="w-full max-w-md">
+                {/* Right Side: Login Form */}
+                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 lg:p-12 xl:p-16 relative h-full overflow-y-auto">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full max-w-md"
+                    >
                         {/* Mobile Logo */}
-                        <div className="lg:hidden flex justify-center mb-8">
-                            <Link to="/" className="inline-flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center">
+                        <div className="lg:hidden flex justify-center mb-12">
+                            <Link to="/" className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
                                     <FileText className="w-6 h-6 text-white" />
                                 </div>
-                                <span className="text-xl font-bold text-white">CVniz</span>
+                                <span className={`text-2xl font-black tracking-tighter italic ${isDayMode ? 'text-slate-900' : 'text-white'}`}>CVniz</span>
                             </Link>
                         </div>
 
-                        {/* Form Card */}
-                        <div className="relative">
-                            {/* Glow effect behind card */}
-                            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 rounded-[28px] blur-xl opacity-50" />
+                        <div className="mb-10 text-center lg:text-left">
+                            <h2 className={`text-4xl font-black mb-2 tracking-tight ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Tekrar Hoş Geldin!</h2>
+                            <p className={`${isDayMode ? 'text-slate-500' : 'text-slate-300'} font-medium`}>Hesabına erişmek için bilgilerini gir.</p>
+                        </div>
 
-                            <div className="relative bg-white/[0.03] backdrop-blur-2xl rounded-3xl border border-white/[0.08] p-8 shadow-2xl">
-                                {/* Header */}
-                                <div className="text-center mb-8">
-                                    <h3 className="text-2xl font-bold text-white mb-2">Hoş Geldiniz</h3>
-                                    <p className="text-slate-400">Hesabınıza giriş yapın</p>
+                        {error && (
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold flex items-center gap-3"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                {error}
+                            </motion.div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">E-Posta Adresi</label>
+                                <div className="relative group">
+                                    <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors group-focus-within:text-cyan-400 ${
+                                        isDayMode ? 'text-slate-500' : 'text-slate-300'
+                                    }`} />
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className={`w-full border rounded-2xl py-4 pl-12 pr-4 focus:outline-none transition-all duration-300 font-medium ${
+                                            isDayMode 
+                                                ? 'bg-slate-100 border-slate-200 text-slate-900 focus:bg-white focus:border-cyan-500' 
+                                                : 'bg-white/5 border-white/10 text-white focus:border-cyan-500/50 focus:bg-white/[0.08]'
+                                        } placeholder:text-slate-400`}
+                                        placeholder="ornek@mail.com"
+                                        required
+                                    />
                                 </div>
+                            </div>
 
-                                {/* Error Message */}
-                                {error && (
-                                    <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 backdrop-blur-sm">
-                                        <p className="text-sm text-red-400 text-center">{error}</p>
-                                    </div>
-                                )}
-
-                                {/* Social Login */}
-                                <div className="grid grid-cols-4 gap-3 mb-6">
-                                    {socialProviders.map((provider) => {
-                                        const Icon = provider.icon
-                                        return (
-                                            <button
-                                                key={provider.id}
-                                                onClick={() => handleSocialLogin(provider)}
-                                                disabled={socialLoading !== null}
-                                                className="group relative h-12 rounded-xl bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] hover:border-cyan-500/30 transition-all duration-300 flex items-center justify-center disabled:opacity-50"
-                                                title={`${provider.name} ile devam et`}
-                                            >
-                                                {socialLoading === provider.id ? (
-                                                    <Loader2 className="w-5 h-5 text-white animate-spin" />
-                                                ) : (
-                                                    <Icon className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
-                                                )}
-                                            </button>
-                                        )
-                                    })}
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center ml-1">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Şifre</label>
+                                    <Link to="/support" className="text-[10px] font-black text-cyan-500 hover:text-cyan-400 transition-colors uppercase tracking-[0.2em]">Şifremi Unuttum</Link>
                                 </div>
-
-                                {/* Divider */}
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                                    <span className="text-xs text-slate-500 uppercase tracking-wider">veya e-posta ile</span>
-                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                                </div>
-
-                                {/* Login Form */}
-                                <form onSubmit={handleSubmit} className="space-y-5">
-                                    {/* Email Field */}
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-300">E-posta</label>
-                                        <div className={`relative group rounded-xl transition-all duration-300 ${focusedInput === 'email' ? 'ring-2 ring-cyan-500/50' : ''}`}>
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                <Mail className={`w-5 h-5 transition-colors ${focusedInput === 'email' ? 'text-cyan-400' : 'text-slate-500'}`} />
-                                            </div>
-                                            <input
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                onFocus={() => setFocusedInput('email')}
-                                                onBlur={() => setFocusedInput(null)}
-                                                placeholder="ornek@email.com"
-                                                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-12 pr-4 py-3.5 text-white placeholder:text-slate-500 focus:outline-none focus:bg-white/[0.05] focus:border-cyan-500/50 transition-all"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Password Field */}
-                                    <div className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-sm font-medium text-slate-300">Şifre</label>
-                                            <Link to="/support" className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
-                                                Şifremi Unuttum
-                                            </Link>
-                                        </div>
-                                        <div className={`relative group rounded-xl transition-all duration-300 ${focusedInput === 'password' ? 'ring-2 ring-cyan-500/50' : ''}`}>
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                <Lock className={`w-5 h-5 transition-colors ${focusedInput === 'password' ? 'text-cyan-400' : 'text-slate-500'}`} />
-                                            </div>
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                onFocus={() => setFocusedInput('password')}
-                                                onBlur={() => setFocusedInput(null)}
-                                                placeholder="••••••••"
-                                                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-12 pr-12 py-3.5 text-white placeholder:text-slate-500 focus:outline-none focus:bg-white/[0.05] focus:border-cyan-500/50 transition-all"
-                                                required
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
-                                            >
-                                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Submit Button */}
+                                <div className="relative group">
+                                    <Lock className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors group-focus-within:text-cyan-400 ${
+                                        isDayMode ? 'text-slate-500' : 'text-slate-300'
+                                    }`} />
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className={`w-full border rounded-2xl py-4 pl-12 pr-12 focus:outline-none transition-all duration-300 font-medium ${
+                                            isDayMode 
+                                                ? 'bg-slate-100 border-slate-200 text-slate-900 focus:bg-white focus:border-cyan-500' 
+                                                : 'bg-white/5 border-white/10 text-white focus:border-cyan-500/50 focus:bg-white/[0.08]'
+                                        } placeholder:text-slate-400`}
+                                        placeholder="••••••••"
+                                        required
+                                    />
                                     <button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="group relative w-full h-12 rounded-xl font-semibold text-white overflow-hidden disabled:opacity-60 transition-all duration-300"
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${
+                                            isDayMode ? 'text-slate-500 hover:text-cyan-500' : 'text-slate-300 hover:text-cyan-400'
+                                        }`}
                                     >
-                                        {/* Button gradient background */}
-                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 transition-all duration-300 group-hover:scale-105" />
-
-                                        {/* Shine effect */}
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-
-                                        {/* Button content */}
-                                        <div className="relative flex items-center justify-center gap-2">
-                                            {loading ? (
-                                                <>
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                                    <span>Giriş yapılıyor...</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <span>Giriş Yap</span>
-                                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                                </>
-                                            )}
-                                        </div>
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
-                                </form>
+                                </div>
+                            </div>
 
-                                {/* Register Link */}
-                                <p className="text-center mt-6 text-sm text-slate-400">
-                                    Hesabınız yok mu?{' '}
-                                    <Link to="/register" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
-                                        Ücretsiz Kayıt Olun
-                                    </Link>
-                                </p>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-sm uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(6,182,212,0.5)] transition-all duration-500 flex items-center justify-center gap-3 group disabled:opacity-50 overflow-hidden relative"
+                            >
+                                <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12" />
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <span className="relative z-10">Giriş Yap</span>
+                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
+                                    </>
+                                )}
+                            </button>
+                        </form>
+
+                        <div className="mt-8">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="flex-1 h-px bg-white/10" />
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Hızlı Erişim</span>
+                                <div className="flex-1 h-px bg-white/10" />
+                            </div>
+
+                            <div className="flex justify-center gap-4">
+                                {socialProviders.map((provider) => {
+                                    const Icon = provider.icon
+                                    return (
+                                        <button
+                                            key={provider.id}
+                                            onClick={() => handleSocialLogin(provider)}
+                                            disabled={socialLoading !== null}
+                                            className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-300 disabled:opacity-50 group ${
+                                                isDayMode 
+                                                    ? 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-900 hover:border-slate-300' 
+                                                    : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-cyan-500/50 hover:bg-cyan-500/5'
+                                            }`}
+                                            title={provider.name}
+                                        >
+                                            {socialLoading === provider.id ? (
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                            ) : (
+                                                <Icon className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                                            )}
+                                        </button>
+                                    )
+                                })}
                             </div>
                         </div>
 
-                        {/* Footer */}
-                        <p className="text-center mt-8 text-xs text-slate-500">
-                            Giriş yaparak{' '}
-                            <Link to="/terms" className="text-slate-400 hover:text-white transition-colors">Kullanım Şartları</Link>
-                            {' '}ve{' '}
-                            <Link to="/privacy" className="text-slate-400 hover:text-white transition-colors">Gizlilik Politikası</Link>
-                            'nı kabul etmiş olursunuz.
-                        </p>
-                    </div>
+                        <div className="mt-12 text-center">
+                            <p className={`${isDayMode ? 'text-slate-500' : 'text-slate-300'} font-medium`}>
+                                Hesabın yok mu?{' '}
+                                <Link to="/register" className={`hover:text-cyan-500 transition-colors font-black underline decoration-cyan-500 underline-offset-8 ${
+                                    isDayMode ? 'text-slate-900' : 'text-white'
+                                }`}>Yeni Hesap Oluştur</Link>
+                            </p>
+                        </div>
+                    </motion.div>
                 </div>
-            </div>
+            </main>
         </div>
     )
 }

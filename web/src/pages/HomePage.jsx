@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import AIDemo from '../components/AIDemo'
 import TiltCard from '../components/TiltCard'
+import VideoPlayerModal from '../components/VideoPlayerModal'
 
 // Particle Background Component
 function ParticleBackground({ isDayMode }) {
@@ -177,19 +178,19 @@ function InteractiveStatCard({ value, suffix, label, detail, icon: Icon }) {
 
     return (
         <div
-            className="text-center relative group cursor-pointer"
+            className="text-center relative group cursor-pointer floating-card-enhanced"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div className={`transition-all duration-300 ${isHovered ? 'scale-110' : ''}`}>
-                <div className="text-4xl md:text-5xl font-bold gradient-text mb-2">
+                <div className="text-4xl md:text-5xl font-bold gradient-text gradient-text-shine mb-2">
                     <AnimatedCounter end={parseInt(value)} />
                     {suffix}
                 </div>
-                <div className="text-gray-400">{label}</div>
+                <div className="text-gray-400 font-medium">{label}</div>
             </div>
             {isHovered && detail && (
-                <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 glass-card rounded-xl px-4 py-2 text-sm text-cyan-300 whitespace-nowrap z-20 animate-fade-in">
+                <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 glass-card rounded-xl px-4 py-2 text-sm text-cyan-300 whitespace-nowrap z-20 animate-fade-in hover-glow shimmer-glass">
                     {detail}
                 </div>
             )}
@@ -226,48 +227,17 @@ function AnimatedCounter({ end, duration = 2000 }) {
     return <span ref={countRef}>{count}</span>
 }
 
-// Video Modal Component
-function VideoModal({ isOpen, onClose }) {
-    if (!isOpen) return null
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-            <div className="relative z-10 w-full max-w-4xl animate-scale-in">
-                <button
-                    onClick={onClose}
-                    className="absolute -top-12 right-0 text-white hover:text-cyan-400 transition-colors"
-                >
-                    <X className="w-8 h-8" />
-                </button>
-                <div className="relative rounded-2xl overflow-hidden bg-gray-900 aspect-video">
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        src="about:blank"
-                        title="CVniz Demo"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="absolute inset-0"
-                    />
-                </div>
-            </div>
-        </div>
-    )
-}
-
 // FAQ Accordion Component
 const FAQAccordion = () => {
     const { content } = useSiteContent()
     const [openIndex, setOpenIndex] = useState(0)
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 stagger-animate">
             {content.faqs?.map((faq, index) => (
                 <div
                     key={index}
-                    className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-cyan-500/30 transition-all"
+                    className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-cyan-500/30 transition-all floating-card-enhanced shimmer-glass"
                 >
                     <button
                         onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
@@ -292,36 +262,34 @@ const FAQAccordion = () => {
 // Infinite Logo Carousel
 function LogoCarousel({ isDayMode = false }) {
     const logos = [
-        { name: 'Google', color: '#4285F4' },
-        { name: 'Microsoft', color: '#00A4EF' },
-        { name: 'Trendyol', color: '#F27A1A' },
-        { name: 'Amazon', color: '#FF9900' },
-        { name: 'Getir', color: '#5D3EBC' },
-        { name: 'Netflix', color: '#E50914' },
-        { name: 'Hepsiburada', color: '#FF6000' },
-        { name: 'Tesla', color: '#CC0000' },
-        { name: 'N11', color: '#7B2CBF' },
-        { name: 'Spotify', color: '#1DB954' },
-        { name: 'Turkcell', color: '#FFD000' },
-        { name: 'Garanti', color: '#00653E' }
+        { name: 'Amazon', src: '/images/logo/Amazon_2024.svg.png' },
+        { name: 'Ford Otosan', src: '/images/logo/Ford_Otosan_logo.svg.png' },
+        { name: 'Hepsiburada', src: '/images/logo/Hepsiburada_logo_official.svg.png' },
+        { name: 'Koç Holding', src: '/images/logo/Koc-Holding-Logo.png' },
+        { name: 'Microsoft', src: '/images/logo/Microsoft_logo_(2012).svg.png' },
+        { name: 'Netflix', src: '/images/logo/Netflix_2015_logo.svg.png' },
+        { name: 'Sabancı', src: '/images/logo/Sabancı_Holding_logo.svg.png' },
+        { name: 'Tesla', src: '/images/logo/Tesla_Motors.svg.png' },
+        { name: 'Trendyol', src: '/images/logo/Trendyol_logo.svg.png' },
+        { name: 'Turkish Airlines', src: '/images/logo/Turkish_Airlines_logo_2019_compact.svg.png' },
+        { name: 'Tüpraş', src: '/images/logo/Tüpraş_logo.svg.png' }
     ]
 
     return (
-        <div className="relative overflow-hidden py-8">
-            <div className={`absolute left-0 top-0 bottom-0 w-32 z-10 ${isDayMode ? 'bg-gradient-to-r from-white to-transparent' : 'bg-gradient-to-r from-slate-950 to-transparent'}`} />
-            <div className={`absolute right-0 top-0 bottom-0 w-32 z-10 ${isDayMode ? 'bg-gradient-to-l from-white to-transparent' : 'bg-gradient-to-l from-slate-950 to-transparent'}`} />
-            <div className="flex animate-scroll-left">
+        <div className="relative overflow-hidden py-4">
+            <div className={`absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none ${isDayMode ? 'bg-gradient-to-r from-white to-transparent' : 'bg-gradient-to-r from-slate-950 to-transparent'}`} />
+            <div className={`absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none ${isDayMode ? 'bg-gradient-to-l from-white to-transparent' : 'bg-gradient-to-l from-slate-950 to-transparent'}`} />
+            <div className="flex animate-scroll-left group-hover:[animation-play-state:paused]">
                 {[...logos, ...logos].map((logo, i) => (
                     <div
                         key={i}
-                        className={`flex-shrink-0 mx-8 px-6 py-3 rounded-xl border transition-all hover:scale-105 ${isDayMode ? 'bg-white border-slate-200/70 shadow-day' : 'bg-white/5 border-white/10 hover:border-cyan-500/50'}`}
+                        className={`flex-shrink-0 mx-4 md:mx-6 px-5 py-3 rounded-xl border transition-all hover:scale-105 h-16 w-40 flex items-center justify-center ${isDayMode ? 'bg-white/95 border-slate-200/70 shadow-day' : 'bg-white/95 border-white/10 hover:border-cyan-500/50'}`}
                     >
-                        <span
-                            className="text-xl font-bold tracking-wide"
-                            style={{ color: logo.color }}
-                        >
-                            {logo.name}
-                        </span>
+                        <img
+                            src={logo.src}
+                            alt={logo.name}
+                            className="h-8 w-auto object-contain max-w-[120px]"
+                        />
                     </div>
                 ))}
             </div>
@@ -560,128 +528,173 @@ export default function HomePage() {
             <CursorGlow isDayMode={isDayMode} />
             <StickyProgressBar isDayMode={isDayMode} />
             <LiveProofNotification isDayMode={isDayMode} />
-            <VideoModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
+            <VideoPlayerModal isOpen={videoModalOpen} onClose={() => setVideoModalOpen(false)} />
 
             {/* Floating CTA Button - Hidden on mobile, shown on desktop */}
-            <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-40 animate-float hidden md:block">
+            <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-40 hero-float-card hidden md:block">
                 <Link
                     to="/editor"
-                    className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 btn-premium rounded-full shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)] hover:scale-105 transition-transform"
+                    className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 hero-cta-premium rounded-full shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)] hover:scale-105 transition-transform text-white font-semibold"
                 >
                     <Rocket className="w-4 h-4 md:w-5 md:h-5" />
                     <span className="hidden md:inline">Hemen Başla</span>
                 </Link>
             </div>
 
-            {/* Hero Section */}
-            <AnimatedSection className="pt-20 md:pt-28 pb-8 md:pb-16 px-4 md:px-6 lg:px-12">
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
+            {/* Hero Section V2 - Cinematic */}
+            <section className="relative pt-20 md:pt-28 pb-16 md:pb-24 px-4 md:px-6 lg:px-12 overflow-hidden">
+                {/* Animated Mesh Gradient Background */}
+                <div className="hero-mesh-gradient" />
+
+                {/* Glowing Orbs */}
+                <div className="hero-orb hero-orb-1" />
+                <div className="hero-orb hero-orb-2" />
+                <div className="hero-orb hero-orb-3" />
+
+                {/* Content */}
+                <div className="max-w-7xl mx-auto relative z-10 hero-cinematic">
+                    <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
                         {/* Left - Text Content */}
-                        <div>
-                            <div className={`inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full mb-4 md:mb-6 ${heroRibbonClasses}`}>
-                                <Sparkles className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
-                                <span className={`text-xs md:text-sm ${isDayMode ? 'text-sky-600' : 'text-cyan-300'}`}>Türkiye'nin #1 CV Oluşturucu</span>
+                        <div className="text-center md:text-left">
+                            {/* Badge */}
+                            <div className="hero-badge-v2 mb-6 md:mb-8 mx-auto md:mx-0">
+                                <Sparkles className="w-4 h-4" />
+                                <span>Türkiye'nin #1 CV Oluşturucu</span>
                             </div>
 
-                            <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6">
-                                <span className={isDayMode ? 'text-slate-900' : 'text-white'}>{content.hero.title} </span>
-                                <span className="gradient-text">{content.hero.titleHighlight}</span>
-                                <span className={isDayMode ? 'text-slate-900' : 'text-white'}> {content.hero.titleEnd}</span>
+                            {/* Title */}
+                            <h1 className="hero-title-v2 mb-6">
+                                <span className={isDayMode ? 'text-slate-900' : 'text-white'}>
+                                    Profesyonel CV&apos;nizi
+                                </span>
+                                <br />
+                                <span className="hero-title-gradient-v2" data-text="Dakikalar İçinde">
+                                    Dakikalar İçinde
+                                </span>
+                                <br />
+                                <span className={isDayMode ? 'text-slate-900' : 'text-white'}>
+                                    Oluşturun
+                                </span>
                             </h1>
-                            <p className="text-base md:text-xl text-gray-500 mb-6 md:mb-8 leading-relaxed">
-                                {content.hero.subtitle}
+
+                            {/* Subtitle */}
+                            <p className={`text-lg md:text-xl mb-8 max-w-xl mx-auto md:mx-0 leading-relaxed ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                                Yapay zeka destekli CV oluşturucu ile kariyer hedeflerinize ulaşın.
+                                <span className={isDayMode ? 'text-sky-600' : 'text-cyan-400'}> 200+ profesyonel şablon</span>, anında PDF indirme.
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-3 mb-6 md:mb-8">
-                                <Link to="/editor" className="btn-premium text-base md:text-lg px-6 md:px-8 py-3 md:py-4 flex items-center justify-center gap-2 group">
-                                    {content.hero.ctaPrimary}
-                                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                            {/* CTA Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center md:justify-start">
+                                <Link to="/editor" className="hero-cta-v2">
+                                    Ücretsiz Başla
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                                 <button
                                     onClick={() => setVideoModalOpen(true)}
-                                    className="btn-secondary px-6 md:px-8 py-3 md:py-4 flex items-center justify-center gap-2 group"
+                                    className={`inline-flex items-center justify-center gap-3 px-6 py-4 rounded-full font-semibold transition-all border ${
+                                        isDayMode
+                                            ? 'bg-white/80 border-slate-200 text-slate-800 hover:bg-white hover:border-sky-300'
+                                            : 'bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-cyan-500/50'
+                                    }`}
                                 >
-                                    {content.hero.ctaSecondary}
-                                    <Play className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDayMode ? 'bg-sky-100' : 'bg-cyan-500/20'}`}>
+                                        <Play className={`w-5 h-5 ${isDayMode ? 'text-sky-600' : 'text-cyan-400'} ml-0.5`} />
+                                    </div>
+                                    Demo İzle
                                 </button>
                             </div>
 
-                            {/* Trust Badges - Compact on mobile */}
-                            <div className={`flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3 text-xs md:text-sm ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
-                                <div className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-full ${trustPillClasses}`}>
-                                    <Shield className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-emerald-500' : 'text-green-400'}`} />
-                                    <span>Ücretsiz</span>
+                            {/* Trust Pills */}
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                                <div className="hero-trust-pill">
+                                    <Shield className="w-4 h-4 text-green-400" />
+                                    <span className={isDayMode ? 'text-slate-700' : 'text-gray-300'}>Ücretsiz</span>
                                 </div>
-                                <div className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-full ${trustPillClasses}`}>
-                                    <CheckCircle className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
-                                    <span>Kart Gerekmez</span>
+                                <div className="hero-trust-pill">
+                                    <CheckCircle className="w-4 h-4 text-cyan-400" />
+                                    <span className={isDayMode ? 'text-slate-700' : 'text-gray-300'}>Kart Gerekmez</span>
                                 </div>
-                                <div className={`flex items-center gap-1.5 px-2 md:px-3 py-1 md:py-1.5 rounded-full ${trustPillClasses}`}>
-                                    <Award className={`w-3 h-3 md:w-4 md:h-4 ${isDayMode ? 'text-amber-500' : 'text-amber-400'}`} />
-                                    <span>7 Gün İade</span>
+                                <div className="hero-trust-pill">
+                                    <Award className="w-4 h-4 text-amber-400" />
+                                    <span className={isDayMode ? 'text-slate-700' : 'text-gray-300'}>7 Gün İade</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Right - Hero Image - Hidden on mobile for cleaner look */}
+                        {/* Right - Hero Image with 3D Effect */}
                         <div className="relative hidden md:block">
-                            <div className="relative z-10">
+                            <div className="hero-image-3d relative">
                                 <img
                                     src="/images/1415454.png"
                                     alt="CV Builder"
-                                    className="rounded-2xl shadow-2xl w-full max-w-md mx-auto"
+                                    className="w-full max-w-lg mx-auto"
                                 />
-                            </div>
-                            {/* Floating Stats - Desktop only */}
-                            <div className="absolute -bottom-6 -left-6 glass-card rounded-xl p-3 z-20 animate-float hidden lg:block">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center ring-2 ring-white/20">
-                                        <CheckCircle className="w-5 h-5 text-white" />
+
+                                {/* Floating Stats Card - Left */}
+                                <div className="hero-stat-card hero-stat-card-left">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                                            <CheckCircle className="w-6 h-6 text-white" />
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold hero-title-gradient-v2">100K+</div>
+                                            <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>CV Oluşturuldu</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div className="text-xl font-bold">100K+</div>
-                                        <div className="text-xs text-gray-400">CV Oluşturuldu</div>
+                                </div>
+
+                                {/* Floating Rating Card - Right */}
+                                <div className="hero-stat-card hero-stat-card-right">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex -space-x-2">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white" />
+                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white" />
+                                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-1">
+                                                {[1, 2, 3, 4, 5].map(i => (
+                                                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                                ))}
+                                            </div>
+                                            <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>4.9/5 Puan</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="absolute -top-4 -right-4 glass-card rounded-xl p-3 z-20 animate-float-delayed hidden lg:block">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex -space-x-3">
-                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
-                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
-                                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
-                                    </div>
-                                    <div className="flex items-center gap-0.5">
-                                        {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />)}
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Background Glow */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-slate-200/10 rounded-2xl blur-3xl -z-10"></div>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    {/* Gradient Wave at bottom of hero */}
-                    <GradientWave isDayMode={isDayMode} />
+            {/* Gradient Wave at bottom of hero */}
+            <GradientWave isDayMode={isDayMode} />
 
-                    {/* How It Works - Mini Steps - Horizontal scroll on mobile */}
-                    <div className="mt-8 md:mt-20">
-                        <div className="flex md:grid md:grid-cols-3 gap-3 md:gap-6 overflow-x-auto pb-4 md:pb-0 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-                            {content.steps?.map((step, i) => (
-                                <div key={i} className="glass-card rounded-xl md:rounded-2xl p-4 md:p-6 text-center hover:scale-105 transition-transform duration-300 group relative flex-shrink-0 w-[200px] md:w-auto">
-                                    <div className="text-2xl md:text-4xl font-extrabold text-white/10 absolute top-2 md:top-4 right-3 md:right-6">{String(i + 1).padStart(2, '0')}</div>
-                                    <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-300 to-slate-200 flex items-center justify-center mx-auto mb-2 md:mb-4 ring-1 ring-white/10 text-slate-950">
-                                        {step.icon === 'FileText' && <FileText className="w-5 h-5 md:w-8 md:h-8" />}
-                                        {step.icon === 'Zap' && <Zap className="w-5 h-5 md:w-8 md:h-8" />}
-                                        {step.icon === 'Download' && <Download className="w-5 h-5 md:w-8 md:h-8" />}
-                                        {!['FileText', 'Zap', 'Download'].includes(step.icon) && <Sparkles className="w-5 h-5 md:w-8 md:h-8" />}
-                                    </div>
-                                    <h3 className="text-sm md:text-xl font-bold mb-1 md:mb-2">{step.title}</h3>
-                                    <p className="text-gray-400 text-xs md:text-sm line-clamp-2">{step.description}</p>
+            {/* How It Works - Mini Steps */}
+            <AnimatedSection className="py-12 md:py-20 px-4 md:px-6 lg:px-12">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-10">
+                        <h2 className={`text-2xl md:text-3xl font-bold mb-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                            Nasıl Çalışır?
+                        </h2>
+                        <p className={`${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                            3 kolay adımda profesyonel CV&apos;nizi oluşturun
+                        </p>
+                    </div>
+                    <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto pb-4 md:pb-0 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 stagger-animate">
+                        {content.steps?.map((step, i) => (
+                            <div key={i} className={`rounded-2xl p-6 text-center hover:scale-105 transition-all duration-300 group relative flex-shrink-0 w-[220px] md:w-auto ${isDayMode ? 'bg-white border border-slate-200 shadow-lg' : 'glass-card border border-white/10'}`}>
+                                <div className={`text-4xl font-extrabold absolute top-4 right-6 ${isDayMode ? 'text-sky-100' : 'text-white/10'} group-hover:text-cyan-400/20 transition-colors`}>{String(i + 1).padStart(2, '0')}</div>
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mx-auto mb-4 text-white shadow-lg group-hover:scale-110 transition-transform">
+                                    {step.icon === 'FileText' && <FileText className="w-8 h-8" />}
+                                    {step.icon === 'Zap' && <Zap className="w-8 h-8" />}
+                                    {step.icon === 'Download' && <Download className="w-8 h-8" />}
+                                    {!['FileText', 'Zap', 'Download'].includes(step.icon) && <Sparkles className="w-8 h-8" />}
                                 </div>
-                            ))}
-                        </div>
+                                <h3 className={`text-lg font-bold mb-2 ${isDayMode ? 'text-slate-800' : 'text-white'}`}>{step.title}</h3>
+                                <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>{step.description}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </AnimatedSection>
@@ -846,7 +859,7 @@ export default function HomePage() {
                                 <TiltCard key={i} className="flex-shrink-0 w-72">
                                     <Link
                                         to="/templates"
-                                        className="group relative overflow-hidden rounded-2xl aspect-[3/4] bg-white/5 block border border-white/10 hover:border-cyan-500/50 transition-all shadow-2xl"
+                                        className="group relative overflow-hidden rounded-2xl aspect-[3/4] bg-white/5 block border border-white/10 hover:border-cyan-500/50 transition-all shadow-2xl hover-glow shimmer-glass"
                                     >
                                         <img
                                             src={img}
@@ -856,13 +869,13 @@ export default function HomePage() {
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
                                             <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                                 <div className="text-white font-bold text-xl mb-2">Modern Pro</div>
-                                                <span className="btn-premium py-2 text-sm flex items-center justify-center gap-2">
+                                                <span className="btn-premium py-2 text-sm flex items-center justify-center gap-2 magnetic-btn">
                                                     Hemen Kullan <ArrowRight className="w-4 h-4" />
                                                 </span>
                                             </div>
                                         </div>
                                         {i < 3 && (
-                                            <div className="absolute top-4 right-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-lg">
+                                            <div className="absolute top-4 right-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-lg pulse-ring">
                                                 ÜCRETSİZ
                                             </div>
                                         )}
@@ -901,11 +914,11 @@ export default function HomePage() {
                         </div>
                         <div>
                             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                                Neden <span className="gradient-text">CVniz?</span>
+                                Neden <span className="gradient-text gradient-text-shine">CVniz?</span>
                             </h2>
-                            <div className="space-y-4">
+                            <div className="space-y-4 stagger-animate">
                                 {content.features?.map((feature, i) => (
-                                    <AnimatedSection key={i} delay={i * 100} className="flex gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                                    <AnimatedSection key={i} delay={i * 100} className="flex gap-4 p-4 rounded-xl hover:bg-white/5 transition-all cursor-pointer group floating-card-enhanced hover-glow">
                                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center flex-shrink-0 ring-1 ring-white/10 text-slate-900 group-hover:scale-110 transition-transform">
                                             {/* Static icons for now, but could be dynamic if we store icon names */}
                                             {i === 0 && <Sparkles className="w-6 h-6" />}

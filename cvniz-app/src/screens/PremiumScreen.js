@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
 import {
     View, Text, StyleSheet, ScrollView, TouchableOpacity,
-    StatusBar, Alert, Dimensions, Platform
+    StatusBar, Alert, Dimensions, Platform, ActivityIndicator
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../constants';
 
 const { width } = Dimensions.get('window');
 
-// ============ FEATURE ITEM ============
-function FeatureItem({ icon, text, included, colors }) {
+// ============ MODERN FEATURE ITEM ============
+function FeatureItem({ iconName, text, included, colors }) {
     return (
         <View style={styles.featureItem}>
-            <Text style={{ fontSize: 20, marginRight: SPACING.sm }}>
-                {included ? icon : '❌'}
-            </Text>
+            {included ? (
+                <View style={[styles.featureIconBox, { backgroundColor: `${COLORS.success}20` }]}>
+                    <Feather name="check" size={16} color={COLORS.success} />
+                </View>
+            ) : (
+                <View style={[styles.featureIconBox, { backgroundColor: `${COLORS.error}20` }]}>
+                    <Feather name="x" size={16} color={COLORS.error} />
+                </View>
+            )}
             <Text style={[
                 styles.featureText,
                 { color: included ? colors.text : colors.textSecondary }
@@ -27,9 +36,14 @@ function FeatureItem({ icon, text, included, colors }) {
     );
 }
 
-// ============ PLAN CARD ============
+// ============ MODERN PLAN CARD ============
 function PlanCard({ plan, isSelected, onSelect, colors }) {
     const isPopular = plan.popular;
+
+    const handlePress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onSelect(plan.id);
+    };
 
     return (
         <TouchableOpacity
@@ -39,7 +53,7 @@ function PlanCard({ plan, isSelected, onSelect, colors }) {
                 isSelected && styles.planCardSelected,
                 SHADOW.md
             ]}
-            onPress={() => onSelect(plan.id)}
+            onPress={handlePress}
             activeOpacity={0.8}
         >
             {isPopular && (
@@ -49,12 +63,15 @@ function PlanCard({ plan, isSelected, onSelect, colors }) {
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                 >
-                    <Text style={styles.popularText}>🔥 En Popüler</Text>
+                    <Feather name="star" size={12} color="#FFF" style={{ marginRight: 4 }} />
+                    <Text style={styles.popularText}>En Popüler</Text>
                 </LinearGradient>
             )}
 
             <View style={styles.planHeader}>
-                <Text style={styles.planIcon}>{plan.icon}</Text>
+                <View style={[styles.planIconBox, { backgroundColor: plan.iconColor + '20' }]}>
+                    <Feather name={plan.iconName} size={24} color={plan.iconColor} />
+                </View>
                 <Text style={[styles.planName, { color: colors.text }]}>{plan.name}</Text>
             </View>
 
@@ -79,7 +96,7 @@ function PlanCard({ plan, isSelected, onSelect, colors }) {
             <View style={styles.planFeatures}>
                 {plan.features.map((feature, i) => (
                     <View key={i} style={styles.planFeatureItem}>
-                        <Text style={{ color: '#10B981' }}>✓</Text>
+                        <Feather name="check" size={14} color={COLORS.success} />
                         <Text style={[styles.planFeatureText, { color: colors.textSecondary }]}>
                             {feature}
                         </Text>
@@ -112,7 +129,8 @@ export default function PremiumScreen({ navigation }) {
         {
             id: 'monthly',
             name: 'Aylık',
-            icon: '📅',
+            iconName: 'calendar',
+            iconColor: '#6366F1',
             price: '₺99',
             oldPrice: '₺149',
             period: 'ay',
@@ -122,7 +140,8 @@ export default function PremiumScreen({ navigation }) {
         {
             id: 'yearly',
             name: 'Yıllık',
-            icon: '⭐',
+            iconName: 'star',
+            iconColor: '#F59E0B',
             price: '₺599',
             oldPrice: '₺1788',
             period: 'yıl',
@@ -133,7 +152,8 @@ export default function PremiumScreen({ navigation }) {
         {
             id: 'lifetime',
             name: 'Ömür Boyu',
-            icon: '👑',
+            iconName: 'crown',
+            iconColor: '#8B5CF6',
             price: '₺999',
             oldPrice: '₺2999',
             period: 'tek seferlik',
@@ -144,16 +164,16 @@ export default function PremiumScreen({ navigation }) {
     ];
 
     const allFeatures = [
-        { icon: '🎨', text: '106+ Premium Şablon', free: false },
-        { icon: '🤖', text: 'AI ile CV Yazımı', free: false },
-        { icon: '📊', text: 'ATS Uyumluluk Analizi', free: false },
-        { icon: '🌐', text: '25+ Dil Desteği', free: false },
-        { icon: '📝', text: 'AI Ön Yazı Oluşturucu', free: false },
-        { icon: '💼', text: 'İş Eşleştirme', free: false },
-        { icon: '📄', text: 'Sınırsız CV Oluşturma', free: false },
-        { icon: '⬇️', text: 'PDF/Word İndirme', free: true },
-        { icon: '🔗', text: 'Online CV Paylaşımı', free: false },
-        { icon: '📧', text: 'Öncelikli Destek', free: false },
+        { iconName: 'layout', text: '106+ Premium Şablon', free: false },
+        { iconName: 'cpu', text: 'AI ile CV Yazımı', free: false },
+        { iconName: 'bar-chart-2', text: 'ATS Uyumluluk Analizi', free: false },
+        { iconName: 'globe', text: '25+ Dil Desteği', free: false },
+        { iconName: 'edit-3', text: 'AI Ön Yazı Oluşturucu', free: false },
+        { iconName: 'briefcase', text: 'İş Eşleştirme', free: false },
+        { iconName: 'file-plus', text: 'Sınırsız CV Oluşturma', free: false },
+        { iconName: 'download', text: 'PDF/Word İndirme', free: true },
+        { iconName: 'share-2', text: 'Online CV Paylaşımı', free: false },
+        { iconName: 'headphones', text: 'Öncelikli Destek', free: false },
     ];
 
     const handlePurchase = async () => {
@@ -161,8 +181,9 @@ export default function PremiumScreen({ navigation }) {
         // Simüle edilmiş satın alma
         await new Promise(resolve => setTimeout(resolve, 2000));
         setLoading(false);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         Alert.alert(
-            '🎉 Tebrikler!',
+            'Tebrikler!',
             'Premium üyeliğiniz aktif edildi. Artık tüm özelliklere erişebilirsiniz!',
             [{ text: 'Harika!', onPress: () => navigation.goBack() }]
         );
@@ -173,8 +194,8 @@ export default function PremiumScreen({ navigation }) {
             <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <StatusBar barStyle="light-content" />
                 <LinearGradient colors={['#0F172A', '#1E293B']} style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                        <Text style={styles.backText}>← Geri</Text>
+                    <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigation.goBack(); }} style={styles.backBtn}>
+                        <Feather name="arrow-left" size={24} color="#FFF" />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Premium</Text>
                     <View style={{ width: 60 }} />
@@ -182,7 +203,7 @@ export default function PremiumScreen({ navigation }) {
 
                 <View style={styles.alreadyPremium}>
                     <LinearGradient colors={COLORS.gradients.premium} style={styles.premiumBadgeLarge}>
-                        <Text style={{ fontSize: 48 }}>👑</Text>
+                        <MaterialCommunityIcons name="crown" size={48} color="#FFF" />
                     </LinearGradient>
                     <Text style={[styles.premiumTitle, { color: colors.text }]}>Premium Üyesiniz!</Text>
                     <Text style={[styles.premiumDesc, { color: colors.textSecondary }]}>
@@ -199,8 +220,8 @@ export default function PremiumScreen({ navigation }) {
 
             {/* Header */}
             <LinearGradient colors={['#0F172A', '#1E293B']} style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                    <Text style={styles.backText}>← Geri</Text>
+                <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigation.goBack(); }} style={styles.backBtn}>
+                    <Feather name="arrow-left" size={24} color="#FFF" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Premium</Text>
                 <View style={{ width: 60 }} />
@@ -214,7 +235,7 @@ export default function PremiumScreen({ navigation }) {
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                 >
-                    <Text style={styles.heroIcon}>👑</Text>
+                    <MaterialCommunityIcons name="crown" size={64} color="#FFF" />
                     <Text style={styles.heroTitle}>CVniz Premium</Text>
                     <Text style={styles.heroSubtitle}>
                         Kariyerini bir üst seviyeye taşı
@@ -250,7 +271,7 @@ export default function PremiumScreen({ navigation }) {
                         {allFeatures.map((feature, i) => (
                             <FeatureItem
                                 key={i}
-                                icon={feature.icon}
+                                iconName={feature.iconName}
                                 text={feature.text}
                                 included={true}
                                 colors={colors}
@@ -261,7 +282,9 @@ export default function PremiumScreen({ navigation }) {
 
                 {/* Guarantee */}
                 <View style={[styles.guaranteeCard, { backgroundColor: colors.surface }, SHADOW.sm]}>
-                    <Text style={styles.guaranteeIcon}>🛡️</Text>
+                    <View style={styles.guaranteeIconBox}>
+                        <Feather name="shield" size={24} color={COLORS.success} />
+                    </View>
                     <View style={styles.guaranteeContent}>
                         <Text style={[styles.guaranteeTitle, { color: colors.text }]}>
                             7 Gün Para İade Garantisi
@@ -288,9 +311,14 @@ export default function PremiumScreen({ navigation }) {
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                     >
-                        <Text style={styles.purchaseBtnText}>
-                            {loading ? '⏳ İşleniyor...' : '👑 Premium\'a Yükselt'}
-                        </Text>
+                        {loading ? (
+                            <ActivityIndicator color="#FFF" />
+                        ) : (
+                            <View style={styles.purchaseBtnContent}>
+                                <MaterialCommunityIcons name="crown" size={20} color="#FFF" />
+                                <Text style={styles.purchaseBtnText}>Premium'a Yükselt</Text>
+                            </View>
+                        )}
                     </LinearGradient>
                 </TouchableOpacity>
                 <Text style={[styles.purchaseNote, { color: colors.textSecondary }]}>
@@ -312,7 +340,6 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'ios' ? 60 : 45,
     },
     backBtn: { padding: SPACING.sm },
-    backText: { color: '#94A3B8', fontSize: 16 },
     headerTitle: { flex: 1, color: '#fff', fontSize: 18, fontWeight: '600', textAlign: 'center' },
 
     // Content
@@ -326,7 +353,6 @@ const styles = StyleSheet.create({
         marginTop: SPACING.md,
         borderRadius: BORDER_RADIUS.xxl,
     },
-    heroIcon: { fontSize: 48, marginBottom: SPACING.sm },
     heroTitle: { color: '#fff', fontSize: 28, fontWeight: '700', marginBottom: SPACING.xs },
     heroSubtitle: { color: 'rgba(255,255,255,0.9)', fontSize: 16 },
 
@@ -355,7 +381,14 @@ const styles = StyleSheet.create({
     },
     popularText: { color: '#fff', fontSize: 12, fontWeight: '600' },
     planHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.md },
-    planIcon: { fontSize: 28, marginRight: SPACING.sm },
+    planIconBox: {
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: SPACING.sm,
+    },
     planName: { fontSize: 20, fontWeight: '700' },
     priceContainer: { flexDirection: 'row', alignItems: 'baseline', marginBottom: SPACING.sm },
     priceOld: { fontSize: 14, textDecorationLine: 'line-through', marginRight: SPACING.xs },
@@ -373,6 +406,14 @@ const styles = StyleSheet.create({
     featuresSection: { marginTop: SPACING.xl, paddingHorizontal: SPACING.md },
     featuresCard: { borderRadius: BORDER_RADIUS.xxl, padding: SPACING.lg },
     featureItem: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.md },
+    featureIconBox: {
+        width: 32,
+        height: 32,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: SPACING.sm,
+    },
     featureText: { fontSize: 15 },
 
     // Guarantee
@@ -384,7 +425,15 @@ const styles = StyleSheet.create({
         padding: SPACING.lg,
         borderRadius: BORDER_RADIUS.xl,
     },
-    guaranteeIcon: { fontSize: 32, marginRight: SPACING.md },
+    guaranteeIconBox: {
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        backgroundColor: `${COLORS.success}15`,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: SPACING.md,
+    },
     guaranteeContent: { flex: 1 },
     guaranteeTitle: { fontSize: 16, fontWeight: '600', marginBottom: 2 },
     guaranteeDesc: { fontSize: 13 },
@@ -402,6 +451,12 @@ const styles = StyleSheet.create({
         padding: SPACING.lg,
         borderRadius: BORDER_RADIUS.xl,
         alignItems: 'center',
+        justifyContent: 'center',
+    },
+    purchaseBtnContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
     purchaseBtnText: { color: '#fff', fontSize: 18, fontWeight: '700' },
     purchaseNote: { textAlign: 'center', marginTop: SPACING.sm, fontSize: 12 },

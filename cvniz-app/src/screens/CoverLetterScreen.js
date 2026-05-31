@@ -5,59 +5,75 @@ import {
     Alert, ActivityIndicator, StatusBar, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useCV } from '../context/CVContext';
 import { useAuth } from '../context/AuthContext';
-import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../constants';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOW, scale, moderateScale, isSmallScreen, SCREEN_WIDTH } from '../constants';
 import { letterAPI } from '../services/api';
 
 const LETTER_TYPES = [
-    { id: 'cover', name: 'Ön Yazı', icon: '📝', desc: 'İş başvurusu için' },
-    { id: 'motivation', name: 'Motivasyon', icon: '💪', desc: 'Kariyer hedefleri' },
-    { id: 'recommendation', name: 'Referans Talebi', icon: '🤝', desc: 'Tavsiye mektubu' },
-    { id: 'thank_you', name: 'Teşekkür', icon: '🙏', desc: 'Görüşme sonrası' },
-    { id: 'resignation', name: 'İstifa', icon: '👋', desc: 'Profesyonel ayrılık' },
-    { id: 'follow_up', name: 'Takip', icon: '📧', desc: 'Başvuru takibi' },
+    { id: 'cover', name: 'Ön Yazı', iconName: 'edit-3', color: COLORS.primary, desc: 'İş başvurusu için' },
+    { id: 'motivation', name: 'Motivasyon', iconName: 'trending-up', color: '#10B981', desc: 'Kariyer hedefleri' },
+    { id: 'recommendation', name: 'Referans Talebi', iconName: 'users', color: '#F59E0B', desc: 'Tavsiye mektubu' },
+    { id: 'thank_you', name: 'Teşekkür', iconName: 'heart', color: '#EC4899', desc: 'Görüşme sonrası' },
+    { id: 'resignation', name: 'İstifa', iconName: 'log-out', color: '#64748B', desc: 'Profesyonel ayrılık' },
+    { id: 'follow_up', name: 'Takip', iconName: 'mail', color: '#06B6D4', desc: 'Başvuru takibi' },
 ];
 
 const TONES = [
-    { id: 'professional', name: 'Profesyonel', icon: '💼' },
-    { id: 'friendly', name: 'Samimi', icon: '😊' },
-    { id: 'formal', name: 'Resmi', icon: '🎩' },
-    { id: 'enthusiastic', name: 'Coşkulu', icon: '🚀' },
+    { id: 'professional', name: 'Profesyonel', iconName: 'briefcase', color: COLORS.primary },
+    { id: 'friendly', name: 'Samimi', iconName: 'smile', color: '#10B981' },
+    { id: 'formal', name: 'Resmi', iconName: 'shield', color: '#64748B' },
+    { id: 'enthusiastic', name: 'Coşkulu', iconName: 'zap', color: '#F59E0B' },
 ];
 
 function TypeCard({ type, isSelected, onPress, colors }) {
+    const handlePress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress?.();
+    };
+
     return (
         <TouchableOpacity
             style={[
                 styles.typeCard,
-                { backgroundColor: isSelected ? COLORS.primary + '20' : colors.surface },
-                isSelected && { borderColor: COLORS.primary, borderWidth: 2 },
-                SHADOW.sm
+                { backgroundColor: isSelected ? type.color + '15' : colors.surface },
+                isSelected && { borderColor: type.color, borderWidth: 2 },
+                SHADOW.sm,
+                isSmallScreen && { padding: SPACING.sm }
             ]}
-            onPress={onPress}
-            activeOpacity={0.7}
+            onPress={handlePress}
+            activeOpacity={0.8}
         >
-            <Text style={styles.typeIcon}>{type.icon}</Text>
-            <Text style={[styles.typeName, { color: colors.text }]}>{type.name}</Text>
-            <Text style={[styles.typeDesc, { color: colors.textSecondary }]}>{type.desc}</Text>
+            <View style={[styles.typeIconBox, { backgroundColor: type.color + '20' }, isSmallScreen && { width: 40, height: 40, borderRadius: 10 }]}>
+                <Feather name={type.iconName} size={isSmallScreen ? 22 : 28} color={type.color} />
+            </View>
+            <Text style={[styles.typeName, { color: colors.text }, isSmallScreen && { fontSize: 12 }]}>{type.name}</Text>
+            <Text style={[styles.typeDesc, { color: colors.textSecondary }, isSmallScreen && { fontSize: 10 }]}>{type.desc}</Text>
         </TouchableOpacity>
     );
 }
 
 function ToneChip({ tone, isSelected, onPress, colors }) {
+    const handlePress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress?.();
+    };
+
     return (
         <TouchableOpacity
             style={[
                 styles.toneChip,
-                { backgroundColor: isSelected ? COLORS.primary : colors.surface },
-                SHADOW.sm
+                { backgroundColor: isSelected ? tone.color : colors.surface },
+                SHADOW.sm,
+                isSmallScreen && { paddingHorizontal: SPACING.sm, paddingVertical: 6 }
             ]}
-            onPress={onPress}
+            onPress={handlePress}
         >
-            <Text style={styles.toneIcon}>{tone.icon}</Text>
-            <Text style={[styles.toneName, { color: isSelected ? '#fff' : colors.text }]}>
+            <Feather name={tone.iconName} size={isSmallScreen ? 14 : 16} color={isSelected ? '#fff' : tone.color} />
+            <Text style={[styles.toneName, { color: isSelected ? '#fff' : colors.text }, isSmallScreen && { fontSize: 12 }]}>
                 {tone.name}
             </Text>
         </TouchableOpacity>
@@ -133,13 +149,13 @@ export default function CoverLetterScreen({ navigation, route }) {
     };
 
     const renderStep1 = () => (
-        <View style={styles.stepContent}>
-            <Text style={[styles.stepTitle, { color: colors.text }]}>Mektup Türü Seçin</Text>
-            <Text style={[styles.stepDesc, { color: colors.textSecondary }]}>
+        <View style={[styles.stepContent, isSmallScreen && { padding: SPACING.md }]}>
+            <Text style={[styles.stepTitle, { color: colors.text }, isSmallScreen && { fontSize: 18 }]}>Mektup Türü Seçin</Text>
+            <Text style={[styles.stepDesc, { color: colors.textSecondary }, isSmallScreen && { fontSize: 13 }]}>
                 İhtiyacınıza uygun mektup türünü belirleyin
             </Text>
 
-            <View style={styles.typeGrid}>
+            <View style={[styles.typeGrid, isSmallScreen && { marginHorizontal: -4 }]}>
                 {LETTER_TYPES.map(type => (
                     <TypeCard
                         key={type.id}
@@ -447,18 +463,18 @@ const styles = StyleSheet.create({
 
     content: { flex: 1 },
     stepContent: { padding: SPACING.md },
-    stepTitle: { fontSize: 22, fontWeight: '700', marginBottom: SPACING.xs },
-    stepDesc: { fontSize: 14, marginBottom: SPACING.lg },
+    stepTitle: { fontSize: moderateScale(22), fontWeight: '700', marginBottom: SPACING.xs },
+    stepDesc: { fontSize: moderateScale(14), marginBottom: SPACING.lg },
 
     typeGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginHorizontal: -SPACING.xs,
+        marginHorizontal: isSmallScreen ? -4 : -SPACING.xs,
     },
     typeCard: {
-        width: '47%',
-        margin: '1.5%',
-        padding: SPACING.md,
+        width: isSmallScreen ? '48%' : '47%',
+        margin: isSmallScreen ? '1%' : '1.5%',
+        padding: isSmallScreen ? SPACING.sm : SPACING.md,
         borderRadius: BORDER_RADIUS.lg,
         alignItems: 'center',
     },
@@ -474,11 +490,15 @@ const styles = StyleSheet.create({
     toneChip: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: SPACING.md,
-        paddingVertical: SPACING.sm,
+        paddingHorizontal: isSmallScreen ? SPACING.sm : SPACING.md,
+        paddingVertical: isSmallScreen ? 6 : SPACING.sm,
         borderRadius: BORDER_RADIUS.full,
-        marginRight: SPACING.sm,
-        marginBottom: SPACING.sm,
+        marginRight: isSmallScreen ? 6 : SPACING.sm,
+        marginBottom: isSmallScreen ? 6 : SPACING.sm,
+    },
+    toneName: {
+        fontSize: moderateScale(13),
+        fontWeight: '600',
     },
     toneIcon: { fontSize: 16, marginRight: SPACING.xs },
     toneName: { fontSize: 13, fontWeight: '600' },

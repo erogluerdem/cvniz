@@ -4,12 +4,18 @@ import {
     StatusBar, Switch, Alert, Platform, Linking
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { COLORS, SPACING, BORDER_RADIUS } from '../constants';
+import { ModernCard, Badge } from '../components/ModernUIComponents';
 
-// Setting Item Component
+// Modern Setting Item Component
 function SettingItem({ 
-    icon, 
+    iconName, 
+    iconType = 'feather',
     title, 
     subtitle, 
     value, 
@@ -19,17 +25,42 @@ function SettingItem({
     onSwitchChange,
     isDanger,
     showArrow = true,
-    disabled
+    disabled,
+    color = COLORS.primary
 }) {
+    const handlePress = () => {
+        if (!hasSwitch && !disabled && onPress) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onPress();
+        }
+    };
+
+    const handleSwitchChange = (val) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onSwitchChange?.(val);
+    };
+
+    const getIcon = () => {
+        const iconProps = { size: 20, color: isDanger ? COLORS.error : color };
+        switch (iconType) {
+            case 'material':
+                return <MaterialCommunityIcons name={iconName} {...iconProps} />;
+            case 'ionicons':
+                return <Ionicons name={iconName} {...iconProps} />;
+            default:
+                return <Feather name={iconName} {...iconProps} />;
+        }
+    };
+
     return (
         <TouchableOpacity
             style={[styles.settingItem, disabled && styles.settingItemDisabled]}
-            onPress={onPress}
-            activeOpacity={hasSwitch ? 1 : 0.6}
+            onPress={handlePress}
+            activeOpacity={hasSwitch ? 1 : 0.8}
             disabled={hasSwitch || disabled}
         >
-            <View style={[styles.iconBox, isDanger && styles.iconBoxDanger]}>
-                <Text style={styles.icon}>{icon}</Text>
+            <View style={[styles.iconBox, isDanger && styles.iconBoxDanger, { backgroundColor: isDanger ? `${COLORS.error}15` : `${color}15` }]}>
+                {getIcon()}
             </View>
             <View style={styles.settingContent}>
                 <Text style={[styles.settingTitle, isDanger && styles.settingTitleDanger]}>
@@ -40,30 +71,36 @@ function SettingItem({
             {hasSwitch ? (
                 <Switch
                     value={switchValue}
-                    onValueChange={onSwitchChange}
-                    trackColor={{ false: '#E2E8F0', true: '#6366F1' }}
+                    onValueChange={handleSwitchChange}
+                    trackColor={{ false: '#E2E8F0', true: color }}
                     thumbColor="#FFF"
                     style={{ transform: [{ scale: 0.9 }] }}
                 />
             ) : (
                 <>
                     {value && <Text style={styles.settingValue}>{value}</Text>}
-                    {showArrow && <Text style={styles.settingArrow}>›</Text>}
+                    {showArrow && <Feather name="chevron-right" size={20} color={COLORS.textTertiary} />}
                 </>
             )}
         </TouchableOpacity>
     );
 }
 
-// Section Component
-function Section({ title, description, children }) {
+// Modern Section Component
+function Section({ title, description, iconName, children, delay = 0 }) {
     return (
-        <View style={styles.section}>
+        <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'spring', damping: 15, delay }}
+            style={styles.section}
+        >
             <View style={styles.sectionHeader}>
+                {iconName && <Feather name={iconName} size={18} color={COLORS.primary} style={styles.sectionIcon} />}
                 <Text style={styles.sectionTitle}>{title}</Text>
                 {description && <Text style={styles.sectionDesc}>{description}</Text>}
             </View>
-            <View style={styles.sectionCard}>
+            <ModernCard style={styles.sectionCard}>
                 {React.Children.map(children, (child, index) => (
                     <>
                         {child}
@@ -72,8 +109,8 @@ function Section({ title, description, children }) {
                         )}
                     </>
                 ))}
-            </View>
-        </View>
+            </ModernCard>
+        </MotiView>
     );
 }
 
@@ -182,9 +219,10 @@ export default function SettingsScreen({ navigation }) {
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
 
-            {/* Header */}
+            {/* Modern Header */}
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>⚙️ Ayarlar</Text>
+                <Feather name="settings" size={24} color={COLORS.text} style={styles.headerIcon} />
+                <Text style={styles.headerTitle}>Ayarlar</Text>
             </View>
 
             <ScrollView 
@@ -193,174 +231,198 @@ export default function SettingsScreen({ navigation }) {
                 showsVerticalScrollIndicator={false}
             >
                 {/* Appearance */}
-                <Section title="Görünüm" description="Uygulama teması ve dil ayarları">
+                <Section title="Görünüm" description="Uygulama teması ve dil ayarları" iconName="eye" delay={0}>
                     <SettingItem
-                        icon={themeIcons[themeMode]}
+                        iconName={themeMode === 'dark' ? 'moon' : themeMode === 'system' ? 'monitor' : 'sun'}
                         title="Tema"
                         value={themeLabels[themeMode]}
                         onPress={handleThemeChange}
+                        color={COLORS.primary}
                     />
                     <SettingItem
-                        icon="🌐"
+                        iconName="globe"
                         title="Uygulama Dili"
                         value="Türkçe"
                         onPress={handleLanguageChange}
+                        color={COLORS.tertiary}
                     />
                     <SettingItem
-                        icon="📳"
+                        iconName="smartphone"
                         title="Titreşim"
                         subtitle="Dokunmatik geri bildirim"
                         hasSwitch
                         switchValue={haptic}
                         onSwitchChange={setHaptic}
+                        color={COLORS.accent}
                     />
                 </Section>
 
                 {/* Notifications */}
-                <Section title="Bildirimler" description="Bildirim tercihlerinizi yönetin">
+                <Section title="Bildirimler" description="Bildirim tercihlerinizi yönetin" iconName="bell" delay={100}>
                     <SettingItem
-                        icon="🔔"
+                        iconName="message-square"
                         title="Push Bildirimleri"
                         subtitle="Anlık uygulama bildirimleri"
                         hasSwitch
                         switchValue={notifications}
                         onSwitchChange={setNotifications}
+                        color="#6366F1"
                     />
                     <SettingItem
-                        icon="📧"
+                        iconName="mail"
                         title="E-posta Bildirimleri"
                         subtitle="Haftalık özet ve ipuçları"
                         hasSwitch
                         switchValue={emailUpdates}
                         onSwitchChange={setEmailUpdates}
+                        color="#3B82F6"
                     />
                 </Section>
 
                 {/* CV Settings */}
-                <Section title="CV Ayarları" description="CV oluşturma ve düzenleme ayarları">
+                <Section title="CV Ayarları" description="CV oluşturma ve düzenleme ayarları" iconName="file-text" delay={200}>
                     <SettingItem
-                        icon="💾"
+                        iconName="save"
                         title="Otomatik Kaydet"
                         subtitle="Değişiklikleri otomatik kaydet"
                         hasSwitch
                         switchValue={autoSave}
                         onSwitchChange={setAutoSave}
+                        color="#10B981"
                     />
                     <SettingItem
-                        icon="☁️"
+                        iconName="cloud"
                         title="Bulut Senkronizasyon"
                         subtitle="CV'leri tüm cihazlarda senkronize et"
                         hasSwitch
                         switchValue={cloudSync}
                         onSwitchChange={setCloudSync}
+                        color="#06B6D4"
                     />
                     <SettingItem
-                        icon="📤"
+                        iconName="download-cloud"
                         title="Verileri Dışa Aktar"
                         subtitle="Tüm CV'leri indir"
                         onPress={handleExportData}
+                        color="#F59E0B"
                     />
                 </Section>
 
                 {/* Security */}
-                <Section title="Güvenlik" description="Hesap güvenliği ve gizlilik">
+                <Section title="Güvenlik" description="Hesap güvenliği ve gizlilik" iconName="shield" delay={300}>
                     <SettingItem
-                        icon="🔐"
+                        iconName="fingerprint"
                         title="Biyometrik Giriş"
                         subtitle="Face ID / Parmak İzi ile giriş"
                         hasSwitch
                         switchValue={biometric}
                         onSwitchChange={setBiometric}
+                        color="#8B5CF6"
                     />
                     <SettingItem
-                        icon="🔒"
+                        iconName="lock"
                         title="Şifre Değiştir"
                         onPress={() => {}}
+                        color="#EC4899"
                     />
                     <SettingItem
-                        icon="📊"
+                        iconName="bar-chart-2"
                         title="Analitik Paylaşımı"
                         subtitle="Anonim kullanım verileri"
                         hasSwitch
                         switchValue={analytics}
                         onSwitchChange={setAnalytics}
+                        color="#64748B"
                     />
                 </Section>
 
                 {/* Storage */}
-                <Section title="Depolama" description="Önbellek ve veri yönetimi">
+                <Section title="Depolama" description="Önbellek ve veri yönetimi" iconName="hard-drive" delay={400}>
                     <SettingItem
-                        icon="🗑️"
+                        iconName="trash-2"
                         title="Önbelleği Temizle"
                         subtitle="12.4 MB kullanılıyor"
                         onPress={handleClearCache}
+                        color="#F59E0B"
                     />
                 </Section>
 
                 {/* Support */}
-                <Section title="Destek" description="Yardım ve iletişim">
+                <Section title="Destek" description="Yardım ve iletişim" iconName="help-circle" delay={500}>
                     <SettingItem
-                        icon="❓"
+                        iconName="book-open"
                         title="Yardım Merkezi"
                         onPress={() => Linking.openURL('https://CVniz.app/help')}
+                        color="#06B6D4"
                     />
                     <SettingItem
-                        icon="💬"
+                        iconName="message-circle"
                         title="Geri Bildirim Gönder"
                         onPress={() => Linking.openURL('mailto:destek@CVniz.app')}
+                        color="#10B981"
                     />
                     <SettingItem
-                        icon="⭐"
+                        iconName="star"
                         title="Uygulamayı Değerlendir"
                         onPress={() => Linking.openURL('https://play.google.com/store')}
+                        color="#F59E0B"
                     />
                 </Section>
 
                 {/* Legal */}
-                <Section title="Yasal" description="Politikalar ve koşullar">
+                <Section title="Yasal" description="Politikalar ve koşullar" iconName="file-text" delay={600}>
                     <SettingItem
-                        icon="📜"
+                        iconName="shield"
                         title="Gizlilik Politikası"
                         onPress={() => Linking.openURL('https://CVniz.app/privacy')}
+                        color="#6366F1"
                     />
                     <SettingItem
-                        icon="📋"
+                        iconName="file-minus"
                         title="Kullanım Koşulları"
                         onPress={() => Linking.openURL('https://CVniz.app/terms')}
+                        color="#6366F1"
                     />
                     <SettingItem
-                        icon="📄"
+                        iconName="code"
                         title="Açık Kaynak Lisansları"
                         onPress={() => {}}
+                        color="#6366F1"
                     />
                 </Section>
 
                 {/* Account Actions */}
-                <Section title="Hesap İşlemleri">
+                <Section title="Hesap İşlemleri" iconName="user" delay={700}>
                     <SettingItem
-                        icon="🚪"
+                        iconName="log-out"
                         title="Çıkış Yap"
                         onPress={handleLogout}
                         showArrow={false}
+                        color="#64748B"
                     />
                 </Section>
 
                 {/* Danger Zone */}
-                <View style={styles.dangerSection}>
+                <MotiView
+                    from={{ opacity: 0, translateY: 20 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'spring', damping: 15, delay: 800 }}
+                    style={styles.dangerSection}
+                >
                     <View style={styles.dangerHeader}>
-                        <Text style={styles.dangerIcon}>⚠️</Text>
+                        <Feather name="alert-triangle" size={20} color={COLORS.error} />
                         <Text style={styles.dangerTitle}>Tehlikeli Bölge</Text>
                     </View>
-                    <View style={styles.dangerCard}>
+                    <ModernCard style={styles.dangerCard}>
                         <SettingItem
-                            icon="🗑️"
+                            iconName="trash"
                             title="Hesabı Sil"
                             subtitle="Bu işlem geri alınamaz"
                             onPress={handleDeleteAccount}
                             isDanger
                         />
-                    </View>
-                </View>
+                    </ModernCard>
+                </MotiView>
 
                 {/* Footer */}
                 <View style={styles.footer}>
@@ -389,12 +451,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8FAFC',
     },
 
-    // Header
+    // Modern Header
     header: {
         paddingTop: Platform.OS === 'ios' ? 60 : 45,
         paddingHorizontal: 20,
         paddingBottom: 16,
         backgroundColor: '#F8FAFC',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    headerIcon: {
+        marginTop: 4,
     },
     headerTitle: {
         fontSize: 28,
@@ -410,12 +478,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
 
-    // Section
+    // Modern Section
     section: {
         marginBottom: 24,
     },
     sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginBottom: 12,
+        gap: 8,
+    },
+    sectionIcon: {
+        marginRight: 4,
     },
     sectionTitle: {
         fontSize: 16,
@@ -456,16 +530,12 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 12,
-        backgroundColor: '#F1F5F9',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
     },
     iconBoxDanger: {
         backgroundColor: '#FEE2E2',
-    },
-    icon: {
-        fontSize: 18,
     },
     settingContent: {
         flex: 1,

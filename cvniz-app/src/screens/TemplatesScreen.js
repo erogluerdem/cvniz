@@ -4,18 +4,22 @@ import {
     TextInput, ScrollView, StatusBar, Dimensions, Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import {
-    TEMPLATES, TEMPLATE_CATEGORIES, getTemplatesByCategory
+    TEMPLATES, TEMPLATE_CATEGORIES, getTemplatesByCategory, COLORS, SPACING, BORDER_RADIUS
 } from '../constants';
 import TemplatePreviewModal from '../components/TemplatePreviewModal';
+import { ModernCard, Badge } from '../components/ModernUIComponents';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2;
 
-// Template Card Component
-function TemplateCard({ template, onPress, isPremiumUser }) {
+// Modern Template Card Component
+function TemplateCard({ template, onPress, isPremiumUser, index = 0 }) {
     const isLocked = template.premium && !isPremiumUser;
 
     const cardColors = {
@@ -24,16 +28,27 @@ function TemplateCard({ template, onPress, isPremiumUser }) {
         'creative': ['#F59E0B', '#D97706'],
         'professional': ['#3B82F6', '#1D4ED8'],
         'classic': ['#6B7280', '#4B5563'],
+        'tech': ['#06B6D4', '#0891B2'],
     };
 
     const colors = cardColors[template.category] || ['#6366F1', '#8B5CF6'];
 
+    const handlePress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress?.();
+    };
+
     return (
-        <TouchableOpacity
-            style={styles.templateCard}
-            onPress={onPress}
-            activeOpacity={0.7}
+        <MotiView
+            from={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', damping: 15, delay: index * 50 }}
         >
+            <TouchableOpacity
+                style={styles.templateCard}
+                onPress={handlePress}
+                activeOpacity={0.9}
+            >
             {/* Preview Area */}
             <View style={styles.templatePreview}>
                 <LinearGradient
@@ -62,7 +77,7 @@ function TemplateCard({ template, onPress, isPremiumUser }) {
                     {isLocked && (
                         <View style={styles.lockOverlay}>
                             <View style={styles.lockBadge}>
-                                <Text style={styles.lockIcon}>🔒</Text>
+                                <Feather name="lock" size={16} color="#FFF" />
                             </View>
                         </View>
                     )}
@@ -92,18 +107,42 @@ function TemplateCard({ template, onPress, isPremiumUser }) {
                 </View>
             </View>
         </TouchableOpacity>
+        </MotiView>
     );
 }
 
-// Category Chip
+// Modern Category Chip
 function CategoryChip({ category, isActive, onPress }) {
+    const handlePress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress?.();
+    };
+
+    const getIconName = () => {
+        const icons = {
+            'all': 'grid',
+            'popular': 'star',
+            'modern': 'zap',
+            'professional': 'briefcase',
+            'creative': 'pen-tool',
+            'tech': 'cpu',
+            'premium': 'crown'
+        };
+        return icons[category.id] || 'circle';
+    };
+
     return (
         <TouchableOpacity
             style={[styles.categoryChip, isActive && styles.categoryChipActive]}
-            onPress={onPress}
-            activeOpacity={0.7}
+            onPress={handlePress}
+            activeOpacity={0.8}
         >
-            <Text style={styles.categoryChipIcon}>{category.icon}</Text>
+            <Feather 
+                name={getIconName()} 
+                size={14} 
+                color={isActive ? '#FFF' : '#64748B'} 
+                style={styles.categoryChipIcon}
+            />
             <Text style={[styles.categoryChipText, isActive && styles.categoryChipTextActive]}>
                 {category.name}
             </Text>
@@ -167,21 +206,25 @@ export default function TemplatesScreen({ navigation }) {
                     {!isPremiumUser && (
                         <TouchableOpacity 
                             style={styles.proButton}
-                            onPress={() => navigation.navigate('Premium')}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                navigation.navigate('Premium');
+                            }}
                         >
                             <LinearGradient
-                                colors={['#6366F1', '#8B5CF6']}
+                                colors={COLORS.gradients.premium}
                                 style={styles.proButtonGradient}
                             >
-                                <Text style={styles.proButtonText}>👑 PRO</Text>
+                                <MaterialCommunityIcons name="crown" size={14} color="#FFF" />
+                                <Text style={styles.proButtonText}>PRO</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     )}
                 </View>
 
-                {/* Search Bar */}
+                {/* Modern Search Bar */}
                 <View style={styles.searchBar}>
-                    <Text style={styles.searchIcon}>🔍</Text>
+                    <Feather name="search" size={18} color="#94A3B8" style={styles.searchIcon} />
                     <TextInput
                         style={styles.searchInput}
                         placeholder="Şablon ara..."
@@ -192,20 +235,25 @@ export default function TemplatesScreen({ navigation }) {
                     {searchQuery.length > 0 && (
                         <TouchableOpacity 
                             style={styles.clearBtn}
-                            onPress={() => setSearchQuery('')}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                setSearchQuery('');
+                            }}
                         >
-                            <Text style={styles.clearIcon}>✕</Text>
+                            <Feather name="x" size={18} color="#94A3B8" />
                         </TouchableOpacity>
                     )}
                 </View>
 
-                {/* Stats Row */}
+                {/* Modern Stats Row */}
                 <View style={styles.statsRow}>
                     <View style={[styles.statPill, styles.statPillFree]}>
-                        <Text style={styles.statPillText}>✓ {stats.free} Ücretsiz</Text>
+                        <Feather name="check" size={12} color="#10B981" style={{marginRight: 4}} />
+                        <Text style={styles.statPillText}>{stats.free} Ücretsiz</Text>
                     </View>
                     <View style={[styles.statPill, styles.statPillPro]}>
-                        <Text style={styles.statPillTextPro}>👑 {stats.premium} Premium</Text>
+                        <MaterialCommunityIcons name="crown" size={12} color="#F59E0B" style={{marginRight: 4}} />
+                        <Text style={styles.statPillTextPro}>{stats.premium} Premium</Text>
                     </View>
                 </View>
             </View>

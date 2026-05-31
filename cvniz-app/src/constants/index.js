@@ -1,3 +1,56 @@
+import { Dimensions, Platform, PixelRatio, StatusBar } from 'react-native';
+
+// Screen Dimensions
+export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Responsive Helpers
+const BASE_WIDTH = 375; // iPhone X/11/12/13/14/15 width
+const BASE_HEIGHT = 812; // iPhone X/11/12/13/14/15 height
+
+export const scale = (size) => (SCREEN_WIDTH / BASE_WIDTH) * size;
+export const verticalScale = (size) => (SCREEN_HEIGHT / BASE_HEIGHT) * size;
+export const moderateScale = (size, factor = 0.5) => size + (scale(size) - size) * factor;
+
+// Device Detection
+export const isSmallScreen = SCREEN_WIDTH < 375;
+export const isMediumScreen = SCREEN_WIDTH >= 375 && SCREEN_WIDTH < 414;
+export const isLargeScreen = SCREEN_WIDTH >= 414;
+export const isTablet = SCREEN_WIDTH >= 768;
+
+// Platform Shortcuts
+export const isIOS = Platform.OS === 'ios';
+export const isAndroid = Platform.OS === 'android';
+
+// Responsive Spacing
+export const RESPONSIVE_SPACING = {
+    xs: scale(4),
+    sm: scale(8),
+    md: scale(16),
+    lg: scale(24),
+    xl: scale(32),
+    xxl: scale(48),
+    xxxl: scale(64),
+};
+
+// Responsive Typography
+export const RESPONSIVE_TYPOGRAPHY = {
+    h1: { fontSize: moderateScale(32), fontWeight: '800', letterSpacing: -0.8 },
+    h2: { fontSize: moderateScale(26), fontWeight: '700', letterSpacing: -0.5 },
+    h3: { fontSize: moderateScale(22), fontWeight: '700', letterSpacing: -0.3 },
+    h4: { fontSize: moderateScale(18), fontWeight: '600', letterSpacing: -0.2 },
+    body: { fontSize: moderateScale(16), fontWeight: '400', lineHeight: moderateScale(24) },
+    bodyMedium: { fontSize: moderateScale(15), fontWeight: '500', lineHeight: moderateScale(22) },
+    bodySmall: { fontSize: moderateScale(14), fontWeight: '400', lineHeight: moderateScale(20) },
+    caption: { fontSize: moderateScale(12), fontWeight: '500', lineHeight: moderateScale(16) },
+    captionSmall: { fontSize: moderateScale(11), fontWeight: '500', lineHeight: moderateScale(14) },
+    button: { fontSize: moderateScale(15), fontWeight: '700', letterSpacing: 0.3 },
+};
+
+// Safe Area Constants
+export const STATUS_BAR_HEIGHT = isIOS ? 44 : StatusBar.currentHeight || 24;
+export const BOTTOM_TAB_HEIGHT = scale(70);
+export const HEADER_HEIGHT = scale(60);
+
 // API Configuration
 // For Android Emulator use: 'http://10.0.2.2:3001/api'
 // For iOS Simulator use: 'http://localhost:3001/api'

@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import React, { Suspense, lazy, useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CVProvider } from './context/CVContext'
 import { SiteContentProvider } from './context/SiteContentContext'
@@ -158,74 +159,197 @@ function GuestRoute({ children }) {
     return children
 }
 
-function AppRoutes() {
+// Page Transition Wrapper - Native App Style
+function PageTransition({ children }) {
+    const location = useLocation()
+    
     return (
-        <Suspense
-            fallback={
-                <div className="min-h-screen flex items-center justify-center bg-slate-950">
-                    <LoadingSpinner size="lg" text="Sayfa Yükleniyor" />
-                </div>
-            }
-        >
-            <Routes>
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ 
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30,
+                    duration: 0.3
+                }}
+                style={{ 
+                    width: '100%',
+                    minHeight: '100%'
+                }}
+            >
+                {children}
+            </motion.div>
+        </AnimatePresence>
+    )
+}
+
+function AnimatedRoutes() {
+    const location = useLocation()
+    
+    return (
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
                 {/* Public Routes with Layout */}
                 <Route element={<Layout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/features" element={<FeaturesPage />} />
-                    <Route path="/templates" element={<TemplatesPage />} />
-                    <Route path="/sablonlar/:templateId" element={<TemplateShowcasePage />} />
-                    <Route path="/pricing" element={<PricingPage />} />
-                    <Route path="/faq" element={<FAQPage />} />
-
+                    <Route path="/" element={
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        >
+                            <HomePage />
+                        </motion.div>
+                    } />
+                    <Route path="/features" element={
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        >
+                            <FeaturesPage />
+                        </motion.div>
+                    } />
+                    <Route path="/templates" element={
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        >
+                            <TemplatesPage />
+                        </motion.div>
+                    } />
+                    <Route path="/sablonlar/:templateId" element={
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        >
+                            <TemplateShowcasePage />
+                        </motion.div>
+                    } />
+                    <Route path="/pricing" element={
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        >
+                            <PricingPage />
+                        </motion.div>
+                    } />
+                    <Route path="/faq" element={
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        >
+                            <FAQPage />
+                        </motion.div>
+                    } />
                     {/* Legal Routes */}
-                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                    <Route path="/terms" element={<TermsOfServicePage />} />
-                    <Route path="/cookies" element={<CookiePolicyPage />} />
-                    <Route path="/gdpr" element={<KVKKPage />} />
+                    <Route path="/privacy" element={
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <PrivacyPolicyPage />
+                        </motion.div>
+                    } />
+                    <Route path="/terms" element={
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <TermsOfServicePage />
+                        </motion.div>
+                    } />
+                    <Route path="/cookies" element={
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <CookiePolicyPage />
+                        </motion.div>
+                    } />
+                    <Route path="/gdpr" element={
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <KVKKPage />
+                        </motion.div>
+                    } />
 
                     {/* Support & Content Routes */}
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/blog" element={<BlogPage />} />
-                    <Route path="/help" element={<HelpCenterPage />} />
-                    <Route path="/support" element={<SupportPage />} />
+                    <Route path="/contact" element={
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            <ContactPage />
+                        </motion.div>
+                    } />
+                    <Route path="/blog" element={
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            <BlogPage />
+                        </motion.div>
+                    } />
+                    <Route path="/help" element={
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            <HelpCenterPage />
+                        </motion.div>
+                    } />
+                    <Route path="/support" element={
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            <SupportPage />
+                        </motion.div>
+                    } />
                 </Route>
 
                 {/* Public CV View - No Layout */}
                 <Route path="/v/:cvId" element={<PublicCVViewer />} />
 
                 {/* Living CV - Dynamic QR Landing Page */}
-                <Route path="/cv/:publicUrl" element={<LivingCVPage />} />
+                <Route path="/cv/:publicUrl" element={
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}>
+                        <LivingCVPage />
+                    </motion.div>
+                } />
 
                 {/* Auth Routes - No Layout */}
                 <Route path="/login" element={
                     <GuestRoute>
-                        <LoginPage />
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                            <LoginPage />
+                        </motion.div>
                     </GuestRoute>
                 } />
                 <Route path="/register" element={
                     <GuestRoute>
-                        <RegisterPage />
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                            <RegisterPage />
+                        </motion.div>
                     </GuestRoute>
                 } />
 
                 {/* Protected Routes - No Layout */}
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
-                        <DashboardPage />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <DashboardPage />
+                        </motion.div>
                     </ProtectedRoute>
                 } />
 
                 {/* CV Analytics */}
                 <Route path="/dashboard/analytics/:cvId" element={
                     <ProtectedRoute>
-                        <CVAnalyticsPage />
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            <CVAnalyticsPage />
+                        </motion.div>
                     </ProtectedRoute>
                 } />
 
                 {/* Admin Routes - Multi-page */}
                 <Route path="/admin" element={
                     <ProtectedRoute adminOnly>
-                        <AdminLayout />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <AdminLayout />
+                        </motion.div>
                     </ProtectedRoute>
                 }>
                     <Route index element={<AdminDashboardPage />} />
@@ -262,47 +386,59 @@ function AppRoutes() {
                 {/* Checkout - No Layout */}
                 <Route path="/checkout" element={
                     <ProtectedRoute>
-                        <CheckoutPage />
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                            <CheckoutPage />
+                        </motion.div>
                     </ProtectedRoute>
                 } />
 
                 {/* Editor - No Layout */}
-                <Route path="/editor" element={<EditorPage />} />
-                <Route
-                    path="/editor/:cvId"
-                    element={
-                        <ProtectedRoute>
+                <Route path="/editor" element={
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <EditorPage />
+                    </motion.div>
+                } />
+                <Route path="/editor/:cvId" element={
+                    <ProtectedRoute>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                             <EditorPage />
-                        </ProtectedRoute>
-                    }
-                />
+                        </motion.div>
+                    </ProtectedRoute>
+                } />
 
                 {/* Enterprise Routes */}
-                <Route
-                    path="/enterprise"
-                    element={
-                        <ProtectedRoute>
+                <Route path="/enterprise" element={
+                    <ProtectedRoute>
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                             <EnterpriseDashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path="/enterprise/signup" element={<EnterpriseSignup />} />
+                        </motion.div>
+                    </ProtectedRoute>
+                } />
+                <Route path="/enterprise/signup" element={
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                        <EnterpriseSignup />
+                    </motion.div>
+                } />
 
                 {/* Partner Routes */}
-                <Route
-                    path="/partner"
-                    element={
-                        <ProtectedRoute>
+                <Route path="/partner" element={
+                    <ProtectedRoute>
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                             <PartnerDashboard />
-                        </ProtectedRoute>
-                    }
-                />
+                        </motion.div>
+                    </ProtectedRoute>
+                } />
 
                 {/* Catch all */}
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-        </Suspense>
+        </AnimatePresence>
     )
+}
+
+// Legacy AppRoutes for compatibility
+function AppRoutes() {
+    return <AnimatedRoutes />
 }
 
 export default function App() {

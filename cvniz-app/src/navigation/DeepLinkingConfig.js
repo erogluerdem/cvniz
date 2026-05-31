@@ -56,7 +56,7 @@ const deepLinkingConfiguration = {
             InterviewDetail: 'ai/interview/:topicId',
             SkillGap: 'ai/skill-gap',
             CVScore: 'ai/cv-score',
-            CVScore Detail: 'ai/cv-score/:cvId',
+            CVScoreDetail: 'ai/cv-score/:cvId',
 
             // Reviews
             ReviewCreate: 'review/:cvId/create',

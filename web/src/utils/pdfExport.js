@@ -78,11 +78,18 @@ export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = fa
             const pageCount = pdf.internal.getNumberOfPages()
             for (let i = 1; i <= pageCount; i++) {
                 pdf.setPage(i)
-                pdf.setFontSize(40)
-                pdf.setTextColor(200, 200, 200)
-                pdf.text('CVniz.com', 105, 150, {
+                // Large diagonal watermark
+                pdf.setFontSize(60)
+                pdf.setTextColor(220, 220, 220)
+                pdf.text('CVniz.com', 105, 140, {
                     align: 'center',
-                    angle: 45
+                    angle: 35
+                })
+                // Secondary watermark at bottom
+                pdf.setFontSize(20)
+                pdf.setTextColor(180, 180, 180)
+                pdf.text('CVniz.com ile oluşturuldu - www.cvniz.com', 105, 280, {
+                    align: 'center'
                 })
             }
         }

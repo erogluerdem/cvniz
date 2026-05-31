@@ -441,7 +441,7 @@ const parseDocxXml = (xmlContent) => {
     return text
 }
 
-export default function CVImporter({ isOpen, onClose, onImport, isEditor = false }) {
+export default function CVImporter({ isOpen, onClose, onImport, isEditor = false, isDayMode = false }) {
     const { isPremium } = useAuth()
     const { saveCV } = useCV()
     const { toast } = useToast()
@@ -583,22 +583,22 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700 shadow-2xl"
+                    className={`relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border ${isDayMode ? 'bg-white border-slate-200' : 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-gray-700'}`}
                 >
                     {/* Header */}
-                    <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6">
+                    <div className={`sticky top-0 z-10 backdrop-blur-sm border-b p-6 ${isDayMode ? 'bg-white/95 border-slate-200' : 'bg-gray-900/95 border-gray-700'}`}>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
                                     <Upload className="text-white" size={24} />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-white">CV İçe Aktar</h2>
-                                    <p className="text-gray-400 text-sm">Mevcut CV'nizi yükleyin, biz ayrıştıralım</p>
+                                    <h2 className={`text-xl font-bold ${isDayMode ? 'text-slate-800' : 'text-white'}`}>CV İçe Aktar</h2>
+                                    <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Mevcut CV'nizi yükleyin, biz ayrıştıralım</p>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
-                                <X size={20} className="text-gray-400" />
+                            <button onClick={onClose} className={`p-2 rounded-lg transition-colors ${isDayMode ? 'hover:bg-slate-100 text-slate-400' : 'hover:bg-gray-800 text-gray-400'}`}>
+                                <X size={20} />
                             </button>
                         </div>
                     </div>
@@ -620,7 +620,7 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                     className={`relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${
                                         dragActive 
                                             ? 'border-cyan-500 bg-cyan-500/10' 
-                                            : 'border-gray-700 hover:border-gray-600 hover:bg-gray-800/50'
+                                            : isDayMode ? 'border-slate-300 hover:border-slate-400 hover:bg-slate-50' : 'border-gray-700 hover:border-gray-600 hover:bg-gray-800/50'
                                     }`}
                                 >
                                     <input
@@ -635,16 +635,16 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                         <FileText size={40} className="text-cyan-400" />
                                     </div>
                                     
-                                    <p className="text-white font-semibold mb-2">
+                                    <p className={`font-semibold mb-2 ${isDayMode ? 'text-slate-800' : 'text-white'}`}>
                                         CV dosyanızı sürükleyin veya tıklayın
                                     </p>
-                                    <p className="text-gray-400 text-sm mb-4">
+                                    <p className={`text-sm mb-4 ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>
                                         DOCX, PDF veya TXT formatları desteklenir
                                     </p>
                                     
                                     <div className="flex justify-center gap-2">
                                         {SUPPORTED_FORMATS.slice(0, 3).map(format => (
-                                            <span key={format.ext} className="px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-400">
+                                            <span key={format.ext} className={`px-3 py-1 rounded-full text-xs ${isDayMode ? 'bg-slate-100 text-slate-500' : 'bg-gray-800 text-gray-400'}`}>
                                                 {format.ext}
                                             </span>
                                         ))}
@@ -652,13 +652,13 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                 </div>
 
                                 {/* Info Box */}
-                                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+                                <div className={`mt-6 p-4 rounded-xl border ${isDayMode ? 'bg-blue-50 border-blue-200' : 'bg-blue-500/10 border-blue-500/30'}`}>
                                     <div className="flex items-start gap-3">
-                                        <Sparkles className="text-blue-400 mt-0.5" size={20} />
+                                        <Sparkles className={`mt-0.5 ${isDayMode ? 'text-blue-500' : 'text-blue-400'}`} size={20} />
                                         <div>
-                                            <p className="text-blue-300 font-medium text-sm">AI Destekli Ayrıştırma</p>
-                                            <p className="text-gray-400 text-sm mt-1">
-                                                CV'nizdeki bilgileri otomatik olarak algılar ve düzenlenebilir formata dönüştürür. 
+                                            <p className={`font-medium text-sm ${isDayMode ? 'text-blue-700' : 'text-blue-300'}`}>AI Destekli Ayrıştırma</p>
+                                            <p className={`text-sm mt-1 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                                                CV'nizdeki bilgileri otomatik olarak algılar ve düzenlenebilir formata dönüştürür.
                                                 İçe aktarma sonrası tüm bilgileri düzenleyebilirsiniz.
                                             </p>
                                         </div>
@@ -678,21 +678,21 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                     <Loader2 size={40} className="text-cyan-400 animate-spin" />
                                 </div>
                                 
-                                <h3 className="text-white font-semibold mb-2">
+                                <h3 className={`font-semibold mb-2 ${isDayMode ? 'text-slate-800' : 'text-white'}`}>
                                     {status === 'uploading' ? 'Dosya Yükleniyor...' : 'CV Ayrıştırılıyor...'}
                                 </h3>
-                                <p className="text-gray-400 text-sm mb-4">{file?.name}</p>
+                                <p className={`text-sm mb-4 ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>{file?.name}</p>
                                 
                                 {/* Progress Bar */}
                                 <div className="max-w-xs mx-auto">
-                                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                    <div className={`h-2 rounded-full overflow-hidden ${isDayMode ? 'bg-slate-200' : 'bg-gray-700'}`}>
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${progress}%` }}
                                             className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
                                         />
                                     </div>
-                                    <p className="text-gray-500 text-xs mt-2">{progress}%</p>
+                                    <p className={`text-xs mt-2 ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>{progress}%</p>
                                 </div>
                             </motion.div>
                         )}
@@ -708,12 +708,12 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                     <AlertCircle size={40} className="text-red-400" />
                                 </div>
                                 
-                                <h3 className="text-white font-semibold mb-2">Hata Oluştu</h3>
-                                <p className="text-red-400 text-sm mb-6">{error}</p>
-                                
+                                <h3 className={`font-semibold mb-2 ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Hata Oluştu</h3>
+                                <p className="text-red-500 text-sm mb-6">{error}</p>
+
                                 <button
                                     onClick={resetImporter}
-                                    className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors inline-flex items-center gap-2"
+                                    className={`px-6 py-3 font-medium rounded-xl transition-colors inline-flex items-center gap-2 ${isDayMode ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-gray-800 hover:bg-gray-700 text-white'}`}
                                 >
                                     <RefreshCw size={18} />
                                     Tekrar Dene
@@ -728,37 +728,37 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                 animate={{ opacity: 1 }}
                             >
                                 {/* Success Header */}
-                                <div className="flex items-center gap-3 mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
-                                    <CheckCircle className="text-green-400" size={24} />
+                                <div className={`flex items-center gap-3 mb-6 p-4 rounded-xl border ${isDayMode ? 'bg-green-50 border-green-200' : 'bg-green-500/10 border-green-500/30'}`}>
+                                    <CheckCircle className={isDayMode ? 'text-green-600' : 'text-green-400'} size={24} />
                                     <div>
-                                        <p className="text-green-300 font-medium">CV başarıyla ayrıştırıldı!</p>
-                                        <p className="text-gray-400 text-sm">Bilgileri kontrol edin ve içe aktarın</p>
+                                        <p className={`font-medium ${isDayMode ? 'text-green-700' : 'text-green-300'}`}>CV başarıyla ayrıştırıldı!</p>
+                                        <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Bilgileri kontrol edin ve içe aktarın</p>
                                     </div>
                                 </div>
 
                                 {/* Parsed Data Preview */}
                                 <div className="space-y-3 mb-6">
                                     {/* Personal Info */}
-                                    <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+                                    <div className={`rounded-xl border overflow-hidden ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-gray-800/50 border-gray-700'}`}>
                                         <button
                                             onClick={() => toggleSection('personal')}
-                                            className="w-full p-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
+                                            className={`w-full p-4 flex items-center justify-between transition-colors ${isDayMode ? 'hover:bg-slate-100' : 'hover:bg-gray-800'}`}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <User size={18} className="text-cyan-400" />
-                                                <span className="text-white font-medium">Kişisel Bilgiler</span>
+                                                <span className={`font-medium ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Kişisel Bilgiler</span>
                                                 {parsedData.personalInfo.name && (
-                                                    <span className="text-gray-400 text-sm">• {parsedData.personalInfo.name}</span>
+                                                    <span className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>• {parsedData.personalInfo.name}</span>
                                                 )}
                                             </div>
-                                            {expandedSections.personal ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                                            {expandedSections.personal ? <ChevronUp size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} /> : <ChevronDown size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} />}
                                         </button>
                                         {expandedSections.personal && (
                                             <div className="p-4 pt-0 grid grid-cols-2 gap-3 text-sm">
                                                 {Object.entries(parsedData.personalInfo).filter(([k, v]) => v).map(([key, value]) => (
                                                     <div key={key}>
-                                                        <span className="text-gray-500 capitalize">{key}: </span>
-                                                        <span className="text-gray-300">{value.substring(0, 50)}{value.length > 50 ? '...' : ''}</span>
+                                                        <span className={`capitalize ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>{key}: </span>
+                                                        <span className={isDayMode ? 'text-slate-700' : 'text-gray-300'}>{value.substring(0, 50)}{value.length > 50 ? '...' : ''}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -767,26 +767,26 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
 
                                     {/* Experience */}
                                     {parsedData.experience.length > 0 && (
-                                        <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+                                        <div className={`rounded-xl border overflow-hidden ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-gray-800/50 border-gray-700'}`}>
                                             <button
                                                 onClick={() => toggleSection('experience')}
-                                                className="w-full p-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
+                                                className={`w-full p-4 flex items-center justify-between transition-colors ${isDayMode ? 'hover:bg-slate-100' : 'hover:bg-gray-800'}`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <Briefcase size={18} className="text-purple-400" />
-                                                    <span className="text-white font-medium">Deneyim</span>
-                                                    <span className="px-2 py-0.5 bg-purple-500/20 text-purple-300 text-xs rounded-full">
+                                                    <span className={`font-medium ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Deneyim</span>
+                                                    <span className={`px-2 py-0.5 text-xs rounded-full ${isDayMode ? 'bg-purple-100 text-purple-700' : 'bg-purple-500/20 text-purple-300'}`}>
                                                         {parsedData.experience.length}
                                                     </span>
                                                 </div>
-                                                {expandedSections.experience ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                                                {expandedSections.experience ? <ChevronUp size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} /> : <ChevronDown size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} />}
                                             </button>
                                             {expandedSections.experience && (
                                                 <div className="p-4 pt-0 space-y-2">
                                                     {parsedData.experience.map((exp, i) => (
-                                                        <div key={i} className="text-sm p-2 bg-gray-800 rounded-lg">
-                                                            <p className="text-white">{exp.company}</p>
-                                                            <p className="text-gray-400">{exp.position} • {exp.startDate} - {exp.endDate}</p>
+                                                        <div key={i} className={`text-sm p-2 rounded-lg ${isDayMode ? 'bg-white border border-slate-100' : 'bg-gray-800'}`}>
+                                                            <p className={isDayMode ? 'text-slate-800 font-medium' : 'text-white'}>{exp.company}</p>
+                                                            <p className={isDayMode ? 'text-slate-500 text-xs' : 'text-gray-400'}>{exp.position} • {exp.startDate} - {exp.endDate}</p>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -796,26 +796,26 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
 
                                     {/* Education */}
                                     {parsedData.education.length > 0 && (
-                                        <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+                                        <div className={`rounded-xl border overflow-hidden ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-gray-800/50 border-gray-700'}`}>
                                             <button
                                                 onClick={() => toggleSection('education')}
-                                                className="w-full p-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
+                                                className={`w-full p-4 flex items-center justify-between transition-colors ${isDayMode ? 'hover:bg-slate-100' : 'hover:bg-gray-800'}`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <GraduationCap size={18} className="text-green-400" />
-                                                    <span className="text-white font-medium">Eğitim</span>
-                                                    <span className="px-2 py-0.5 bg-green-500/20 text-green-300 text-xs rounded-full">
+                                                    <span className={`font-medium ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Eğitim</span>
+                                                    <span className={`px-2 py-0.5 text-xs rounded-full ${isDayMode ? 'bg-green-100 text-green-700' : 'bg-green-500/20 text-green-300'}`}>
                                                         {parsedData.education.length}
                                                     </span>
                                                 </div>
-                                                {expandedSections.education ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                                                {expandedSections.education ? <ChevronUp size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} /> : <ChevronDown size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} />}
                                             </button>
                                             {expandedSections.education && (
                                                 <div className="p-4 pt-0 space-y-2">
                                                     {parsedData.education.map((edu, i) => (
-                                                        <div key={i} className="text-sm p-2 bg-gray-800 rounded-lg">
-                                                            <p className="text-white">{edu.school}</p>
-                                                            <p className="text-gray-400">{edu.degree} {edu.field && `• ${edu.field}`}</p>
+                                                        <div key={i} className={`text-sm p-2 rounded-lg ${isDayMode ? 'bg-white border border-slate-100' : 'bg-gray-800'}`}>
+                                                            <p className={isDayMode ? 'text-slate-800 font-medium' : 'text-white'}>{edu.school}</p>
+                                                            <p className={isDayMode ? 'text-slate-500 text-xs' : 'text-gray-400'}>{edu.degree} {edu.field && `• ${edu.field}`}</p>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -825,25 +825,25 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
 
                                     {/* Skills */}
                                     {parsedData.skills.length > 0 && (
-                                        <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+                                        <div className={`rounded-xl border overflow-hidden ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-gray-800/50 border-gray-700'}`}>
                                             <button
                                                 onClick={() => toggleSection('skills')}
-                                                className="w-full p-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
+                                                className={`w-full p-4 flex items-center justify-between transition-colors ${isDayMode ? 'hover:bg-slate-100' : 'hover:bg-gray-800'}`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <Award size={18} className="text-amber-400" />
-                                                    <span className="text-white font-medium">Yetenekler</span>
-                                                    <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-xs rounded-full">
+                                                    <span className={`font-medium ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Yetenekler</span>
+                                                    <span className={`px-2 py-0.5 text-xs rounded-full ${isDayMode ? 'bg-amber-100 text-amber-700' : 'bg-amber-500/20 text-amber-300'}`}>
                                                         {parsedData.skills.length}
                                                     </span>
                                                 </div>
-                                                {expandedSections.skills ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                                                {expandedSections.skills ? <ChevronUp size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} /> : <ChevronDown size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} />}
                                             </button>
                                             {expandedSections.skills && (
                                                 <div className="p-4 pt-0 flex flex-wrap gap-2">
                                                     {parsedData.skills.map((skill, i) => (
-                                                        <span key={i} className="px-3 py-1 bg-gray-800 text-gray-300 text-sm rounded-full">
-                                                            {skill.name}
+                                                        <span key={i} className={`px-3 py-1 text-sm rounded-full ${isDayMode ? 'bg-white border border-slate-200 text-slate-700' : 'bg-gray-800 text-gray-300'}`}>
+                                                            {skill.name || skill}
                                                         </span>
                                                     ))}
                                                 </div>
@@ -853,24 +853,24 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
 
                                     {/* Languages */}
                                     {parsedData.languages.length > 0 && (
-                                        <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden">
+                                        <div className={`rounded-xl border overflow-hidden ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-gray-800/50 border-gray-700'}`}>
                                             <button
                                                 onClick={() => toggleSection('languages')}
-                                                className="w-full p-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
+                                                className={`w-full p-4 flex items-center justify-between transition-colors ${isDayMode ? 'hover:bg-slate-100' : 'hover:bg-gray-800'}`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <Languages size={18} className="text-indigo-400" />
-                                                    <span className="text-white font-medium">Diller</span>
-                                                    <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 text-xs rounded-full">
+                                                    <span className={`font-medium ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Diller</span>
+                                                    <span className={`px-2 py-0.5 text-xs rounded-full ${isDayMode ? 'bg-indigo-100 text-indigo-700' : 'bg-indigo-500/20 text-indigo-300'}`}>
                                                         {parsedData.languages.length}
                                                     </span>
                                                 </div>
-                                                {expandedSections.languages ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                                                {expandedSections.languages ? <ChevronUp size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} /> : <ChevronDown size={18} className={isDayMode ? 'text-slate-400' : 'text-gray-400'} />}
                                             </button>
                                             {expandedSections.languages && (
                                                 <div className="p-4 pt-0 flex flex-wrap gap-2">
                                                     {parsedData.languages.map((lang, i) => (
-                                                        <span key={i} className="px-3 py-1 bg-gray-800 text-gray-300 text-sm rounded-full">
+                                                        <span key={i} className={`px-3 py-1 text-sm rounded-full ${isDayMode ? 'bg-white border border-slate-200 text-slate-700' : 'bg-gray-800 text-gray-300'}`}>
                                                             {lang.language} • {lang.level}
                                                         </span>
                                                     ))}
@@ -884,7 +884,7 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                 <div className="flex gap-3">
                                     <button
                                         onClick={resetImporter}
-                                        className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
+                                        className={`flex-1 py-3 font-medium rounded-xl transition-colors flex items-center justify-center gap-2 ${isDayMode ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-gray-800 hover:bg-gray-700 text-white'}`}
                                     >
                                         <RefreshCw size={18} />
                                         Farklı Dosya
@@ -899,7 +899,7 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                                 </div>
 
                                 {/* Edit Note */}
-                                <p className="text-center text-gray-500 text-xs mt-4">
+                                <p className={`text-center text-xs mt-4 ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>
                                     <Edit3 size={12} className="inline mr-1" />
                                     İçe aktarma sonrası tüm bilgileri düzenleyebilirsiniz
                                 </p>

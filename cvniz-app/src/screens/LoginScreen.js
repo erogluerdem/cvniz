@@ -1,13 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     View, Text, TextInput, TouchableOpacity, StyleSheet,
     KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,
     Alert, Animated, Dimensions, StatusBar
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useAuth } from '../context/AuthContext';
+import { COLORS, SPACING, BORDER_RADIUS, scale, moderateScale, isSmallScreen, isIOS } from '../constants';
 
 const { width, height } = Dimensions.get('window');
+
+// Responsive helpers
+const rs = (size) => isSmallScreen ? scale(size * 0.9) : scale(size);
 
 export default function LoginScreen({ navigation }) {
     const { login } = useAuth();
@@ -110,7 +118,7 @@ export default function LoginScreen({ navigation }) {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
                 <ScrollView
-                    contentContainerStyle={styles.scrollContent}
+                    contentContainerStyle={[styles.scrollContent, isSmallScreen && { paddingTop: isIOS ? 60 : 40 }]}
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
@@ -120,16 +128,18 @@ export default function LoginScreen({ navigation }) {
                         { 
                             opacity: fadeAnim,
                             transform: [{ translateY: slideAnim }]
-                        }
+                        },
+                        isSmallScreen && { marginBottom: 24 }
                     ]}>
                         <Animated.View style={[
                             styles.logoBox,
-                            { transform: [{ scale: logoScale }] }
+                            { transform: [{ scale: logoScale }] },
+                            isSmallScreen && { width: 72, height: 72, borderRadius: 22 }
                         ]}>
-                            <Text style={styles.logoText}>CV</Text>
+                            <Text style={[styles.logoText, isSmallScreen && { fontSize: 28 }]}>CV</Text>
                         </Animated.View>
-                        <Text style={styles.appName}>CVniz</Text>
-                        <Text style={styles.tagline}>Profesyonel CV'nizi dakikalar içinde oluşturun</Text>
+                        <Text style={[styles.appName, isSmallScreen && { fontSize: 28 }]}>CVniz</Text>
+                        <Text style={[styles.tagline, isSmallScreen && { fontSize: 13 }]}>Profesyonel CV'nizi dakikalar içinde oluşturun</Text>
                     </Animated.View>
 
                     {/* Form Card */}
@@ -138,19 +148,21 @@ export default function LoginScreen({ navigation }) {
                         { 
                             opacity: fadeAnim,
                             transform: [{ translateY: formSlide }]
-                        }
+                        },
+                        isSmallScreen && { padding: 20, borderRadius: 20 }
                     ]}>
-                        <Text style={styles.formTitle}>Giriş Yap</Text>
-                        <Text style={styles.formSubtitle}>Hesabınıza giriş yapın</Text>
+                        <Text style={[styles.formTitle, isSmallScreen && { fontSize: 22 }]}>Giriş Yap</Text>
+                        <Text style={[styles.formSubtitle, isSmallScreen && { fontSize: 13, marginBottom: 20 }]}>Hesabınıza giriş yapın</Text>
 
                         {/* Email Input */}
-                        <View style={styles.inputWrapper}>
-                            <Text style={styles.inputLabel}>E-posta</Text>
+                        <View style={[styles.inputWrapper, isSmallScreen && { marginBottom: 14 }]}>
+                            <Text style={[styles.inputLabel, isSmallScreen && { fontSize: 12, marginBottom: 6 }]}>E-posta</Text>
                             <View style={[
                                 styles.inputContainer,
-                                focusedInput === 'email' && styles.inputContainerFocused
+                                focusedInput === 'email' && styles.inputContainerFocused,
+                                isSmallScreen && { height: 50, paddingHorizontal: 12 }
                             ]}>
-                                <Text style={styles.inputIcon}>📧</Text>
+                                <Feather name="mail" size={18} color="#94A3B8" style={styles.inputIcon} />
                                 <TextInput
                                     ref={emailRef}
                                     style={styles.input}
@@ -170,13 +182,14 @@ export default function LoginScreen({ navigation }) {
                         </View>
 
                         {/* Password Input */}
-                        <View style={styles.inputWrapper}>
-                            <Text style={styles.inputLabel}>Şifre</Text>
+                        <View style={[styles.inputWrapper, isSmallScreen && { marginBottom: 14 }]}>
+                            <Text style={[styles.inputLabel, isSmallScreen && { fontSize: 12, marginBottom: 6 }]}>Şifre</Text>
                             <View style={[
                                 styles.inputContainer,
-                                focusedInput === 'password' && styles.inputContainerFocused
+                                focusedInput === 'password' && styles.inputContainerFocused,
+                                isSmallScreen && { height: 50, paddingHorizontal: 12 }
                             ]}>
-                                <Text style={styles.inputIcon}>🔒</Text>
+                                <Feather name="lock" size={18} color="#94A3B8" style={styles.inputIcon} />
                                 <TextInput
                                     ref={passwordRef}
                                     style={styles.input}
@@ -192,9 +205,16 @@ export default function LoginScreen({ navigation }) {
                                 />
                                 <TouchableOpacity 
                                     style={styles.eyeBtn}
-                                    onPress={() => setShowPassword(!showPassword)}
+                                    onPress={() => {
+                                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                        setShowPassword(!showPassword);
+                                    }}
                                 >
-                                    <Text style={styles.eyeIcon}>{showPassword ? '👁' : '👁‍🗨'}</Text>
+                                    <Feather 
+                                        name={showPassword ? "eye" : "eye-off"} 
+                                        size={18} 
+                                        color="#94A3B8" 
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -207,25 +227,38 @@ export default function LoginScreen({ navigation }) {
                             <Text style={styles.forgotText}>Şifremi Unuttum</Text>
                         </TouchableOpacity>
 
-                        {/* Login Button */}
+                        {/* Modern Login Button */}
                         <TouchableOpacity
-                            style={styles.loginBtn}
-                            onPress={handleLogin}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                handleLogin();
+                            }}
                             disabled={loading}
-                            activeOpacity={0.8}
+                            activeOpacity={0.9}
+                            style={isSmallScreen && { marginTop: 4, marginBottom: 16 }}
                         >
-                            <LinearGradient
-                                colors={['#6366F1', '#8B5CF6']}
-                                style={styles.loginGradient}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
+                            <MotiView
+                                from={{ scale: 0.95, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: 'spring', damping: 15 }}
+                                style={[styles.modernLoginBtn, isSmallScreen && { height: 50 }]}
                             >
-                                {loading ? (
-                                    <ActivityIndicator color="#FFF" size="small" />
-                                ) : (
-                                    <Text style={styles.loginText}>Giriş Yap</Text>
-                                )}
-                            </LinearGradient>
+                                <LinearGradient
+                                    colors={COLORS.gradients.primary}
+                                    style={styles.loginGradient}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                >
+                                    {loading ? (
+                                        <ActivityIndicator color="#FFF" size="small" />
+                                    ) : (
+                                        <View style={styles.loginBtnContent}>
+                                            <Text style={styles.loginText}>Giriş Yap</Text>
+                                            <Feather name="arrow-right" size={18} color="#FFF" />
+                                        </View>
+                                    )}
+                                </LinearGradient>
+                            </MotiView>
                         </TouchableOpacity>
 
                         {/* Divider */}
@@ -235,14 +268,22 @@ export default function LoginScreen({ navigation }) {
                             <View style={styles.dividerLine} />
                         </View>
 
-                        {/* Social Login */}
+                        {/* Modern Social Login */}
                         <View style={styles.socialRow}>
-                            <TouchableOpacity style={styles.socialBtn}>
-                                <Text style={styles.socialIcon}>🍎</Text>
+                            <TouchableOpacity 
+                                style={styles.modernSocialBtn}
+                                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                            >
+                                <BlurView intensity={30} tint="light" style={StyleSheet.absoluteFill} />
+                                <Ionicons name="logo-apple" size={22} color="#000" />
                                 <Text style={styles.socialText}>Apple</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.socialBtn}>
-                                <Text style={styles.socialIcon}>G</Text>
+                            <TouchableOpacity 
+                                style={styles.modernSocialBtn}
+                                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                            >
+                                <BlurView intensity={30} tint="light" style={StyleSheet.absoluteFill} />
+                                <Ionicons name="logo-google" size={22} color="#EA4335" />
                                 <Text style={styles.socialText}>Google</Text>
                             </TouchableOpacity>
                         </View>
@@ -432,8 +473,44 @@ const styles = StyleSheet.create({
         }),
     },
     inputIcon: {
-        fontSize: 20,
         marginRight: 12,
+    },
+    modernLoginBtn: {
+        borderRadius: BORDER_RADIUS.xl,
+        overflow: 'hidden',
+        marginTop: 8,
+        marginBottom: 24,
+        ...Platform.select({
+            ios: {
+                shadowColor: COLORS.primary,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.3,
+                shadowRadius: 16,
+            },
+            android: {
+                elevation: 8,
+            },
+        }),
+    },
+    loginBtnContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        height: 58,
+    },
+    modernSocialBtn: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 14,
+        borderRadius: BORDER_RADIUS.lg,
+        backgroundColor: '#F8FAFC',
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+        overflow: 'hidden',
     },
     input: {
         flex: 1,

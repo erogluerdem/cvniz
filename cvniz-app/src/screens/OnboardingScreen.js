@@ -4,42 +4,53 @@ import {
     Animated, StatusBar, Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS, SPACING, BORDER_RADIUS, scale, moderateScale, isSmallScreen, isIOS } from '../constants';
 
 const { width, height } = Dimensions.get('window');
+
+// Responsive helpers
+const rs = (size) => isSmallScreen ? scale(size * 0.9) : scale(size);
 
 const SLIDES = [
     {
         id: 1,
-        icon: '📄',
+        iconName: 'file-text',
+        iconType: 'feather',
         title: 'Profesyonel CV\'ler',
         subtitle: 'Dakikalar içinde etkileyici CV\'ler oluşturun',
         description: 'Modern şablonlar ve AI destekli içerik önerileri ile öne çıkan CV\'ler hazırlayın.',
-        color: ['#6366F1', '#8B5CF6'],
+        colors: ['#6366F1', '#8B5CF6'],
     },
     {
         id: 2,
-        icon: '🎯',
+        iconName: 'target',
+        iconType: 'feather',
         title: 'ATS Uyumlu',
         subtitle: 'İşe alım sistemlerini geçin',
         description: 'CV\'nizi analiz edin ve ATS sistemlerinden yüksek skor alın.',
-        color: ['#10B981', '#059669'],
+        colors: ['#10B981', '#059669'],
     },
     {
         id: 3,
-        icon: '🌐',
+        iconName: 'globe',
+        iconType: 'feather',
         title: 'Her Yerde Erişin',
         subtitle: 'PC\'de başlayın, mobilde devam edin',
         description: 'Tüm cihazlarınızda senkronize çalışın. CV\'leriniz her zaman yanınızda.',
-        color: ['#F59E0B', '#D97706'],
+        colors: ['#F59E0B', '#D97706'],
     },
     {
         id: 4,
-        icon: '🚀',
+        iconName: 'rocket',
+        iconType: 'material',
         title: 'Hayalinizdeki İşe',
         subtitle: 'Kariyerinizi bir üst seviyeye taşıyın',
         description: 'Ön yazı, iş arama, CV paylaşımı ve daha fazlası tek uygulamada.',
-        color: ['#EC4899', '#DB2777'],
+        colors: ['#EC4899', '#DB2777'],
     },
 ];
 
@@ -49,6 +60,7 @@ export default function OnboardingScreen({ navigation, onComplete }) {
     const slideRef = useRef(null);
 
     const handleNext = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         if (currentIndex < SLIDES.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
@@ -57,6 +69,7 @@ export default function OnboardingScreen({ navigation, onComplete }) {
     };
 
     const handleSkip = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         completeOnboarding();
     };
 
@@ -80,7 +93,7 @@ export default function OnboardingScreen({ navigation, onComplete }) {
                 return (
                     <TouchableOpacity
                         key={index}
-                        onPress={() => setCurrentIndex(index)}
+                        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCurrentIndex(index); }}
                         activeOpacity={0.7}
                     >
                         <View
@@ -102,14 +115,15 @@ export default function OnboardingScreen({ navigation, onComplete }) {
             <StatusBar barStyle="light-content" />
             
             <LinearGradient
-                colors={currentSlide.color}
+                colors={currentSlide.colors}
                 style={styles.background}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
                 {/* Skip Button */}
-                <TouchableOpacity style={styles.skipBtn} onPress={handleSkip}>
-                    <Text style={styles.skipText}>Atla</Text>
+                <TouchableOpacity style={[styles.skipBtn, isSmallScreen && { top: isIOS ? 50 : 40, paddingHorizontal: 12, paddingVertical: 6 }]} onPress={handleSkip}>
+                    <Feather name="skip-forward" size={isSmallScreen ? 14 : 16} color="rgba(255,255,255,0.9)" style={{ marginRight: 6 }} />
+                    <Text style={[styles.skipText, isSmallScreen && { fontSize: 12 }]}>Atla</Text>
                 </TouchableOpacity>
 
                 {/* Content */}
@@ -119,43 +133,66 @@ export default function OnboardingScreen({ navigation, onComplete }) {
                     <View style={styles.decorCircle2} />
                     <View style={styles.decorCircle3} />
 
-                    {/* Icon */}
-                    <View style={styles.iconContainer}>
-                        <View style={styles.iconInner}>
-                            <Text style={styles.icon}>{currentSlide.icon}</Text>
-                        </View>
-                    </View>
+                    {/* Modern Icon */}
+                    <MotiView
+                        key={currentSlide.id}
+                        from={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', damping: 12 }}
+                        style={[styles.iconContainer, isSmallScreen && { marginBottom: 24 }]}
+                    >
+                        <LinearGradient
+                            colors={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.1)']}
+                            style={[styles.iconInner, isSmallScreen && { width: 110, height: 110, borderRadius: 55 }]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        >
+                            {currentSlide.iconType === 'material' ? (
+                                <MaterialCommunityIcons name={currentSlide.iconName} size={isSmallScreen ? 50 : 64} color="#FFF" />
+                            ) : (
+                                <Feather name={currentSlide.iconName} size={isSmallScreen ? 44 : 56} color="#FFF" />
+                            )}
+                        </LinearGradient>
+                    </MotiView>
 
                     {/* Text Content */}
                     <View style={styles.textContainer}>
-                        <Text style={styles.title}>{currentSlide.title}</Text>
-                        <Text style={styles.subtitle}>{currentSlide.subtitle}</Text>
-                        <Text style={styles.description}>{currentSlide.description}</Text>
+                        <Text style={[styles.title, isSmallScreen && { fontSize: 26, marginBottom: 8 }]}>{currentSlide.title}</Text>
+                        <Text style={[styles.subtitle, isSmallScreen && { fontSize: 16, marginBottom: 12 }]}>{currentSlide.subtitle}</Text>
+                        <Text style={[styles.description, isSmallScreen && { fontSize: 13, lineHeight: 18 }]}>{currentSlide.description}</Text>
                     </View>
                 </View>
 
                 {/* Bottom Section */}
-                <View style={styles.bottomSection}>
+                <View style={[styles.bottomSection, isSmallScreen && { paddingHorizontal: 24, paddingBottom: isIOS ? 40 : 20 }]}>
                     {renderDots()}
 
                     <TouchableOpacity
                         style={styles.nextBtn}
                         onPress={handleNext}
-                        activeOpacity={0.8}
+                        activeOpacity={0.9}
                     >
-                        <View style={styles.nextBtnInner}>
+                        <LinearGradient
+                            colors={['#FFFFFF', '#F1F5F9']}
+                            style={styles.nextBtnGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                        >
                             <Text style={styles.nextBtnText}>
                                 {currentIndex === SLIDES.length - 1 ? 'Başlayın' : 'Devam'}
                             </Text>
-                            <Text style={styles.nextBtnArrow}>→</Text>
-                        </View>
+                            <Feather name="arrow-right" size={20} color={currentSlide.colors[0]} />
+                        </LinearGradient>
                     </TouchableOpacity>
 
                     {/* Login Link */}
                     <View style={styles.loginContainer}>
                         <Text style={styles.loginText}>Zaten hesabınız var mı? </Text>
-                        <TouchableOpacity onPress={completeOnboarding}>
-                            <Text style={styles.loginLink}>Giriş Yapın</Text>
+                        <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); completeOnboarding(); }}>
+                            <View style={styles.loginLinkContainer}>
+                                <Feather name="log-in" size={14} color="#FFF" style={{ marginRight: 4 }} />
+                                <Text style={styles.loginLink}>Giriş Yapın</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -173,13 +210,15 @@ const styles = StyleSheet.create({
     },
     skipBtn: {
         position: 'absolute',
-        top: Platform.OS === 'ios' ? 60 : 45,
+        top: isSmallScreen ? (Platform.OS === 'ios' ? 50 : 40) : (Platform.OS === 'ios' ? 60 : 45),
         right: 20,
         zIndex: 10,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
+        paddingHorizontal: isSmallScreen ? 12 : 16,
+        paddingVertical: isSmallScreen ? 6 : 8,
         backgroundColor: 'rgba(255,255,255,0.2)',
         borderRadius: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     skipText: {
         color: '#FFFFFF',
@@ -221,8 +260,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 40,
-        paddingTop: 80,
+        paddingHorizontal: isSmallScreen ? 30 : 40,
+        paddingTop: isSmallScreen ? 60 : 80,
     },
     iconContainer: {
         marginBottom: 40,
@@ -240,39 +279,36 @@ const styles = StyleSheet.create({
         shadowRadius: 20,
         elevation: 10,
     },
-    icon: {
-        fontSize: 70,
-    },
 
     // Text
     textContainer: {
         alignItems: 'center',
     },
     title: {
-        fontSize: 32,
+        fontSize: moderateScale(32),
         fontWeight: '800',
         color: '#FFFFFF',
         textAlign: 'center',
         marginBottom: 12,
     },
     subtitle: {
-        fontSize: 18,
+        fontSize: moderateScale(18),
         fontWeight: '600',
         color: 'rgba(255,255,255,0.9)',
         textAlign: 'center',
         marginBottom: 16,
     },
     description: {
-        fontSize: 15,
+        fontSize: moderateScale(15),
         color: 'rgba(255,255,255,0.7)',
         textAlign: 'center',
-        lineHeight: 22,
+        lineHeight: isSmallScreen ? 20 : 22,
     },
 
     // Bottom Section
     bottomSection: {
-        paddingHorizontal: 40,
-        paddingBottom: Platform.OS === 'ios' ? 50 : 30,
+        paddingHorizontal: isSmallScreen ? 24 : 40,
+        paddingBottom: Platform.OS === 'ios' ? (isSmallScreen ? 40 : 50) : (isSmallScreen ? 20 : 30),
     },
 
     // Dots
@@ -300,32 +336,25 @@ const styles = StyleSheet.create({
 
     // Next Button
     nextBtn: {
-        marginBottom: 24,
+        marginBottom: isSmallScreen ? 16 : 24,
     },
-    nextBtnInner: {
+    nextBtnGradient: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FFFFFF',
-        paddingVertical: 18,
-        paddingHorizontal: 32,
+        paddingVertical: isSmallScreen ? 14 : 18,
+        paddingHorizontal: isSmallScreen ? 24 : 32,
         borderRadius: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.15,
         shadowRadius: 12,
         elevation: 6,
+        gap: 8,
     },
     nextBtnText: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#0F172A',
-    },
-    nextBtnArrow: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#0F172A',
-        marginLeft: 8,
     },
 
     // Login
@@ -336,6 +365,10 @@ const styles = StyleSheet.create({
     loginText: {
         fontSize: 14,
         color: 'rgba(255,255,255,0.7)',
+    },
+    loginLinkContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     loginLink: {
         fontSize: 14,

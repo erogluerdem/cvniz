@@ -5,13 +5,16 @@ import {
     Animated, Dimensions, StatusBar
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCV } from '../context/CVContext';
 import { useTheme } from '../context/ThemeContext';
+import { COLORS, SPACING, BORDER_RADIUS } from '../constants';
 
 const { width } = Dimensions.get('window');
 
-// ============ ANIMATED SECTION ============
-function Section({ title, icon, children, expanded, onToggle, onAdd, addLabel, badge }) {
+// ============ MODERN ANIMATED SECTION ============
+function Section({ title, iconName, children, expanded, onToggle, onAdd, addLabel, badge, color = COLORS.primary }) {
     const heightAnim = useRef(new Animated.Value(expanded ? 1 : 0)).current;
     const rotateAnim = useRef(new Animated.Value(expanded ? 1 : 0)).current;
 
@@ -27,17 +30,27 @@ function Section({ title, icon, children, expanded, onToggle, onAdd, addLabel, b
         outputRange: ['0deg', '180deg'],
     });
 
+    const handleToggle = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onToggle?.();
+    };
+
+    const handleAdd = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onAdd?.();
+    };
+
     return (
         <View style={styles.section}>
-            <TouchableOpacity style={styles.sectionHeader} onPress={onToggle} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.sectionHeader} onPress={handleToggle} activeOpacity={0.8}>
                 <View style={styles.sectionLeft}>
                     <LinearGradient
-                        colors={['#6366F1', '#8B5CF6']}
+                        colors={[color, color + 'DD']}
                         style={styles.sectionIconBox}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                     >
-                        <Text style={styles.sectionIcon}>{icon}</Text>
+                        <Feather name={iconName} size={18} color="#FFF" />
                     </LinearGradient>
                     <View>
                         <Text style={styles.sectionTitle}>{title}</Text>
@@ -47,7 +60,7 @@ function Section({ title, icon, children, expanded, onToggle, onAdd, addLabel, b
                     </View>
                 </View>
                 <Animated.View style={{ transform: [{ rotate }] }}>
-                    <Text style={styles.sectionChevron}>▼</Text>
+                    <Feather name="chevron-down" size={20} color={COLORS.textTertiary} />
                 </Animated.View>
             </TouchableOpacity>
 
@@ -55,11 +68,16 @@ function Section({ title, icon, children, expanded, onToggle, onAdd, addLabel, b
                 <View style={styles.sectionContent}>
                     {children}
                     {onAdd && (
-                        <TouchableOpacity style={styles.addButton} onPress={onAdd} activeOpacity={0.7}>
-                            <View style={styles.addButtonInner}>
-                                <Text style={styles.addButtonIcon}>+</Text>
-                                <Text style={styles.addButtonText}>{addLabel || 'Ekle'}</Text>
-                            </View>
+                        <TouchableOpacity style={styles.addButton} onPress={handleAdd} activeOpacity={0.8}>
+                            <LinearGradient
+                                colors={['#F8FAFC', '#F1F5F9']}
+                                style={styles.addButtonGradient}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                            >
+                                <Feather name="plus" size={16} color={color} />
+                                <Text style={[styles.addButtonText, { color }]}>{addLabel || 'Ekle'}</Text>
+                            </LinearGradient>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -68,20 +86,21 @@ function Section({ title, icon, children, expanded, onToggle, onAdd, addLabel, b
     );
 }
 
-// ============ INPUT FIELD ============
-function InputField({ label, value, onChangeText, placeholder, multiline, icon }) {
+// ============ MODERN INPUT FIELD ============
+function InputField({ label, value, onChangeText, placeholder, multiline, iconName, color = COLORS.primary }) {
     const [isFocused, setIsFocused] = useState(false);
 
     return (
         <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>
-                {icon && <Text>{icon} </Text>}{label}
-            </Text>
+            <View style={styles.inputLabelContainer}>
+                {iconName && <Feather name={iconName} size={14} color={color} style={styles.inputLabelIcon} />}
+                <Text style={styles.inputLabel}>{label}</Text>
+            </View>
             <TextInput
                 style={[
                     styles.textInput,
                     multiline && styles.textArea,
-                    isFocused && styles.textInputFocused
+                    isFocused && [styles.textInputFocused, { borderColor: color }]
                 ]}
                 value={value}
                 onChangeText={onChangeText}
@@ -96,13 +115,23 @@ function InputField({ label, value, onChangeText, placeholder, multiline, icon }
     );
 }
 
-// ============ EXPERIENCE CARD ============
+// ============ MODERN EXPERIENCE CARD ============
 function ExperienceCard({ item, index, onEdit, onDelete }) {
+    const handleEdit = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onEdit(index);
+    };
+
+    const handleDelete = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onDelete(index);
+    };
+
     return (
         <View style={styles.itemCard}>
             <View style={styles.itemTimeline}>
-                <View style={styles.itemDot} />
-                <View style={styles.itemLine} />
+                <View style={[styles.itemDot, { backgroundColor: COLORS.primary }]} />
+                <View style={[styles.itemLine, { backgroundColor: `${COLORS.primary}30` }]} />
             </View>
             <View style={styles.itemContent}>
                 <View style={styles.itemHeader}>
@@ -110,18 +139,18 @@ function ExperienceCard({ item, index, onEdit, onDelete }) {
                         <Text style={styles.itemTitle}>{item.position || 'Pozisyon'}</Text>
                         <Text style={styles.itemCompany}>{item.company || 'Şirket'}</Text>
                         <View style={styles.itemDateRow}>
-                            <Text style={styles.itemDateIcon}>📅</Text>
+                            <Feather name="calendar" size={12} color={COLORS.textTertiary} />
                             <Text style={styles.itemDate}>
                                 {item.startDate || 'Başlangıç'} - {item.current ? 'Devam Ediyor' : (item.endDate || 'Bitiş')}
                             </Text>
                         </View>
                     </View>
                     <View style={styles.itemActions}>
-                        <TouchableOpacity style={styles.itemActionBtn} onPress={() => onEdit(index)}>
-                            <Text>✏️</Text>
+                        <TouchableOpacity style={[styles.itemActionBtn, { backgroundColor: `${COLORS.primary}15` }]} onPress={handleEdit}>
+                            <Feather name="edit-2" size={14} color={COLORS.primary} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.itemActionBtn, styles.itemDeleteBtn]} onPress={() => onDelete(index)}>
-                            <Text>🗑️</Text>
+                        <TouchableOpacity style={[styles.itemActionBtn, { backgroundColor: `${COLORS.error}15` }]} onPress={handleDelete}>
+                            <Feather name="trash-2" size={14} color={COLORS.error} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -133,13 +162,23 @@ function ExperienceCard({ item, index, onEdit, onDelete }) {
     );
 }
 
-// ============ EDUCATION CARD ============
+// ============ MODERN EDUCATION CARD ============
 function EducationCard({ item, index, onEdit, onDelete }) {
+    const handleEdit = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onEdit(index);
+    };
+
+    const handleDelete = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onDelete(index);
+    };
+
     return (
         <View style={styles.itemCard}>
             <View style={styles.itemTimeline}>
-                <View style={[styles.itemDot, { backgroundColor: '#10B981' }]} />
-                <View style={[styles.itemLine, { backgroundColor: '#D1FAE5' }]} />
+                <View style={[styles.itemDot, { backgroundColor: COLORS.success }]} />
+                <View style={[styles.itemLine, { backgroundColor: `${COLORS.success}30` }]} />
             </View>
             <View style={styles.itemContent}>
                 <View style={styles.itemHeader}>
@@ -147,18 +186,18 @@ function EducationCard({ item, index, onEdit, onDelete }) {
                         <Text style={styles.itemTitle}>{item.degree || 'Derece'}</Text>
                         <Text style={styles.itemCompany}>{item.school || 'Okul'}</Text>
                         <View style={styles.itemDateRow}>
-                            <Text style={styles.itemDateIcon}>🎓</Text>
+                            <Feather name="book" size={12} color={COLORS.textTertiary} />
                             <Text style={styles.itemDate}>
                                 {item.startDate || 'Başlangıç'} - {item.endDate || 'Bitiş'}
                             </Text>
                         </View>
                     </View>
                     <View style={styles.itemActions}>
-                        <TouchableOpacity style={styles.itemActionBtn} onPress={() => onEdit(index)}>
-                            <Text>✏️</Text>
+                        <TouchableOpacity style={[styles.itemActionBtn, { backgroundColor: `${COLORS.success}15` }]} onPress={handleEdit}>
+                            <Feather name="edit-2" size={14} color={COLORS.success} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.itemActionBtn, styles.itemDeleteBtn]} onPress={() => onDelete(index)}>
-                            <Text>🗑️</Text>
+                        <TouchableOpacity style={[styles.itemActionBtn, { backgroundColor: `${COLORS.error}15` }]} onPress={handleDelete}>
+                            <Feather name="trash-2" size={14} color={COLORS.error} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -167,13 +206,19 @@ function EducationCard({ item, index, onEdit, onDelete }) {
     );
 }
 
-// ============ SKILL TAG ============
+// ============ MODERN SKILL TAG ============
 function SkillTag({ skill, onDelete }) {
+    const handleDelete = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onDelete?.();
+    };
+
     return (
         <View style={styles.skillTag}>
+            <Feather name="zap" size={12} color={COLORS.primary} style={styles.skillIcon} />
             <Text style={styles.skillText}>{skill}</Text>
-            <TouchableOpacity onPress={onDelete} style={styles.skillDelete}>
-                <Text style={styles.skillDeleteText}>✕</Text>
+            <TouchableOpacity onPress={handleDelete} style={styles.skillDelete}>
+                <Feather name="x" size={12} color={COLORS.textTertiary} />
             </TouchableOpacity>
         </View>
     );
@@ -193,7 +238,7 @@ function EditModal({ visible, onClose, onSave, title, fields, data, setData }) {
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>{title}</Text>
                             <TouchableOpacity onPress={onClose} style={styles.modalCloseBtn}>
-                                <Text style={styles.modalCloseText}>✕</Text>
+                                <Feather name="x" size={20} color={COLORS.text} />
                             </TouchableOpacity>
                         </View>
                         <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
@@ -220,7 +265,8 @@ function EditModal({ visible, onClose, onSave, title, fields, data, setData }) {
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 0 }}
                                 >
-                                    <Text style={styles.modalSaveText}>💾 Kaydet</Text>
+                                    <Feather name="save" size={16} color="#FFF" />
+                                    <Text style={styles.modalSaveText}>Kaydet</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </View>
@@ -245,8 +291,11 @@ function PreviewModal({ visible, onClose, cvData }) {
                     colors={['#0F172A', '#1E293B']}
                     style={styles.previewHeader}
                 >
-                    <TouchableOpacity onPress={onClose} style={styles.previewBackBtn}>
-                        <Text style={styles.previewBackText}>← Geri</Text>
+                    <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onClose(); }} style={styles.previewBackBtn}>
+                        <View style={styles.previewBackContent}>
+                            <Feather name="arrow-left" size={18} color="#FFF" />
+                            <Text style={styles.previewBackText}>Geri</Text>
+                        </View>
                     </TouchableOpacity>
                     <Text style={styles.previewHeaderTitle}>CV Önizleme</Text>
                     <View style={{ width: 60 }} />
@@ -512,7 +561,7 @@ export default function EditorScreen({ route, navigation }) {
         return (
             <View style={styles.loadingContainer}>
                 <View style={styles.loadingLogo}>
-                    <Text style={styles.loadingLogoText}>CV</Text>
+                    <Feather name="file-text" size={32} color={COLORS.primary} />
                 </View>
                 <ActivityIndicator size="large" color="#6366F1" style={{ marginTop: 24 }} />
                 <Text style={styles.loadingText}>Yükleniyor...</Text>
@@ -521,18 +570,18 @@ export default function EditorScreen({ route, navigation }) {
     }
 
     const experienceFields = [
-        { key: 'company', label: 'Şirket', placeholder: 'Şirket adı', icon: '🏢' },
-        { key: 'position', label: 'Pozisyon', placeholder: 'Pozisyon', icon: '💼' },
-        { key: 'startDate', label: 'Başlangıç', placeholder: 'Ocak 2020', icon: '📅' },
-        { key: 'endDate', label: 'Bitiş', placeholder: 'Şubat 2023', icon: '📅' },
-        { key: 'description', label: 'Açıklama', placeholder: 'Görev tanımı...', multiline: true, icon: '📝' },
+        { key: 'company', label: 'Şirket', placeholder: 'Şirket adı', iconName: 'briefcase' },
+        { key: 'position', label: 'Pozisyon', placeholder: 'Pozisyon', iconName: 'user' },
+        { key: 'startDate', label: 'Başlangıç', placeholder: 'Ocak 2020', iconName: 'calendar' },
+        { key: 'endDate', label: 'Bitiş', placeholder: 'Şubat 2023', iconName: 'calendar' },
+        { key: 'description', label: 'Açıklama', placeholder: 'Görev tanımı...', multiline: true, iconName: 'align-left' },
     ];
-    
+
     const educationFields = [
-        { key: 'school', label: 'Okul', placeholder: 'Üniversite/Okul adı', icon: '🏫' },
-        { key: 'degree', label: 'Derece', placeholder: 'Lisans, Yüksek Lisans vb.', icon: '🎓' },
-        { key: 'startDate', label: 'Başlangıç', placeholder: '2016', icon: '📅' },
-        { key: 'endDate', label: 'Bitiş', placeholder: '2020', icon: '📅' },
+        { key: 'school', label: 'Okul', placeholder: 'Üniversite/Okul adı', iconName: 'home' },
+        { key: 'degree', label: 'Derece', placeholder: 'Lisans, Yüksek Lisans vb.', iconName: 'award' },
+        { key: 'startDate', label: 'Başlangıç', placeholder: '2016', iconName: 'calendar' },
+        { key: 'endDate', label: 'Bitiş', placeholder: '2020', iconName: 'calendar' },
     ];
 
     const completion = calculateCompletion();
@@ -547,15 +596,15 @@ export default function EditorScreen({ route, navigation }) {
                 style={styles.header}
             >
                 <View style={styles.headerTop}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                        <Text style={styles.backIcon}>←</Text>
+                    <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigation.goBack(); }} style={styles.backBtn}>
+                        <Feather name="arrow-left" size={24} color="#FFF" />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>{cvId ? 'CV Düzenle' : 'Yeni CV'}</Text>
                     <View style={styles.headerActions}>
-                        <TouchableOpacity style={styles.previewBtn} onPress={() => setShowPreview(true)}>
-                            <Text style={styles.previewIcon}>👁️</Text>
+                        <TouchableOpacity style={styles.previewBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowPreview(true); }}>
+                            <Feather name="eye" size={20} color="#FFF" />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleSave} disabled={saving} activeOpacity={0.8}>
+                        <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); handleSave(); }} disabled={saving} activeOpacity={0.8}>
                             <LinearGradient
                                 colors={['#6366F1', '#8B5CF6']}
                                 style={styles.saveBtn}
@@ -565,7 +614,10 @@ export default function EditorScreen({ route, navigation }) {
                                 {saving ? (
                                     <ActivityIndicator size="small" color="#fff" />
                                 ) : (
-                                    <Text style={styles.saveBtnText}>💾 Kaydet</Text>
+                                    <View style={styles.saveBtnContent}>
+                                        <Feather name="save" size={16} color="#FFF" />
+                                        <Text style={styles.saveBtnText}>Kaydet</Text>
+                                    </View>
                                 )}
                             </LinearGradient>
                         </TouchableOpacity>
@@ -597,7 +649,7 @@ export default function EditorScreen({ route, navigation }) {
                 {/* CV Name */}
                 <View style={styles.nameCard}>
                     <View style={styles.nameIcon}>
-                        <Text style={styles.nameIconText}>📄</Text>
+                        <Feather name="file-text" size={20} color={COLORS.primary} />
                     </View>
                     <TextInput
                         style={styles.nameInput}
@@ -611,22 +663,24 @@ export default function EditorScreen({ route, navigation }) {
                 {/* Sections */}
                 <Section
                     title="Kişisel Bilgiler"
-                    icon="👤"
+                    iconName="user"
+                    color={COLORS.primary}
                     expanded={expandedSections.personal}
                     onToggle={() => toggleSection('personal')}
                 >
-                    <InputField label="Ad Soyad" value={cvData.data.personalInfo.fullName} onChangeText={(v) => updatePersonalInfo('fullName', v)} placeholder="Adınız Soyadınız" icon="👤" />
-                    <InputField label="Ünvan" value={cvData.data.personalInfo.title} onChangeText={(v) => updatePersonalInfo('title', v)} placeholder="ör. Yazılım Mühendisi" icon="💼" />
-                    <InputField label="E-posta" value={cvData.data.personalInfo.email} onChangeText={(v) => updatePersonalInfo('email', v)} placeholder="ornek@email.com" icon="✉️" />
-                    <InputField label="Telefon" value={cvData.data.personalInfo.phone} onChangeText={(v) => updatePersonalInfo('phone', v)} placeholder="+90 555 123 4567" icon="📱" />
-                    <InputField label="Konum" value={cvData.data.personalInfo.location} onChangeText={(v) => updatePersonalInfo('location', v)} placeholder="İstanbul, Türkiye" icon="📍" />
-                    <InputField label="LinkedIn" value={cvData.data.personalInfo.linkedin} onChangeText={(v) => updatePersonalInfo('linkedin', v)} placeholder="linkedin.com/in/kullanici" icon="🔗" />
-                    <InputField label="Özet" value={cvData.data.personalInfo.summary} onChangeText={(v) => updatePersonalInfo('summary', v)} placeholder="Kendinizi kısaca tanıtın..." multiline icon="📝" />
+                    <InputField label="Ad Soyad" value={cvData.data.personalInfo.fullName} onChangeText={(v) => updatePersonalInfo('fullName', v)} placeholder="Adınız Soyadınız" iconName="user" />
+                    <InputField label="Ünvan" value={cvData.data.personalInfo.title} onChangeText={(v) => updatePersonalInfo('title', v)} placeholder="ör. Yazılım Mühendisi" iconName="briefcase" />
+                    <InputField label="E-posta" value={cvData.data.personalInfo.email} onChangeText={(v) => updatePersonalInfo('email', v)} placeholder="ornek@email.com" iconName="mail" />
+                    <InputField label="Telefon" value={cvData.data.personalInfo.phone} onChangeText={(v) => updatePersonalInfo('phone', v)} placeholder="+90 555 123 4567" iconName="phone" />
+                    <InputField label="Konum" value={cvData.data.personalInfo.location} onChangeText={(v) => updatePersonalInfo('location', v)} placeholder="İstanbul, Türkiye" iconName="map-pin" />
+                    <InputField label="LinkedIn" value={cvData.data.personalInfo.linkedin} onChangeText={(v) => updatePersonalInfo('linkedin', v)} placeholder="linkedin.com/in/kullanici" iconName="linkedin" />
+                    <InputField label="Özet" value={cvData.data.personalInfo.summary} onChangeText={(v) => updatePersonalInfo('summary', v)} placeholder="Kendinizi kısaca tanıtın..." multiline iconName="align-left" />
                 </Section>
 
                 <Section
                     title="İş Deneyimi"
-                    icon="💼"
+                    iconName="briefcase"
+                    color={COLORS.primary}
                     badge={cvData.data.experience.length}
                     expanded={expandedSections.experience}
                     onToggle={() => toggleSection('experience')}
@@ -635,7 +689,7 @@ export default function EditorScreen({ route, navigation }) {
                 >
                     {cvData.data.experience.length === 0 ? (
                         <View style={styles.emptyState}>
-                            <Text style={styles.emptyIcon}>💼</Text>
+                            <Feather name="briefcase" size={32} color={COLORS.textTertiary} style={styles.emptyIcon} />
                             <Text style={styles.emptyText}>Henüz iş deneyimi eklenmedi</Text>
                             <Text style={styles.emptyHint}>İlk deneyiminizi eklemek için aşağıdaki butona tıklayın</Text>
                         </View>
@@ -648,7 +702,8 @@ export default function EditorScreen({ route, navigation }) {
 
                 <Section
                     title="Eğitim"
-                    icon="🎓"
+                    iconName="book"
+                    color={COLORS.success}
                     badge={cvData.data.education.length}
                     expanded={expandedSections.education}
                     onToggle={() => toggleSection('education')}
@@ -657,7 +712,7 @@ export default function EditorScreen({ route, navigation }) {
                 >
                     {cvData.data.education.length === 0 ? (
                         <View style={styles.emptyState}>
-                            <Text style={styles.emptyIcon}>🎓</Text>
+                            <Feather name="book" size={32} color={COLORS.success} style={styles.emptyIcon} />
                             <Text style={styles.emptyText}>Henüz eğitim bilgisi eklenmedi</Text>
                             <Text style={styles.emptyHint}>Eğitim geçmişinizi eklemek için butona tıklayın</Text>
                         </View>
@@ -670,7 +725,8 @@ export default function EditorScreen({ route, navigation }) {
 
                 <Section
                     title="Yetenekler"
-                    icon="⚡"
+                    iconName="zap"
+                    color={COLORS.accent}
                     badge={cvData.data.skills.length}
                     expanded={expandedSections.skills}
                     onToggle={() => toggleSection('skills')}
@@ -695,7 +751,7 @@ export default function EditorScreen({ route, navigation }) {
                                 colors={['#6366F1', '#8B5CF6']}
                                 style={styles.skillAddBtn}
                             >
-                                <Text style={styles.skillAddText}>+</Text>
+                                <Feather name="plus" size={20} color="#FFF" />
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>
@@ -783,10 +839,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    backIcon: {
-        color: '#FFFFFF',
-        fontSize: 20,
-        fontWeight: '600',
+    saveBtnContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
     },
     headerTitle: { 
         flex: 1, 
@@ -808,8 +864,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center',
     },
-    previewIcon: { 
-        fontSize: 18,
+    previewBackContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
     },
     saveBtn: { 
         paddingHorizontal: 16, 
@@ -820,6 +878,18 @@ const styles = StyleSheet.create({
         color: '#FFFFFF', 
         fontSize: 14, 
         fontWeight: '600',
+    },
+    inputLabelContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 6,
+        gap: 6,
+    },
+    inputLabelIcon: {
+        marginTop: 1,
+    },
+    skillIcon: {
+        marginRight: 4,
     },
 
     // Progress
@@ -937,10 +1007,6 @@ const styles = StyleSheet.create({
         color: '#64748B',
         marginTop: 2,
     },
-    sectionChevron: { 
-        fontSize: 10,
-        color: '#94A3B8',
-    },
     sectionContent: { 
         padding: 16, 
         paddingTop: 0,
@@ -1045,10 +1111,7 @@ const styles = StyleSheet.create({
     itemDateRow: {
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    itemDateIcon: {
-        fontSize: 12,
-        marginRight: 4,
+        gap: 4,
     },
     itemDate: { 
         fontSize: 12,
@@ -1142,25 +1205,17 @@ const styles = StyleSheet.create({
     addButton: { 
         marginTop: 8,
     },
-    addButtonInner: {
+    addButtonGradient: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 2, 
-        borderStyle: 'dashed',
-        borderColor: '#6366F1',
+        gap: 6,
         borderRadius: 12, 
         padding: 14,
-    },
-    addButtonIcon: {
-        fontSize: 18,
-        color: '#6366F1',
-        marginRight: 6,
     },
     addButtonText: { 
         fontSize: 15, 
         fontWeight: '600',
-        color: '#6366F1',
     },
 
     // Modal
@@ -1233,9 +1288,12 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '600',
     },
-    modalSaveBtn: { 
-        paddingHorizontal: 24, 
-        paddingVertical: 14, 
+    modalSaveBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        paddingHorizontal: 24,
+        paddingVertical: 14,
         borderRadius: 12,
     },
     modalSaveText: {

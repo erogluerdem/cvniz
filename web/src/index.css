@@ -172,13 +172,28 @@
      PREMIUM BUTTONS
      ======================================== */
   .btn-premium {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 font-semibold overflow-hidden;
+    @apply relative inline-flex items-center justify-center gap-2 rounded-xl font-semibold overflow-hidden;
+    @apply px-4 py-2 text-xs;
     background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
     color: white;
     box-shadow:
       0 4px 20px rgba(0, 212, 255, 0.4),
       0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Tablet ve üstü için daha büyük buton */
+  @media (min-width: 640px) {
+    .btn-premium {
+      @apply px-6 py-3 text-sm;
+    }
+  }
+
+  /* Desktop için en büyük buton */
+  @media (min-width: 1024px) {
+    .btn-premium {
+      @apply px-8 py-3.5;
+    }
   }
 
   .btn-premium::before {

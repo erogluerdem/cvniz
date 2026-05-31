@@ -484,16 +484,16 @@ export default function HomePage() {
     // Static web template definitions with backend thumbnail override
     const webTemplates = useMemo(() => {
         const staticTemplates = [
-            { id: 'minimal_web', name: 'Minimal', color: 'from-white to-gray-100', textColor: 'text-gray-900' },
-            { id: 'dark_web', name: 'Dark', color: 'from-gray-900 to-black', textColor: 'text-cyan-400' },
-            { id: 'glass_web', name: 'Glass', color: 'from-purple-600 to-pink-600', textColor: 'text-white' },
-            { id: 'gradient_web', name: 'Gradient', color: 'from-orange-500 to-pink-600', textColor: 'text-white' },
-            { id: 'creative_web', name: 'Creative', color: 'from-amber-100 to-orange-200', textColor: 'text-orange-700' },
-            { id: 'corporate_web', name: 'Corporate', color: 'from-blue-600 to-indigo-700', textColor: 'text-white' }
+            { id: 'minimal_web', name: 'Minimal', color: 'from-white to-gray-100', textColor: 'text-gray-900', fallbackThumbnail: '/images/web_minimal.png' },
+            { id: 'dark_web', name: 'Dark', color: 'from-gray-900 to-black', textColor: 'text-cyan-400', fallbackThumbnail: '/images/web_dark.png' },
+            { id: 'glass_web', name: 'Glass', color: 'from-purple-600 to-pink-600', textColor: 'text-white', fallbackThumbnail: '/images/web_glass.png' },
+            { id: 'gradient_web', name: 'Gradient', color: 'from-orange-500 to-pink-600', textColor: 'text-white', fallbackThumbnail: '/images/web_gradient.png' },
+            { id: 'creative_web', name: 'Creative', color: 'from-amber-100 to-orange-200', textColor: 'text-orange-700', fallbackThumbnail: '/images/web_creative.png' },
+            { id: 'corporate_web', name: 'Corporate', color: 'from-blue-600 to-indigo-700', textColor: 'text-white', fallbackThumbnail: '/images/web_corporate.png' }
         ]
         return staticTemplates.map(t => {
             const backendT = backendTemplates.find(bt => bt.templateId === t.id)
-            return { ...t, thumbnail: backendT?.thumbnail || null }
+            return { ...t, thumbnail: backendT?.thumbnail || t.fallbackThumbnail }
         })
     }, [backendTemplates])
 
@@ -799,25 +799,23 @@ export default function HomePage() {
 
                     {/* Template Preview Cards - Horizontal scroll on mobile */}
                     <div className="mb-8 md:mb-12 -mx-4 md:mx-0">
-                        <div className="flex md:grid md:grid-cols-6 gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-0 scrollbar-hide px-4 md:px-0">
+                        <div className="flex md:grid md:grid-cols-6 gap-4 md:gap-6 overflow-x-auto pb-4 md:pb-0 scrollbar-hide px-4 md:px-0">
                             {webTemplates.map((template, i) => (
-                                <div
-                                    key={i}
-                                    className="aspect-[3/4] rounded-xl md:rounded-2xl overflow-hidden cursor-pointer hover:scale-105 hover:-translate-y-2 transition-all duration-300 shadow-lg md:shadow-xl relative flex-shrink-0 w-28 md:w-auto"
-                                    style={{ background: template.thumbnail ? 'transparent' : undefined }}
-                                >
-                                    {template.thumbnail ? (
-                                        <img src={template.thumbnail} alt={template.name} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className={`w-full h-full bg-gradient-to-br ${template.color} p-2 md:p-4 flex flex-col justify-end`}>
-                                            <span className={`text-[10px] md:text-sm font-bold ${template.textColor}`}>{template.name}</span>
-                                        </div>
-                                    )}
-                                    {template.thumbnail && (
-                                        <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3 bg-gradient-to-t from-black/80 to-transparent">
-                                            <span className="text-[10px] md:text-sm font-bold text-white">{template.name}</span>
-                                        </div>
-                                    )}
+                                <div key={i} className="flex flex-col items-center flex-shrink-0 w-28 md:w-auto">
+                                    <div
+                                        className="w-full aspect-[3/4] rounded-xl md:rounded-2xl overflow-hidden cursor-pointer hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-md md:shadow-lg relative"
+                                    >
+                                        <img 
+                                            src={template.thumbnail} 
+                                            alt={template.name} 
+                                            className="w-full h-full object-cover" 
+                                        />
+                                    </div>
+                                    <span className={`text-xs md:text-sm font-black mt-3 transition-colors tracking-wide ${
+                                        isDayMode ? 'text-slate-800' : 'text-slate-200'
+                                    }`}>
+                                        {template.name}
+                                    </span>
                                 </div>
                             ))}
                         </div>

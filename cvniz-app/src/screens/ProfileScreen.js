@@ -4,45 +4,59 @@ import {
     StatusBar, Alert, TextInput, Platform, Image, Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useCV } from '../context/CVContext';
+import { COLORS, SPACING, BORDER_RADIUS } from '../constants';
+import { ModernCard, Badge, ProgressBar } from '../components/ModernUIComponents';
 
 const { width } = Dimensions.get('window');
 
-// Stat Card Component
-function StatCard({ icon, value, label, color }) {
+// Modern Stat Card Component
+function StatCard({ iconName, value, label, color, delay = 0 }) {
     return (
-        <View style={[styles.statCard, { borderLeftColor: color }]}>
-            <Text style={styles.statIcon}>{icon}</Text>
-            <Text style={styles.statValue}>{value}</Text>
-            <Text style={styles.statLabel}>{label}</Text>
-        </View>
+        <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'spring', damping: 15, delay }}
+        >
+            <ModernCard style={[styles.statCard, { borderLeftColor: color }]}>
+                <Feather name={iconName} size={20} color={color} />
+                <Text style={[styles.statValue, { color }]}>{value}</Text>
+                <Text style={styles.statLabel}>{label}</Text>
+            </ModernCard>
+        </MotiView>
     );
 }
 
-// Achievement Badge
-function AchievementBadge({ icon, title, description, unlocked }) {
+// Modern Achievement Badge
+function AchievementBadge({ iconName, title, description, unlocked, color = COLORS.primary }) {
     return (
-        <View style={[styles.achievementBadge, !unlocked && styles.achievementLocked]}>
-            <View style={[styles.achievementIcon, !unlocked && styles.achievementIconLocked]}>
-                <Text style={styles.achievementEmoji}>{icon}</Text>
+        <ModernCard 
+            style={[styles.achievementBadge, !unlocked && styles.achievementLocked]}
+            intensity={unlocked ? 50 : 20}
+        >
+            <View style={[styles.achievementIcon, !unlocked && styles.achievementIconLocked, { backgroundColor: unlocked ? `${color}20` : '#F1F5F9' }]}>
+                <Feather name={iconName} size={20} color={unlocked ? color : '#94A3B8'} />
             </View>
             <Text style={[styles.achievementTitle, !unlocked && styles.achievementTitleLocked]}>
                 {title}
             </Text>
             <Text style={styles.achievementDesc}>{description}</Text>
             {!unlocked && (
-                <View style={styles.lockOverlay}>
-                    <Text style={styles.lockIcon}>🔒</Text>
+                <View style={styles.achievementLockOverlay}>
+                    <Feather name="lock" size={16} color="#94A3B8" />
                 </View>
             )}
-        </View>
+        </ModernCard>
     );
 }
 
-// Activity Item
-function ActivityItem({ icon, title, time, type }) {
+// Modern Activity Item
+function ActivityItem({ iconName, title, time, type }) {
     const typeColors = {
         create: '#10B981',
         edit: '#6366F1',
@@ -50,11 +64,20 @@ function ActivityItem({ icon, title, time, type }) {
         share: '#EC4899',
     };
     
+    const typeIcons = {
+        create: 'plus-circle',
+        edit: 'edit-2',
+        view: 'eye',
+        share: 'share-2',
+    };
+    
     return (
         <View style={styles.activityItem}>
-            <View style={[styles.activityDot, { backgroundColor: typeColors[type] || '#6366F1' }]} />
+            <View style={[styles.activityIcon, { backgroundColor: `${typeColors[type]}20` }]}>
+                <Feather name={typeIcons[type] || 'activity'} size={16} color={typeColors[type]} />
+            </View>
             <View style={styles.activityContent}>
-                <Text style={styles.activityTitle}>{icon} {title}</Text>
+                <Text style={styles.activityTitle}>{title}</Text>
                 <Text style={styles.activityTime}>{time}</Text>
             </View>
         </View>
@@ -88,22 +111,22 @@ export default function ProfileScreen({ navigation }) {
     const totalDownloads = 42;
     const profileCompletion = 75;
 
-    // Achievements
+    // Achievements with vector icons
     const achievements = [
-        { icon: '🎯', title: 'İlk CV', description: 'İlk CV\'nizi oluşturdunuz', unlocked: cvs.length > 0 },
-        { icon: '⭐', title: '5 CV', description: '5 CV oluşturdunuz', unlocked: cvs.length >= 5 },
-        { icon: '👑', title: 'Premium', description: 'Premium üye oldunuz', unlocked: isPremium },
-        { icon: '🔥', title: '7 Gün', description: '7 gün üst üste aktif', unlocked: false },
-        { icon: '💯', title: 'Tam Profil', description: 'Profili %100 tamamladınız', unlocked: profileCompletion === 100 },
-        { icon: '🚀', title: 'Paylaşımcı', description: 'CV\'nizi paylaştınız', unlocked: false },
+        { iconName: 'file-plus', title: 'İlk CV', description: 'İlk CV\'nizi oluşturdunuz', unlocked: cvs.length > 0, color: '#6366F1' },
+        { iconName: 'layers', title: '5 CV', description: '5 CV oluşturdunuz', unlocked: cvs.length >= 5, color: '#10B981' },
+        { iconName: 'crown', title: 'Premium', description: 'Premium üye oldunuz', unlocked: isPremium, color: '#F59E0B' },
+        { iconName: 'zap', title: '7 Gün', description: '7 gün üst üste aktif', unlocked: false, color: '#EC4899' },
+        { iconName: 'check-circle', title: 'Tam Profil', description: 'Profili %100 tamamladınız', unlocked: profileCompletion === 100, color: '#8B5CF6' },
+        { iconName: 'share-2', title: 'Paylaşımcı', description: 'CV\'nizi paylaştınız', unlocked: false, color: '#06B6D4' },
     ];
 
     // Recent activity
     const recentActivity = [
-        { icon: '📝', title: 'Yazılım CV düzenlendi', time: '2 saat önce', type: 'edit' },
-        { icon: '👀', title: 'Tasarımcı CV görüntülendi', time: '5 saat önce', type: 'view' },
-        { icon: '📄', title: 'Yeni CV oluşturuldu', time: 'Dün', type: 'create' },
-        { icon: '📤', title: 'CV paylaşıldı', time: '3 gün önce', type: 'share' },
+        { title: 'Yazılım CV düzenlendi', time: '2 saat önce', type: 'edit' },
+        { title: 'Tasarımcı CV görüntülendi', time: '5 saat önce', type: 'view' },
+        { title: 'Yeni CV oluşturuldu', time: 'Dün', type: 'create' },
+        { title: 'CV paylaşıldı', time: '3 gün önce', type: 'share' },
     ];
 
     const getInitials = (name) => {
@@ -131,12 +154,15 @@ export default function ProfileScreen({ navigation }) {
                     <View style={styles.decorCircle1} />
                     <View style={styles.decorCircle2} />
 
-                    {/* Edit Button */}
+                    {/* Modern Edit Button */}
                     <TouchableOpacity 
                         style={styles.editBtn}
-                        onPress={() => setEditMode(!editMode)}
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setEditMode(!editMode);
+                        }}
                     >
-                        <Text style={styles.editBtnText}>{editMode ? '✕' : '✏️'}</Text>
+                        <Feather name={editMode ? 'x' : 'edit-2'} size={18} color="#FFF" />
                     </TouchableOpacity>
 
                     {/* Avatar */}
@@ -148,8 +174,8 @@ export default function ProfileScreen({ navigation }) {
                             <Text style={styles.avatarText}>{getInitials(user?.name)}</Text>
                         </LinearGradient>
                         {isPremium && (
-                            <View style={styles.premiumBadge}>
-                                <Text style={styles.premiumBadgeText}>👑</Text>
+                            <View style={styles.premiumBadgeProfile}>
+                                <MaterialCommunityIcons name="crown" size={12} color="#FFF" />
                             </View>
                         )}
                     </View>
@@ -173,7 +199,8 @@ export default function ProfileScreen({ navigation }) {
                                 multiline
                             />
                             <TouchableOpacity style={styles.saveBtn} onPress={handleSaveProfile}>
-                                <Text style={styles.saveBtnText}>💾 Kaydet</Text>
+                                <Feather name="check" size={16} color="#FFF" />
+                                <Text style={styles.saveBtnText}>Kaydet</Text>
                             </TouchableOpacity>
                         </View>
                     ) : (
@@ -186,34 +213,29 @@ export default function ProfileScreen({ navigation }) {
 
                     {/* Member info */}
                     <View style={styles.memberInfo}>
-                        <Text style={styles.memberText}>📅 {memberSince}'den beri üye</Text>
+                        <Feather name="calendar" size={14} color="rgba(255,255,255,0.8)" />
+                        <Text style={styles.memberText}> {memberSince}'den beri üye</Text>
                     </View>
                 </LinearGradient>
 
-                {/* Profile Completion */}
-                <View style={styles.completionCard}>
+                {/* Modern Profile Completion */}
+                <ModernCard style={styles.completionCard}>
                     <View style={styles.completionHeader}>
                         <Text style={styles.completionTitle}>Profil Tamamlama</Text>
-                        <Text style={styles.completionPercent}>{profileCompletion}%</Text>
+                        <Badge text={`${profileCompletion}%`} color={COLORS.primary} size="small" />
                     </View>
-                    <View style={styles.completionBar}>
-                        <LinearGradient
-                            colors={['#6366F1', '#8B5CF6']}
-                            style={[styles.completionFill, { width: `${profileCompletion}%` }]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                        />
+                    <ProgressBar progress={profileCompletion / 100} color={COLORS.primary} showPercentage={false} />
+                    <View style={styles.completionHint}>
+                        <Feather name="info" size={14} color={COLORS.textTertiary} />
+                        <Text style={styles.completionHintText}>Bio ekleyerek profilinizi tamamlayın</Text>
                     </View>
-                    <Text style={styles.completionHint}>
-                        💡 Bio ekleyerek profilinizi tamamlayın
-                    </Text>
-                </View>
+                </ModernCard>
 
-                {/* Stats */}
+                {/* Modern Stats */}
                 <View style={styles.statsContainer}>
-                    <StatCard icon="📄" value={cvs.length} label="CV" color="#6366F1" />
-                    <StatCard icon="👀" value={totalViews} label="Görüntülenme" color="#10B981" />
-                    <StatCard icon="📥" value={totalDownloads} label="İndirme" color="#F59E0B" />
+                    <StatCard iconName="file-text" value={cvs.length} label="CV" color="#6366F1" delay={0} />
+                    <StatCard iconName="eye" value={totalViews} label="Görüntülenme" color="#10B981" delay={100} />
+                    <StatCard iconName="download" value={totalDownloads} label="İndirme" color="#F59E0B" delay={200} />
                 </View>
 
                 {/* Premium Banner */}
@@ -230,24 +252,31 @@ export default function ProfileScreen({ navigation }) {
                             end={{ x: 1, y: 0 }}
                         >
                             <View style={styles.premiumContent}>
-                                <Text style={styles.premiumIcon}>👑</Text>
+                                <View style={styles.premiumIconBox}>
+                                    <MaterialCommunityIcons name="crown" size={24} color="#FFF" />
+                                </View>
                                 <View style={styles.premiumText}>
                                     <Text style={styles.premiumTitle}>Premium'a Yükselt</Text>
                                     <Text style={styles.premiumDesc}>Sınırsız CV, şablon ve özellik</Text>
                                 </View>
                             </View>
-                            <Text style={styles.premiumArrow}>→</Text>
+                            <Feather name="arrow-right" size={20} color="#FFF" />
                         </LinearGradient>
                     </TouchableOpacity>
                 )}
 
-                {/* Achievements */}
+                {/* Modern Achievements */}
                 <View style={styles.section}>
                     <View style={styles.sectionHeader}>
-                        <Text style={styles.sectionTitle}>🏆 Başarılar</Text>
-                        <Text style={styles.sectionBadge}>
-                            {achievements.filter(a => a.unlocked).length}/{achievements.length}
-                        </Text>
+                        <View style={styles.sectionTitleContainer}>
+                            <Feather name="award" size={20} color={COLORS.text} />
+                            <Text style={styles.sectionTitle}>Başarılar</Text>
+                        </View>
+                        <Badge 
+                            text={`${achievements.filter(a => a.unlocked).length}/${achievements.length}`} 
+                            color={COLORS.primary} 
+                            size="small"
+                        />
                     </View>
                     <ScrollView 
                         horizontal 
@@ -260,71 +289,97 @@ export default function ProfileScreen({ navigation }) {
                     </ScrollView>
                 </View>
 
-                {/* Recent Activity */}
+                {/* Modern Recent Activity */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>📊 Son Aktiviteler</Text>
-                    <View style={styles.activityCard}>
+                    <View style={styles.sectionTitleContainer}>
+                        <Feather name="activity" size={20} color={COLORS.text} />
+                        <Text style={styles.sectionTitle}>Son Aktiviteler</Text>
+                    </View>
+                    <ModernCard style={styles.activityCard}>
                         {recentActivity.map((activity, index) => (
                             <ActivityItem key={index} {...activity} />
                         ))}
-                    </View>
+                    </ModernCard>
                 </View>
 
-                {/* Quick Actions */}
+                {/* Modern Quick Actions */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>⚡ Hızlı İşlemler</Text>
+                    <View style={styles.sectionTitleContainer}>
+                        <Feather name="zap" size={20} color={COLORS.text} />
+                        <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
+                    </View>
                     <View style={styles.quickActions}>
-                        <TouchableOpacity 
-                            style={styles.quickActionBtn}
-                            onPress={() => navigation.navigate('Editor', {})}
-                        >
-                            <LinearGradient
-                                colors={['#6366F1', '#8B5CF6']}
-                                style={styles.quickActionGradient}
+                        <MotiView from={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0 }}>
+                            <TouchableOpacity 
+                                style={styles.quickActionBtn}
+                                onPress={() => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    navigation.navigate('Editor', {});
+                                }}
                             >
-                                <Text style={styles.quickActionIcon}>📄</Text>
-                            </LinearGradient>
-                            <Text style={styles.quickActionText}>Yeni CV</Text>
-                        </TouchableOpacity>
+                                <LinearGradient
+                                    colors={COLORS.gradients.primary}
+                                    style={styles.quickActionGradient}
+                                >
+                                    <Feather name="plus" size={24} color="#FFF" />
+                                </LinearGradient>
+                                <Text style={styles.quickActionText}>Yeni CV</Text>
+                            </TouchableOpacity>
+                        </MotiView>
 
-                        <TouchableOpacity 
-                            style={styles.quickActionBtn}
-                            onPress={() => navigation.navigate('ATSAnalysis')}
-                        >
-                            <LinearGradient
-                                colors={['#10B981', '#059669']}
-                                style={styles.quickActionGradient}
+                        <MotiView from={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 100 }}>
+                            <TouchableOpacity 
+                                style={styles.quickActionBtn}
+                                onPress={() => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    navigation.navigate('ATSAnalysis');
+                                }}
                             >
-                                <Text style={styles.quickActionIcon}>🎯</Text>
-                            </LinearGradient>
-                            <Text style={styles.quickActionText}>ATS Analiz</Text>
-                        </TouchableOpacity>
+                                <LinearGradient
+                                    colors={COLORS.gradients.success}
+                                    style={styles.quickActionGradient}
+                                >
+                                    <Feather name="bar-chart-2" size={24} color="#FFF" />
+                                </LinearGradient>
+                                <Text style={styles.quickActionText}>ATS Analiz</Text>
+                            </TouchableOpacity>
+                        </MotiView>
 
-                        <TouchableOpacity 
-                            style={styles.quickActionBtn}
-                            onPress={() => navigation.navigate('CoverLetter')}
-                        >
-                            <LinearGradient
-                                colors={['#F59E0B', '#D97706']}
-                                style={styles.quickActionGradient}
+                        <MotiView from={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 200 }}>
+                            <TouchableOpacity 
+                                style={styles.quickActionBtn}
+                                onPress={() => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    navigation.navigate('CoverLetter');
+                                }}
                             >
-                                <Text style={styles.quickActionIcon}>📝</Text>
-                            </LinearGradient>
-                            <Text style={styles.quickActionText}>Ön Yazı</Text>
-                        </TouchableOpacity>
+                                <LinearGradient
+                                    colors={COLORS.gradients.sunset}
+                                    style={styles.quickActionGradient}
+                                >
+                                    <Feather name="edit-3" size={24} color="#FFF" />
+                                </LinearGradient>
+                                <Text style={styles.quickActionText}>Ön Yazı</Text>
+                            </TouchableOpacity>
+                        </MotiView>
 
-                        <TouchableOpacity 
-                            style={styles.quickActionBtn}
-                            onPress={() => navigation.navigate('Settings')}
-                        >
-                            <LinearGradient
-                                colors={['#64748B', '#475569']}
-                                style={styles.quickActionGradient}
+                        <MotiView from={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 300 }}>
+                            <TouchableOpacity 
+                                style={styles.quickActionBtn}
+                                onPress={() => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    navigation.navigate('Settings');
+                                }}
                             >
-                                <Text style={styles.quickActionIcon}>⚙️</Text>
-                            </LinearGradient>
-                            <Text style={styles.quickActionText}>Ayarlar</Text>
-                        </TouchableOpacity>
+                                <LinearGradient
+                                    colors={['#64748B', '#475569']}
+                                    style={styles.quickActionGradient}
+                                >
+                                    <Feather name="settings" size={24} color="#FFF" />
+                                </LinearGradient>
+                                <Text style={styles.quickActionText}>Ayarlar</Text>
+                            </TouchableOpacity>
+                        </MotiView>
                     </View>
                 </View>
 
@@ -420,6 +475,19 @@ const styles = StyleSheet.create({
     premiumBadgeText: {
         fontSize: 16,
     },
+    premiumBadgeProfile: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: '#F59E0B',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2.5,
+        borderColor: '#8B5CF6',
+    },
 
     // User Info
     userName: {
@@ -481,6 +549,9 @@ const styles = StyleSheet.create({
         minHeight: 60,
     },
     saveBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
         backgroundColor: '#FFFFFF',
         paddingHorizontal: 24,
         paddingVertical: 12,
@@ -490,6 +561,43 @@ const styles = StyleSheet.create({
         color: '#6366F1',
         fontWeight: '700',
         fontSize: 14,
+    },
+    sectionTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 12,
+    },
+    completionHint: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 8,
+    },
+    completionHintText: {
+        fontSize: 12,
+        color: COLORS.textTertiary,
+    },
+    activityIcon: {
+        width: 32,
+        height: 32,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    achievementLockOverlay: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+    },
+    premiumIconBox: {
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        backgroundColor: 'rgba(255,255,255,0.25)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
     },
 
     // Completion Card

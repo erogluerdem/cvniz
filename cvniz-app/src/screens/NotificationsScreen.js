@@ -4,21 +4,28 @@ import {
     StatusBar, RefreshControl, Switch, Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOW } from '../constants';
 
-// ============ NOTIFICATION ITEM ============
+// ============ MODERN NOTIFICATION ITEM ============
 function NotificationItem({ notification, colors, onPress }) {
     const typeConfig = {
-        success: { icon: '✅', color: '#10B981' },
-        info: { icon: 'ℹ️', color: '#06B6D4' },
-        warning: { icon: '⚠️', color: '#F59E0B' },
-        promo: { icon: '🎁', color: '#A855F7' },
-        update: { icon: '🔄', color: '#6366F1' },
+        success: { iconName: 'check-circle', color: '#10B981' },
+        info: { iconName: 'info', color: '#06B6D4' },
+        warning: { iconName: 'alert-circle', color: '#F59E0B' },
+        promo: { iconName: 'gift', color: '#A855F7' },
+        update: { iconName: 'refresh-cw', color: '#6366F1' },
     };
 
     const config = typeConfig[notification.type] || typeConfig.info;
+
+    const handlePress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress?.();
+    };
 
     return (
         <TouchableOpacity
@@ -28,11 +35,11 @@ function NotificationItem({ notification, colors, onPress }) {
                 !notification.read && styles.unreadItem,
                 SHADOW.sm
             ]}
-            onPress={onPress}
-            activeOpacity={0.7}
+            onPress={handlePress}
+            activeOpacity={0.8}
         >
             <View style={[styles.notificationIcon, { backgroundColor: config.color + '20' }]}>
-                <Text style={{ fontSize: 20 }}>{config.icon}</Text>
+                <Feather name={config.iconName} size={20} color={config.color} />
             </View>
             <View style={styles.notificationContent}>
                 <Text style={[styles.notificationTitle, { color: colors.text }]} numberOfLines={1}>
@@ -55,11 +62,11 @@ function NotificationItem({ notification, colors, onPress }) {
 // ============ SETTINGS SECTION ============
 function NotificationSettings({ colors, settings, onToggle }) {
     const options = [
-        { key: 'push', label: 'Push Bildirimleri', icon: '🔔', desc: 'Anlık bildirimler al' },
-        { key: 'email', label: 'E-posta Bildirimleri', icon: '✉️', desc: 'Güncellemeler için e-posta' },
-        { key: 'marketing', label: 'Pazarlama', icon: '📢', desc: 'İndirim ve kampanyalar' },
-        { key: 'cvViews', label: 'CV Görüntülenme', icon: '👁️', desc: 'CV görüntülendiğinde bildir' },
-        { key: 'tips', label: 'İpuçları', icon: '💡', desc: 'Kariyer önerileri' },
+        { key: 'push', label: 'Push Bildirimleri', iconName: 'bell', color: COLORS.primary, desc: 'Anlık bildirimler al' },
+        { key: 'email', label: 'E-posta Bildirimleri', iconName: 'mail', color: '#3B82F6', desc: 'Güncellemeler için e-posta' },
+        { key: 'marketing', label: 'Pazarlama', iconName: 'speaker', color: '#F59E0B', desc: 'İndirim ve kampanyalar' },
+        { key: 'cvViews', label: 'CV Görüntülenme', iconName: 'eye', color: '#10B981', desc: 'CV görüntülendiğinde bildir' },
+        { key: 'tips', label: 'İpuçları', iconName: 'zap', color: '#8B5CF6', desc: 'Kariyer önerileri' },
     ];
 
     return (
@@ -74,7 +81,9 @@ function NotificationSettings({ colors, settings, onToggle }) {
                             i < options.length - 1 && styles.settingBorder
                         ]}
                     >
-                        <Text style={styles.settingIcon}>{option.icon}</Text>
+                        <View style={[styles.settingIconBox, { backgroundColor: option.color + '20' }]}>
+                            <Feather name={option.iconName} size={18} color={option.color} />
+                        </View>
                         <View style={styles.settingContent}>
                             <Text style={[styles.settingLabel, { color: colors.text }]}>{option.label}</Text>
                             <Text style={[styles.settingDesc, { color: colors.textSecondary }]}>{option.desc}</Text>
@@ -100,7 +109,7 @@ export default function NotificationsScreen({ navigation }) {
     const [activeTab, setActiveTab] = useState('all'); // all, unread, settings
     const [notifications, setNotifications] = useState([
         { id: 1, type: 'success', title: 'CV İndirildi', message: 'Modern CV şablonunuz başarıyla indirildi.', time: '5 dk önce', read: false },
-        { id: 2, type: 'promo', title: '🎉 Yeni Yıl İndirimi!', message: 'Premium üyelikte %50 indirim. Sınırlı süre!', time: '1 saat önce', read: false },
+        { id: 2, type: 'promo', title: 'Yeni Yıl İndirimi!', message: 'Premium üyelikte %50 indirim. Sınırlı süre!', time: '1 saat önce', read: false },
         { id: 3, type: 'info', title: 'Yeni Şablonlar', message: '15 yeni profesyonel CV şablonu eklendi.', time: '2 saat önce', read: true },
         { id: 4, type: 'update', title: 'Uygulama Güncellendi', message: 'Yeni özellikler ve performans iyileştirmeleri.', time: 'Dün', read: true },
         { id: 5, type: 'success', title: 'CV Görüntülendi', message: 'CV\'niz bir işveren tarafından görüntülendi.', time: '2 gün önce', read: true },
@@ -153,12 +162,12 @@ export default function NotificationsScreen({ navigation }) {
 
             {/* Header */}
             <LinearGradient colors={['#0F172A', '#1E293B']} style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-                    <Text style={styles.backText}>← Geri</Text>
+                <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigation.goBack(); }} style={styles.backBtn}>
+                    <Feather name="arrow-left" size={24} color="#FFF" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Bildirimler</Text>
                 {unreadCount > 0 && activeTab !== 'settings' && (
-                    <TouchableOpacity onPress={markAllAsRead} style={styles.markAllBtn}>
+                    <TouchableOpacity onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); markAllAsRead(); }} style={styles.markAllBtn}>
                         <Text style={styles.markAllText}>Tümünü Oku</Text>
                     </TouchableOpacity>
                 )}

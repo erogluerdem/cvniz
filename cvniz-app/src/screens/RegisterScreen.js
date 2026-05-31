@@ -5,7 +5,11 @@ import {
     Alert, Dimensions, StatusBar
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather, Ionicons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useAuth } from '../context/AuthContext';
+import { COLORS, SPACING, BORDER_RADIUS } from '../constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -98,20 +102,33 @@ export default function RegisterScreen({ navigation }) {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    {/* Header */}
-                    <View style={styles.header}>
+                    {/* Modern Header */}
+                    <MotiView 
+                        from={{ opacity: 0, translateY: -20 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        transition={{ type: 'spring', damping: 15 }}
+                        style={styles.header}
+                    >
                         <TouchableOpacity 
                             style={styles.backBtn}
-                            onPress={() => navigation.goBack()}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                navigation.goBack();
+                            }}
                         >
-                            <Text style={styles.backIcon}>←</Text>
+                            <Feather name="arrow-left" size={24} color="#FFF" />
                         </TouchableOpacity>
                         <Text style={styles.headerTitle}>Hesap Oluştur</Text>
                         <Text style={styles.headerSubtitle}>CVniz'a ücretsiz kaydolun</Text>
-                    </View>
+                    </MotiView>
 
-                    {/* Form Card */}
-                    <View style={styles.formCard}>
+                    {/* Modern Form Card */}
+                    <MotiView 
+                        from={{ opacity: 0, translateY: 30 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        transition={{ type: 'spring', damping: 15, delay: 200 }}
+                        style={styles.formCard}
+                    >
                         {/* Name Input */}
                         <View style={styles.inputWrapper}>
                             <Text style={styles.inputLabel}>Ad Soyad</Text>
@@ -119,7 +136,7 @@ export default function RegisterScreen({ navigation }) {
                                 styles.inputContainer,
                                 focusedInput === 'name' && styles.inputContainerFocused
                             ]}>
-                                <Text style={styles.inputIcon}>👤</Text>
+                                <Feather name="user" size={18} color="#94A3B8" style={styles.inputIcon} />
                                 <TextInput
                                     ref={nameRef}
                                     style={styles.input}
@@ -143,7 +160,7 @@ export default function RegisterScreen({ navigation }) {
                                 styles.inputContainer,
                                 focusedInput === 'email' && styles.inputContainerFocused
                             ]}>
-                                <Text style={styles.inputIcon}>📧</Text>
+                                <Feather name="mail" size={18} color="#94A3B8" style={styles.inputIcon} />
                                 <TextInput
                                     ref={emailRef}
                                     style={styles.input}
@@ -169,7 +186,7 @@ export default function RegisterScreen({ navigation }) {
                                 styles.inputContainer,
                                 focusedInput === 'password' && styles.inputContainerFocused
                             ]}>
-                                <Text style={styles.inputIcon}>🔒</Text>
+                                <Feather name="lock" size={18} color="#94A3B8" style={styles.inputIcon} />
                                 <TextInput
                                     ref={passwordRef}
                                     style={styles.input}
@@ -185,9 +202,12 @@ export default function RegisterScreen({ navigation }) {
                                 />
                                 <TouchableOpacity 
                                     style={styles.eyeBtn}
-                                    onPress={() => setShowPassword(!showPassword)}
+                                    onPress={() => {
+                                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                        setShowPassword(!showPassword);
+                                    }}
                                 >
-                                    <Text style={styles.eyeIcon}>{showPassword ? '👁' : '👁‍🗨'}</Text>
+                                    <Feather name={showPassword ? "eye" : "eye-off"} size={18} color="#94A3B8" />
                                 </TouchableOpacity>
                             </View>
                             
@@ -220,7 +240,7 @@ export default function RegisterScreen({ navigation }) {
                                 focusedInput === 'confirmPassword' && styles.inputContainerFocused,
                                 confirmPassword && password !== confirmPassword && styles.inputContainerError
                             ]}>
-                                <Text style={styles.inputIcon}>🔐</Text>
+                                <Feather name="lock" size={18} color="#94A3B8" style={styles.inputIcon} />
                                 <TextInput
                                     ref={confirmPasswordRef}
                                     style={styles.input}
@@ -235,7 +255,7 @@ export default function RegisterScreen({ navigation }) {
                                     onSubmitEditing={handleRegister}
                                 />
                                 {confirmPassword && password === confirmPassword && (
-                                    <Text style={styles.checkIcon}>✓</Text>
+                                    <Feather name="check-circle" size={18} color="#10B981" />
                                 )}
                             </View>
                         </View>
@@ -247,7 +267,7 @@ export default function RegisterScreen({ navigation }) {
                             activeOpacity={0.7}
                         >
                             <View style={[styles.checkbox, acceptedTerms && styles.checkboxChecked]}>
-                                {acceptedTerms && <Text style={styles.checkboxIcon}>✓</Text>}
+                                {acceptedTerms && <Feather name="check" size={14} color="#FFF" />}
                             </View>
                             <Text style={styles.termsText}>
                                 <Text style={styles.termsLink}>Kullanım Koşulları</Text>
@@ -257,13 +277,21 @@ export default function RegisterScreen({ navigation }) {
                             </Text>
                         </TouchableOpacity>
 
-                        {/* Register Button */}
+                        {/* Modern Register Button */}
                         <TouchableOpacity
-                            style={[styles.registerBtn, !acceptedTerms && styles.registerBtnDisabled]}
-                            onPress={handleRegister}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                handleRegister();
+                            }}
                             disabled={loading || !acceptedTerms}
-                            activeOpacity={0.8}
+                            activeOpacity={0.9}
                         >
+                            <MotiView
+                                from={{ scale: 0.95, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: 'spring', damping: 15, delay: 400 }}
+                                style={[styles.registerBtn, !acceptedTerms && styles.registerBtnDisabled]}
+                            >
                             <LinearGradient
                                 colors={acceptedTerms ? ['#6366F1', '#8B5CF6'] : ['#CBD5E1', '#94A3B8']}
                                 style={styles.registerGradient}
@@ -273,11 +301,15 @@ export default function RegisterScreen({ navigation }) {
                                 {loading ? (
                                     <ActivityIndicator color="#FFF" size="small" />
                                 ) : (
-                                    <Text style={styles.registerText}>Kayıt Ol</Text>
+                                    <View style={styles.registerBtnContent}>
+                                        <Text style={styles.registerText}>Kayıt Ol</Text>
+                                        <Feather name="arrow-right" size={18} color="#FFF" />
+                                    </View>
                                 )}
                             </LinearGradient>
+                            </MotiView>
                         </TouchableOpacity>
-                    </View>
+                    </MotiView>
 
                     {/* Login Link */}
                     <View style={styles.footer}>
@@ -348,10 +380,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
-    backIcon: {
-        fontSize: 24,
-        color: '#FFF',
-        fontWeight: '300',
+    registerBtnContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
     },
     headerTitle: {
         fontSize: 28,
@@ -403,8 +436,13 @@ const styles = StyleSheet.create({
         borderColor: '#EF4444',
     },
     inputIcon: {
-        fontSize: 18,
         marginRight: 10,
+    },
+    registerBtnContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
     },
     input: {
         flex: 1,

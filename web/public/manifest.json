@@ -1,0 +1,113 @@
+{
+  "name": "CVniz - AI CV Oluşturucu",
+  "short_name": "CVniz",
+  "description": "AI destekli profesyonel CV ve özgeçmiş oluşturucu. Premium şablonlar ile dakikalar içinde etkileyici CV'nizi hazırlayın.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "orientation": "portrait",
+  "scope": "/",
+  "id": "/",
+  "categories": ["productivity", "business"],
+  "lang": "tr",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CVniz Dashboard"
+    },
+    {
+      "src": "/screenshots/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "CVniz Mobil"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Yeni CV Oluştur",
+      "short_name": "Yeni CV",
+      "description": "Hemen yeni bir CV oluşturun",
+      "url": "/editor",
+      "icons": [{ "src": "/icons/shortcut-create.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "CV'lerim",
+      "short_name": "CV'lerim",
+      "description": "Kayıtlı CV'lerinizi görüntüleyin",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/shortcut-dashboard.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Şablonlar",
+      "short_name": "Şablonlar",
+      "description": "Premium şablonları keşfedin",
+      "url": "/templates",
+      "icons": [{ "src": "/icons/shortcut-templates.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}

@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { FileText, User, LogOut, Menu, X, Sun, Moon, Sparkles, Zap, ChevronDown, Plus, LayoutGrid, Settings as SettingsIcon, Home as HomeIcon } from 'lucide-react'
+import { FileText, User, LogOut, Menu, X, Sun, Moon, Sparkles, Zap, ChevronDown, Plus, LayoutGrid, Settings as SettingsIcon, Home as HomeIcon, RefreshCw } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CookieConsent from './CookieConsent'
 import NotificationBell from './NotificationBell'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -10,12 +10,28 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function Layout() {
     const { user, logout, isAdmin } = useAuth()
     const location = useLocation()
+    const navigate = useNavigate()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const [theme, setTheme] = useState('day')
+    const [isStandalone, setIsStandalone] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [pullProgress, setPullProgress] = useState(0)
     const userMenuRef = useRef(null)
+    const mainRef = useRef(null)
+    const touchStartY = useRef(0)
     const isDayMode = theme === 'day'
+    
+    // Check if running as installed PWA
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches 
+                || window.navigator.standalone 
+                || document.referrer.includes('android-app://')
+            setIsStandalone(isStandaloneMode)
+        }
+    }, [])
 
     const navLinks = [
         { path: '/', label: 'Ana Sayfa' },
@@ -82,12 +98,61 @@ export default function Layout() {
 
     const toggleTheme = () => applyTheme(isDayMode ? 'night' : 'day')
 
+    // Pull to refresh handler
+    const handleTouchStart = useCallback((e) => {
+        if (mainRef.current && mainRef.current.scrollTop === 0) {
+            touchStartY.current = e.touches[0].clientY
+        }
+    }, [])
+    
+    const handleTouchMove = useCallback((e) => {
+        if (mainRef.current && mainRef.current.scrollTop === 0) {
+            const touchY = e.touches[0].clientY
+            const diff = touchY - touchStartY.current
+            if (diff > 0 && diff < 150) {
+                setPullProgress(diff / 150)
+            }
+        }
+    }, [])
+    
+    const handleTouchEnd = useCallback(() => {
+        if (pullProgress > 0.6) {
+            setIsRefreshing(true)
+            setTimeout(() => {
+                window.location.reload()
+            }, 500)
+        }
+        setPullProgress(0)
+    }, [pullProgress])
+    
+    // Swipe navigation
+    const touchStartX = useRef(0)
+    const handleSwipeStart = useCallback((e) => {
+        touchStartX.current = e.touches[0].clientX
+    }, [])
+    
+    const handleSwipeEnd = useCallback((e) => {
+        const diff = touchStartX.current - e.changedTouches[0].clientX
+        const navPaths = ['/', '/features', '/templates', '/pricing', '/faq']
+        const currentIndex = navPaths.indexOf(location.pathname)
+        
+        if (Math.abs(diff) > 50) {
+            if (diff > 0 && currentIndex < navPaths.length - 1) {
+                // Swipe left - go next
+                navigate(navPaths[currentIndex + 1])
+            } else if (diff < 0 && currentIndex > 0) {
+                // Swipe right - go prev
+                navigate(navPaths[currentIndex - 1])
+            }
+        }
+    }, [location.pathname, navigate])
+
     const footerHeadingText = isDayMode ? 'text-slate-900' : 'text-white'
     const footerMutedText = isDayMode ? 'text-slate-600' : 'text-gray-400'
     const footerLinkBase = isDayMode ? 'text-slate-600 hover:text-sky-600' : 'text-gray-400 hover:text-cyan-400'
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className={`min-h-screen flex flex-col ${isStandalone ? 'standalone-mode' : ''}`}>
             {/* Aurora Background Orbs */}
             <div className="orb orb-1" />
             <div className="orb orb-2" />
@@ -351,9 +416,43 @@ export default function Layout() {
                 </AnimatePresence>
             </header>
 
-            {/* Main Content */}
-            <main className="flex-1">
-                <Outlet />
+            {/* Pull to Refresh Indicator */}
+            {pullProgress > 0 && (
+                <div 
+                    className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center pointer-events-none"
+                    style={{ 
+                        paddingTop: 'calc(env(safe-area-inset-top) + 10px)',
+                        opacity: pullProgress,
+                        transform: `translateY(${(1 - pullProgress) * -20}px)`
+                    }}
+                >
+                    <div className="glass-card rounded-full p-3 flex items-center gap-2">
+                        <RefreshCw 
+                            className={`w-5 h-5 text-cyan-400 ${isRefreshing ? 'animate-spin' : ''}`}
+                            style={{ transform: `rotate(${pullProgress * 360}deg)` }}
+                        />
+                        <span className="text-xs font-medium text-white">
+                            {isRefreshing ? 'Yenileniyor...' : 'Yenilemek için bırakın'}
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {/* Main Content with Touch Handlers */}
+            <main 
+                ref={mainRef}
+                className="flex-1 scroll-momentum overflow-y-auto"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                style={{ 
+                    paddingTop: isStandalone ? 'env(safe-area-inset-top)' : undefined,
+                    paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)'
+                }}
+            >
+                <div onTouchStart={handleSwipeStart} onTouchEnd={handleSwipeEnd}>
+                    <Outlet />
+                </div>
             </main>
 
             {/* Footer */}

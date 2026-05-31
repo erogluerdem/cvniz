@@ -5,6 +5,9 @@ import {
     ActivityIndicator, StatusBar, Dimensions, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Feather } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 import { useTheme } from '../context/ThemeContext';
 import { useCV } from '../context/CVContext';
 import { useAuth } from '../context/AuthContext';
@@ -37,9 +40,9 @@ function ScoreCircle({ score, size = 120, colors }) {
 
 function CategoryCard({ category, colors }) {
     const getStatusIcon = (status) => {
-        if (status === 'good') return '✅';
-        if (status === 'warning') return '⚠️';
-        return '❌';
+        if (status === 'good') return 'check-circle';
+        if (status === 'warning') return 'alert-circle';
+        return 'x-circle';
     };
 
     const getStatusColor = (status) => {
@@ -48,32 +51,39 @@ function CategoryCard({ category, colors }) {
         return '#EF4444';
     };
 
+    const statusColor = getStatusColor(category.status);
+
     return (
-        <View style={[styles.categoryCard, { backgroundColor: colors.surface }, SHADOW.sm]}>
+        <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'spring', damping: 15 }}
+            style={[styles.categoryCard, { backgroundColor: colors.surface }, SHADOW.sm]}
+        >
             <View style={styles.categoryHeader}>
-                <View style={[styles.categoryIcon, { backgroundColor: getStatusColor(category.status) + '20' }]}>
-                    <Text style={{ fontSize: 20 }}>{category.icon}</Text>
+                <View style={[styles.categoryIcon, { backgroundColor: statusColor + '20' }]}>
+                    <Feather name={category.iconName} size={20} color={statusColor} />
                 </View>
                 <View style={styles.categoryInfo}>
                     <Text style={[styles.categoryName, { color: colors.text }]}>{category.name}</Text>
-                    <Text style={[styles.categoryScore, { color: getStatusColor(category.status) }]}>
+                    <Text style={[styles.categoryScore, { color: statusColor }]}>
                         {category.score}%
                     </Text>
                 </View>
-                <Text style={{ fontSize: 20 }}>{getStatusIcon(category.status)}</Text>
+                <Feather name={getStatusIcon(category.status)} size={24} color={statusColor} />
             </View>
             <Text style={[styles.categoryDesc, { color: colors.textSecondary }]}>{category.description}</Text>
             {category.suggestions && category.suggestions.length > 0 && (
                 <View style={styles.suggestionList}>
                     {category.suggestions.map((s, i) => (
                         <View key={i} style={styles.suggestionItem}>
-                            <Text style={styles.suggestionBullet}>💡</Text>
+                            <Feather name="zap" size={14} color={COLORS.accent} style={{ marginRight: 8 }} />
                             <Text style={[styles.suggestionText, { color: colors.text }]}>{s}</Text>
                         </View>
                     ))}
                 </View>
             )}
-        </View>
+        </MotiView>
     );
 }
 
@@ -83,7 +93,7 @@ function KeywordTag({ keyword, found, colors }) {
             styles.keywordTag,
             { backgroundColor: found ? '#10B981' + '20' : '#EF4444' + '20' }
         ]}>
-            <Text style={{ fontSize: 12 }}>{found ? '✓' : '✗'}</Text>
+            <Feather name={found ? 'check' : 'x'} size={12} color={found ? '#10B981' : '#EF4444'} />
             <Text style={[
                 styles.keywordText,
                 { color: found ? '#10B981' : '#EF4444' }
@@ -111,7 +121,7 @@ export default function ATSAnalysisScreen({ navigation, route }) {
             {
                 id: 'contact',
                 name: 'İletişim Bilgileri',
-                icon: '📞',
+                iconName: 'phone',
                 score: 100,
                 status: 'good',
                 description: 'Tüm iletişim bilgileri mevcut.',
@@ -120,7 +130,7 @@ export default function ATSAnalysisScreen({ navigation, route }) {
             {
                 id: 'experience',
                 name: 'Deneyim Bölümü',
-                icon: '💼',
+                iconName: 'briefcase',
                 score: 75,
                 status: 'warning',
                 description: 'Deneyim bölümü iyi ancak iyileştirilebilir.',
@@ -132,7 +142,7 @@ export default function ATSAnalysisScreen({ navigation, route }) {
             {
                 id: 'keywords',
                 name: 'Anahtar Kelimeler',
-                icon: '🔑',
+                iconName: 'key',
                 score: 60,
                 status: 'warning',
                 description: 'Bazı önemli anahtar kelimeler eksik.',
@@ -144,7 +154,7 @@ export default function ATSAnalysisScreen({ navigation, route }) {
             {
                 id: 'format',
                 name: 'Format ve Yapı',
-                icon: '📋',
+                iconName: 'layout',
                 score: 85,
                 status: 'good',
                 description: 'CV formatı ATS uyumlu.',
@@ -153,7 +163,7 @@ export default function ATSAnalysisScreen({ navigation, route }) {
             {
                 id: 'skills',
                 name: 'Yetenekler',
-                icon: '⚡',
+                iconName: 'zap',
                 score: 50,
                 status: 'error',
                 description: 'Yetenek bölümü yetersiz.',
@@ -217,7 +227,7 @@ export default function ATSAnalysisScreen({ navigation, route }) {
                         ]}
                         onPress={() => setSelectedCV(cv.id || cv._id)}
                     >
-                        <Text style={styles.cvEmoji}>📄</Text>
+                        <Feather name="file-text" size={24} color={COLORS.primary} />
                         <Text style={[styles.cvName, { color: colors.text }]} numberOfLines={1}>
                             {cv.name}
                         </Text>
@@ -253,16 +263,20 @@ export default function ATSAnalysisScreen({ navigation, route }) {
             {/* Keywords */}
             <Text style={[styles.sectionTitle, { color: colors.text }]}>Anahtar Kelime Analizi</Text>
             <View style={[styles.keywordsSection, { backgroundColor: colors.surface }, SHADOW.sm]}>
-                <Text style={[styles.keywordsSubtitle, { color: '#10B981' }]}>✅ Bulunan Kelimeler</Text>
+                <View style={styles.keywordsSubtitleRow}>
+                    <Feather name="check-circle" size={16} color="#10B981" />
+                    <Text style={[styles.keywordsSubtitle, { color: '#10B981', marginLeft: 6 }]}>Bulunan Kelimeler</Text>
+                </View>
                 <View style={styles.keywordGrid}>
                     {analysis.keywords.found.map((k, i) => (
                         <KeywordTag key={i} keyword={k} found colors={colors} />
                     ))}
                 </View>
 
-                <Text style={[styles.keywordsSubtitle, { color: '#EF4444', marginTop: SPACING.md }]}>
-                    ❌ Eksik Kelimeler
-                </Text>
+                <View style={[styles.keywordsSubtitleRow, { marginTop: SPACING.md }]}>
+                    <Feather name="x-circle" size={16} color="#EF4444" />
+                    <Text style={[styles.keywordsSubtitle, { color: '#EF4444', marginLeft: 6 }]}>Eksik Kelimeler</Text>
+                </View>
                 <View style={styles.keywordGrid}>
                     {analysis.keywords.missing.map((k, i) => (
                         <KeywordTag key={i} keyword={k} found={false} colors={colors} />
@@ -290,11 +304,17 @@ export default function ATSAnalysisScreen({ navigation, route }) {
                     onPress={() => navigation.navigate('Editor', { cvId: selectedCV })}
                 >
                     <LinearGradient colors={COLORS.gradients.primary} style={styles.actionBtnGradient}>
-                        <Text style={styles.actionBtnText}>✏️ CV'yi Düzenle</Text>
+                        <View style={styles.actionBtnContent}>
+                            <Feather name="edit-2" size={18} color="#FFF" />
+                            <Text style={styles.actionBtnText}>CV'yi Düzenle</Text>
+                        </View>
                     </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.actionBtnSecondary, { backgroundColor: colors.surface }]}>
-                    <Text style={[styles.actionBtnSecondaryText, { color: colors.text }]}>📤 Raporu Paylaş</Text>
+                    <View style={styles.actionBtnContent}>
+                        <Feather name="share-2" size={18} color={colors.text} />
+                        <Text style={[styles.actionBtnSecondaryText, { color: colors.text }]}>Raporu Paylaş</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
 

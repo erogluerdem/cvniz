@@ -8,7 +8,22 @@
     content="AI destekli profesyonel CV ve özgeçmiş oluşturucu. Premium şablonlar ile dakikalar içinde etkileyici CV'nizi hazırlayın." />
   <meta name="keywords" content="CV, özgeçmiş, resume, AI, yapay zeka, profesyonel CV, iş başvurusu" />
   <meta name="theme-color" content="#030712" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+  
+  <!-- PWA / Mobile App Config -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CVniz" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="CVniz" />
+  <meta name="msapplication-TileColor" content="#030712" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json" />
   
   <!-- Open Graph / Social Sharing -->
   <meta property="og:type" content="website" />
@@ -33,6 +48,13 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-120x120.png" />
+  <link rel="mask-icon" href="/favicon.svg" color="#00d4ff" />
+  
   <title>CVniz - AI Destekli Profesyonel CV Oluşturucu | Türkiye'nin #1 CV Platformu</title>
   
   <!-- Preload critical assets -->
@@ -41,6 +63,12 @@
     :root {
       --bg-main: #030712;
       color-scheme: dark;
+      
+      /* Safe Area Insets for iPhone Notch */
+      --sat: env(safe-area-inset-top);
+      --sar: env(safe-area-inset-right);
+      --sab: env(safe-area-inset-bottom);
+      --sal: env(safe-area-inset-left);
     }
     html {
       background-color: var(--bg-main);
@@ -52,6 +80,89 @@
       font-family: 'Inter', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      
+      /* Native App Feel */
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    /* Standalone Mode Specific Styles */
+    @media all and (display-mode: standalone) {
+      body {
+        padding-top: var(--sat);
+        padding-bottom: var(--sab);
+      }
+    }
+    
+    /* Prevent Text Selection on UI Elements */
+    button, a, .no-select {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    /* Touch Action Optimization */
+    * {
+      touch-action: pan-y;
+    }
+    
+    /* Momentum Scrolling */
+    .scroll-momentum {
+      -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+    }
+    
+    /* Pull to Refresh Container */
+    .ptr-container {
+      overflow-y: scroll;
+      overscroll-behavior-y: contain;
+    }
+    
+    /* App-like Page Transitions */
+    .page-transition-enter {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    .page-transition-enter-active {
+      opacity: 1;
+      transform: translateX(0);
+      transition: all 300ms ease-out;
+    }
+    .page-transition-exit {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .page-transition-exit-active {
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: all 300ms ease-in;
+    }
+    
+    /* iOS Momentum Scrolling Fix */
+    @supports (-webkit-touch-callout: none) {
+      .ios-scroll {
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+    
+    /* Safe Area Padding Utilities */
+    .safe-top { padding-top: var(--sat); }
+    .safe-bottom { padding-bottom: var(--sab); }
+    .safe-left { padding-left: var(--sal); }
+    .safe-right { padding-right: var(--sar); }
+    
+    /* Bottom Navigation Height for Mobile */
+    .pb-nav { padding-bottom: calc(var(--sab) + 80px); }
+    
+    /* Hide Scrollbar but Keep Functionality */
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
     #root {
       min-height: 100vh;

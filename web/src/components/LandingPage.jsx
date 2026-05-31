@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Sparkles, FileText, Download, Zap, Star, Check, ArrowRight, Crown, ChevronDown, ChevronUp, Mail, Shield, Clock, Users, Play, Quote, User, LogOut } from 'lucide-react'
+import { Sparkles, FileText, Download, Zap, Star, Check, ArrowRight, Crown, ChevronDown, ChevronUp, Mail, Shield, Clock, Users, Play, Quote, User, LogOut, Menu, X } from 'lucide-react'
 import VideoPlayerModal from '../components/VideoPlayerModal'
 
 const templates = [
@@ -91,6 +91,7 @@ function FAQItem({ question, answer }) {
 export default function LandingPage() {
     const [email, setEmail] = useState('')
     const [videoModalOpen, setVideoModalOpen] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const { user, logout, isAdmin } = useAuth()
     const navigate = useNavigate()
 
@@ -101,6 +102,14 @@ export default function LandingPage() {
     const handleLogout = () => {
         logout()
     }
+
+    const navLinks = [
+        { href: '#features', label: 'Özellikler' },
+        { href: '#templates', label: 'Şablonlar' },
+        { href: '#testimonials', label: 'Yorumlar' },
+        { href: '#pricing', label: 'Fiyatlar' },
+        { href: '#faq', label: 'SSS' },
+    ]
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-slate-950 text-white">
@@ -113,21 +122,24 @@ export default function LandingPage() {
             />
             {/* Header */}
             <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ring-white/10">
-                            <FileText className="w-5 h-5 text-slate-900" />
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ring-white/10">
+                            <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" />
                         </div>
-                        <span className="text-xl font-bold gradient-text">CVniz</span>
+                        <span className="text-lg sm:text-xl font-bold gradient-text">CVniz</span>
                     </Link>
+                    
+                    {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-2">
-                        <a href="#features" className="text-sm px-3 py-1.5 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors">Özellikler</a>
-                        <a href="#templates" className="text-sm px-3 py-1.5 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors">Şablonlar</a>
-                        <a href="#testimonials" className="text-sm px-3 py-1.5 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors">Yorumlar</a>
-                        <a href="#pricing" className="text-sm px-3 py-1.5 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors">Fiyatlar</a>
-                        <a href="#faq" className="text-sm px-3 py-1.5 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors">SSS</a>
+                        {navLinks.map((link) => (
+                            <a key={link.href} href={link.href} className="text-sm px-3 py-1.5 rounded-full text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+                                {link.label}
+                            </a>
+                        ))}
                     </nav>
-                    <div className="flex items-center gap-3">
+                    
+                    <div className="flex items-center gap-2 sm:gap-3">
                         {user ? (
                             <>
                                 <Link
@@ -139,7 +151,7 @@ export default function LandingPage() {
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="p-2 text-gray-400 hover:text-white transition-colors"
+                                    className="p-2 text-gray-400 hover:text-white transition-colors hidden sm:block"
                                     title="Çıkış Yap"
                                 >
                                     <LogOut className="w-5 h-5" />
@@ -147,20 +159,64 @@ export default function LandingPage() {
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="text-gray-300 hover:text-white transition-colors hidden sm:block">
+                                <Link to="/login" className="text-gray-300 hover:text-white transition-colors hidden sm:block text-sm">
                                     Giriş Yap
                                 </Link>
-                                <Link to="/editor" className="btn-premium text-sm">
+                                <Link to="/editor" className="btn-premium whitespace-nowrap">
                                     CV Oluştur
                                 </Link>
                             </>
                         )}
+                        
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="md:hidden p-2 rounded-xl glass-card border-white/10 text-gray-400 hover:text-white"
+                        >
+                            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
                     </div>
                 </div>
+                
+                {/* Mobile Menu Overlay */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden fixed inset-0 top-[60px] z-40 bg-slate-950/95 backdrop-blur-xl">
+                        <div className="flex flex-col p-6 gap-4">
+                            {navLinks.map((link) => (
+                                <a
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="text-2xl font-bold text-white hover:text-cyan-400 transition-colors py-2"
+                                >
+                                    {link.label}
+                                </a>
+                            ))}
+                            <div className="mt-6 pt-6 border-t border-white/10">
+                                {!user ? (
+                                    <Link
+                                        to="/login"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="btn-premium w-full py-4 text-lg font-bold text-center block"
+                                    >
+                                        Giriş Yap
+                                    </Link>
+                                ) : (
+                                    <button
+                                        onClick={() => { logout(); setMobileMenuOpen(false); }}
+                                        className="w-full py-4 text-red-400 font-bold hover:bg-red-500/10 rounded-2xl transition-all"
+                                    >
+                                        Çıkış Yap
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </header>
 
             {/* Hero Section */}
-            <section className="pt-32 pb-28 px-6 relative overflow-hidden">
+            <section className="pt-24 sm:pt-32 pb-16 sm:pb-28 px-4 sm:px-6 relative overflow-hidden">
                 {/* Background Elements */}
                 <div className="absolute -top-24 left-10 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-10 right-10 w-[28rem] h-[28rem] bg-slate-200/10 rounded-full blur-3xl"></div>
@@ -174,7 +230,7 @@ export default function LandingPage() {
                 ></div>
 
                 <div className="max-w-5xl mx-auto relative z-10">
-                    <div className="glass-card rounded-[32px] border border-white/15 p-10 md:p-14 text-center shadow-[0_45px_140px_-80px_rgba(226,232,240,0.8)] relative overflow-hidden">
+                    <div className="glass-card rounded-[24px] sm:rounded-[32px] border border-white/15 p-6 sm:p-10 md:p-14 text-center shadow-[0_45px_140px_-80px_rgba(226,232,240,0.8)] relative overflow-hidden">
                         <div className="absolute inset-x-10 inset-y-0 bg-gradient-to-b from-white/5 via-transparent to-transparent blur-3xl"></div>
                         <div className="relative z-10">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8 fade-in ring-1 ring-white/10">
@@ -182,22 +238,22 @@ export default function LandingPage() {
                                 <span className="text-sm text-gray-200">Yeni: 20 Profesyonel Şablon</span>
                             </div>
 
-                            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 fade-in">
+                            <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold mb-4 sm:mb-6 fade-in">
                                 <span className="gradient-text">Profesyonel CV'nizi</span>
                                 <br />
                                 <span className="text-white">Dakikalar İçinde Oluşturun</span>
                             </h1>
 
-                            <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10 fade-in">
+                            <p className="text-base sm:text-xl text-gray-300 max-w-2xl mx-auto mb-6 sm:mb-10 fade-in px-2">
                                 AI destekli 20+ şablonla öne çıkan özgeçmişler hazırlayın.
                                 <span className="text-cyan-300 font-semibold"> %95 müşteri memnuniyeti!</span>
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in">
-                                <button onClick={() => handleStartCreating('modern')} className="btn-premium text-lg flex items-center justify-center gap-2 group shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)]">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center fade-in">
+                                <button onClick={() => handleStartCreating('modern')} className="btn-premium text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 flex items-center justify-center gap-2 group shadow-[0_25px_80px_-35px_rgba(34,211,238,0.95)]">
                                     Ücretsiz Başla <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </button>
-                                <button onClick={() => setVideoModalOpen(true)} className="btn-secondary px-8 py-3 flex items-center justify-center gap-2">
+                                <button onClick={() => setVideoModalOpen(true)} className="btn-secondary px-6 sm:px-8 py-3 flex items-center justify-center gap-2">
                                     <Play className="w-5 h-5" /> Demo İzle
                                 </button>
                             </div>
@@ -333,29 +389,29 @@ export default function LandingPage() {
             </section>
 
             {/* Features Section */}
-            <section id="features" className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-950/20 to-transparent relative overflow-hidden">
+            <section id="features" className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-transparent via-cyan-950/20 to-transparent relative overflow-hidden">
                 <div
                     className="absolute inset-0 opacity-20 pointer-events-none"
                     style={{ backgroundImage: 'linear-gradient(120deg, rgba(148,163,184,0.2) 0%, transparent 35%), linear-gradient(300deg, rgba(34,211,238,0.2) 0%, transparent 40%)' }}
                 ></div>
                 <div className="max-w-6xl mx-auto relative z-10">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4">
+                    <div className="text-center mb-10 sm:mb-16">
+                        <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                             <span className="gradient-text">Neden CVniz?</span>
                         </h2>
-                        <p className="text-gray-400 max-w-xl mx-auto">
+                        <p className="text-gray-400 max-w-xl mx-auto text-sm sm:text-base px-4">
                             İş arama sürecinizi kolaylaştıran güçlü özellikler
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                         {features.map((feature, index) => (
-                            <div key={index} className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform duration-300 group">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-300 to-slate-200 text-slate-950 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ring-1 ring-white/10">
+                            <div key={index} className="glass-card rounded-2xl p-5 sm:p-6 hover:scale-105 transition-transform duration-300 group">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-cyan-300 to-slate-200 text-slate-950 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ring-1 ring-white/10">
                                     {feature.icon}
                                 </div>
-                                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                                <p className="text-gray-400 text-sm">{feature.description}</p>
+                                <h3 className="text-base sm:text-lg font-semibold mb-2">{feature.title}</h3>
+                                <p className="text-gray-400 text-xs sm:text-sm">{feature.description}</p>
                             </div>
                         ))}
                     </div>
@@ -379,45 +435,45 @@ export default function LandingPage() {
             </section>
 
             {/* Templates Section */}
-            <section id="templates" className="py-20 px-6">
+            <section id="templates" className="py-12 sm:py-20 px-4 sm:px-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4">
+                    <div className="text-center mb-10 sm:mb-16">
+                        <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                             <span className="gradient-text">20+ Profesyonel Şablon</span>
                         </h2>
-                        <p className="text-gray-400 max-w-xl mx-auto">
+                        <p className="text-gray-400 max-w-xl mx-auto text-sm sm:text-base px-4">
                             Her sektör için özel tasarlanmış premium şablonlar
                         </p>
                     </div>
 
-                    <div className="glass-card rounded-3xl p-6 border border-white/10 shadow-[0_30px_90px_-50px_rgba(226,232,240,0.45)]">
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/10 shadow-[0_30px_90px_-50px_rgba(226,232,240,0.45)]">
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                             {templates.map((template) => (
                                 <div
                                     key={template.id}
                                     className="glass-card rounded-xl overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer group"
                                     onClick={() => handleStartCreating(template.id)}
                                 >
-                                    <div className={`h-28 bg-gradient-to-br ${template.color} flex items-center justify-center relative`}>
-                                        <span className="text-4xl opacity-60">{template.preview}</span>
+                                    <div className={`h-20 sm:h-28 bg-gradient-to-br ${template.color} flex items-center justify-center relative`}>
+                                        <span className="text-2xl sm:text-4xl opacity-60">{template.preview}</span>
                                         {template.isPremium && (
-                                            <div className="absolute top-2 right-2 flex items-center gap-1 bg-gradient-to-r from-cyan-300 to-slate-200 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-white/10">
-                                                <Crown className="w-2.5 h-2.5" />
-                                                <span className="text-[10px] font-bold">PRO</span>
+                                            <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 flex items-center gap-1 bg-gradient-to-r from-cyan-300 to-slate-200 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-white/10">
+                                                <Crown className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                                                <span className="text-[8px] sm:text-[10px] font-bold">PRO</span>
                                             </div>
                                         )}
                                         {!template.isPremium && (
-                                            <div className="absolute top-2 right-2 bg-white/85 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-black/10">
-                                                <span className="text-[10px] font-bold">FREE</span>
+                                            <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-white/85 text-slate-950 px-1.5 py-0.5 rounded-full ring-1 ring-black/10">
+                                                <span className="text-[8px] sm:text-[10px] font-bold">FREE</span>
                                             </div>
                                         )}
                                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span className="btn-premium text-xs py-2 px-4">Kullan</span>
+                                            <span className="btn-premium text-[10px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-4">Kullan</span>
                                         </div>
                                     </div>
-                                    <div className="p-3">
-                                        <h3 className="font-semibold text-sm">{template.name}</h3>
-                                        <p className="text-gray-500 text-xs">{template.description}</p>
+                                    <div className="p-2 sm:p-3">
+                                        <h3 className="font-semibold text-xs sm:text-sm">{template.name}</h3>
+                                        <p className="text-gray-500 text-[10px] sm:text-xs">{template.description}</p>
                                     </div>
                                 </div>
                             ))}
@@ -427,20 +483,20 @@ export default function LandingPage() {
             </section>
 
             {/* Testimonials */}
-            <section id="testimonials" className="py-20 px-6 bg-gradient-to-b from-transparent via-cyan-950/10 to-transparent">
+            <section id="testimonials" className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-b from-transparent via-cyan-950/10 to-transparent">
                 <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4">
+                    <div className="text-center mb-10 sm:mb-16">
+                        <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                             <span className="gradient-text">Müşterilerimiz Ne Diyor?</span>
                         </h2>
-                        <p className="text-gray-400 max-w-xl mx-auto">
+                        <p className="text-gray-400 max-w-xl mx-auto text-sm sm:text-base px-4">
                             Binlerce kullanıcımızdan gelen gerçek yorumlar
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         {testimonials.map((item, index) => (
-                            <div key={index} className="glass-card rounded-2xl p-6 relative border border-white/10 shadow-[0_20px_70px_-40px_rgba(34,211,238,0.55)]">
+                            <div key={index} className="glass-card rounded-2xl p-4 sm:p-6 relative border border-white/10 shadow-[0_20px_70px_-40px_rgba(34,211,238,0.55)]">
                                 <Quote className="absolute top-4 right-4 w-8 h-8 text-cyan-500/20" />
                                 <div className="flex items-center gap-4 mb-4">
                                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-300 to-slate-200 text-slate-950 flex items-center justify-center text-2xl ring-1 ring-white/10">

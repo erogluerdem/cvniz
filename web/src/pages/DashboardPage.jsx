@@ -70,7 +70,7 @@ import {
     FileText, Plus, Edit, Trash2, Copy, Download, LogOut, User, Crown,
     Clock, Settings, Bell, ChevronRight, Sparkles, TrendingUp,
     Zap, Star, Lightbulb, CheckCircle, LayoutGrid, List, Search,
-    X, Share2, Link2, Eye, Award, Trophy, Target, Medal, Gift,
+    X, Share2, Menu, Link2, Eye, Award, Trophy, Target, Medal, Gift,
     Sun, Moon, HelpCircle, ArrowRight, ExternalLink, Mail, Lock,
     Camera, Check, AlertCircle, History, Columns, Play, PenTool, Globe2, Briefcase,
     DollarSign, BarChart3, Layout, Volume2, Palette, Video, Upload, ChevronDown

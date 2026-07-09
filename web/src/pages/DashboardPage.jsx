@@ -88,6 +88,8 @@ export default function DashboardPage() {
     // States
     const [deleteConfirm, setDeleteConfirm] = useState(null)
     const [viewMode, setViewMode] = useState('grid')
+    const [activeTab, setActiveTab] = useState('cvs')
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [greeting, setGreeting] = useState('Merhaba')
     const [showNotifications, setShowNotifications] = useState(false)
@@ -281,43 +283,106 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-50 dark:bg-slate-950 flex transition-colors duration-300">
-            {/* Sidebar */}
-            <aside className="w-64 glass-card border-r border-slate-200 dark:border-white/10 hidden lg:flex flex-col flex-shrink-0 z-50 sticky top-0 h-screen">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex transition-colors duration-300">
+            {/* Mobile Sidebar Overlay */}
+            <AnimatePresence>
+                {sidebarOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 lg:hidden"
+                    >
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+                        <motion.aside 
+                            initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="absolute left-0 top-0 bottom-0 w-64 glass-card border-r border-slate-200 dark:border-white/10 flex flex-col bg-white dark:bg-slate-950 shadow-2xl"
+                        >
+                            <div className="p-4 flex items-center justify-between h-16 border-b border-slate-200 dark:border-white/10">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                                        <FileText className="w-5 h-5 text-white" />
+                                    </div>
+                                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600 tracking-tight">CVniz</span>
+                                </div>
+                                <button onClick={() => setSidebarOpen(false)} className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                            <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
+                                <button onClick={() => { setActiveTab('cvs'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'cvs' ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
+                                    <LayoutGrid className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">Panel</span>
+                                </button>
+                                <button onClick={() => { setActiveTab('tools'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'tools' ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
+                                    <Briefcase className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">Kariyer Araçları</span>
+                                </button>
+                                <button onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'ai' ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
+                                    <Sparkles className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">Yapay Zeka</span>
+                                </button>
+                                <div className="my-4 border-t border-slate-200 dark:border-white/10"></div>
+                                <button onClick={() => { setShowJobSearch(true); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 font-medium transition-all">
+                                    <Search className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">İş İlanları</span>
+                                </button>
+                                <button onClick={() => { setShowCompareModal(true); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 font-medium transition-all">
+                                    <Columns className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">Karşılaştır</span>
+                                </button>
+                                <button onClick={() => { setOnboardingStep(0); setShowOnboarding(true); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 font-medium transition-all">
+                                    <HelpCircle className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">Yardım</span>
+                                </button>
+                            </div>
+                        </motion.aside>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Sidebar Desktop */}
+            <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-white/10 hidden lg:flex flex-col flex-shrink-0 z-40 sticky top-0 h-screen shadow-sm">
                 <div className="p-4 flex items-center gap-3 h-16 border-b border-slate-200 dark:border-white/10">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg flex-shrink-0">
-                        <FileText className="w-5 h-5 text-slate-900 dark:text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
+                        <FileText className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600 tracking-tight">CVniz</span>
+                    <span className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">CVniz</span>
                 </div>
                 <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
-                    <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-medium transition-all">
+                    <button onClick={() => setActiveTab('cvs')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'cvs' ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm border border-cyan-100 dark:border-cyan-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
                         <LayoutGrid className="w-5 h-5 flex-shrink-0" />
                         <span className="text-sm">Panel</span>
                     </button>
-                    <button onClick={() => setShowJobSearch(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-900 dark:text-white font-medium transition-all group">
-                        <Briefcase className="w-5 h-5 flex-shrink-0 group-hover:text-blue-500" />
-                        <span className="text-sm">İş Bul</span>
+                    <button onClick={() => setActiveTab('tools')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'tools' ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm border border-cyan-100 dark:border-cyan-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
+                        <Briefcase className="w-5 h-5 flex-shrink-0" />
+                        <span className="text-sm">Kariyer Araçları</span>
                     </button>
-                    <button onClick={() => setShowCompareModal(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-900 dark:text-white font-medium transition-all group">
-                        <Columns className="w-5 h-5 flex-shrink-0 group-hover:text-purple-500" />
+                    <button onClick={() => setActiveTab('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'ai' ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm border border-cyan-100 dark:border-cyan-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
+                        <Sparkles className="w-5 h-5 flex-shrink-0" />
+                        <span className="text-sm">Yapay Zeka</span>
+                    </button>
+
+                    <div className="my-4 border-t border-slate-200 dark:border-white/10"></div>
+                    
+                    <button onClick={() => setShowJobSearch(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium transition-all">
+                        <Search className="w-5 h-5 flex-shrink-0" />
+                        <span className="text-sm">İş İlanları</span>
+                    </button>
+                    <button onClick={() => setShowCompareModal(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium transition-all">
+                        <Columns className="w-5 h-5 flex-shrink-0" />
                         <span className="text-sm">Karşılaştır</span>
                     </button>
-                    <button onClick={() => { setOnboardingStep(0); setShowOnboarding(true); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-900 dark:text-white font-medium transition-all group">
-                        <HelpCircle className="w-5 h-5 flex-shrink-0 group-hover:text-amber-500" />
+                    <button onClick={() => { setOnboardingStep(0); setShowOnboarding(true); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium transition-all">
+                        <HelpCircle className="w-5 h-5 flex-shrink-0" />
                         <span className="text-sm">Yardım</span>
                     </button>
                 </div>
-                <div className="p-4 border-t border-slate-200 dark:border-white/10">
-                    <Link to="/editor" className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-900 dark:text-white font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all hover:scale-105 active:scale-95">
-                        <Plus className="w-5 h-5" />
-                        <span className="text-sm">Yeni CV</span>
-                    </Link>
-                </div>
             </aside>
+
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-            {/* Modals */}
+            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
+                
+{/* Modals */}
             <ProfileModal
                 isOpen={showProfileModal}
                 onClose={() => setShowProfileModal(false)}
@@ -393,785 +458,300 @@ export default function DashboardPage() {
                 cv={selectedCVForAnalytics}
             />
 
-            {/* Header Topbar */}
-            <header className="glass-card border-b border-slate-200 dark:border-white/10 h-16 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
-                {/* Mobile Logo */}
-                <Link to="/" className="lg:hidden flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-slate-900 dark:text-white" />
-                    </div>
-                </Link>
-
-                <div className="flex items-center gap-2 sm:gap-4 ml-auto">
-                        {/* Theme Toggle */}
-                        <button
-                            onClick={() => setDarkMode(!darkMode)}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                            title={darkMode ? 'Açık Tema' : 'Koyu Tema'}
-                        >
-                            {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-500 dark:text-gray-400" />}
+            
+                {/* Header Topbar */}
+                <header className="bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-white/10 h-16 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30 backdrop-blur-xl shadow-sm">
+                    {/* Mobile Logo & Menu Button */}
+                    <div className="flex items-center gap-3 lg:hidden">
+                        <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-white/10">
+                            <Menu className="w-6 h-6" />
                         </button>
-
-                        {/* Help */}
-                        <button
-                            onClick={() => { setOnboardingStep(0); setShowOnboarding(true); }}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                            title="Yardım"
-                        >
-                            <HelpCircle className="w-5 h-5 text-slate-500 dark:text-gray-400" />
-                        </button>
-
-                        {/* Notifications - Living CV */}
-                        <NotificationBell />
-
-                        {/* User Menu */}
-                        <div className="relative" ref={userMenuRef}>
-                            <button
-                                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center gap-3 hover:bg-white/5 rounded-2xl p-2 transition-all border border-transparent hover:border-white/10 group"
-                            >
-                                <div className="relative">
-                                    <div className="absolute inset-0 bg-cyan-400 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity" />
-                                    <div className="relative w-10 h-10 rounded-full bg-white dark:bg-slate-900 border border-white/20 flex items-center justify-center ring-2 ring-white/10 shadow-lg">
-                                        <span className="text-sm font-black text-cyan-400">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
-                                    </div>
-                                </div>
-                                <div className="hidden sm:block text-left leading-tight">
-                                    <div className="text-sm font-black text-slate-900 dark:text-white italic">{user?.name || 'Kullanıcı'}</div>
-                                    <div className="text-[9px] text-slate-600 dark:text-gray-500 flex items-center gap-1 font-black uppercase tracking-widest">
-                                        {isPremium ? (
-                                            <>
-                                                <Crown className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                                                <span className="text-amber-500">Premium Plus</span>
-                                            </>
-                                        ) : (
-                                            <span>Free Account</span>
-                                        )}
-                                    </div>
-                                </div>
-                                <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-500 transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            <AnimatePresence>
-                                {userMenuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-2 z-50"
-                                    >
-                                        <div className="px-4 py-2 border-b border-white/5 mb-2">
-                                            <p className="text-xs font-bold text-slate-600 dark:text-gray-500 uppercase tracking-widest">Giriş Yapılan Hesap</p>
-                                            <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.email}</p>
-                                        </div>
-
-                                        <button
-                                            onClick={() => {
-                                                setUserMenuOpen(false)
-                                                setShowProfileModal(true)
-                                            }}
-                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:text-white hover:bg-white/5 transition-colors"
-                                        >
-                                            <User className="w-4 h-4 text-purple-400" />
-                                            <span>Profil Ayarları</span>
-                                        </button>
-
-                                        <button
-                                            onClick={() => {
-                                                setUserMenuOpen(false)
-                                                setShowSubscriptionManager(true)
-                                            }}
-                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:text-white hover:bg-white/5 transition-colors"
-                                        >
-                                            <Crown className="w-4 h-4 text-amber-400" />
-                                            <span>Abonelik Yönetimi</span>
-                                        </button>
-
-                                        {user?.role === 'admin' && (
-                                            <Link
-                                                to="/admin"
-                                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:text-white hover:bg-white/5 transition-colors"
-                                            >
-                                                <Settings className="w-4 h-4 text-cyan-400" />
-                                                <span>Yönetici Paneli</span>
-                                            </Link>
-                                        )}
-
-                                        <div className="my-2 border-t border-white/5"></div>
-
-                                        <button
-                                            onClick={() => {
-                                                setUserMenuOpen(false)
-                                                handleLogout()
-                                            }}
-                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Güvenli Çıkış</span>
-                                        </button>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </div>
-            </header>
-
-            {/* Scrollable Content Area */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8">
-                <main className="max-w-6xl mx-auto space-y-8">
-                {/* Welcome Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-4"
-                        >
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                            </span>
-                            <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Sistem Online</span>
-                        </motion.div>
-                        <h1 className="text-4xl md:text-5xl font-black mb-2 text-slate-900 dark:text-white italic tracking-tighter">
-                            {greeting}, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>!
-                        </h1>
-                        <p className="text-slate-600 dark:text-gray-500 font-bold uppercase tracking-widest text-xs">Kariyer paneline hoş geldin</p>
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                        <button
-                            onClick={() => setShowJobSearch(true)}
-                            className="h-12 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all flex items-center gap-2 text-slate-500 dark:text-gray-400 hover:text-blue-400 font-bold text-xs uppercase tracking-widest"
-                        >
-                            <Briefcase className="w-4 h-4" /> İş Bul
-                        </button>
-                        <button
-                            onClick={() => setShowCompareModal(true)}
-                            className="h-12 px-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/50 transition-all flex items-center gap-2 text-slate-500 dark:text-gray-400 hover:text-cyan-400 font-bold text-xs uppercase tracking-widest"
-                        >
-                            <Columns className="w-4 h-4" /> Karşılaştır
-                        </button>
-                        <Link to="/editor" className="h-12 px-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-900 dark:text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-cyan-500/20 flex items-center gap-2 group relative overflow-hidden">
-                            <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12" />
-                            <Plus className="w-5 h-5" /> Yeni CV
+                        <Link to="/" className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
+                                <FileText className="w-4 h-4 text-white" />
+                            </div>
                         </Link>
                     </div>
-                </div>
 
-                <AnnouncementBanner />
+                    <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+                            {/* Theme Toggle */}
+                            <button
+                                onClick={() => setDarkMode(!darkMode)}
+                                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-600 dark:text-gray-300"
+                                title={darkMode ? 'Açık Tema' : 'Koyu Tema'}
+                            >
+                                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                            </button>
 
-                {/* Compact Stats Row */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {[
-                        { label: 'Aktif CV', value: cvs?.length || 0, color: 'cyan', icon: <FileText /> },
-                        { label: 'Görüntülenme', value: cvs?.reduce((acc, cv) => acc + (getCVViewStats?.(cv.id)?.total || 0), 0) || 12, color: 'purple', icon: <Eye /> },
-                        { label: 'İndirme', value: downloadHistory.length, color: 'emerald', icon: <Download /> },
-                        { label: 'Puan', value: '4.9/5', color: 'amber', icon: <Star /> }
-                    ].map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className={`bento-card border-beam p-6 relative overflow-hidden group cursor-default`}
-                        >
-                            <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/5 blur-3xl pointer-events-none transition-all group-hover:bg-${stat.color}-500/10`} />
+                            {/* Notifications */}
+                            <NotificationBell />
 
-                            <div className="flex items-start justify-between relative z-10">
-                                <div>
-                                    <div className="text-3xl font-black text-slate-900 dark:text-white mb-1 italic tracking-tighter">{stat.value}</div>
-                                    <div className={`text-[10px] font-black text-slate-600 dark:text-gray-500 uppercase tracking-[0.2em]`}>{stat.label}</div>
-                                </div>
-                                <div className={`w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-white/10 flex items-center justify-center text-${stat.color}-400 group-hover:scale-110 transition-transform shadow-xl`}>
-                                    {stat.icon}
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Main Content Area: CV List First */}
-                    <div className="lg:col-span-2 space-y-8">
-                        {/* CV List Section */}
-                        <div className="bento-card border-beam p-8 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
-
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10 relative z-10">
-                                <div>
-                                    <h2 className="text-2xl font-black text-slate-900 dark:text-white italic flex items-center gap-3 tracking-tighter">
-                                        <FileText className="w-6 h-6 text-cyan-400" />
-                                        BELGELERİM
-                                    </h2>
-                                    <p className="text-[10px] text-slate-600 dark:text-gray-500 font-black mt-1 uppercase tracking-[0.2em]">Kariyerinizi yönetin</p>
-                                </div>
-                                <div className="flex items-center gap-3 w-full sm:w-auto">
-                                    <div className="flex-1 sm:flex-none flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-white/10 focus-within:border-cyan-500/50 transition-all group">
-                                        <Search className="w-4 h-4 text-slate-600 dark:text-gray-500 group-focus-within:text-cyan-400" />
-                                        <input
-                                            type="text"
-                                            placeholder="Ara..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="bg-transparent border-none text-xs focus:outline-none w-full sm:w-28 placeholder-gray-700 text-slate-900 dark:text-white font-bold"
-                                        />
-                                    </div>
-                                    <div className="flex bg-white dark:bg-slate-900 rounded-2xl p-1 border border-white/10 shadow-inner">
-                                        <button
-                                            onClick={() => setViewMode('grid')}
-                                            className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-xl' : 'text-slate-600 dark:text-gray-500 hover:text-slate-700 dark:text-gray-300'}`}
-                                        >
-                                            <LayoutGrid className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => setViewMode('list')}
-                                            className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-xl' : 'text-slate-600 dark:text-gray-500 hover:text-slate-700 dark:text-gray-300'}`}
-                                        >
-                                            <List className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {filteredCVs.length === 0 ? (
-                                <div className="text-center py-24 border-2 border-dashed border-white/5 rounded-[2.5rem] bg-slate-900/20">
-                                    <div className="w-20 h-20 rounded-3xl bg-white dark:bg-slate-900 border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                                        <FileText className="w-8 h-8 text-gray-700" />
-                                    </div>
-                                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 italic">Daha Fazlasını Hedefle</h3>
-                                    <p className="text-slate-600 dark:text-gray-500 mb-8 max-w-xs mx-auto text-xs font-bold uppercase tracking-widest">Henüz bir CV oluşturmadın</p>
-                                    <Link to="/editor" className="h-12 px-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-900 dark:text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-cyan-500/20 inline-flex items-center gap-2 group relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12" />
-                                        <Plus className="w-5 h-5" /> İLK CV'Nİ YARAT
-                                    </Link>
-                                </div>
-                            ) : (
-                                <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 gap-6' : 'space-y-4'}>
-                                    {filteredCVs.map((cv, i) => (
-                                        <motion.div
-                                            key={cv.id}
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: i * 0.05 }}
-                                            className="group relative bg-slate-950/40 rounded-3xl p-6 border border-white/5 hover:border-cyan-500/30 transition-all hover:bg-slate-950/60 shadow-2xl overflow-hidden"
-                                        >
-                                            {/* Glow Effect on Hover */}
-                                            <div className="absolute -inset-24 bg-cyan-500/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-                                            <div className="flex gap-6 relative z-10">
-                                                {/* CV Miniature Refined */}
-                                                <div className="w-28 h-36 rounded-2xl bg-white dark:bg-slate-900 border border-white/10 flex-shrink-0 relative overflow-hidden group-hover:border-cyan-500/50 transition-all shadow-xl">
-                                                    <div className="absolute inset-0 flex items-center justify-center text-4xl transform group-hover:scale-110 transition-transform duration-700">
-                                                        {getTemplateEmoji(cv.template)}
-                                                    </div>
-
-                                                    {/* Quick Actions Overlay */}
-                                                    <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm">
-                                                        <Link to={`/editor/${cv.id}`} className="w-10 h-10 rounded-xl bg-cyan-500 text-slate-950 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                                                            <Edit className="w-4 h-4" />
-                                                        </Link>
-                                                        <button onClick={() => handleShare(cv)} className="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                                                            <Share2 className="w-4 h-4" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
-                                                    <div>
-                                                        <div className="flex justify-between items-start mb-2">
-                                                            <h3 className="text-lg font-black text-slate-900 dark:text-white truncate group-hover:text-cyan-400 transition-colors italic tracking-tighter">
-                                                                {cv.name}
-                                                            </h3>
-                                                            <button
-                                                                onClick={() => setDeleteConfirm(cv.id)}
-                                                                className="p-2 rounded-xl text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
-                                                                title="Sil"
-                                                            >
-                                                                <Trash2 className="w-3.5 h-3.5" />
-                                                            </button>
-                                                        </div>
-                                                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 border border-white/5 text-[8px] font-black text-slate-600 dark:text-gray-500 uppercase tracking-widest mb-4">
-                                                            <Layout className="w-3 h-3 text-cyan-500" />
-                                                            {cv.template} Şablonu
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="flex items-center gap-1 text-[9px] font-black text-slate-600 dark:text-gray-500 uppercase tracking-tighter">
-                                                                <Clock className="w-3 h-3 text-gray-600" />
-                                                                {formatTimeAgo(cv.updatedAt)}
-                                                            </div>
-                                                            {getCVViewStats && getCVViewStats(cv.id)?.total > 0 && (
-                                                                <div className="flex items-center gap-1 text-[9px] font-black text-cyan-500 uppercase tracking-tighter">
-                                                                    <Eye className="w-3 h-3" />
-                                                                    {getCVViewStats(cv.id).total}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex gap-1.5">
-                                                            <button
-                                                                onClick={() => { setSelectedCVForATS(cv); setShowATSModal(true); }}
-                                                                className="w-8 h-8 rounded-lg bg-white dark:bg-slate-900 border border-white/5 text-slate-600 dark:text-gray-500 hover:text-purple-400 hover:border-purple-500/30 transition-all flex items-center justify-center"
-                                                                title="ATS Analizi"
-                                                            >
-                                                                <Target className="w-4 h-4" />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => { setSelectedCVForAnalytics(cv); setShowAnalyticsModal(true); }}
-                                                                className="w-8 h-8 rounded-lg bg-white dark:bg-slate-900 border border-white/5 text-slate-600 dark:text-gray-500 hover:text-cyan-400 hover:border-cyan-500/30 transition-all flex items-center justify-center"
-                                                                title="Analitik"
-                                                            >
-                                                                <BarChart3 className="w-4 h-4" />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <div className="space-y-8 mt-8">
-                                {/* Bento Toolbox Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6">
-                                    {/* Large AI Feature Card */}
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        onClick={() => navigate('/editor')}
-                                        className="md:col-span-2 md:row-span-1 bento-card border-beam p-8 bg-gradient-to-br from-cyan-600/20 to-blue-600/20 cursor-pointer group relative overflow-hidden"
-                                    >
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl group-hover:bg-white/10 transition-all" />
-                                        <div className="relative z-10 h-full flex flex-col justify-between">
-                                            <div>
-                                                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-2xl">
-                                                    <Sparkles className="w-8 h-8 text-slate-900 dark:text-white" />
-                                                </div>
-                                                <h3 className="text-3xl font-black text-slate-900 dark:text-white italic tracking-tighter mb-2 uppercase">Gelişmiş Editör</h3>
-                                                <p className="text-slate-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-widest leading-relaxed">AI Destekli Akıllı CV Oluşturucu</p>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-slate-900 dark:text-white font-black text-[10px] uppercase tracking-[0.2em] mt-8 group-hover:translate-x-2 transition-transform">
-                                                HEMEN BAŞLA <ArrowRight className="w-4 h-4" />
-                                            </div>
-                                        </div>
-                                    </motion.div>
-
-                                    {/* ATS Card */}
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        onClick={() => setShowATSModal(true)}
-                                        className="md:col-span-1 bento-card border-beam p-6 cursor-pointer group flex flex-col justify-between"
-                                    >
-                                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Target className="w-6 h-6 text-purple-400" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-black text-slate-900 dark:text-white italic uppercase tracking-tighter mb-1">ATS Analiz</h4>
-                                            <p className="text-[9px] text-slate-600 dark:text-gray-500 font-black uppercase tracking-widest">İşveren Radarına Yakalanın</p>
-                                        </div>
-                                    </motion.div>
-
-                                    {/* Job Search Card */}
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        onClick={() => setShowJobSearch(true)}
-                                        className="md:col-span-1 bento-card border-beam p-6 bg-gradient-to-tr from-emerald-600/10 to-transparent cursor-pointer group flex flex-col justify-between"
-                                    >
-                                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Briefcase className="w-6 h-6 text-emerald-400" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-black text-slate-900 dark:text-white italic uppercase tracking-tighter mb-1">İş Bulucu</h4>
-                                            <p className="text-[9px] text-slate-600 dark:text-gray-500 font-black uppercase tracking-widest">Size Özel Fırsatlar</p>
-                                        </div>
-                                    </motion.div>
-
-                                    {/* Tools Row 2 */}
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        onClick={() => setShowInterviewCoach(true)}
-                                        className="md:col-span-1 bento-card border-beam p-6 cursor-pointer group flex flex-col justify-between"
-                                    >
-                                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Play className="w-6 h-6 text-blue-400" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-base font-black text-slate-900 dark:text-white italic uppercase tracking-tighter mb-1 font-black">Mülakat Koçu</h4>
-                                            <p className="text-[9px] text-slate-600 dark:text-gray-500 font-black uppercase tracking-widest">AI ile Prova Yapın</p>
-                                        </div>
-                                    </motion.div>
-
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        onClick={() => setShowSalaryBenchmark(true)}
-                                        className="md:col-span-1 bento-card border-beam p-6 cursor-pointer group flex flex-col justify-between"
-                                    >
-                                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <DollarSign className="w-6 h-6 text-amber-400" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-base font-black text-slate-900 dark:text-white italic uppercase tracking-tighter mb-1 font-black">Maaş Karşılaştır</h4>
-                                            <p className="text-[9px] text-slate-600 dark:text-gray-500 font-black uppercase tracking-widest">Piyasa Değerinizi Öğrenin</p>
-                                        </div>
-                                    </motion.div>
-
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        onClick={() => setShowTranslatorModal(true)}
-                                        className="md:col-span-2 bento-card border-beam p-6 bg-slate-900/60 cursor-pointer group relative overflow-hidden flex items-center gap-6"
-                                    >
-                                        <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                                            <Globe2 className="w-8 h-8 text-indigo-400" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-xl font-black text-slate-900 dark:text-white italic uppercase tracking-tighter mb-1">Profesyonel Çevirmen</h4>
-                                            <p className="text-[10px] text-slate-600 dark:text-gray-500 font-black uppercase tracking-widest mb-2">CV'nizi 50+ Dile Anında Çevirin</p>
-                                            <div className="flex gap-1">
-                                                {['TR', 'EN', 'DE', 'FR', 'ES'].map(lang => (
-                                                    <span key={lang} className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/5 text-[8px] font-black text-gray-600 uppercase">{lang}</span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </div>
-
-                                {/* Secondary Tools Grid */}
-                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                                    {[
-                                        { onClick: () => setShowAIHeadshot(true), label: 'AI Photo', icon: <Camera />, color: 'pink' },
-                                        { onClick: () => setShowCareerPath(true), label: 'Route', icon: <TrendingUp />, color: 'indigo' },
-                                        { onClick: () => setShowLinkedInOptimizer(true), label: 'Linkdn', icon: <Share2 />, color: 'blue' },
-                                        { onClick: () => setShowPortfolioBuilder(true), label: 'Portfo', icon: <Layout />, color: 'rose' },
-                                        { onClick: () => setShowEmailGenerator(true), label: 'E-Email', icon: <Mail />, color: 'emerald' },
-                                        { onClick: () => setShowCVImporter(true), label: 'Import', icon: <Upload />, color: 'cyan' }
-                                    ].map((tool, i) => (
-                                        <motion.button
-                                            key={i}
-                                            whileHover={{ y: -3, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                                            onClick={tool.onClick}
-                                            className="p-4 rounded-3xl bg-slate-900/40 border border-white/5 flex flex-col items-center text-center group transition-all"
-                                        >
-                                            <div className={`w-10 h-10 rounded-xl bg-${tool.color}-500/10 flex items-center justify-center text-${tool.color}-400 mb-3 group-hover:scale-110 transition-transform`}>
-                                                {tool.icon}
-                                            </div>
-                                            <span className="text-[9px] font-black text-slate-600 dark:text-gray-500 uppercase tracking-widest">{tool.label}</span>
-                                        </motion.button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Sidebar - Social & Activity */}
-                <div className="space-y-8">
-                    {/* Achievements Mini */}
-                    <div className="bento-card border-beam p-6 relative overflow-hidden">
-                        <h3 className="text-[10px] font-black text-slate-600 dark:text-gray-500 italic mb-6 flex items-center gap-2 uppercase tracking-[0.2em]">
-                            <Trophy className="w-4 h-4 text-amber-500" />
-                            BAŞARI ROZETLERİ
-                        </h3>
-                        <div className="grid grid-cols-3 gap-3">
-                            {achievements.map((badge) => (
-                                <div
-                                    key={badge.id}
-                                    className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${badge.unlocked ? badge.color + ' shadow-lg scale-100 hover:scale-110' : 'bg-white dark:bg-slate-900 border border-white/5 grayscale opacity-20 cursor-help hover:opacity-40'}`}
-                                    title={badge.title}
+                            {/* User Menu */}
+                            <div className="relative" ref={userMenuRef}>
+                                <button
+                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                    className="flex items-center gap-2 sm:gap-3 hover:bg-slate-100 dark:hover:bg-white/5 rounded-2xl p-1.5 transition-all"
                                 >
-                                    <div className="scale-90">{badge.icon}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Recent Activity Mini */}
-                    <div className="bento-card border-beam p-6 relative overflow-hidden">
-                        <h3 className="text-[10px] font-black text-slate-600 dark:text-gray-500 italic mb-6 flex items-center gap-2 uppercase tracking-[0.2em]">
-                            <History className="w-4 h-4 text-purple-400" />
-                            SON AKTİVİTE
-                        </h3>
-                        <div className="space-y-4">
-                            {activities.map((activity, i) => (
-                                <div key={i} className="flex items-center gap-4 group">
-                                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-white/10 flex items-center justify-center group-hover:bg-cyan-500/10 group-hover:border-cyan-500/30 transition-all">
-                                        <div className="text-slate-600 dark:text-gray-500 group-hover:text-cyan-400 transition-colors">
-                                            {activity.icon}
+                                    <div className="w-9 h-9 rounded-full bg-cyan-100 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center">
+                                        <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
+                                    </div>
+                                    <div className="hidden sm:block text-left pr-2">
+                                        <div className="text-sm font-bold text-slate-800 dark:text-white leading-none mb-1">{user?.name || 'Kullanıcı'}</div>
+                                        <div className="text-[10px] text-slate-500 dark:text-gray-400 flex items-center gap-1 font-semibold">
+                                            {isPremium ? (
+                                                <><Crown className="w-3 h-3 text-amber-500" /><span className="text-amber-500">Premium</span></>
+                                            ) : (<span>Ücretsiz Plan</span>)}
                                         </div>
                                     </div>
-                                    <div className="min-w-0">
-                                        <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase truncate group-hover:text-cyan-400 transition-colors">{activity.cv}</p>
-                                        <p className="text-[8px] text-slate-600 dark:text-gray-500 font-bold uppercase tracking-widest">{activity.action} • {activity.time}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                                    <ChevronDown className={`hidden sm:block w-4 h-4 text-slate-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                                </button>
 
-                    {/* Referral & Pro */}
-                    <div className="space-y-4">
-                        {!isPremium && (
-                            <div className="p-6 rounded-[2rem] bg-gradient-to-br from-amber-400 to-orange-600 shadow-2xl shadow-orange-500/20 relative overflow-hidden group">
-                                <Crown className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10 rotate-12 group-hover:scale-125 transition-transform duration-700" />
-                                <h3 className="text-lg font-black text-slate-950 mb-1 italic">PRO ÜYELİĞE GEÇ!</h3>
-                                <p className="text-slate-950/70 text-[10px] font-bold uppercase tracking-wider mb-4">SINIRSIZ ŞABLON VE AI GÜCÜ</p>
-                                <Link to="/pricing" className="w-full py-3 rounded-xl bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-black text-xs uppercase tracking-widest text-center block hover:scale-[1.02] transition-all">
-                                    ŞİMDİ YÜKSELT
+                                <AnimatePresence>
+                                    {userMenuOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden py-2 z-50"
+                                        >
+                                            <div className="px-4 py-3 border-b border-slate-100 dark:border-white/5 mb-2 bg-slate-50/50 dark:bg-slate-900/50">
+                                                <p className="text-xs font-semibold text-slate-500 dark:text-gray-400 mb-0.5">Hesap</p>
+                                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.email}</p>
+                                            </div>
+
+                                            <button onClick={() => { setUserMenuOpen(false); setShowProfileModal(true); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                                <User className="w-4 h-4 text-slate-400" /> Profil Ayarları
+                                            </button>
+                                            <button onClick={() => { setUserMenuOpen(false); setShowSubscriptionManager(true); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                                <Crown className="w-4 h-4 text-amber-500" /> Abonelik
+                                            </button>
+                                            
+                                            <div className="my-2 border-t border-slate-100 dark:border-white/5"></div>
+                                            <button onClick={() => { setUserMenuOpen(false); handleLogout(); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+                                                <LogOut className="w-4 h-4" /> Güvenli Çıkış
+                                            </button>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
+                </header>
+
+                {/* Scrollable Content Area */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8">
+                    <main className="max-w-6xl mx-auto space-y-8 pb-12">
+                        
+                        {/* Welcome Header */}
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <div>
+                                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1">
+                                    {greeting}, <span className="text-cyan-600 dark:text-cyan-400">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>
+                                </h1>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm">Kariyer paneline hoş geldin. Bugün neler başarmak istiyorsun?</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Link to="/editor" className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-gray-100 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5">
+                                    <Plus className="w-4 h-4" />
+                                    <span>Yeni CV Oluştur</span>
                                 </Link>
                             </div>
-                        )}
-
-                        {/* Revenue Features */}
-                        <div className="bento-card border-beam p-5 relative overflow-hidden">
-                            <h3 className="text-[10px] font-black text-slate-600 dark:text-gray-500 italic mb-4 flex items-center gap-2 uppercase tracking-[0.2em]">
-                                <DollarSign className="w-4 h-4 text-emerald-500" />
-                                HESAP & KAZANÇ
-                            </h3>
-                            <div className="space-y-2">
-                                {isPremium && (
-                                    <button
-                                        onClick={() => setShowSubscriptionManager(true)}
-                                        className="w-full p-4 rounded-2xl bg-slate-900/60 hover:bg-white dark:bg-slate-900 border border-white/10 hover:border-cyan-500/30 transition-all flex items-center gap-3 group"
-                                    >
-                                        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Settings className="w-5 h-5 text-cyan-400" />
-                                        </div>
-                                        <div className="text-left">
-                                            <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">Abonelik</p>
-                                            <p className="text-[8px] text-slate-600 dark:text-gray-500 font-bold uppercase">Planı Yönet</p>
-                                        </div>
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => setShowGiftCard(true)}
-                                    className="w-full p-4 rounded-2xl bg-slate-900/60 hover:bg-white dark:bg-slate-900 border border-white/10 hover:border-pink-500/30 transition-all flex items-center gap-3 group"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Gift className="w-5 h-5 text-pink-400" />
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">Hediye</p>
-                                        <p className="text-[8px] text-slate-600 dark:text-gray-500 font-bold uppercase">Kart Gönder</p>
-                                    </div>
-                                </button>
-                                <button
-                                    onClick={() => setShowAffiliate(true)}
-                                    className="w-full p-4 rounded-2xl bg-slate-900/60 hover:bg-white dark:bg-slate-900 border border-white/10 hover:border-purple-500/30 transition-all flex items-center gap-3 group"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <TrendingUp className="w-5 h-5 text-purple-400" />
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">Affiliate</p>
-                                        <p className="text-[8px] text-slate-600 dark:text-gray-500 font-bold uppercase">Kazanmaya Başla</p>
-                                    </div>
-                                </button>
-                            </div>
                         </div>
 
-                        <ReferralWidget />
-                    </div>
+                        {/* Top Navigation Tabs */}
+                        <div className="flex overflow-x-auto custom-scrollbar p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-xl max-w-fit">
+                            <button onClick={() => setActiveTab('cvs')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'cvs' ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800'}`}>
+                                <FileText className="w-4 h-4" /> Özgeçmişlerim
+                            </button>
+                            <button onClick={() => setActiveTab('tools')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'tools' ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800'}`}>
+                                <Briefcase className="w-4 h-4" /> Kariyer Araçları
+                            </button>
+                            <button onClick={() => setActiveTab('ai')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'ai' ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800'}`}>
+                                <Sparkles className="w-4 h-4" /> Yapay Zeka (AI)
+                            </button>
+                        </div>
+
+                        {/* TAB 1: CVs */}
+                        {activeTab === 'cvs' && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                                {/* Stats */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {[
+                                        { label: 'Aktif Özgeçmiş', value: cvs?.length || 0, icon: <FileText className="text-blue-500" /> },
+                                        { label: 'Görüntülenme', value: cvs?.reduce((acc, cv) => acc + (getCVViewStats?.(cv.id)?.total || 0), 0) || 0, icon: <Eye className="text-emerald-500" /> },
+                                        { label: 'Başvurular', value: 3, icon: <Briefcase className="text-purple-500" /> },
+                                        { label: 'Profil Skoru', value: 'B+', icon: <Star className="text-amber-500" /> }
+                                    ].map((stat, i) => (
+                                        <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-5 flex flex-col justify-center shadow-sm">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">{stat.label}</span>
+                                                <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                                                    {stat.icon}
+                                                </div>
+                                            </div>
+                                            <div className="text-2xl font-bold text-slate-800 dark:text-white">{stat.value}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* CV Grid */}
+                                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-white/10 shadow-sm">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                                        <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                            <LayoutGrid className="w-5 h-5 text-cyan-500" />
+                                            Kayıtlı Özgeçmişlerim
+                                        </h2>
+                                        <div className="relative">
+                                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="CV Ara..." 
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="w-full sm:w-64 pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 text-slate-700 dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {filteredCVs.length === 0 ? (
+                                        <div className="text-center py-16 px-4">
+                                            <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 text-slate-400">
+                                                <FileText className="w-8 h-8" />
+                                            </div>
+                                            <h3 className="text-lg font-bold text-slate-700 dark:text-white mb-2">Henüz CV bulunamadı</h3>
+                                            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-sm mx-auto">Sistemde kayıtlı bir özgeçmişiniz yok. Hemen yeni bir tane oluşturarak kariyerinize yön verin.</p>
+                                            <Link to="/editor" className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-medium transition-colors">
+                                                <Plus className="w-5 h-5" /> İlk Özgeçmişini Yarat
+                                            </Link>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {filteredCVs.map((cv) => (
+                                                <div key={cv.id} className="group bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-200 dark:border-white/5 hover:border-cyan-500/30 transition-all hover:shadow-lg relative overflow-hidden">
+                                                    <div className="flex items-start justify-between mb-4 relative z-10">
+                                                        <div className="w-12 h-16 rounded-lg bg-white dark:bg-slate-700 shadow flex items-center justify-center text-2xl border border-slate-200 dark:border-white/10">
+                                                            {getTemplateEmoji(cv.template)}
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            <Link to={`/editor/${cv.id}`} className="p-2 bg-white dark:bg-slate-700 text-slate-600 dark:text-gray-300 hover:text-cyan-500 rounded-lg shadow-sm border border-slate-200 dark:border-white/10 transition-colors">
+                                                                <Edit className="w-4 h-4" />
+                                                            </Link>
+                                                            <button onClick={() => handleShare(cv)} className="p-2 bg-white dark:bg-slate-700 text-slate-600 dark:text-gray-300 hover:text-blue-500 rounded-lg shadow-sm border border-slate-200 dark:border-white/10 transition-colors">
+                                                                <Share2 className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <h3 className="font-bold text-slate-800 dark:text-white truncate mb-1 relative z-10" title={cv.name}>{cv.name}</h3>
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize mb-4 relative z-10">{cv.template} Tema</p>
+                                                    <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-4 border-t border-slate-200 dark:border-white/10 relative z-10">
+                                                        <span>Güncelleme: {formatTimeAgo(cv.updatedAt)}</span>
+                                                        <button onClick={() => setDeleteConfirm(cv.id)} className="text-red-500 hover:text-red-600 p-1">Sil</button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                <ReferralWidget />
+                                <AnnouncementBanner />
+                            </motion.div>
+                        )}
+
+                        {/* TAB 2: TOOLS */}
+                        {activeTab === 'tools' && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                                <h2 className="text-xl font-bold text-slate-800 dark:text-white px-2">Profesyonel Kariyer Araçları</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                                    <button onClick={() => setShowATSModal(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-cyan-500/50 rounded-2xl transition-all shadow-sm group">
+                                        <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Target className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">ATS Analizi</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">CV'nizi sistemler için optimize edin ve uyumluluk puanını görün.</p>
+                                    </button>
+
+                                    <button onClick={() => setShowCoverLetterModal(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-blue-500/50 rounded-2xl transition-all shadow-sm group">
+                                        <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <FileText className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Ön Yazı Oluşturucu</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Başvurduğunuz işe özel profesyonel ön yazılar (Cover Letter) hazırlayın.</p>
+                                    </button>
+
+                                    <button onClick={() => setShowTranslatorModal(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-purple-500/50 rounded-2xl transition-all shadow-sm group">
+                                        <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Globe2 className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Profesyonel Çevirmen</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">CV'nizi saniyeler içinde yabancı dillere eksiksiz çevirin.</p>
+                                    </button>
+
+                                    <button onClick={() => setShowInterviewCoach(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-emerald-500/50 rounded-2xl transition-all shadow-sm group">
+                                        <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Briefcase className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Mülakat Koçu</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Sıkça sorulan sorularla mülakatlara hazırlanıp pratik yapın.</p>
+                                    </button>
+                                    
+                                    <button onClick={() => setShowSalaryNegotiator(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-amber-500/50 rounded-2xl transition-all shadow-sm group">
+                                        <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <DollarSign className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Maaş Karşılaştır</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Sektörel maaş beklentilerini analiz ederek doğru müzakere yapın.</p>
+                                    </button>
+                                    
+                                    <button onClick={() => setShowCareerTest(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-indigo-500/50 rounded-2xl transition-all shadow-sm group">
+                                        <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <Award className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Kariyer Testi</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Kişilik testleri ile yeteneklerinize uygun ideal meslekleri bulun.</p>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {/* TAB 3: AI TOOLS */}
+                        {activeTab === 'ai' && (
+                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                                <h2 className="text-xl font-bold text-slate-800 dark:text-white px-2">Yapay Zeka Destekli Asistan</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <button onClick={() => setShowProjectWriter(true)} className="flex items-center gap-5 p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 border border-cyan-100 dark:border-white/5 hover:border-cyan-400 rounded-2xl transition-all shadow-sm group text-left">
+                                        <div className="w-14 h-14 rounded-2xl bg-cyan-500 text-white flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
+                                            <Sparkles className="w-7 h-7" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">AI Proje Yazarı</h3>
+                                            <p className="text-sm text-slate-600 dark:text-slate-400">Projeleriniz için profesyonel açıklamalar ve vaka analizleri üretin.</p>
+                                        </div>
+                                    </button>
+
+                                    <button onClick={() => setShowLinkedInOptimizer(true)} className="flex items-center gap-5 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900 border border-blue-100 dark:border-white/5 hover:border-blue-400 rounded-2xl transition-all shadow-sm group text-left">
+                                        <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
+                                            <Link2 className="w-7 h-7" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">LinkedIn Optimizer</h3>
+                                            <p className="text-sm text-slate-600 dark:text-slate-400">LinkedIn profilinizi inceleyip daha dikkat çekici hale getirin.</p>
+                                        </div>
+                                    </button>
+                                    
+                                    <button onClick={() => setShowReferenceLetter(true)} className="flex items-center gap-5 p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-slate-900 border border-amber-100 dark:border-white/5 hover:border-amber-400 rounded-2xl transition-all shadow-sm group text-left">
+                                        <div className="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
+                                            <Mail className="w-7 h-7" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">AI Referans Mektubu</h3>
+                                            <p className="text-sm text-slate-600 dark:text-slate-400">Otomatik referans ve niyet mektupları hazırlayın.</p>
+                                        </div>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </main>
                 </div>
-            </main>
-            </div>
-
-        {/* Delete Modal */ }
-    {
-        deleteConfirm && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                <div className="glass-card rounded-2xl p-6 max-w-sm w-full animate-scale-in">
-                    <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
-                        <Trash2 className="w-8 h-8 text-red-400" />
-                    </div>
-                    <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
-                    <p className="text-slate-500 dark:text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => setDeleteConfirm(null)}
-                            className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
-                        >
-                            Vazgeç
-                        </button>
-                        <button
-                            onClick={() => handleDelete(deleteConfirm)}
-                            className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
-                        >
-                            Sil
-                        </button>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    {/* CV Review Modal */ }
-            <CVReviewRequest
-                isOpen={showReviewModal}
-                onClose={() => {
-                    setShowReviewModal(false)
-                    setSelectedCVForReview(null)
-                }}
-                cv={selectedCVForReview}
-            />
-
-            <JobSearch
-                isOpen={showJobSearch}
-                onClose={() => setShowJobSearch(false)}
-            />
-
-            <InterviewCoach
-                isOpen={showInterviewCoach}
-                onClose={() => setShowInterviewCoach(false)}
-            />
-
-            <SalaryNegotiator
-                isOpen={showSalaryNegotiator}
-                onClose={() => setShowSalaryNegotiator(false)}
-            />
-
-            <CareerPathVisualizer
-                isOpen={showCareerPath}
-                onClose={() => setShowCareerPath(false)}
-            />
-
-            <SkillsGapAnalyzer
-                isOpen={showSkillsGap}
-                onClose={() => setShowSkillsGap(false)}
-            />
-
-            <PortfolioBuilder
-                isOpen={showPortfolioBuilder}
-                onClose={() => setShowPortfolioBuilder(false)}
-            />
-
-    {/* New Feature Modals */ }
-            <TargetFitAI
-                isOpen={showTargetFit}
-                onClose={() => setShowTargetFit(false)}
-            />
-
-            <LetterGenerator
-                isOpen={showLetterGenerator}
-                onClose={() => setShowLetterGenerator(false)}
-            />
-
-            <ApplicationCRM
-                isOpen={showApplicationCRM}
-                onClose={() => setShowApplicationCRM(false)}
-            />
-
-            <AIHeadshot
-                isOpen={showAIHeadshot}
-                onClose={() => setShowAIHeadshot(false)}
-            />
-
-            <InterviewCoachPro
-                isOpen={showInterviewCoachPro}
-                onClose={() => setShowInterviewCoachPro(false)}
-            />
-
-            <SalaryBenchmark
-                isOpen={showSalaryBenchmark}
-                onClose={() => setShowSalaryBenchmark(false)}
-            />
-
-    {/* Revenue Feature Modals */ }
-    {
-        showSubscriptionManager && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
-                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Abonelik Yönetimi</h2>
-                        <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-                    <SubscriptionManager />
-                </div>
-            </div>
-        )
-    }
-
-    {
-        showGiftCard && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
-                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">🎁 Hediye Kartları</h2>
-                        <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-                    <GiftCardManager />
-                </div>
-            </div>
-        )
-    }
-
-    {
-        showAffiliate && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
-                <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">💰 Affiliate Program</h2>
-                        <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-                    <AffiliateDashboard />
-                </div>
-            </div>
-        )
-    }
-
-    <UpsellModal
-        isOpen={showUpsell}
-        onClose={() => setShowUpsell(false)}
-        triggerType={upsellType}
-        onUpgrade={() => {
-            setShowUpsell(false)
-            navigate('/pricing')
-        }}
-    />
-
-    {/* AI Feature Modals */ }
-            <AIProjectWriter
-                isOpen={showProjectWriter}
-                onClose={() => setShowProjectWriter(false)}
-                onInsert={(data) => {
-                    toast.success('Proje açıklaması oluşturuldu!')
-                    console.log('Project data:', data)
-                }}
-            />
-
-            <AILinkedInOptimizer
-                isOpen={showLinkedInOptimizer}
-                onClose={() => setShowLinkedInOptimizer(false)}
-            />
-
-            <AIEmailGenerator
-                isOpen={showEmailGenerator}
-                onClose={() => setShowEmailGenerator(false)}
-            />
-
-            <AIReferenceLetter
-                isOpen={showReferenceLetter}
-                onClose={() => setShowReferenceLetter(false)}
-            />
-
-    {/* CV Importer Modal */ }
-    <CVImporter
-        isOpen={showCVImporter}
-        onClose={() => setShowCVImporter(false)}
-        onImport={(importedCV) => {
-            if (importedCV) {
-                toast.success('CV başarıyla içe aktarıldı!')
-                navigate(`/editor/${importedCV.id}`)
-            }
-        }}
-    />
             </div>
         </div>
     )
 }
-

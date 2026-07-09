@@ -13,13 +13,13 @@ export function NotificationPanel({ isOpen, onClose, notifications = [] }) {
         <div className="absolute top-full right-0 mt-2 w-80 glass-card rounded-xl overflow-hidden z-50 animate-scale-in">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
                 <h3 className="font-bold">Bildirimler</h3>
-                <button onClick={onClose} className="text-gray-400 hover:text-white">
+                <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
                     <X className="w-4 h-4" />
                 </button>
             </div>
             <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                    <div className="p-6 text-center text-gray-400">
+                    <div className="p-6 text-center text-slate-500 dark:text-gray-400">
                         <Bell className="w-8 h-8 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">Henüz bildirim yok</p>
                     </div>
@@ -32,7 +32,7 @@ export function NotificationPanel({ isOpen, onClose, notifications = [] }) {
                                 </div>
                                 <div>
                                     <p className="text-sm">{notif.message}</p>
-                                    <p className="text-xs text-gray-500 mt-1">{notif.time}</p>
+                                    <p className="text-xs text-slate-600 dark:text-gray-500 mt-1">{notif.time}</p>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
             <div className="glass-card rounded-2xl p-6 max-w-lg w-full animate-scale-in max-h-[90vh] overflow-y-auto custom-scrollbar">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-bold">Profili Düzenle</h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white">
+                    <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -119,7 +119,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                 {/* Info Banner */}
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-3 mb-4 flex items-start gap-3">
                     <Sparkles className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-300">
+                    <p className="text-xs text-slate-700 dark:text-gray-300">
                         Bu bilgiler yeni CV oluştururken <span className="text-cyan-400 font-bold">otomatik doldurulur</span>. Tek seferlik kaydedin, her CV'de kullanın!
                     </p>
                 </div>
@@ -128,9 +128,9 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     {/* Basic Info */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Ad Soyad</label>
+                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Ad Soyad</label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
                                 <input
                                     type="text"
                                     value={name}
@@ -141,7 +141,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Ünvan</label>
+                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Ünvan</label>
                             <input
                                 type="text"
                                 value={title}
@@ -154,9 +154,9 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Email</label>
+                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
                                 <input
                                     type="email"
                                     value={email}
@@ -166,7 +166,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Telefon</label>
+                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Telefon</label>
                             <input
                                 type="tel"
                                 value={phone}
@@ -178,7 +178,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm text-gray-400 mb-1">Konum</label>
+                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Konum</label>
                         <input
                             type="text"
                             value={location}
@@ -190,7 +190,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">LinkedIn</label>
+                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">LinkedIn</label>
                             <input
                                 type="url"
                                 value={linkedin}
@@ -200,7 +200,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-400 mb-1">Website</label>
+                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Website</label>
                             <input
                                 type="url"
                                 value={website}
@@ -212,7 +212,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm text-gray-400 mb-1">Profesyonel Özet</label>
+                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Profesyonel Özet</label>
                         <textarea
                             value={summary}
                             onChange={(e) => setSummary(e.target.value)}
@@ -222,7 +222,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm text-gray-400 mb-1">Doğum Tarihi</label>
+                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Doğum Tarihi</label>
                         <input
                             type="date"
                             value={birthDate}
@@ -236,7 +236,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                         <p className="text-sm font-semibold mb-3">Şifre Değiştir (isteğe bağlı)</p>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
                                 <input
                                     type="password"
                                     value={currentPassword}
@@ -246,7 +246,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                                 />
                             </div>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
                                 <input
                                     type="password"
                                     value={newPassword}
@@ -266,7 +266,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     <button
                         onClick={handleSave}
                         disabled={saveSuccess}
-                        className={`flex-1 py-3 justify-center flex items-center gap-2 rounded-xl font-bold transition-all ${saveSuccess ? 'bg-green-500 text-white' : 'btn-premium'}`}
+                        className={`flex-1 py-3 justify-center flex items-center gap-2 rounded-xl font-bold transition-all ${saveSuccess ? 'bg-green-500 text-slate-900 dark:text-white' : 'btn-premium'}`}
                     >
                         {saveSuccess ? (
                             <>
@@ -299,11 +299,11 @@ export function OnboardingTour({ isOpen, onClose, step, setStep }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
             <div className="glass-card rounded-2xl p-8 max-w-md w-full animate-scale-in text-center">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mx-auto mb-6">
-                    {step === 4 ? <Trophy className="w-10 h-10 text-white" /> : <Play className="w-10 h-10 text-white" />}
+                    {step === 4 ? <Trophy className="w-10 h-10 text-slate-900 dark:text-white" /> : <Play className="w-10 h-10 text-slate-900 dark:text-white" />}
                 </div>
 
                 <h3 className="text-2xl font-bold mb-3">{steps[step].title}</h3>
-                <p className="text-gray-400 mb-8">{steps[step].desc}</p>
+                <p className="text-slate-500 dark:text-gray-400 mb-8">{steps[step].desc}</p>
 
                 {/* Progress dots */}
                 <div className="flex justify-center gap-2 mb-6">
@@ -329,7 +329,7 @@ export function OnboardingTour({ isOpen, onClose, step, setStep }) {
                     )}
                 </div>
 
-                <button onClick={onClose} className="mt-4 text-sm text-gray-500 hover:text-gray-400">
+                <button onClick={onClose} className="mt-4 text-sm text-slate-600 dark:text-gray-500 hover:text-slate-500 dark:text-gray-400">
                     Turu Atla
                 </button>
             </div>
@@ -365,7 +365,7 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                         <Columns className="w-5 h-5 text-cyan-400" />
                         CV Karşılaştır
                     </h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white">
+                    <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -373,7 +373,7 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                 <div className="grid md:grid-cols-2 gap-6">
                     {/* CV 1 */}
                     <div>
-                        <label className="block text-sm text-gray-400 mb-2">İlk CV</label>
+                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-2">İlk CV</label>
                         <select
                             value={cv1 || ''}
                             onChange={(e) => setCv1(e.target.value)}
@@ -387,14 +387,14 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                         {cv1 && (
                             <div className="mt-4 p-4 bg-white/5 rounded-xl">
                                 <p className="font-semibold">{cvs.find(c => c.id === cv1)?.name}</p>
-                                <p className="text-sm text-gray-400 capitalize">{cvs.find(c => c.id === cv1)?.template} Şablon</p>
+                                <p className="text-sm text-slate-500 dark:text-gray-400 capitalize">{cvs.find(c => c.id === cv1)?.template} Şablon</p>
                             </div>
                         )}
                     </div>
 
                     {/* CV 2 */}
                     <div>
-                        <label className="block text-sm text-gray-400 mb-2">İkinci CV</label>
+                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-2">İkinci CV</label>
                         <select
                             value={cv2 || ''}
                             onChange={(e) => setCv2(e.target.value)}
@@ -408,7 +408,7 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                         {cv2 && (
                             <div className="mt-4 p-4 bg-white/5 rounded-xl">
                                 <p className="font-semibold">{cvs.find(c => c.id === cv2)?.name}</p>
-                                <p className="text-sm text-gray-400 capitalize">{cvs.find(c => c.id === cv2)?.template} Şablon</p>
+                                <p className="text-sm text-slate-500 dark:text-gray-400 capitalize">{cvs.find(c => c.id === cv2)?.template} Şablon</p>
                             </div>
                         )}
                     </div>
@@ -422,15 +422,15 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Deneyim</div>
-                                    <div className="text-xl font-bold text-white">{data1?.experience?.length || 0} vs {data2?.experience?.length || 0}</div>
+                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.experience?.length || 0} vs {data2?.experience?.length || 0}</div>
                                 </div>
                                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Beceriler</div>
-                                    <div className="text-xl font-bold text-white">{data1?.skills?.length || 0} vs {data2?.skills?.length || 0}</div>
+                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.skills?.length || 0} vs {data2?.skills?.length || 0}</div>
                                 </div>
                                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Eğitim</div>
-                                    <div className="text-xl font-bold text-white">{data1?.education?.length || 0} vs {data2?.education?.length || 0}</div>
+                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.education?.length || 0} vs {data2?.education?.length || 0}</div>
                                 </div>
                             </div>
                         </div>
@@ -484,10 +484,10 @@ export const sampleNotifications = [
 ]
 
 export const getAchievements = (cvCount, isPremium) => [
-    { id: 'first-cv', title: 'İlk CV', icon: <FileText className="w-5 h-5 text-white" />, unlocked: true, color: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
-    { id: 'pro-member', title: 'Pro Üye', icon: <Crown className="w-5 h-5 text-white" />, unlocked: isPremium, color: 'bg-gradient-to-br from-amber-500 to-orange-600' },
-    { id: 'five-cvs', title: '5 CV Master', icon: <Trophy className="w-5 h-5 text-white" />, unlocked: cvCount >= 5, color: 'bg-gradient-to-br from-purple-500 to-pink-600' },
-    { id: 'downloader', title: 'İndirici', icon: <Download className="w-5 h-5 text-white" />, unlocked: true, color: 'bg-gradient-to-br from-green-500 to-emerald-600' },
-    { id: 'sharer', title: 'Paylaşımcı', icon: <Share2 className="w-5 h-5 text-white" />, unlocked: false, color: 'bg-gradient-to-br from-blue-500 to-indigo-600' }
+    { id: 'first-cv', title: 'İlk CV', icon: <FileText className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: true, color: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
+    { id: 'pro-member', title: 'Pro Üye', icon: <Crown className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: isPremium, color: 'bg-gradient-to-br from-amber-500 to-orange-600' },
+    { id: 'five-cvs', title: '5 CV Master', icon: <Trophy className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: cvCount >= 5, color: 'bg-gradient-to-br from-purple-500 to-pink-600' },
+    { id: 'downloader', title: 'İndirici', icon: <Download className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: true, color: 'bg-gradient-to-br from-green-500 to-emerald-600' },
+    { id: 'sharer', title: 'Paylaşımcı', icon: <Share2 className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: false, color: 'bg-gradient-to-br from-blue-500 to-indigo-600' }
 ]
 

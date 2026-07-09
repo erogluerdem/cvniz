@@ -751,7 +751,204 @@ export default function DashboardPage() {
                         )}
                     </main>
                 </div>
+            
+{/* Delete Modal */ }
+    {
+        deleteConfirm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div className="glass-card rounded-2xl p-6 max-w-sm w-full animate-scale-in">
+                    <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+                        <Trash2 className="w-8 h-8 text-red-400" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
+                    <p className="text-slate-500 dark:text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => setDeleteConfirm(null)}
+                            className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
+                        >
+                            Vazgeç
+                        </button>
+                        <button
+                            onClick={() => handleDelete(deleteConfirm)}
+                            className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
+                        >
+                            Sil
+                        </button>
+                    </div>
+                </div>
             </div>
+        )
+    }
+
+    {/* CV Review Modal */ }
+            <CVReviewRequest
+                isOpen={showReviewModal}
+                onClose={() => {
+                    setShowReviewModal(false)
+                    setSelectedCVForReview(null)
+                }}
+                cv={selectedCVForReview}
+            />
+
+            <JobSearch
+                isOpen={showJobSearch}
+                onClose={() => setShowJobSearch(false)}
+            />
+
+            <InterviewCoach
+                isOpen={showInterviewCoach}
+                onClose={() => setShowInterviewCoach(false)}
+            />
+
+            <SalaryNegotiator
+                isOpen={showSalaryNegotiator}
+                onClose={() => setShowSalaryNegotiator(false)}
+            />
+
+            <CareerPathVisualizer
+                isOpen={showCareerPath}
+                onClose={() => setShowCareerPath(false)}
+            />
+
+            <SkillsGapAnalyzer
+                isOpen={showSkillsGap}
+                onClose={() => setShowSkillsGap(false)}
+            />
+
+            <PortfolioBuilder
+                isOpen={showPortfolioBuilder}
+                onClose={() => setShowPortfolioBuilder(false)}
+            />
+
+    {/* New Feature Modals */ }
+            <TargetFitAI
+                isOpen={showTargetFit}
+                onClose={() => setShowTargetFit(false)}
+            />
+
+            <LetterGenerator
+                isOpen={showLetterGenerator}
+                onClose={() => setShowLetterGenerator(false)}
+            />
+
+            <ApplicationCRM
+                isOpen={showApplicationCRM}
+                onClose={() => setShowApplicationCRM(false)}
+            />
+
+            <AIHeadshot
+                isOpen={showAIHeadshot}
+                onClose={() => setShowAIHeadshot(false)}
+            />
+
+            <InterviewCoachPro
+                isOpen={showInterviewCoachPro}
+                onClose={() => setShowInterviewCoachPro(false)}
+            />
+
+            <SalaryBenchmark
+                isOpen={showSalaryBenchmark}
+                onClose={() => setShowSalaryBenchmark(false)}
+            />
+
+    {/* Revenue Feature Modals */ }
+    {
+        showSubscriptionManager && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
+                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Abonelik Yönetimi</h2>
+                        <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                    <SubscriptionManager />
+                </div>
+            </div>
+        )
+    }
+
+    {
+        showGiftCard && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
+                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">🎁 Hediye Kartları</h2>
+                        <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                    <GiftCardManager />
+                </div>
+            </div>
+        )
+    }
+
+    {
+        showAffiliate && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
+                <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">💰 Affiliate Program</h2>
+                        <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                    <AffiliateDashboard />
+                </div>
+            </div>
+        )
+    }
+
+    <UpsellModal
+        isOpen={showUpsell}
+        onClose={() => setShowUpsell(false)}
+        triggerType={upsellType}
+        onUpgrade={() => {
+            setShowUpsell(false)
+            navigate('/pricing')
+        }}
+    />
+
+    {/* AI Feature Modals */ }
+            <AIProjectWriter
+                isOpen={showProjectWriter}
+                onClose={() => setShowProjectWriter(false)}
+                onInsert={(data) => {
+                    toast.success('Proje açıklaması oluşturuldu!')
+                    console.log('Project data:', data)
+                }}
+            />
+
+            <AILinkedInOptimizer
+                isOpen={showLinkedInOptimizer}
+                onClose={() => setShowLinkedInOptimizer(false)}
+            />
+
+            <AIEmailGenerator
+                isOpen={showEmailGenerator}
+                onClose={() => setShowEmailGenerator(false)}
+            />
+
+            <AIReferenceLetter
+                isOpen={showReferenceLetter}
+                onClose={() => setShowReferenceLetter(false)}
+            />
+
+    {/* CV Importer Modal */ }
+    <CVImporter
+        isOpen={showCVImporter}
+        onClose={() => setShowCVImporter(false)}
+        onImport={(importedCV) => {
+            if (importedCV) {
+                toast.success('CV başarıyla içe aktarıldı!')
+                navigate(`/editor/${importedCV.id}`)
+            }
+        }}
+    />
+            
+</div>
         </div>
     )
 }

@@ -97,8 +97,8 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="glass-card rounded-2xl p-6 max-w-lg w-full animate-scale-in max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+            <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-lg w-full animate-scale-in max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-bold">Profili Düzenle</h3>
                     <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
@@ -296,8 +296,8 @@ export function OnboardingTour({ isOpen, onClose, step, setStep }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
-            <div className="glass-card rounded-2xl p-8 max-w-md w-full animate-scale-in text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+            <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-md w-full animate-scale-in text-center shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mx-auto mb-6">
                     {step === 4 ? <Trophy className="w-10 h-10 text-slate-900 dark:text-white" /> : <Play className="w-10 h-10 text-slate-900 dark:text-white" />}
                 </div>
@@ -358,8 +358,8 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="glass-card rounded-2xl p-6 max-w-4xl w-full animate-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+            <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-4xl w-full animate-scale-in shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-bold flex items-center gap-2">
                         <Columns className="w-5 h-5 text-cyan-400" />

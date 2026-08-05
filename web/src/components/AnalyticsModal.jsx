@@ -53,14 +53,14 @@ const AnalyticsModal = ({ isOpen, onClose, cv }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                 onClick={onClose}
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="bg-slate-900 border border-white/10 rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
+                    className="bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
                     onClick={e => e.stopPropagation()}
                 >
                     {/* Header */}

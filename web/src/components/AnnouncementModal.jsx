@@ -83,7 +83,7 @@ export default function AnnouncementModal() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
                         onClick={() => handleClose(true)}
                     />
 
@@ -91,12 +91,12 @@ export default function AnnouncementModal() {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+                        className="relative w-full max-w-lg bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 overflow-hidden"
                     >
                         {/* Image Header */}
                         {announcement.imageUrl && (
                             <div className="h-48 w-full relative">
-                                <div className={`absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-10`} />
+                                <div className={`absolute inset-0 bg-gradient-to-t from-slate-950/95 to-transparent z-10`} />
                                 <img
                                     src={announcement.imageUrl}
                                     alt="Duyuru"

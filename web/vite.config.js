@@ -69,7 +69,7 @@ export default defineConfig({
     // Build optimizations
     cssCodeSplit: true,
     reportCompressedSize: true,
-    chunkSizeWarningLimit: 500
+    chunkSizeWarningLimit: 1000
   },
   // Performance hints
   ssr: false

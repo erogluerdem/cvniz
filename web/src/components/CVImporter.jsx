@@ -576,14 +576,14 @@ export default function CVImporter({ isOpen, onClose, onImport, isEditor = false
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                 onClick={(e) => e.target === e.currentTarget && onClose()}
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className={`relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border ${isDayMode ? 'bg-white border-slate-200' : 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-gray-700'}`}
+                    className={`relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] border ${isDayMode ? 'bg-white/95 backdrop-blur-3xl border-slate-200 ring-1 ring-black/5' : 'bg-slate-950/95 backdrop-blur-3xl border-white/10 ring-1 ring-white/5'}`}
                 >
                     {/* Header */}
                     <div className={`sticky top-0 z-10 backdrop-blur-sm border-b p-6 ${isDayMode ? 'bg-white/95 border-slate-200' : 'bg-gray-900/95 border-gray-700'}`}>

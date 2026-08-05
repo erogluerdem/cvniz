@@ -1,7 +1,47 @@
 import { Link } from 'react-router-dom'
 import { Crown, Search, LayoutGrid, Briefcase, Sparkles, Code, GraduationCap, Trophy, HeartPulse, Building2, User, Globe, Image as ImageIcon, CheckCircle, ArrowRight, Star, Filter } from 'lucide-react'
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { templateAPI } from '../services/api'
+
+// Scroll Animation Hook
+function useScrollAnimation() {
+    const ref = useRef(null)
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true)
+                }
+            },
+            { threshold: 0.1, rootMargin: '50px' }
+        )
+        if (ref.current) observer.observe(ref.current)
+        return () => observer.disconnect()
+    }, [])
+
+    return [ref, isVisible]
+}
+
+// Animated Section Wrapper
+function AnimatedSection({ children, className = '', delay = 0 }) {
+    const [ref, isVisible] = useScrollAnimation()
+
+    return (
+        <div
+            ref={ref}
+            className={`transition-all duration-700 ${className}`}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                transitionDelay: `${delay}ms`
+            }}
+        >
+            {children}
+        </div>
+    )
+}
 
 const templates = [
     { id: 'modern', name: 'Modern', description: 'Renkli ve dinamik', isPremium: false, color: 'from-cyan-500 to-blue-600', image: '/images/resume689896.png', category: 'Genel' },
@@ -26,7 +66,7 @@ const templates = [
     { id: 'portfolio', name: 'Portfolyo', description: 'Görsel ağırlıklı', isPremium: true, color: 'from-neutral-800 to-neutral-900', image: '/images/resume6544.png', category: 'Yaratıcı' },
     { id: 'scientist', name: 'Bilim İnsanı', description: 'Araştırmacılar için', isPremium: true, color: 'from-indigo-800 to-blue-900', image: '/images/resume656564.png', category: 'Bilim' },
     { id: 'artist', name: 'Sanatçı', description: 'Sanat profesyonelleri', isPremium: true, color: 'from-purple-600 to-pink-600', image: '/images/resume65677.png', category: 'Yaratıcı' },
-    { id: 'teacher', name: 'Öğretmen', description: 'Eğitimciler için', isPremium: true, color: 'from-amber-600 to-orange-600', image: '/images/resume689.png', category: 'Eğitim' },
+    { id: 'teacher', name: 'Öğretmen', description: 'Eğitimcilier için', isPremium: true, color: 'from-amber-600 to-orange-600', image: '/images/resume689.png', category: 'Eğitim' },
     { id: 'chef', name: 'Şef', description: 'Mutfak profesyonelleri', isPremium: true, color: 'from-red-800 to-red-900', image: '/images/resume689896.png', category: 'Sektörel' },
     { id: 'photographer', name: 'Fotoğrafçı', description: 'Görsel sanatçılar', isPremium: true, color: 'from-gray-800 to-black', image: '/images/resume898965.png', category: 'Yaratıcı' },
     { id: 'musician', name: 'Müzisyen', description: 'Müzik profesyonelleri', isPremium: true, color: 'from-purple-800 to-purple-950', image: '/images/resume98956.png', category: 'Yaratıcı' },
@@ -121,7 +161,7 @@ const templates = [
     { id: 'neon_web', name: 'Web Neon', description: 'Glow efektli modern portfolyo', isPremium: true, color: 'from-purple-600 to-pink-600', image: '/images/resume65677.png', category: 'Online Portfolio' },
     { id: 'minimal_web', name: 'Web Minimal', description: 'Sade ve net online görünüm', isPremium: true, color: 'from-gray-600 to-gray-800', image: '/images/resume656564.png', category: 'Online Portfolio' },
     { id: 'terminal_web', name: 'Web Terminal', description: 'Developerlar için kod temalı', isPremium: true, color: 'from-emerald-600 to-black', image: '/images/resume65677.png', category: 'Online Portfolio' },
-    { id: 'glass_web', name: 'Web Glass', description: 'Cam efektli fütüristik', isPremium: true, color: 'from-cyan-500 to-blue-500', image: '/images/resume689896.png', category: 'Online Portfolio' },
+    { id: 'glass_web', name: 'Web Glass', description: 'Cam efektli fütüristik', isPremium: true, color: 'from-cyan-500 to-blue-500', image: '/images/resume689896.png', category: 'Online Portfolio' },
     { id: 'creative_web', name: 'Creative Web', description: 'Premium şablon', isPremium: true, color: 'from-blue-600 to-indigo-700', image: '/images/resume689896.png', category: 'Online Portfolio' },
     { id: 'dark_web', name: 'Dark Web', description: 'Premium şablon', isPremium: true, color: 'from-purple-600 to-pink-600', image: '/images/resume656564.png', category: 'Online Portfolio' },
     { id: 'gradient_web', name: 'Gradient Web', description: 'Premium şablon', isPremium: true, color: 'from-emerald-600 to-teal-700', image: '/images/resume565656.png', category: 'Online Portfolio' },
@@ -304,7 +344,7 @@ export default function TemplatesPage() {
 
             {/* Hero Section */}
             <section className={`relative pt-32 pb-20 px-6 lg:px-12 text-center overflow-hidden ${isDayMode ? 'bg-gradient-to-b from-white via-slate-50 to-white' : ''}`}>
-                <div className="max-w-4xl mx-auto relative z-10">
+                <AnimatedSection className="max-w-4xl mx-auto relative z-10">
                     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-bold uppercase tracking-widest ${isDayMode
                         ? 'bg-white/90 border border-slate-200/70 text-sky-600 shadow-day'
                         : 'glass border-cyan-500/20 text-cyan-200'
@@ -337,7 +377,7 @@ export default function TemplatesPage() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </AnimatedSection>
             </section>
 
             {/* Sticky Filter Bar */}
@@ -373,9 +413,10 @@ export default function TemplatesPage() {
                 <div className="max-w-7xl mx-auto">
                     {filteredTemplates.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                            {filteredTemplates.map((template) => (
-                                <div
+                            {filteredTemplates.map((template, index) => (
+                                <AnimatedSection
                                     key={template.id}
+                                    delay={index * 50}
                                     className="group relative"
                                 >
                                     <div className={`rounded-[32px] overflow-hidden transition-all duration-500 shadow-xl ${isDayMode
@@ -440,7 +481,7 @@ export default function TemplatesPage() {
 
                                     {/* Bottom Glow */}
                                     <div className={`absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-2 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ${isDayMode ? 'bg-sky-200/70' : 'bg-cyan-500/20'}`}></div>
-                                </div>
+                                </AnimatedSection>
                             ))}
                         </div>
                     ) : (
@@ -465,7 +506,7 @@ export default function TemplatesPage() {
 
             {/* ATS Trust Section */}
             <section className={`py-24 px-6 lg:px-12 relative overflow-hidden ${isDayMode ? 'bg-gradient-to-b from-slate-50 to-white' : ''}`}>
-                <div className={`max-w-7xl mx-auto px-6 py-24 border-y ${sectionBorder} ${isDayMode ? 'bg-white/70 rounded-[40px] shadow-day' : ''}`}>
+                <AnimatedSection className={`max-w-7xl mx-auto px-6 py-24 border-y ${sectionBorder} ${isDayMode ? 'bg-white/70 rounded-[40px] shadow-day' : ''}`}>
                     <div className="grid lg:grid-cols-2 gap-20 items-center">
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
@@ -527,13 +568,13 @@ export default function TemplatesPage() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </AnimatedSection>
             </section>
 
             {/* Final CTA */}
             <section className={`py-32 px-6 lg:px-12 text-center relative overflow-hidden ${isDayMode ? 'bg-gradient-to-b from-white to-slate-50' : ''}`}>
                 <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] rounded-full blur-[160px] -z-10 animate-pulse ${isDayMode ? 'bg-sky-100' : 'bg-cyan-500/10'}`}></div>
-                <div className={`max-w-4xl mx-auto rounded-[48px] p-20 relative z-10 ${isDayMode ? 'bg-white border border-slate-200/70 shadow-day' : 'glass-card border-white/10'}`}>
+                <AnimatedSection className={`max-w-4xl mx-auto rounded-[48px] p-20 relative z-10 ${isDayMode ? 'bg-white border border-slate-200/70 shadow-day' : 'glass-card border-white/10'}`}>
                     <div className={`w-20 h-20 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl border ${isDayMode ? 'bg-slate-50 border-slate-200/70 text-sky-600' : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400'}`}>
                         <Crown className="w-10 h-10" />
                     </div>
@@ -552,9 +593,8 @@ export default function TemplatesPage() {
                             Ücretli Planları İncele <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
-                </div>
+                </AnimatedSection>
             </section>
         </div>
     )
 }
-

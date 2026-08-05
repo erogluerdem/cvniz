@@ -6,6 +6,7 @@ import {
     FileText, ArrowRight, Lightbulb
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { aiAPI } from '../services/api'
 
 // Proje türleri
 const PROJECT_TYPES = [
@@ -83,15 +84,33 @@ export default function AIProjectWriter({ isOpen, onClose, onInsert, existingPro
     const handleGenerate = async () => {
         setIsGenerating(true)
         
-        // Simüle AI işleme
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        
-        if (outputType === 'paragraph') {
-            const description = generateProjectDescription(input, projectType)
-            setGeneratedText(description)
-        } else {
-            const bullets = generateBulletPoints(input, projectType)
-            setBulletPoints(bullets)
+        try {
+            const response = await aiAPI.generateProject({
+                input,
+                type: projectType,
+                outputType
+            });
+            
+            if (response.success && response.data) {
+                if (outputType === 'paragraph') {
+                    setGeneratedText(response.data.description || generateProjectDescription(input, projectType));
+                } else {
+                    setBulletPoints(response.data.bullets || generateBulletPoints(input, projectType));
+                }
+            } else {
+                throw new Error("API returned no data");
+            }
+        } catch (error) {
+            console.warn("AI Project Writer API failed, using fallback.", error);
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            
+            if (outputType === 'paragraph') {
+                const description = generateProjectDescription(input, projectType)
+                setGeneratedText(description)
+            } else {
+                const bullets = generateBulletPoints(input, projectType)
+                setBulletPoints(bullets)
+            }
         }
         
         setIsGenerating(false)
@@ -100,14 +119,35 @@ export default function AIProjectWriter({ isOpen, onClose, onInsert, existingPro
 
     const handleRegenerate = async () => {
         setIsGenerating(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
         
-        if (outputType === 'paragraph') {
-            const description = generateProjectDescription(input, projectType)
-            setGeneratedText(description)
-        } else {
-            const bullets = generateBulletPoints(input, projectType)
-            setBulletPoints(bullets)
+        try {
+            const response = await aiAPI.generateProject({
+                input,
+                type: projectType,
+                outputType,
+                regenerate: true
+            });
+            
+            if (response.success && response.data) {
+                if (outputType === 'paragraph') {
+                    setGeneratedText(response.data.description || generateProjectDescription(input, projectType));
+                } else {
+                    setBulletPoints(response.data.bullets || generateBulletPoints(input, projectType));
+                }
+            } else {
+                throw new Error("API returned no data");
+            }
+        } catch (error) {
+            console.warn("AI Project Writer API failed, using fallback.", error);
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            
+            if (outputType === 'paragraph') {
+                const description = generateProjectDescription(input, projectType)
+                setGeneratedText(description)
+            } else {
+                const bullets = generateBulletPoints(input, projectType)
+                setBulletPoints(bullets)
+            }
         }
         
         setIsGenerating(false)
@@ -145,14 +185,14 @@ export default function AIProjectWriter({ isOpen, onClose, onInsert, existingPro
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                 onClick={(e) => e.target === e.currentTarget && onClose()}
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700 shadow-2xl"
+                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
                 >
                     {/* Header */}
                     <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6">

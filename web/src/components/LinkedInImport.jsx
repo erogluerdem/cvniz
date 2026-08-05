@@ -213,8 +213,8 @@ export default function LinkedInImport({ isOpen, onClose, onImport }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-            <div className="w-full max-w-xl glass-card rounded-3xl overflow-hidden my-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
+            <div className="w-full max-w-xl bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] overflow-hidden my-4">
                 {/* Header */}
                 <div className="p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-cyan-500/10">
                     <div className="flex items-center justify-between">
@@ -385,6 +385,12 @@ export default function LinkedInImport({ isOpen, onClose, onImport }) {
                             <p className="text-gray-400">
                                 LinkedIn verileriniz CV'nize aktarıldı
                             </p>
+                            <button
+                                onClick={handleClose}
+                                className="mt-6 px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-bold"
+                            >
+                                Devam Et
+                            </button>
                         </div>
                     )}
                 </div>

@@ -66,8 +66,8 @@ export default function JobSearch({ isOpen, onClose }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex bg-black/90 backdrop-blur-md overflow-hidden">
-            <div className="w-full max-w-6xl mx-auto flex flex-col h-full text-white">
+        <div className="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-md overflow-hidden">
+            <div className="w-full max-w-6xl mx-auto flex flex-col h-[90vh] my-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 text-white">
                 {/* Header */}
                 <div className="p-6 border-b border-white/10">
                     <div className="flex items-center justify-between mb-4">
@@ -300,8 +300,8 @@ export default function JobSearch({ isOpen, onClose }) {
 
             {/* Apply Modal */}
             {showApplyModal && selectedJob && (
-                <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80">
-                    <div className="w-full max-w-md glass-card rounded-2xl overflow-hidden">
+                <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div className="w-full max-w-md bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] overflow-hidden">
                         <div className="p-6 border-b border-white/10">
                             <h3 className="text-lg font-bold">Başvuru Yap</h3>
                             <p className="text-sm text-gray-400">{selectedJob.title} - {selectedJob.company}</p>

@@ -7,6 +7,7 @@ import {
     Check, Eye, EyeOff, Code, Globe, Webhook, DollarSign, Users,
     FileText, Download, ExternalLink, Shield, Zap
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 export default function PartnerDashboard() {
     const { user } = useAuth()
@@ -45,6 +46,7 @@ export default function PartnerDashboard() {
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
         setCopied(true)
+        toast.success('Panoya kopyalandı!')
         setTimeout(() => setCopied(false), 2000)
     }
 
@@ -52,6 +54,7 @@ export default function PartnerDashboard() {
         if (setTheme) {
             setTheme(editTheme)
         }
+        toast.success('Marka özelleştirmeleri kaydedildi!')
     }
 
     const tabs = [

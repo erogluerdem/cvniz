@@ -4,6 +4,7 @@ import CVForm from './CVForm'
 import CVPreview from './CVPreview'
 import { sampleCVData, emptyCV } from '../data/sampleData'
 import { exportToPDF, printCV } from '../utils/pdfExport'
+import toast from 'react-hot-toast'
 
 const templates = [
     { id: 'modern', name: 'Modern', isPremium: false, emoji: '🎨' },
@@ -47,14 +48,17 @@ export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBack
         setIsExporting(true)
         try {
             await exportToPDF('cv-preview', `${cvData.personal.fullName || 'cv'}.pdf`, isPremiumUser)
+            toast.success("PDF başarıyla indirildi!")
         } catch (error) {
             console.error('Export failed:', error)
+            toast.error("PDF oluşturulurken bir hata oluştu.")
         }
         setIsExporting(false)
     }
 
     const handlePrint = () => {
         printCV('cv-preview')
+        toast.success("Yazdırma penceresi açıldı.")
     }
 
     const handleLoadSample = () => {
@@ -69,6 +73,7 @@ export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBack
         // In production, this would open a payment flow
         setIsPremiumUser(true)
         setShowPaymentModal(false)
+        toast.success('Premium şablonların kilidi açıldı! (Demo)')
     }
 
     return (
@@ -201,8 +206,8 @@ export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBack
 
             {/* Payment Modal */}
             {showPaymentModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="glass-card rounded-2xl p-8 max-w-md w-full animate-slide-up">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div className="bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 p-8 max-w-md w-full animate-slide-up">
                         <h3 className="text-2xl font-bold mb-4 gradient-text">Premium Şablonu Aç</h3>
                         <p className="text-gray-400 mb-6">
                             Bu şablonu kullanmak ve watermark'sız PDF indirmek için Pro sürüme yükseltin.

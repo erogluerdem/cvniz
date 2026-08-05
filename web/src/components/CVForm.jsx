@@ -2699,8 +2699,8 @@ export default function CVForm({
             </div>
             {/* AI Modal */}
             {showAIModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="w-full max-w-lg bg-[#0f1115] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div className="w-full max-w-lg bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
                             <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-cyan-400" />

@@ -31,8 +31,8 @@ export default function AnimatedCVModal({ isOpen, onClose, cv }) {
     const publicUrl = window.location.origin + '/v/' + cv?.id + (selectedTemplate ? `?template=${selectedTemplate.id}` : '')
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-950 border border-white/10 rounded-[2.5rem] w-full max-w-6xl overflow-hidden shadow-2xl flex flex-col h-[90vh]">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 w-full max-w-6xl overflow-hidden flex flex-col h-[90vh]">
                 {/* Header */}
                 <div className="p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-purple-500/10 to-blue-500/10">
                     <div className="flex items-center gap-4">
@@ -40,7 +40,7 @@ export default function AnimatedCVModal({ isOpen, onClose, cv }) {
                             <Zap className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-white tracking-tight uppercase italic">Animated Web CV</h2>
+                            <h2 className="text-2xl font-bold text-white tracking-tight">Animated Web CV</h2>
                             <p className="text-gray-400 text-sm">
                                 {step === 1 ? 'Şablonunuzu seçin' : 'Yayınlamaya hazır'}
                             </p>

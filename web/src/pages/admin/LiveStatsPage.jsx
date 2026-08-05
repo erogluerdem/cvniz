@@ -182,11 +182,17 @@ export default function LiveStatsPage() {
                                 </p>
                             </div>
                             <div className="flex flex-wrap justify-center gap-4 pt-4">
-                                {(stats?.locations?.length > 0 ? stats.locations : ['TÜRKİYE: 0']).map((loc, i) => (
-                                    <div key={i} className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-cyan-200/50 uppercase tracking-widest">
-                                        {loc}
+                                {stats?.locations?.length > 0 ? (
+                                    stats.locations.map((loc, i) => (
+                                        <div key={i} className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-cyan-200/50 uppercase tracking-widest">
+                                            {loc}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-gray-500 uppercase tracking-widest italic">
+                                        Canlı veri bekleniyor...
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </div>
 

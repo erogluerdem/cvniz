@@ -251,8 +251,8 @@ export default function IntegrationSettingsComponent() {
 
       {/* Connect Modal */}
       {showModal && selectedIntegration && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] max-w-md w-full p-8 border border-slate-200">
             <h3 className="text-xl font-bold text-gray-800 mb-4">
               {selectedIntegration.name} Bağla
             </h3>

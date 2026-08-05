@@ -29,8 +29,8 @@ export default function CSSEditorModal({ isOpen, onClose, cv, onSave }) {
     if (!isOpen || !cv) return null
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-950 text-white rounded-3xl w-full max-w-6xl h-[85vh] flex overflow-hidden border border-white/10 shadow-2xl">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-950/95 backdrop-blur-3xl text-white rounded-[2rem] w-full max-w-6xl h-[85vh] flex overflow-hidden border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
                 {/* Editor Section */}
                 <div className="flex-1 flex flex-col border-r border-white/10">
                     <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">

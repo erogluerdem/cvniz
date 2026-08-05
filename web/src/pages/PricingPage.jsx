@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Check, Star, Crown, ShieldCheck, Zap, Heart, MessageCircle, HelpCircle, ArrowRight, Minus, Plus, Award, Infinity } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 const pricingPlans = [
@@ -86,6 +86,46 @@ const faqs = [
     }
 ]
 
+// Scroll Animation Hook
+function useScrollAnimation() {
+    const ref = useRef(null)
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true)
+                }
+            },
+            { threshold: 0.1, rootMargin: '50px' }
+        )
+        if (ref.current) observer.observe(ref.current)
+        return () => observer.disconnect()
+    }, [])
+
+    return [ref, isVisible]
+}
+
+// Animated Section Wrapper
+function AnimatedSection({ children, className = '', delay = 0 }) {
+    const [ref, isVisible] = useScrollAnimation()
+
+    return (
+        <div
+            ref={ref}
+            className={`transition-all duration-700 ${className}`}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                transitionDelay: `${delay}ms`
+            }}
+        >
+            {children}
+        </div>
+    )
+}
+
 export default function PricingPage() {
     const { isPremium } = useAuth()
     const navigate = useNavigate()
@@ -139,7 +179,7 @@ export default function PricingPage() {
             </div>
 
             {/* Hero Section */}
-            <section className={`relative pt-32 pb-20 px-6 lg:px-12 text-center ${sectionBackground}`}>
+            <AnimatedSection className={`relative pt-32 pb-20 px-6 lg:px-12 text-center ${sectionBackground}`}>
                 <div className="max-w-4xl mx-auto relative z-10">
                     <div className={heroBadgeClasses}>
                         <Zap className={`w-4 h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
@@ -170,15 +210,16 @@ export default function PricingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* Pricing Grid */}
             <section className="pb-24 px-6 lg:px-12 relative z-10">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid lg:grid-cols-3 gap-8">
                         {pricingPlans.map((plan, index) => (
-                            <div
+                            <AnimatedSection
                                 key={index}
+                                delay={index * 150}
                                 className={`relative group transition-all duration-500 ${plan.highlighted ? 'lg:-translate-y-4' : ''}`}
                             >
                                 {plan.highlighted && (
@@ -239,14 +280,14 @@ export default function PricingPage() {
                                         ))}
                                     </div>
                                 </div>
-                            </div>
+                            </AnimatedSection>
                         ))}
                     </div>
                 </div>
             </section>
 
             {/* Comparison Table Section */}
-            <section className={`py-24 px-6 lg:px-12 ${isDayMode ? 'bg-white border-y border-slate-200/70' : 'bg-white/[0.01] border-y border-white/5'}`}>
+            <AnimatedSection className={`py-24 px-6 lg:px-12 ${isDayMode ? 'bg-white border-y border-slate-200/70' : 'bg-white/[0.01] border-y border-white/5'}`}>
                 <div className="max-w-5xl mx-auto">
                     <h2 className={`text-3xl font-black text-center mb-16 uppercase tracking-[0.2em] ${isDayMode ? 'text-slate-500' : 'text-gray-600'}`}>Detaylı Karşılaştırma</h2>
                     <div className={`rounded-[32px] overflow-hidden ${isDayMode ? 'bg-white border border-slate-200/70 shadow-day' : 'glass-card border-white/5'}`}>
@@ -278,10 +319,10 @@ export default function PricingPage() {
                         </table>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* Testimonial & Social Proof */}
-            <section className={`py-24 px-6 lg:px-12 ${isDayMode ? 'bg-gradient-to-b from-slate-50 to-white' : ''}`}>
+            <AnimatedSection className={`py-24 px-6 lg:px-12 ${isDayMode ? 'bg-gradient-to-b from-slate-50 to-white' : ''}`}>
                 <div className="max-w-7xl mx-auto">
                     <div className="grid lg:grid-cols-2 gap-20 items-center">
                         <div className="space-y-8">
@@ -312,18 +353,18 @@ export default function PricingPage() {
                                 { label: 'Ülke', val: '120+' },
                                 { label: 'İş Alımı', val: '15K+' },
                             ].map((stat, i) => (
-                                <div key={i} className={`rounded-[24px] p-8 transition-all ${isDayMode ? 'bg-white border border-slate-200/70 shadow-day hover:border-sky-200' : 'glass-card border-white/5 hover:border-cyan-500/20'}`}>
+                                <AnimatedSection key={i} delay={i * 100} className={`rounded-[24px] p-8 transition-all ${isDayMode ? 'bg-white border border-slate-200/70 shadow-day hover:border-sky-200' : 'glass-card border-white/5 hover:border-cyan-500/20'}`}>
                                     <div className="text-4xl font-black gradient-text mb-2">{stat.val}</div>
                                     <div className={`text-xs font-black uppercase tracking-widest ${subtleText}`}>{stat.label}</div>
-                                </div>
+                                </AnimatedSection>
                             ))}
                         </div>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* FAQ Section */}
-            <section className={`py-24 px-6 lg:px-12 relative overflow-hidden ${isDayMode ? 'bg-white' : ''}`}>
+            <AnimatedSection className={`py-24 px-6 lg:px-12 relative overflow-hidden ${isDayMode ? 'bg-white' : ''}`}>
                 <div className="max-w-5xl mx-auto relative z-10">
                     <div className="text-center mb-16">
                         <HelpCircle className={`w-12 h-12 mx-auto mb-6 opacity-30 ${isDayMode ? 'text-sky-500' : 'text-cyan-500'}`} />
@@ -343,10 +384,10 @@ export default function PricingPage() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* Final Guarantee */}
-            <section className={`py-24 px-6 lg:px-12 ${isDayMode ? 'bg-gradient-to-b from-slate-50 to-white' : ''}`}>
+            <AnimatedSection className={`py-24 px-6 lg:px-12 ${isDayMode ? 'bg-gradient-to-b from-slate-50 to-white' : ''}`}>
                 <div className={`max-w-4xl mx-auto rounded-[48px] p-16 md:p-24 text-center relative overflow-hidden ${isDayMode ? 'bg-white border border-slate-200/70 shadow-day' : 'glass-card border-emerald-500/20'}`}>
                     <div className={`absolute inset-0 -z-10 ${isDayMode ? 'bg-gradient-to-br from-emerald-50 via-white to-slate-50' : 'bg-emerald-500/[0.02]'}`}></div>
                     <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-10 border ${isDayMode ? 'bg-white border-slate-200/70 text-emerald-500 shadow-day' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'}`}>
@@ -361,7 +402,7 @@ export default function PricingPage() {
                         Hemen Deneyin
                     </Link>
                 </div>
-            </section>
+            </AnimatedSection>
         </div>
     )
 }

@@ -350,13 +350,13 @@ export default function GiftCardManager() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                     >
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="w-full max-w-md bg-gradient-to-br from-pink-900/50 to-purple-900/50 rounded-2xl p-8 border border-pink-500/30 text-center"
+                            className="w-full max-w-md bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 text-center"
                         >
                             <motion.div
                                 animate={{ scale: [1, 1.2, 1] }}

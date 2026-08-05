@@ -41,8 +41,8 @@ export default function AITranslatorModal({ isOpen, onClose, cvData, onTranslate
     }
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-[#1a1d24] border border-white/10 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-slide-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[150] flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] w-full max-w-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 overflow-hidden animate-slide-up">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10">
                     <div className="flex items-center gap-3">

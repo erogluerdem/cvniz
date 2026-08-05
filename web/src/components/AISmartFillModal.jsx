@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sparkles, X, Wand2, CheckCircle2, Briefcase, Brain, Loader2 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 const PROFESSION_TEMPLATES = {
   'frontend geliştirici': {
@@ -250,6 +251,7 @@ export default function AISmartFillModal({ isOpen, onClose, cvData, onFill }) {
         experienceDescription: template.experienceDescription,
       }
       onFill(filledData)
+      toast.success("Özgeçmişin yapay zeka ile başarıyla dolduruldu!")
     }, totalDuration + 400)
   }
 
@@ -264,7 +266,7 @@ export default function AISmartFillModal({ isOpen, onClose, cvData, onFill }) {
         >
           {/* backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 bg-black/60 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -273,7 +275,7 @@ export default function AISmartFillModal({ isOpen, onClose, cvData, onFill }) {
 
           {/* card */}
           <motion.div
-            className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0f1115] shadow-2xl shadow-violet-500/5"
+            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
             initial={{ scale: 0.92, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.92, opacity: 0, y: 30 }}

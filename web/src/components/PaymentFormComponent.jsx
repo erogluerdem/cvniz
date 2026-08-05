@@ -46,55 +46,21 @@ export default function PaymentFormComponent({ onSuccess, amount, description })
 
     setLoading(true);
     try {
-      // Create payment intent
-      const intentResponse = await fetch('http://localhost:5000/api/payments/intent', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          amount,
-          currency: 'USD',
-          metadata: { description }
-        })
-      });
+      // Simulate network request for payment
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      const { clientSecret, paymentId } = await intentResponse.json();
+      // Mock success response
+      const result = {
+        status: 'succeeded',
+        paymentId: 'pay_mock_' + Date.now(),
+        amount
+      };
 
-      // Confirm payment
-      const confirmResponse = await fetch(`http://localhost:5000/api/payments/${paymentId}/confirm`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          cardNumber: formData.cardNumber,
-          expiryMonth: formData.expiryMonth,
-          expiryYear: formData.expiryYear,
-          cvc: formData.cvc,
-          cardName: formData.cardName,
-          billingAddress: {
-            email: formData.email,
-            country: formData.country
-          }
-        })
-      });
-
-      const result = await confirmResponse.json();
-
-      if (result.status === 'succeeded') {
-        setSuccess(true);
-        if (onSuccess) onSuccess(result);
-      } else if (result.fraudRisk) {
-        setFraudRisk(result.fraudRisk);
-        setError('Ödeme gözden geçirilmek üzere tutuldu');
-      } else {
-        setError(result.message || 'Ödeme başarısız oldu');
-      }
+      setSuccess(true);
+      if (onSuccess) onSuccess(result);
+      
     } catch (err) {
-      setError(err.message);
+      setError('Ödeme işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }

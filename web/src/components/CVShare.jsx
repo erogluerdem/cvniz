@@ -43,8 +43,8 @@ export default function CVShare({ isOpen, onClose, cv }) {
     }
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 text-white rounded-2xl w-full max-w-md overflow-hidden flex flex-col shadow-2xl border border-white/10">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-950/95 backdrop-blur-3xl text-white rounded-[2rem] w-full max-w-md overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/10 ring-1 ring-white/5">
                 {/* Header */}
                 <div className="p-6 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-blue-500/10 to-indigo-500/10">
                     <div className="flex items-center gap-3">

@@ -3,6 +3,7 @@ import {
     Sparkles, X, Send, Loader2, Bot, User, ChevronRight, 
     Lightbulb, Wand2, RefreshCw, Copy, CheckCircle 
 } from 'lucide-react'
+import { aiAPI } from '../services/api'
 
 /**
  * AISidebarAssistant - Faz 2: AI Sidebar Asistan
@@ -93,8 +94,26 @@ export default function AISidebarAssistant({
         setInput('')
         setIsLoading(true)
 
-        // Simulate AI response
-        setTimeout(() => {
+        try {
+            const response = await aiAPI.assistantChat({
+                message: input,
+                context: activeTab,
+                cvData: cvData
+            });
+
+            if (response.success && (response.content || response.data?.content)) {
+                const aiMessage = {
+                    id: Date.now() + 1,
+                    type: 'ai',
+                    content: response.content || response.data.content
+                }
+                setMessages(prev => [...prev, aiMessage])
+            } else {
+                throw new Error("API failed");
+            }
+        } catch (error) {
+            console.warn("Sidebar Assistant API failed, using fallback.", error);
+            await new Promise(resolve => setTimeout(resolve, 1500))
             const responses = [
                 'Harika bir noktaya değindiniz! Bu bölümü şu şekilde güçlendirebilirsiniz: "Proaktif olarak müşteri memnuniyetini %25 artıran çözümler geliştirdim."',
                 'METRICS eklemenizi öneririm. Sayısal veriler CV\'nizi çok daha etkili kılar.',
@@ -109,8 +128,9 @@ export default function AISidebarAssistant({
                 content: randomResponse
             }
             setMessages(prev => [...prev, aiMessage])
+        } finally {
             setIsLoading(false)
-        }, 1500)
+        }
     }
 
     const handleQuickAction = (action) => {

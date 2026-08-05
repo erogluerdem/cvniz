@@ -179,14 +179,14 @@ export default function AffiliateDashboard() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                             onClick={(e) => e.target === e.currentTarget && setShowApplyModal(false)}
                         >
                             <motion.div
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.9, opacity: 0 }}
-                                className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700"
+                                className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-6 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
                             >
                                 <h3 className="text-2xl font-bold text-white mb-6">Affiliate Başvurusu</h3>
 
@@ -592,14 +592,14 @@ export default function AffiliateDashboard() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                         onClick={(e) => e.target === e.currentTarget && setShowWithdrawModal(false)}
                     >
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="w-full max-w-md bg-gray-900 rounded-2xl p-6 border border-gray-700"
+                            className="w-full max-w-md bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-6 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
                         >
                             <h3 className="text-xl font-bold text-white mb-6">Para Çekme Talebi</h3>
 
@@ -648,14 +648,14 @@ export default function AffiliateDashboard() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                         onClick={(e) => e.target === e.currentTarget && setShowCouponModal(false)}
                     >
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="w-full max-w-md bg-gray-900 rounded-2xl p-6 border border-gray-700"
+                            className="w-full max-w-md bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-6 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
                         >
                             <h3 className="text-xl font-bold text-white mb-6">Özel Kupon Oluştur</h3>
 

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useAuth } from './AuthContext'
+import { aiAPI } from '../services/api'
 
 const InterviewContext = createContext(null)
 
@@ -123,58 +124,80 @@ export function InterviewProvider({ children }) {
     }
 
     // Analyze answer with AI
-    const analyzeAnswer = (questionId) => {
+    const analyzeAnswer = async (questionId) => {
         if (!currentSession) return null
 
         const question = currentSession.questions.find(q => q.id === questionId)
         if (!question || !question.answer) return null
 
-        // Simulate AI analysis
-        const answer = question.answer.toLowerCase()
-        let score = 50
-        const feedback = []
+        let analysisResult;
 
-        // Check answer length
-        if (answer.length > 200) {
-            score += 15
-            feedback.push({ type: 'positive', text: 'Detaylı cevap verdiniz' })
-        } else if (answer.length < 50) {
-            score -= 10
-            feedback.push({ type: 'negative', text: 'Cevabınız daha detaylı olabilir' })
-        }
+        try {
+            const response = await aiAPI.analyzeInterview({
+                question: question.question,
+                answer: question.answer,
+                starResponse: question.starResponse
+            });
 
-        // Check for STAR elements
-        const starKeywords = {
-            situation: ['durum', 'problem', 'sorun', 'karşılaştığım', 'vardı'],
-            action: ['yaptım', 'başlattım', 'uyguladım', 'çözdüm', 'organize ettim'],
-            result: ['sonuç', 'başardım', 'artış', 'azalış', '%', 'elde ettik']
-        }
+            if (response.success && response.data) {
+                analysisResult = {
+                    score: response.data.score,
+                    strengths: response.data.feedback?.strengths || [],
+                    improvements: response.data.feedback?.improvements || []
+                };
+            } else {
+                throw new Error("API failed");
+            }
+        } catch (error) {
+            console.warn("Interview Coach API failed, using fallback.", error);
+            
+            // Simulate AI analysis
+            const answer = question.answer.toLowerCase()
+            let score = 50
+            const feedback = []
 
-        if (starKeywords.situation.some(k => answer.includes(k))) {
-            score += 10
-            feedback.push({ type: 'positive', text: 'Durumu açıkça belirttiniz' })
-        }
-        if (starKeywords.action.some(k => answer.includes(k))) {
-            score += 10
-            feedback.push({ type: 'positive', text: 'Aldığınız aksiyonları anlattınız' })
-        }
-        if (starKeywords.result.some(k => answer.includes(k))) {
-            score += 15
-            feedback.push({ type: 'positive', text: 'Sonucu somut verilerle desteklediniz' })
-        }
+            // Check answer length
+            if (answer.length > 200) {
+                score += 15
+                feedback.push({ type: 'positive', text: 'Detaylı cevap verdiniz' })
+            } else if (answer.length < 50) {
+                score -= 10
+                feedback.push({ type: 'negative', text: 'Cevabınız daha detaylı olabilir' })
+            }
 
-        // Add suggestions
-        if (!starKeywords.result.some(k => answer.includes(k))) {
-            feedback.push({ type: 'suggestion', text: 'Sonuçları rakamlarla destekleyin' })
-        }
+            // Check for STAR elements
+            const starKeywords = {
+                situation: ['durum', 'problem', 'sorun', 'karşılaştığım', 'vardı'],
+                action: ['yaptım', 'başlattım', 'uyguladım', 'çözdüm', 'organize ettim'],
+                result: ['sonuç', 'başardım', 'artış', 'azalış', '%', 'elde ettik']
+            }
 
-        score = Math.min(100, Math.max(0, score))
+            if (starKeywords.situation.some(k => answer.includes(k))) {
+                score += 10
+                feedback.push({ type: 'positive', text: 'Durumu açıkça belirttiniz' })
+            }
+            if (starKeywords.action.some(k => answer.includes(k))) {
+                score += 10
+                feedback.push({ type: 'positive', text: 'Aldığınız aksiyonları anlattınız' })
+            }
+            if (starKeywords.result.some(k => answer.includes(k))) {
+                score += 15
+                feedback.push({ type: 'positive', text: 'Sonucu somut verilerle desteklediniz' })
+            }
 
-        const analysisResult = {
-            score,
-            feedback,
-            strengths: feedback.filter(f => f.type === 'positive').map(f => f.text),
-            improvements: feedback.filter(f => f.type !== 'positive').map(f => f.text)
+            // Add suggestions
+            if (!starKeywords.result.some(k => answer.includes(k))) {
+                feedback.push({ type: 'suggestion', text: 'Sonuçları rakamlarla destekleyin' })
+            }
+
+            score = Math.min(100, Math.max(0, score))
+
+            analysisResult = {
+                score,
+                feedback,
+                strengths: feedback.filter(f => f.type === 'positive').map(f => f.text),
+                improvements: feedback.filter(f => f.type !== 'positive').map(f => f.text)
+            }
         }
 
         // Update question with analysis

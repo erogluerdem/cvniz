@@ -47,8 +47,8 @@ export default function CVTranslator({ isOpen, onClose, cv, onSuccess }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-            <div className="w-full max-w-xl glass-card text-white rounded-3xl overflow-hidden my-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
+            <div className="w-full max-w-xl bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 text-white rounded-[2rem] overflow-hidden my-4">
                 {/* Header */}
                 <div className="p-6 border-b border-white/10 bg-gradient-to-r from-blue-500/10 to-green-500/10">
                     <div className="flex items-center justify-between">

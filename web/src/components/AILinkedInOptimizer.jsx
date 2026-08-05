@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCV } from '../context/CVContext'
+import { aiAPI } from '../services/api'
 
 // Optimizasyon kategorileri
 const OPTIMIZATION_CATEGORIES = [
@@ -138,17 +139,32 @@ export default function AILinkedInOptimizer({ isOpen, onClose }) {
     const handleAnalyze = async () => {
         setIsAnalyzing(true)
         
-        // Simüle analiz
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        const result = calculateScore(cvData)
-        setAnalysisResult(result)
-        
-        setGeneratedContent({
-            headlines: generateHeadline(cvData),
-            summary: generateSummary(cvData),
-            keywords: generateKeywords(cvData)
-        })
+        try {
+            const response = await aiAPI.optimizeLinkedIn(cvData);
+            if (response.success && response.data) {
+                setAnalysisResult(response.data.score || calculateScore(cvData));
+                setGeneratedContent({
+                    headlines: response.data.content?.headlines || generateHeadline(cvData),
+                    summary: response.data.content?.summary || generateSummary(cvData),
+                    keywords: response.data.content?.keywords || generateKeywords(cvData)
+                });
+            } else {
+                throw new Error("API returned no data");
+            }
+        } catch (error) {
+            console.warn("LinkedIn Optimizer API failed, using fallback.", error);
+            // Simüle analiz
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            
+            const result = calculateScore(cvData)
+            setAnalysisResult(result)
+            
+            setGeneratedContent({
+                headlines: generateHeadline(cvData),
+                summary: generateSummary(cvData),
+                keywords: generateKeywords(cvData)
+            })
+        }
         
         setIsAnalyzing(false)
     }
@@ -191,14 +207,14 @@ export default function AILinkedInOptimizer({ isOpen, onClose }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                 onClick={(e) => e.target === e.currentTarget && onClose()}
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700 shadow-2xl"
+                    className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
                 >
                     {/* Header */}
                     <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6">

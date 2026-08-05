@@ -50,8 +50,8 @@ export default function LayoutManagerModal({ isOpen, onClose, cv, onSave }) {
     if (!isOpen || !cv) return null
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-white/10 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-in">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 w-full max-w-md overflow-hidden animate-scale-in">
                 <div className="p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-cyan-500/10 to-blue-500/10">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-cyan-500 flex items-center justify-center">

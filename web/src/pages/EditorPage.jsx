@@ -202,6 +202,7 @@ export default function EditorPage() {
     // Sidebar Drag & Drop States
     const [tabsOrder, setTabsOrder] = useState(DEFAULT_EDITOR_TABS)
     const [draggedTabId, setDraggedTabId] = useState(null)
+    const [draggableTab, setDraggableTab] = useState(null)
 
     const previewTemplate = hoverTemplate || selectedTemplate
     const previewTemplateName = useMemo(() => {
@@ -238,7 +239,7 @@ export default function EditorPage() {
     }, [previewTemplateCategory])
     const previewBadgeClass = `editor-preview-badge editor-preview-badge--${previewBadgeCategory}`
     const previewPageSize = useMemo(() => getPdfPageSizeMm(pdfPageFormat), [pdfPageFormat])
-    const previewBadgeIcon = useMemo(() => {
+    const PreviewBadgeIcon = useMemo(() => {
         if (isPreviewWebTemplate) return Globe2
         switch (previewBadgeCategory) {
             case 'professional':
@@ -1084,7 +1085,7 @@ export default function EditorPage() {
                 <div className={`editor-preview-grid ${showPreviewGrid ? '' : 'is-hidden'}`} aria-hidden="true" />
                 <div className={previewBadgeClass} aria-hidden="true" data-tooltip={previewBadgeLabel}>
                     <span className="editor-preview-badge-icon">
-                        {previewBadgeIcon && <previewBadgeIcon className="w-3 h-3" />}
+                        {PreviewBadgeIcon && <PreviewBadgeIcon className="w-3 h-3" />}
                     </span>
                     <span className="editor-preview-badge-text">{previewBadgeLabel}</span>
                     <span className="editor-preview-badge-text-short">{previewBadgeLabelShort}</span>
@@ -1181,7 +1182,7 @@ export default function EditorPage() {
             )}
 
             {/* Top Bar - Responsive Header */}
-            <header className={`h-14 md:h-20 border-b backdrop-blur-xl flex items-center justify-between px-3 md:px-6 shrink-0 z-50 ${headerClasses}`}>
+            <header className={`h-14 md:h-20 border-b backdrop-blur-xl flex items-center justify-between px-3 md:px-6 shrink-0 relative z-50 ${headerClasses}`}>
                 {/* Left Section */}
                 <div className="flex items-center gap-2 md:gap-6">
 
@@ -1192,6 +1193,7 @@ export default function EditorPage() {
                         cvName={cvName || 'İsimsiz CV'}
                         isOpen={showCollabPopover}
                         onToggle={() => setShowCollabPopover(!showCollabPopover)}
+                        position="left"
                     />
 
                     {/* Mobile Menu Toggle */}
@@ -1429,7 +1431,7 @@ export default function EditorPage() {
                 <nav className={`
                     ${isMobile
                         ? `fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-out ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`
-                        : viewMode === 'preview' ? 'hidden' : 'relative w-20 lg:w-64'
+                        : viewMode === 'preview' ? 'hidden' : `relative transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-64'}`
                     } 
                     border-r flex flex-col shrink-0 ${sidebarClasses}
                 `}>
@@ -1448,17 +1450,34 @@ export default function EditorPage() {
                         </div>
                     )}
 
+                    
+                    {/* Desktop Sidebar Toggle */}
+                    {!isMobile && (
+                        <div className={`flex justify-end px-4 py-2 border-b ${isDayMode ? 'border-slate-200' : 'border-white/10'}`}>
+                            <button
+                                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                                className={`p-2 rounded-xl transition-colors ${isDayMode ? 'hover:bg-slate-100 text-slate-500' : 'hover:bg-white/5 text-slate-400'}`}
+                                title={sidebarCollapsed ? 'Menüyü Genişlet' : 'Menüyü Daralt'}
+                            >
+                                <PanelLeft className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+                            </button>
+                        </div>
+                    )}
+
                     <div className="flex-1 py-4 md:py-8 flex flex-col gap-2 px-3 md:px-4 overflow-y-auto custom-scrollbar">
                         {tabsOrder.map((tab) => (
                             <button
                                 key={tab.id}
                                 id={`tab-${tab.id}`}
-                                draggable
+                                draggable={draggableTab === tab.id}
                                 onDragStart={(e) => handleDragStart(e, tab.id)}
                                 onDragOver={(e) => handleDragOver(e, tab.id)}
                                 onDragEnd={handleDragEnd}
                                 onClick={() => {
                                     setActiveTab(tab.id)
+                                    if (sidebarCollapsed) {
+                                        setSidebarCollapsed(false)
+                                    }
                                     if (isMobile) {
                                         setMobileMenuOpen(false)
                                         setMobilePreviewMode(false)
@@ -1469,13 +1488,17 @@ export default function EditorPage() {
                                     : 'text-slate-500 hover:bg-white/5 hover:text-slate-300 border border-transparent'
                                     } ${draggedTabId === tab.id ? 'opacity-50' : ''}`}
                             >
-                                <div className="absolute left-1 md:left-2 opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing text-slate-600 transition-opacity">
+                                <div 
+                                    className="absolute left-1 md:left-2 opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing text-slate-600 transition-opacity"
+                                    onMouseEnter={() => setDraggableTab(tab.id)}
+                                    onMouseLeave={() => setDraggableTab(null)}
+                                >
                                     <GripVertical className="w-3 h-3" />
                                 </div>
                                 <div className={`${activeTab === tab.id ? 'text-cyan-400 scale-110' : 'text-slate-500 group-hover:scale-110'} transition-transform ml-2 md:ml-4`}>
                                     {tab.icon}
                                 </div>
-                                <span className={`text-sm font-bold tracking-tight whitespace-nowrap ${isMobile ? 'opacity-100' : (sidebarCollapsed ? 'opacity-0 lg:hidden' : 'opacity-100')}`}>
+                                <span className={`text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 overflow-hidden ${sidebarCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100 block'}`}>
                                     {tab.label}
                                 </span>
                                 {activeTab === tab.id && (

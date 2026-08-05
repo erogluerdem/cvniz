@@ -38,15 +38,15 @@ export default function AuthRequiredModal({ isOpen, onClose, featureName = 'Bu Ã
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
             {/* Backdrop */}
             <div
-                className={`absolute inset-0 backdrop-blur-md animate-in fade-in duration-300 ${isDayMode ? 'bg-slate-900/50' : 'bg-[#0f1115]/80'
+                className={`absolute inset-0 backdrop-blur-md animate-in fade-in duration-300 ${isDayMode ? 'bg-slate-900/50' : 'bg-black/60'
                     }`}
                 onClick={onClose}
             />
 
             {/* Modal */}
-            <div className={`relative w-full max-w-xl rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 ${isDayMode
-                    ? 'bg-white border border-slate-200'
-                    : 'bg-[#161920] border border-white/5'
+            <div className={`relative w-full max-w-xl rounded-[40px] shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden animate-in zoom-in-95 duration-300 ${isDayMode
+                    ? 'bg-white/95 backdrop-blur-3xl border border-slate-200 ring-1 ring-black/5'
+                    : 'bg-slate-950/95 backdrop-blur-3xl border border-white/10 ring-1 ring-white/5'
                 }`}>
                 {/* Decorative background */}
                 <div className={`absolute top-0 right-0 w-64 h-64 blur-[100px] -mr-32 -mt-32 rounded-full ${isDayMode ? 'bg-sky-200/50' : 'bg-cyan-500/10'

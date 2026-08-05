@@ -87,6 +87,46 @@
   }
 }
 
+@layer base {
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: var(--gradient-premium);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-aurora {
+    background: var(--gradient-aurora);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
 @layer components {
 
   /* ========================================
@@ -1222,12 +1262,12 @@
   }
 }
 
-/* Hero Title - Massive Gradient with Glow */
+/* Hero Title - Refined Gradient with Soft Glow */
 .hero-title-v2 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .hero-title-gradient-v2 {
@@ -1236,7 +1276,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: hero-title-gradient-flow 8s ease infinite;
+  animation: hero-title-gradient-flow 12s ease infinite;
   position: relative;
   display: inline-block;
 }
@@ -1251,9 +1291,9 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: hero-title-gradient-flow 8s ease infinite;
-  filter: blur(40px);
-  opacity: 0.5;
+  animation: hero-title-gradient-flow 12s ease infinite;
+  filter: blur(20px);
+  opacity: 0.2;
   z-index: -1;
 }
 

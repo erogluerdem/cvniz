@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
     MessageCircle, Plus, Clock, CheckCircle, AlertCircle, Send,
     ArrowLeft, ChevronRight, HelpCircle, CreditCard, User, Palette,
-    Mail, X, Sparkles, Search, Filter, Hash, ExternalLink, Calendar
+    Mail, X, Sparkles, Search, Filter, Hash, ExternalLink, Calendar,
+    Paperclip, Bot
 } from 'lucide-react'
 
 const categories = [
@@ -61,9 +62,12 @@ export default function SupportPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [newMessage, setNewMessage] = useState('')
     const messageEndRef = useRef(null)
+    const fileInputRef = useRef(null)
     const [theme, setTheme] = useState('day')
     const isDayMode = theme === 'day'
     const selectionColor = isDayMode ? 'selection:bg-sky-200/70' : 'selection:bg-cyan-500/30'
+    const [filterTab, setFilterTab] = useState('all')
+    const [attachment, setAttachment] = useState(null)
 
     // New ticket form state
     const [formData, setFormData] = useState({
@@ -75,6 +79,13 @@ export default function SupportPage() {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const selectedTicket = tickets?.find(t => (t._id || t.id) === selectedTicketId)
+
+    const filteredTickets = tickets?.filter(t => {
+        if (filterTab === 'all') return true
+        if (filterTab === 'open') return t.status !== 'resolved' && t.status !== 'closed'
+        if (filterTab === 'resolved') return t.status === 'resolved' || t.status === 'closed'
+        return true
+    }) || []
 
     const themedStatus = (statusKey) => {
         const status = statusLabels[statusKey] || statusLabels.open
@@ -221,6 +232,12 @@ export default function SupportPage() {
                                 }`}
                         />
                     </div>
+
+                    <div className="flex gap-2 pt-2 pb-1 border-b border-transparent">
+                        <button onClick={() => setFilterTab('all')} className={`pb-2 text-xs font-bold border-b-2 transition-all px-1 ${filterTab === 'all' ? (isDayMode ? 'border-sky-500 text-sky-600' : 'border-cyan-400 text-cyan-400') : (isDayMode ? 'border-transparent text-slate-400 hover:text-slate-600' : 'border-transparent text-slate-500 hover:text-slate-300')}`}>Tümü</button>
+                        <button onClick={() => setFilterTab('open')} className={`pb-2 text-xs font-bold border-b-2 transition-all px-1 ${filterTab === 'open' ? (isDayMode ? 'border-sky-500 text-sky-600' : 'border-cyan-400 text-cyan-400') : (isDayMode ? 'border-transparent text-slate-400 hover:text-slate-600' : 'border-transparent text-slate-500 hover:text-slate-300')}`}>Açık</button>
+                        <button onClick={() => setFilterTab('resolved')} className={`pb-2 text-xs font-bold border-b-2 transition-all px-1 ${filterTab === 'resolved' ? (isDayMode ? 'border-sky-500 text-sky-600' : 'border-cyan-400 text-cyan-400') : (isDayMode ? 'border-transparent text-slate-400 hover:text-slate-600' : 'border-transparent text-slate-500 hover:text-slate-300')}`}>Çözüldü</button>
+                    </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar px-3 space-y-2 pb-6">
@@ -228,13 +245,13 @@ export default function SupportPage() {
                         Array(4).fill(0).map((_, i) => (
                             <div key={i} className={`h-24 rounded-2xl animate-pulse mx-3 ${isDayMode ? 'bg-slate-100' : 'bg-white/5'}`} />
                         ))
-                    ) : tickets.length === 0 ? (
+                    ) : filteredTickets.length === 0 ? (
                         <div className="px-6 py-20 text-center opacity-70">
                             <MessageCircle className={`w-12 h-12 mx-auto mb-4 ${isDayMode ? 'text-slate-300' : 'opacity-20'}`} />
-                            <p className={`text-sm font-medium ${isDayMode ? 'text-slate-500' : ''}`}>Henüz bir talebiniz bulunmuyor.</p>
+                            <p className={`text-sm font-medium ${isDayMode ? 'text-slate-500' : ''}`}>Bu filtreye uygun talep bulunamadı.</p>
                         </div>
                     ) : (
-                        tickets.map(ticket => {
+                        filteredTickets.map(ticket => {
                             const status = themedStatus(ticket.status)
                             const isSelected = selectedTicketId === (ticket._id || ticket.id)
                             const category = categories.find(c => c.id === ticket.category)
@@ -367,6 +384,28 @@ export default function SupportPage() {
                                             </motion.div>
                                         )
                                     })}
+                                    
+                                    {selectedTicket.status === 'in_progress' && (
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            className="flex justify-start"
+                                        >
+                                            <div className="max-w-[85%] group">
+                                                <div className="flex items-center gap-2 mb-2 flex-row">
+                                                    <span className="text-[10px] font-black uppercase tracking-tighter text-amber-400">
+                                                        DESTEK EKİBİ İNCELİYOR
+                                                    </span>
+                                                </div>
+                                                <div className={`p-4 rounded-3xl rounded-tl-none flex items-center gap-1.5 w-fit ${isDayMode ? 'bg-white border border-slate-200 shadow-day' : 'bg-white/5 border border-white/10'}`}>
+                                                    <span className={`w-2 h-2 rounded-full animate-bounce ${isDayMode ? 'bg-slate-400' : 'bg-slate-500'}`} style={{ animationDelay: '0ms' }} />
+                                                    <span className={`w-2 h-2 rounded-full animate-bounce ${isDayMode ? 'bg-slate-400' : 'bg-slate-500'}`} style={{ animationDelay: '150ms' }} />
+                                                    <span className={`w-2 h-2 rounded-full animate-bounce ${isDayMode ? 'bg-slate-400' : 'bg-slate-500'}`} style={{ animationDelay: '300ms' }} />
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+
                                     <div ref={messageEndRef} />
                                 </div>
                             </div>
@@ -374,34 +413,66 @@ export default function SupportPage() {
                             {/* Reply Input */}
                             {(selectedTicket.status !== 'resolved' && selectedTicket.status !== 'closed') && (
                                 <div className={`p-8 border-t ${isDayMode ? 'bg-white/90 border-slate-200/80 shadow-day' : 'bg-slate-900/40 backdrop-blur-3xl border-white/5'}`}>
-                                    <div className="max-w-4xl mx-auto flex gap-4">
-                                        <div className="flex-1 relative">
-                                            <textarea
-                                                value={newMessage}
-                                                onChange={(e) => setNewMessage(e.target.value)}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                                        e.preventDefault()
-                                                        handleSendMessage()
-                                                    }
-                                                }}
-                                                placeholder="Buraya yazın..."
-                                                rows={1}
-                                                className={`w-full rounded-2xl py-4 px-6 pr-14 text-sm outline-none transition-all resize-none max-h-32 min-h-[56px] border ${isDayMode
-                                                    ? 'bg-white text-slate-900 border-slate-200/80 focus:border-sky-400 shadow-sm'
-                                                    : 'bg-white/5 border border-white/10 focus:border-cyan-500/50 focus:bg-white/10'
-                                                    }`}
-                                            />
-                                            <button
-                                                onClick={handleSendMessage}
-                                                disabled={!newMessage.trim()}
-                                                className={`absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-xl disabled:opacity-50 disabled:grayscale transition-all hover:scale-105 active:scale-95 ${isDayMode
-                                                    ? 'bg-slate-900 text-white hover:bg-slate-800'
-                                                    : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
-                                                    }`}
-                                            >
-                                                <Send className="w-5 h-5" />
-                                            </button>
+                                    <div className="max-w-4xl mx-auto flex flex-col gap-3">
+                                        {/* Smart Replies */}
+                                        <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
+                                            {["Teşekkürler, bekliyorum.", "Sorun çözüldü, kapatabilirsiniz.", "Nasıl yapabilirim?"].map((reply, idx) => (
+                                                <button 
+                                                    key={idx} 
+                                                    onClick={() => setNewMessage(reply)} 
+                                                    className={`px-3 py-1.5 text-[11px] font-bold rounded-full whitespace-nowrap transition-all border ${isDayMode ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}`}
+                                                >
+                                                    {reply}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <div className="flex gap-4 relative">
+                                            {attachment && (
+                                                <div className={`absolute -top-10 left-0 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-2 shadow-sm ${isDayMode ? 'bg-white border border-slate-200 text-slate-600' : 'bg-slate-800 border border-white/10 text-slate-300'}`}>
+                                                    <FileText className="w-3 h-3 text-sky-500" />
+                                                    {attachment.name}
+                                                    <button onClick={() => setAttachment(null)} className="ml-2 opacity-50 hover:opacity-100 transition-opacity">
+                                                        <X className="w-3 h-3"/>
+                                                    </button>
+                                                </div>
+                                            )}
+                                            <div className="flex-1 relative">
+                                                <input type="file" hidden ref={fileInputRef} onChange={(e) => setAttachment(e.target.files[0])} />
+                                                <button 
+                                                    onClick={() => fileInputRef.current?.click()}
+                                                    className={`absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all z-10 ${isDayMode ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600' : 'text-slate-500 hover:bg-white/10 hover:text-slate-300'}`}
+                                                    title="Dosya veya ekran görüntüsü ekle"
+                                                >
+                                                    <Paperclip className="w-5 h-5" />
+                                                </button>
+                                                <textarea
+                                                    value={newMessage}
+                                                    onChange={(e) => setNewMessage(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                                            e.preventDefault()
+                                                            handleSendMessage()
+                                                        }
+                                                    }}
+                                                    placeholder="Buraya yazın..."
+                                                    rows={1}
+                                                    className={`w-full rounded-2xl py-4 pl-12 pr-14 text-sm outline-none transition-all resize-none max-h-32 min-h-[56px] border ${isDayMode
+                                                        ? 'bg-white text-slate-900 border-slate-200/80 focus:border-sky-400 shadow-sm'
+                                                        : 'bg-white/5 border border-white/10 focus:border-cyan-500/50 focus:bg-white/10'
+                                                        }`}
+                                                />
+                                                <button
+                                                    onClick={handleSendMessage}
+                                                    disabled={!newMessage.trim() && !attachment}
+                                                    className={`absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-xl disabled:opacity-50 disabled:grayscale transition-all hover:scale-105 active:scale-95 ${isDayMode
+                                                        ? 'bg-slate-900 text-white hover:bg-slate-800'
+                                                        : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
+                                                        }`}
+                                                >
+                                                    <Send className="w-5 h-5" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <p className={`max-w-4xl mx-auto mt-3 text-[10px] font-medium text-center ${isDayMode ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -493,6 +564,29 @@ export default function SupportPage() {
                                             required
                                         />
                                     </div>
+                                    
+                                    <AnimatePresence>
+                                        {formData.subject.length > 5 && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, height: 0, marginTop: 0 }} 
+                                                animate={{ opacity: 1, height: 'auto', marginTop: 12 }} 
+                                                exit={{ opacity: 0, height: 0, marginTop: 0 }} 
+                                                className={`overflow-hidden rounded-2xl border flex items-start gap-3 p-4 ${isDayMode ? 'bg-sky-50/50 border-sky-100' : 'bg-cyan-500/10 border-cyan-500/20'}`}
+                                            >
+                                                <div className={`mt-0.5 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`}>
+                                                    <Bot className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <h4 className={`text-xs font-bold ${isDayMode ? 'text-slate-800' : 'text-slate-200'}`}>Bunu mu arıyorsunuz?</h4>
+                                                    <p className={`text-[11px] mt-1 ${isDayMode ? 'text-slate-600' : 'text-slate-400'}`}>
+                                                        Yazdığınız konuyla ilgili 
+                                                        <Link to="/faq" onClick={() => setIsCreateModalOpen(false)} className={`font-bold ml-1 hover:underline ${isDayMode ? 'text-sky-600' : 'text-cyan-400'}`}>SSS sayfamızda</Link> 
+                                                        hızlı bir çözüm olabilir. Beklemeden çözmek için inceleyebilirsiniz!
+                                                    </p>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
 
                                     <div className="grid grid-cols-2 gap-6">
                                         {/* Category */}

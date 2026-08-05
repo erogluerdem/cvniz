@@ -1,48 +1,144 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, Search, HelpCircle, MessageCircle, User, CreditCard, ShieldCheck, Zap, FileText, ArrowRight, Plus, Minus } from 'lucide-react'
+import { ChevronDown, Search, HelpCircle, MessageCircle, User, CreditCard, ShieldCheck, Zap, FileText, ArrowRight, Plus, Minus, Briefcase, Settings, Star, Palette, Sparkles, LogOut, CheckCircle2 } from 'lucide-react'
 
 const faqs = [
     {
         category: 'Genel',
         icon: <User className="w-5 h-5" />,
         questions: [
-            { q: 'CVniz nedir?', a: 'CVniz, profesyonel CV\'ler oluşturmanızı sağlayan AI destekli bir web uygulamasıdır. 65+ şablon ve gerçek zamanlı önizleme ile dakikalar içinde etkileyici CV\'ler hazırlayabilirsiniz.' },
-            { q: 'CVniz ücretsiz mi?', a: 'Evet! Modern şablonumuzu tamamen ücretsiz kullanabilirsiniz. Premium özellikler ve tüm şablonlar için Pro planımıza geçebilirsiniz.' },
-            { q: 'Hesap oluşturmam gerekiyor mu?', a: 'Hayır, hesap oluşturmadan da CV oluşturabilirsiniz. Ancak CV\'lerinizi bulutta saklamak ve daha sonra herhangi bir cihazdan erişmek için ücretsiz hesap oluşturmanızı öneririz.' }
+            { q: 'CVniz nedir?', a: 'CVniz, profesyonel CV\'ler oluşturmanızı sağlayan AI destekli yeni nesil bir web uygulamasıdır. 65+ modern şablon ve gerçek zamanlı önizleme ile dakikalar içinde işverenlerin dikkatini çeken etkileyici CV\'ler hazırlayabilirsiniz.' },
+            { q: 'Platformu kullanmak ücretsiz mi?', a: 'Evet! Temel CV oluşturucu aracımızı ve başlangıç şablonlarımızı tamamen ücretsiz kullanabilirsiniz. İleri düzey analizler, yapay zeka destekli metin önerileri ve tüm premium şablonlara erişmek isterseniz Pro planımıza geçiş yapabilirsiniz.' },
+            { q: 'Hesap oluşturmam zorunlu mu?', a: 'Sistemi denemek ve anında bir CV oluşturmak için hesap oluşturmanız gerekmez. Ancak, tasarladığınız CV\'leri bulutta saklamak, daha sonra dilediğiniz cihazdan düzenlemek ve çoklu CV yönetimi yapmak için ücretsiz bir hesap oluşturmanızı şiddetle tavsiye ederiz.' },
+            { q: 'Öğrenciler için özel bir indiriminiz var mı?', a: 'Evet, .edu uzantılı e-posta adresinizle kayıt olduğunuzda tüm premium özelliklerimizi %50 öğrenci indirimiyle kullanabilirsiniz. Profil ayarlarınızdan öğrenci belgenizi veya öğrenci e-postanızı doğrulamanız yeterlidir.' },
+            { q: 'Mobil cihazlardan CV hazırlayabilir miyim?', a: 'Kesinlikle! CVniz tamamen responsive (mobil uyumlu) olarak tasarlanmıştır. Akıllı telefonunuzdan veya tabletinizden hiçbir özellik kısıtlaması olmadan kolayca CV hazırlayabilir ve indirebilirsiniz.' },
+            { q: 'Platform hangi dilleri destekliyor?', a: 'Şu anda Türkçe ve İngilizce arayüz dil desteğimiz bulunmaktadır. Ancak CV\'nizi oluştururken içerik alanlarına dünyanın tüm dillerinde (Arapça, Rusça, Çince dahil) veri girebilir ve sorunsuz PDF oluşturabilirsiniz.' }
         ]
     },
     {
         category: 'CV Oluşturma',
         icon: <FileText className="w-5 h-5" />,
         questions: [
-            { q: 'CV\'mi nasıl oluştururum?', a: 'Şablonunuzu seçin, bilgilerinizi adım adım doldurun, AI desteğiyle içeriğinizi güçlendirin ve anında PDF olarak indirin.' },
-            { q: 'CV\'mi daha sonra düzenleyebilir miyim?', a: 'Kesinlikle! Hesabınıza giriş yaptığınız sürece oluşturduğunuz tüm CV\'ler güvenle saklanır ve dilediğiniz zaman güncellenebilir.' },
-            { q: 'ATS uyumlu mu?', a: 'Tüm şablonlarımız dünya standartlarındaki ATS (Aday Takip Sistemleri) sistemleriyle %100 uyumlu olacak şekilde test edilmiştir.' }
+            { q: 'CV\'mi nasıl oluştururum?', a: 'Çok basit! Önce size en uygun şablonu seçin, ardından kişisel bilgilerinizi, deneyimlerinizi ve eğitiminizi adım adım doldurun. Dilerseniz "AI Asistan" butonuna tıklayarak sektörünüze özel profesyonel metin önerileri alabilirsiniz. İşiniz bittiğinde tek tıkla PDF olarak indirebilirsiniz.' },
+            { q: 'Oluşturduğum CV ATS (Aday Takip Sistemi) uyumlu mu?', a: 'Kesinlikle! Tüm premium ve ücretsiz şablonlarımız, dünya çapında İK uzmanları tarafından kullanılan yaygın ATS (Applicant Tracking System) yazılımlarıyla %100 uyumlu okunacak şekilde tasarlanmış ve kodlanmıştır.' },
+            { q: 'CV\'me fotoğraf ekleyebilir miyim?', a: 'Evet, CV\'nize profil fotoğrafı ekleyebilirsiniz. Hatta yerleşik fotoğraf düzenleme aracımızla fotoğrafınızı kırpabilir, arka planını silebilir ve renk ayarlarını yapabilirsiniz.' },
+            { q: 'Farklı iş başvuruları için farklı CV\'ler hazırlayabilir miyim?', a: 'Elbette. CVniz hesabınızda sınırsız sayıda CV varyasyonu oluşturabilir, her başvurduğunuz pozisyon için yeteneklerinizi ve önceliklerinizi farklı vurgulayabilirsiniz.' },
+            { q: 'CV\'mi hangi formatlarda indirebilirim?', a: 'CV\'nizi yüksek çözünürlüklü ve tıklanabilir linklere sahip PDF formatında indirebilirsiniz. Pro kullanıcılarımız aynı zamanda düzenlenebilir Word (.docx) ve TXT formatlarında indirebilirler.' },
+            { q: 'Yarım bıraktığım CV\'me daha sonra devam edebilir miyim?', a: 'Üye girişi yaptığınız takdirde sistem yazdığınız her harfi anında buluta kaydeder (Auto-save). Bilgisayarınız kapansa dahi CV\'niz kaldığı yerden devam etmenizi bekler.' }
+        ]
+    },
+    {
+        category: 'Şablonlar & Tasarım',
+        icon: <Palette className="w-5 h-5" />,
+        questions: [
+            { q: 'Kendi özel renklerimi seçebilir miyim?', a: 'Evet, Editör içerisindeki Tema sekmesinden şablonunuzun ana renklerini, vurgu renklerini ve metin renklerini HEX kodu girerek veya renk paletinden seçerek dilediğiniz gibi özelleştirebilirsiniz.' },
+            { q: 'Yazı tiplerini (Font) değiştirebilir miyim?', a: 'Pro plan kullanıcıları Google Fonts kütüphanesindeki 50\'den fazla seçkin ve profesyonel yazı tipini CV\'sine uygulayabilir. Font büyüklüklerini (10pt, 11pt, 12pt) de serbestçe ayarlayabilirsiniz.' },
+            { q: 'Bölümlerin yerlerini değiştirebilir miyim?', a: 'Kesinlikle. Sürükle-bırak (Drag & Drop) özelliği sayesinde örneğin "Eğitim" bölümünü "İş Deneyimi" bölümünün üstüne veya "Yetenekler" kısmını en alt satıra kolayca taşıyabilirsiniz.' },
+            { q: 'Hazırladığım içerik başka şablona geçersem silinir mi?', a: 'Hayır, verileriniz şablonlardan tamamen bağımsızdır. İçeriğinizi bir kere girdikten sonra 65+ farklı şablon arasında tek tıkla geçiş yapabilir, bilgileriniz kaybolmadan anında yeni tasarımlar deneyebilirsiniz.' }
+        ]
+    },
+    {
+        category: 'Yapay Zeka (AI) Özellikleri',
+        icon: <Sparkles className="w-5 h-5" />,
+        questions: [
+            { q: 'AI Asistan nasıl çalışıyor?', a: 'Bölüm başlığınıza ve pozisyonunuza göre (örneğin: "Satış Müdürü"), sistem size en profesyonel, sektöre uygun ve anahtar kelime zengini madde işaretleri (bullet points) üretir. Beğendiğiniz cümleyi tek tıkla CV\'nize ekleyebilirsiniz.' },
+            { q: 'AI Ön Yazı (Cover Letter) oluşturucu var mı?', a: 'Evet! Sadece başvurduğunuz şirketin adını ve pozisyonu girmeniz yeterli. AI asistanımız CV\'nizdeki yetenekleri analiz ederek bu spesifik iş ilanına özel etkileyici bir ön yazı taslağı oluşturur.' },
+            { q: 'Yapay zeka dil bilgisi ve yazım hatalarını düzeltiyor mu?', a: 'Evet, yazdığınız metinleri seçip "Gözden Geçir (Proofread)" butonuna tıkladığınızda AI, imla hatalarını düzeltir ve cümle yapısını çok daha profesyonel ve resmi bir dile çevirir.' }
+        ]
+    },
+    {
+        category: 'Kariyer İpuçları',
+        icon: <Briefcase className="w-5 h-5" />,
+        questions: [
+            { q: 'Deneyimim yoksa CV\'me ne yazmalıyım?', a: 'Yeni mezun veya öğrenciyseniz, okul projelerinizi, gönüllü çalışmalarınızı, stajlarınızı, katıldığınız kulüpleri ve kişisel yeteneklerinizi ön plana çıkarabilirsiniz. Şablonlarımız, giriş seviyesi adaylar için özel "Eğitim Odaklı" düzenler sunar.' },
+            { q: 'CV\'m kaç sayfa olmalı?', a: 'Genel kural olarak, 5 yıldan az deneyimi olan profesyoneller için 1 sayfa idealdir. Daha deneyimli yöneticiler veya akademik geçmişi olanlar için 2 sayfa uygundur. İK uzmanları genellikle kısa ve öz CV\'leri tercih eder.' },
+            { q: 'Hobilerimi CV\'me eklemeli miyim?', a: 'Başvurduğunuz pozisyonla ilgiliyse veya kişiliğiniz, liderlik yetenekleriniz hakkında pozitif bir izlenim bırakacaksa (örneğin: Satranç turnuvası birinciliği, takım kaptanlığı) ekleyebilirsiniz. Aksi takdirde (müzik dinlemek, kitap okumak vb.) yer kaplamaması adına çıkarabilirsiniz.' },
+            { q: 'Referanslarımı CV\'de belirtmeli miyim?', a: 'Modern CV standartlarında referansları doğrudan yazmak yerine "Talep edildiğinde referans verilecektir" ibaresi kullanmak veya bu bölümü tamamen çıkarmak daha yaygındır. Şirketler genellikle mülakat aşamasından sonra referans talep eder.' }
+        ]
+    },
+    {
+        category: 'Hesap Yönetimi',
+        icon: <LogOut className="w-5 h-5" />,
+        questions: [
+            { q: 'Şifremi unuttum, nasıl sıfırlayabilirim?', a: 'Giriş sayfasındaki "Şifremi Unuttum" bağlantısına tıklayarak e-posta adresinizi girebilir ve şifre sıfırlama linki talep edebilirsiniz. Link 24 saat boyunca geçerlidir.' },
+            { q: 'E-posta adresimi değiştirebilir miyim?', a: 'Evet, Dashboard üzerinden Ayarlar sekmesine giderek hesap e-postanızı güncelleyebilirsiniz. Yeni e-postanıza gelecek doğrulama linkine tıklamanız gerekecektir.' },
+            { q: 'Hesabımı sildiğimde CV\'lerim ne olur?', a: 'Hesabınızı sildiğiniz an itibariyle oluşturduğunuz tüm CV\'ler, fotoğraflarınız, kişisel verileriniz ve geçmiş abonelik faturalarınız sistemden geri döndürülemez şekilde ve kalıcı olarak silinir.' }
         ]
     },
     {
         category: 'Ödeme & Planlar',
         icon: <CreditCard className="w-5 h-5" />,
         questions: [
-            { q: 'Hangi ödeme yöntemlerini kabul ediyorsunuz?', a: 'Tüm yerli ve yabancı kredi kartları, banka kartları ve iyzico güvencesiyle güvenli ödeme yapabilirsiniz.' },
-            { q: 'İade politikanız nedir?', a: '7 gün içinde memnun kalmazsanız, hiçbir gerekçe göstermeden paranızı iade ediyoruz.' },
-            { q: 'Yıllık planda ne kadar tasarruf ederim?', a: 'Yıllık planı tercih ederek aylık ödemeye göre %40 oranında daha az ödersiniz.' }
+            { q: 'Hangi ödeme yöntemlerini kabul ediyorsunuz?', a: 'Tüm yerli ve yabancı kredi kartları (Visa, MasterCard, Amex), banka (debit) kartları ve iyzico/Stripe altyapısıyla 3D Secure güvencesinde ödeme yapabilirsiniz.' },
+            { q: 'Aboneliğimi istediğim zaman iptal edebilir miyim?', a: 'Evet, aboneliğinizi hiçbir ekstra ücret ödemeden ve taahhüt vermeden "Hesap Ayarları" sayfasından tek tıkla iptal edebilirsiniz. İptal durumunda mevcut ay sonuna kadar özelliklerinizi kullanmaya devam edersiniz.' },
+            { q: 'İade politikanız nedir?', a: 'Koşulsuz müşteri memnuniyetine inanıyoruz. Satın alma işleminden sonraki 7 gün içinde memnun kalmazsanız, destek ekibimize ulaşarak hiçbir gerekçe göstermeden %100 ücret iadesi talep edebilirsiniz.' },
+            { q: 'Yıllık planda ne kadar tasarruf ederim?', a: 'Yıllık Pro veya Kurumsal planı tercih ederek aylık ödemelere kıyasla tam %40 oranında daha az ödersiniz (12 ay kullanım, 7 ay ödeme).' },
+            { q: 'Kurumsal toplu alım indiriminiz var mı?', a: 'Şirketler, üniversiteler ve dernekler için 10+ kullanıcıdan başlayan takım paketlerimizde %60\'a varan özel indirimler sunuyoruz. Fiyatlandırma sayfasından "Satış Ekibiyle İletişime Geçin" butonunu kullanabilirsiniz.' }
         ]
     },
     {
-        category: 'Güvenlik',
+        category: 'Güvenlik & Gizlilik',
         icon: <ShieldCheck className="w-5 h-5" />,
         questions: [
-            { q: 'Verilerim nerede saklanıyor?', a: 'Verileriniz yüksek güvenlikli bulut sunucularımızda şifrelenmiş olarak saklanır. İzinsiz erişimlere karşı sürekli izlenmektedir.' },
-            { q: 'Verilerimi silebilir miyim?', a: 'Evet, kullanıcı panelinden tüm verilerinizi ve hesabınızı kalıcı olarak silme hakkına her zaman sahipsiniz.' }
+            { q: 'Verilerim nerede saklanıyor?', a: 'Kişisel verileriniz ve CV içerikleriniz, AWS ve Google Cloud destekli yüksek güvenlikli Avrupa (Frankfurt) sunucularımızda 256-bit AES şifreleme ile KVKK ve GDPR uyumlu olarak saklanmaktadır.' },
+            { q: 'Kredi kartı bilgilerimi saklıyor musunuz?', a: 'Hayır, ödeme altyapımız tamamen lisanslı ödeme kuruluşları (iyzico vb.) tarafından PCI-DSS standartlarında yönetilir. Kredi kartı verileriniz bizim sunucularımızdan geçmez ve sistemlerimizde asla saklanmaz.' },
+            { q: 'İşverenler CV\'mi sisteminizden arayıp bulabilir mi?', a: 'CVniz bir iş bulma portalı veya kariyer havuzu değildir. Verileriniz tamamen gizli kalır ve sadece siz linki kopyalayıp paylaşırsanız başkaları tarafından görülebilir. Özgeçmişlerinizi arama motorlarına bilerek indeksletmiyoruz.' }
+        ]
+    },
+    {
+        category: 'Teknik Destek',
+        icon: <Settings className="w-5 h-5" />,
+        questions: [
+            { q: 'PDF indirirken hata alıyorum, ne yapmalıyım?', a: 'Eğer PDF indirirken hata yaşıyorsanız, lütfen tarayıcınızın çerezlerini temizleyin veya gizli (incognito) sekmeden tekrar deneyin. Sorun devam ederse sağ alt köşedeki canlı destekten ekibimize ulaşabilirsiniz.' },
+            { q: 'Yapay zeka metin oluşturucu düzgün çalışmıyor?', a: 'Zaman zaman OpenAI API yoğunluğundan dolayı yapay zeka yanıtlarında gecikme yaşanabilir. 1-2 dakika bekleyip tekrar denemenizi veya sayfayı yenilemenizi rica ederiz.' },
+            { q: 'Eski bir tarayıcı kullanıyorum, sorun olur mu?', a: 'Modern tasarımımız (Glassmorphism, vb.) ve canlı önizleme özelliğimiz yüksek performans gerektirir. En iyi deneyim için her zaman Google Chrome, Safari veya Firefox\'un en güncel versiyonlarını kullanmanızı tavsiye ediyoruz.' }
         ]
     }
 ]
 
-function FAQItem({ question, answer, isOpen, onToggle, isDayMode, mutedText }) {
+// Scroll Animation Hook
+function useScrollAnimation() {
+    const ref = useRef(null)
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true)
+                }
+            },
+            { threshold: 0.1, rootMargin: '50px' }
+        )
+        if (ref.current) observer.observe(ref.current)
+        return () => observer.disconnect()
+    }, [])
+
+    return [ref, isVisible]
+}
+
+// Animated Section Wrapper
+function AnimatedSection({ children, className = '', delay = 0 }) {
+    const [ref, isVisible] = useScrollAnimation()
+
     return (
-        <div className={`group transition-all duration-500 ${isOpen ? 'mb-6' : 'mb-3'}`}>
+        <div
+            ref={ref}
+            className={`transition-all duration-700 ${className}`}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                transitionDelay: `${delay}ms`
+            }}
+        >
+            {children}
+        </div>
+    )
+}
+
+function FAQItem({ question, answer, isOpen, onToggle, isDayMode, mutedText, delay = 0 }) {
+    return (
+        <AnimatedSection delay={delay} className={`group transition-all duration-500 ${isOpen ? 'mb-6' : 'mb-3'}`}>
             <div
                 className={`rounded-[24px] overflow-hidden transition-all duration-500 border ${isDayMode
                     ? `${isOpen ? 'border-sky-300 shadow-day bg-white' : 'border-slate-200/70 bg-white hover:border-slate-300'}`
@@ -74,7 +170,7 @@ function FAQItem({ question, answer, isOpen, onToggle, isDayMode, mutedText }) {
                     </p>
                 </div>
             </div>
-        </div>
+        </AnimatedSection>
     )
 }
 
@@ -135,7 +231,7 @@ export default function FAQPage() {
             </div>
 
             {/* Hero Section */}
-            <section className={`relative pt-32 pb-20 px-6 lg:px-12 text-center ${isDayMode ? 'bg-gradient-to-b from-white via-slate-50 to-white' : ''}`}>
+            <AnimatedSection className={`relative pt-32 pb-20 px-6 lg:px-12 text-center ${isDayMode ? 'bg-gradient-to-b from-white via-slate-50 to-white' : ''}`}>
                 <div className="max-w-4xl mx-auto relative z-10">
                     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-xs font-black uppercase tracking-widest ${isDayMode ? 'bg-white/90 border border-slate-200/70 text-sky-600 shadow-day' : 'glass border-cyan-500/20 text-cyan-200'}`}>
                         <HelpCircle className={`w-4 h-4 ${isDayMode ? 'text-sky-500' : 'text-cyan-400'}`} />
@@ -160,11 +256,11 @@ export default function FAQPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             <div className="max-w-5xl mx-auto px-6 pb-32 relative z-10">
                 {!searchQuery && (
-                    <div className="flex flex-wrap justify-center gap-3 mb-16 no-scrollbar overflow-x-auto pb-4">
+                    <AnimatedSection className="flex flex-wrap justify-center gap-3 mb-16 no-scrollbar overflow-x-auto pb-4">
                         {faqs.map(cat => (
                             <button
                                 key={cat.category}
@@ -178,7 +274,7 @@ export default function FAQPage() {
                                 {cat.category}
                             </button>
                         ))}
-                    </div>
+                    </AnimatedSection>
                 )}
 
                 <div className="space-y-4">
@@ -192,6 +288,7 @@ export default function FAQPage() {
                                 onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
                                 isDayMode={isDayMode}
                                 mutedText={mutedText}
+                                delay={i * 100}
                             />
                         ))
                     ) : (
@@ -210,7 +307,7 @@ export default function FAQPage() {
                 </div>
 
                 {/* Bottom Support Section */}
-                <div className="mt-24 relative">
+                <AnimatedSection className="mt-24 relative">
                     <div className={`absolute -inset-1 rounded-[48px] blur-xl ${isDayMode ? 'bg-gradient-to-r from-sky-200/40 to-blue-100/40' : 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20'}`}></div>
                     <div className={`rounded-[40px] p-12 md:p-16 text-center relative overflow-hidden group ${isDayMode ? 'bg-white border border-slate-200/80 shadow-day' : 'glass-card border-white/10'}`}>
                         <div className={`absolute top-0 right-0 p-8 transition-opacity ${isDayMode ? 'opacity-20 group-hover:opacity-40' : 'opacity-10 group-hover:opacity-20'}`}>
@@ -238,7 +335,7 @@ export default function FAQPage() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </AnimatedSection>
             </div>
         </div>
     )

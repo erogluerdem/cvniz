@@ -78,7 +78,7 @@ export function ExitIntentPopup() {
     return (
         <AnimatePresence>
             {isVisible && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="fixed bottom-4 right-4 z-[100] p-4 flex items-end justify-end pointer-events-none">
                     {showConfetti && (
                         <Confetti
                             width={window.innerWidth}
@@ -90,95 +90,59 @@ export function ExitIntentPopup() {
                     )}
 
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-md"
-                        onClick={() => setIsVisible(false)}
-                    />
-
-                    <motion.div
-                        initial={{ scale: 0.9, y: 20, opacity: 0, rotateX: 15 }}
-                        animate={{ scale: 1, y: 0, opacity: 1, rotateX: 0 }}
-                        exit={{ scale: 0.9, opacity: 0 }}
+                        initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                        animate={{ scale: 1, y: 0, opacity: 1 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
                         transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                        className="relative z-10 max-w-md w-full"
+                        className="relative z-10 max-w-sm w-full pointer-events-auto"
                     >
                         <div className="relative group">
-                            {/* Animated Outer Glow */}
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-[2.5rem] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-
-                            <div className="relative glass-card rounded-[2.5rem] p-8 md:p-10 border border-white/10 overflow-hidden bg-slate-900/40 backdrop-blur-2xl">
-                                {/* Decorative Background Elements */}
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-                                <div className="absolute -top-32 -right-32 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px]" />
-                                <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px]" />
-
+                            <div className="relative glass-card rounded-2xl p-6 border border-white/10 overflow-hidden bg-slate-900/90 backdrop-blur-xl shadow-2xl">
                                 <button
                                     onClick={() => setIsVisible(false)}
-                                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 text-gray-400 hover:text-white transition-all transform hover:rotate-90"
+                                    className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-all"
                                 >
-                                    <X className="w-5 h-5" />
+                                    <X className="w-4 h-4" />
                                 </button>
 
-                                <div className="relative z-10 text-center">
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ delay: 0.2, type: "spring" }}
-                                        className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mx-auto mb-8 shadow-[0_10px_40px_rgba(0,242,255,0.3)] relative"
-                                    >
-                                        <div className="absolute inset-0 rounded-3xl animate-ping bg-cyan-400/20" />
-                                        <Gift className="w-10 h-10 text-white relative z-10" />
-                                    </motion.div>
-
-                                    <h2 className="text-3xl font-black mb-3 tracking-tight">
-                                        Dur! Kaçırma 🚀
-                                    </h2>
-                                    <p className="text-gray-300 mb-8 leading-relaxed">
-                                        Yolculuğun burada bitmesin! Sana özel <span className="text-cyan-400 font-bold px-1.5 py-0.5 bg-cyan-400/10 rounded-md">%20 İNDİRİM</span> tanımladık.
-                                    </p>
-
-                                    <motion.div
-                                        whileHover={{ scale: 1.02 }}
-                                        className="bg-white/5 rounded-2xl p-6 mb-8 border border-white/5 relative group/coupon overflow-hidden"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-600/5 opacity-0 group-hover/coupon:opacity-100 transition-opacity" />
-                                        <div className="text-[10px] font-black tracking-[0.2em] text-cyan-500/60 mb-2 uppercase">KUPONUNUZ HAZIR</div>
-                                        <div className="flex items-center justify-center gap-4">
-                                            <span className="text-3xl font-mono font-black text-white tracking-widest leading-none">
-                                                {couponCode}
-                                            </span>
-                                            <button
-                                                onClick={handleCopy}
-                                                className={`px-4 py-2 rounded-xl transition-all font-bold text-xs flex items-center gap-2 ${showConfetti
-                                                    ? 'bg-green-500 text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]'
-                                                    : 'bg-white/10 text-cyan-400 hover:bg-white/20'
-                                                    }`}
-                                            >
-                                                {showConfetti ? 'Kopyalandı!' : 'Kopyala'}
-                                            </button>
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center shrink-0 shadow-[0_5px_15px_rgba(0,242,255,0.3)]">
+                                            <Gift className="w-6 h-6 text-white" />
                                         </div>
-                                    </motion.div>
+                                        <div>
+                                            <h2 className="text-lg font-black text-white">
+                                                Dur! Kaçırma 🚀
+                                            </h2>
+                                            <p className="text-xs text-gray-300">
+                                                Sana özel <span className="text-cyan-400 font-bold">%20 İNDİRİM</span>
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                    <div className="space-y-4">
-                                        <Link
-                                            to="/checkout?plan=pro&cycle=yearly"
-                                            onClick={() => setIsVisible(false)}
-                                            className="group/btn relative w-full inline-flex items-center justify-center gap-3 py-4 px-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-lg transition-all hover:scale-[1.02] active:scale-95 shadow-[0_10px_30px_rgba(0,242,255,0.2)]"
-                                        >
-                                            <Crown className="w-6 h-6 animate-bounce" />
-                                            İndirimli Pro'ya Geç
-                                            <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                                        </Link>
-
+                                    <div className="bg-white/5 rounded-xl p-3 mb-4 border border-white/5 flex items-center justify-between">
+                                        <span className="text-xl font-mono font-black text-white tracking-widest">
+                                            {couponCode}
+                                        </span>
                                         <button
-                                            onClick={() => setIsVisible(false)}
-                                            className="text-xs font-bold text-gray-500 hover:text-white transition-colors uppercase tracking-widest"
+                                            onClick={handleCopy}
+                                            className={`px-3 py-1.5 rounded-lg transition-all font-bold text-xs ${showConfetti
+                                                ? 'bg-green-500 text-white'
+                                                : 'bg-white/10 text-cyan-400 hover:bg-white/20'
+                                                }`}
                                         >
-                                            Hayır, tam fiyat öderim
+                                            {showConfetti ? 'Alındı' : 'Kopyala'}
                                         </button>
                                     </div>
+
+                                    <Link
+                                        to="/checkout?plan=pro&cycle=yearly"
+                                        onClick={() => setIsVisible(false)}
+                                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-sm transition-all hover:opacity-90 shadow-lg shadow-cyan-500/20 active:scale-95"
+                                    >
+                                        <Crown className="w-4 h-4" />
+                                        İndirimli Pro'ya Geç
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -271,7 +235,7 @@ export function ProUpsellPopup({ isOpen, onClose, cvName }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                    className="absolute inset-0 bg-black/60 backdrop-blur-md"
                     onClick={onClose}
                 />
 
@@ -281,7 +245,7 @@ export function ProUpsellPopup({ isOpen, onClose, cvName }) {
                     exit={{ scale: 0.9, opacity: 0 }}
                     className="relative z-10 max-w-lg w-full"
                 >
-                    <div className="glass-card rounded-[2.5rem] p-8 md:p-10 border border-white/10 relative overflow-hidden bg-slate-900/40 backdrop-blur-2xl shadow-2xl">
+                    <div className="bg-slate-950/95 backdrop-blur-3xl rounded-[2.5rem] p-8 md:p-10 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden">
                         <div className="absolute -top-32 -left-32 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px]" />
                         <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-cyan-500/10 rounded-full blur-[100px]" />
 

@@ -173,6 +173,12 @@ export const userAPI = {
     updateSettings: (settings) =>
         api.put('/users/settings', { settings }),
 
+    getNotifications: () => api.get('/users/notifications'),
+    markNotificationRead: (id) => api.patch(`/users/notifications/${id}/read`),
+    getActivities: () => api.get('/users/activities'),
+    getDownloadHistory: () => api.get('/users/download-history'),
+    getAchievements: () => api.get('/users/achievements'),
+
     deleteAccount: () =>
         api.delete('/users/account'),
     // Admin: Get all users with search
@@ -454,6 +460,23 @@ export const aiAPI = {
 
     generateExperience: (jobTitle, lang = 'tr') =>
         api.post('/ai/generate-experience', { jobTitle, lang }),
+
+    // Premium AI Features
+    optimizeLinkedIn: (data) => api.post('/ai/optimize-linkedin', data),
+    generateEmail: (data) => api.post('/ai/generate-email', data),
+    generateHeadshot: (data) => api.post('/ai/generate-headshot', data),
+    writeProject: (data) => api.post('/ai/write-project', data),
+    writeReferenceLetter: (data) => api.post('/ai/write-reference', data),
+    simulateInterview: (data) => api.post('/ai/simulate-interview', data),
+    analyzeATS: (data) => api.post('/ai/analyze-ats', data),
+    generateCoverLetter: (data) => api.post('/ai/generate-cover-letter', data),
+    analyzeSalary: (data) => api.post('/ai/analyze-salary', data),
+    targetFitAnalysis: (data) => api.post('/ai/target-fit', data),
+    assistantChat: async (data) => {
+        return handleMockResponse({
+            content: "Bu bölümü şu şekilde güçlendirebilirsiniz: 'Proaktif olarak müşteri memnuniyetini %25 artıran çözümler geliştirdim.'"
+        }, 1500)
+    },
 };
 
 // ============ ANALYTICS API ============

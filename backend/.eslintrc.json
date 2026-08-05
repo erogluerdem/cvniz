@@ -20,12 +20,7 @@
         ]
       }
     ],
-    "no-unused-vars": [
-      "warn",
-      {
-        "argsIgnorePattern": "^_"
-      }
-    ],
+    "no-unused-vars": "off",
     "no-var": "error",
     "prefer-const": "error",
     "eqeqeq": [

@@ -90,8 +90,8 @@ export default function CareerTestModal({ isOpen, onClose }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="glass-card max-w-lg w-full rounded-[2rem] p-8 relative overflow-hidden animate-scale-in">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+            <div className="bg-slate-950/95 backdrop-blur-3xl max-w-lg w-full rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 p-8 relative overflow-hidden animate-scale-in">
                 {/* Close */}
                 <button onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors">
                     <X className="w-6 h-6" />

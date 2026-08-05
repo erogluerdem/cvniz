@@ -346,8 +346,8 @@ export default function ApplicationCRM({ isOpen, onClose }) {
 
             {/* Add Application Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-                    <div className="w-full max-w-md glass-card rounded-2xl p-6">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div className="w-full max-w-md bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] p-6">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <Plus className="w-5 h-5 text-cyan-400" />
                             Yeni Başvuru
@@ -427,8 +427,8 @@ export default function ApplicationCRM({ isOpen, onClose }) {
 
             {/* Add Interview Modal */}
             {showInterviewModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-                    <div className="w-full max-w-md glass-card rounded-2xl p-6">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div className="w-full max-w-md bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] p-6">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                             <Calendar className="w-5 h-5 text-purple-400" />
                             Mülakat Ekle

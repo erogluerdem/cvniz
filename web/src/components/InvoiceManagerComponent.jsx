@@ -232,9 +232,9 @@ export default function InvoiceManagerComponent() {
 
       {/* Invoice Details Modal */}
       {selectedInvoice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 flex justify-between items-center p-6 border-b border-gray-200 bg-white">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-slate-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 flex justify-between items-center p-6 border-b border-gray-200 bg-white/95 backdrop-blur-sm z-10">
               <h3 className="text-xl font-bold text-gray-800">{selectedInvoice.invoiceNumber}</h3>
               <button
                 onClick={() => setSelectedInvoice(null)}

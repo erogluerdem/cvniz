@@ -66,11 +66,13 @@ import AIReferenceLetter from '../components/AIReferenceLetter'
 // Import Feature
 import CVImporter from '../components/CVImporter'
 
+import { userAPI } from '../services/api'
+
 import {
     FileText, Plus, Edit, Trash2, Copy, Download, LogOut, User, Crown,
     Clock, Settings, Bell, ChevronRight, Sparkles, TrendingUp,
     Zap, Star, Lightbulb, CheckCircle, LayoutGrid, List, Search,
-    X, Share2, Menu, Link2, Eye, Award, Trophy, Target, Medal, Gift,
+    X, Share2, Link2, Eye, Award, Trophy, Target, Medal, Gift,
     Sun, Moon, HelpCircle, ArrowRight, ExternalLink, Mail, Lock,
     Camera, Check, AlertCircle, History, Columns, Play, PenTool, Globe2, Briefcase,
     DollarSign, BarChart3, Layout, Volume2, Palette, Video, Upload, ChevronDown
@@ -88,8 +90,6 @@ export default function DashboardPage() {
     // States
     const [deleteConfirm, setDeleteConfirm] = useState(null)
     const [viewMode, setViewMode] = useState('grid')
-    const [activeTab, setActiveTab] = useState('cvs')
-    const [sidebarOpen, setSidebarOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [greeting, setGreeting] = useState('Merhaba')
     const [showNotifications, setShowNotifications] = useState(false)
@@ -154,35 +154,45 @@ export default function DashboardPage() {
     const [showAnalyticsModal, setShowAnalyticsModal] = useState(false)
     const [selectedCVForAnalytics, setSelectedCVForAnalytics] = useState(null)
 
-    // Sample notifications
+    // Dynamic Data States
+    const [activities, setActivities] = useState([])
+    const [downloadHistory, setDownloadHistory] = useState([])
+    const [userAchievements, setUserAchievements] = useState([])
+
+    // Sample notifications (can be moved to Context or userAPI)
     const notifications = [
         { message: 'Yeni şablonlar eklendi! 🎉', time: '2 saat önce', type: 'info', icon: <Gift className="w-4 h-4 text-cyan-400" />, read: false },
         { message: 'CV\'niz başarıyla indirildi', time: '1 gün önce', type: 'success', icon: <Download className="w-4 h-4 text-green-400" />, read: true },
         { message: 'Pro üyeliğiniz 7 gün sonra bitiyor', time: '3 gün önce', type: 'warning', icon: <AlertCircle className="w-4 h-4 text-amber-400" />, read: true }
     ]
 
-    // Sample activity
-    const activities = [
-        { action: 'CV düzenledi', cv: 'Modern CV', time: '2 saat önce', icon: <Edit className="w-4 h-4" /> },
-        { action: 'PDF indirdi', cv: 'Kurumsal CV', time: '1 gün önce', icon: <Download className="w-4 h-4" /> },
-        { action: 'Yeni CV oluşturdu', cv: 'Tech CV', time: '3 gün önce', icon: <Plus className="w-4 h-4" /> }
-    ]
-
-    // Sample achievements
+    // Achievements derived from state
     const achievements = [
-        { id: 'first-cv', title: 'İlk CV', icon: <FileText className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: true, color: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
-        { id: 'pro-member', title: 'Pro Üye', icon: <Crown className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: isPremium, color: 'bg-gradient-to-br from-amber-500 to-orange-600' },
-        { id: 'five-cvs', title: '5 CV Master', icon: <Trophy className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: (cvs?.length || 0) >= 5, color: 'bg-gradient-to-br from-purple-500 to-pink-600' },
-        { id: 'downloader', title: 'İndirici', icon: <Download className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: true, color: 'bg-gradient-to-br from-green-500 to-emerald-600' },
-        { id: 'sharer', title: 'Paylaşımcı', icon: <Share2 className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: false, color: 'bg-gradient-to-br from-blue-500 to-indigo-600' }
+        { id: 'first-cv', title: 'İlk CV', icon: <FileText className="w-5 h-5 text-white" />, unlocked: userAchievements.includes('first-cv') || (cvs?.length > 0), color: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
+        { id: 'pro-member', title: 'Pro Üye', icon: <Crown className="w-5 h-5 text-white" />, unlocked: isPremium, color: 'bg-gradient-to-br from-amber-500 to-orange-600' },
+        { id: 'five-cvs', title: '5 CV Master', icon: <Trophy className="w-5 h-5 text-white" />, unlocked: (cvs?.length || 0) >= 5, color: 'bg-gradient-to-br from-purple-500 to-pink-600' },
+        { id: 'downloader', title: 'İndirici', icon: <Download className="w-5 h-5 text-white" />, unlocked: userAchievements.includes('downloader'), color: 'bg-gradient-to-br from-green-500 to-emerald-600' },
+        { id: 'sharer', title: 'Paylaşımcı', icon: <Share2 className="w-5 h-5 text-white" />, unlocked: userAchievements.includes('sharer'), color: 'bg-gradient-to-br from-blue-500 to-indigo-600' }
     ]
 
-    // Download history
-    const downloadHistory = [
-        { name: 'Modern_CV.pdf', date: '25 Ara 2024', size: '245 KB' },
-        { name: 'Kurumsal_CV.pdf', date: '24 Ara 2024', size: '312 KB' },
-        { name: 'Tech_CV.pdf', date: '23 Ara 2024', size: '198 KB' }
-    ]
+    useEffect(() => {
+        // Fetch dynamic user data
+        const loadDashboardData = async () => {
+            try {
+                const [acts, dlHistory, achieves] = await Promise.all([
+                    userAPI.getActivities(),
+                    userAPI.getDownloadHistory(),
+                    userAPI.getAchievements()
+                ]);
+                if (acts.success) setActivities(acts.data || []);
+                if (dlHistory.success) setDownloadHistory(dlHistory.data || []);
+                if (achieves.success) setUserAchievements(achieves.data || []);
+            } catch (error) {
+                console.error("Dashboard data load error", error);
+            }
+        };
+        loadDashboardData();
+    }, []);
 
     useEffect(() => {
         const hour = new Date().getHours()
@@ -208,7 +218,8 @@ export default function DashboardPage() {
     // Theme toggle effect
     useEffect(() => {
         if (typeof document !== 'undefined') {
-            document.documentElement.classList.toggle('dark', darkMode)
+            document.documentElement.classList.toggle('theme-day', !darkMode)
+            document.documentElement.classList.toggle('theme-night', darkMode)
         }
         const nextTheme = darkMode ? 'night' : 'day'
         if (typeof window !== 'undefined') {
@@ -237,6 +248,7 @@ export default function DashboardPage() {
     const handleDelete = (cvId) => {
         deleteCV(cvId)
         setDeleteConfirm(null)
+        addToast('Özgeçmiş başarıyla silindi', 'success')
     }
 
     const handleShare = (cv) => {
@@ -283,106 +295,8 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex transition-colors duration-300">
-            {/* Mobile Sidebar Overlay */}
-            <AnimatePresence>
-                {sidebarOpen && (
-                    <motion.div 
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 lg:hidden"
-                    >
-                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-                        <motion.aside 
-                            initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="absolute left-0 top-0 bottom-0 w-64 glass-card border-r border-slate-200 dark:border-white/10 flex flex-col bg-white dark:bg-slate-950 shadow-2xl"
-                        >
-                            <div className="p-4 flex items-center justify-between h-16 border-b border-slate-200 dark:border-white/10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg flex-shrink-0">
-                                        <FileText className="w-5 h-5 text-white" />
-                                    </div>
-                                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600 tracking-tight">CVniz</span>
-                                </div>
-                                <button onClick={() => setSidebarOpen(false)} className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
-                                <button onClick={() => { setActiveTab('cvs'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'cvs' ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
-                                    <LayoutGrid className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm">Panel</span>
-                                </button>
-                                <button onClick={() => { setActiveTab('tools'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'tools' ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
-                                    <Briefcase className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm">Kariyer Araçları</span>
-                                </button>
-                                <button onClick={() => { setActiveTab('ai'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'ai' ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
-                                    <Sparkles className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm">Yapay Zeka</span>
-                                </button>
-                                <div className="my-4 border-t border-slate-200 dark:border-white/10"></div>
-                                <button onClick={() => { setShowJobSearch(true); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 font-medium transition-all">
-                                    <Search className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm">İş İlanları</span>
-                                </button>
-                                <button onClick={() => { setShowCompareModal(true); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 font-medium transition-all">
-                                    <Columns className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm">Karşılaştır</span>
-                                </button>
-                                <button onClick={() => { setOnboardingStep(0); setShowOnboarding(true); setSidebarOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 font-medium transition-all">
-                                    <HelpCircle className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm">Yardım</span>
-                                </button>
-                            </div>
-                        </motion.aside>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Sidebar Desktop */}
-            <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-white/10 hidden lg:flex flex-col flex-shrink-0 z-40 sticky top-0 h-screen shadow-sm">
-                <div className="p-4 flex items-center gap-3 h-16 border-b border-slate-200 dark:border-white/10">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-md flex-shrink-0">
-                        <FileText className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">CVniz</span>
-                </div>
-                <div className="flex-1 py-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
-                    <button onClick={() => setActiveTab('cvs')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'cvs' ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm border border-cyan-100 dark:border-cyan-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
-                        <LayoutGrid className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm">Panel</span>
-                    </button>
-                    <button onClick={() => setActiveTab('tools')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'tools' ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm border border-cyan-100 dark:border-cyan-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
-                        <Briefcase className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm">Kariyer Araçları</span>
-                    </button>
-                    <button onClick={() => setActiveTab('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'ai' ? 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 shadow-sm border border-cyan-100 dark:border-cyan-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
-                        <Sparkles className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm">Yapay Zeka</span>
-                    </button>
-
-                    <div className="my-4 border-t border-slate-200 dark:border-white/10"></div>
-                    
-                    <button onClick={() => setShowJobSearch(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium transition-all">
-                        <Search className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm">İş İlanları</span>
-                    </button>
-                    <button onClick={() => setShowCompareModal(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium transition-all">
-                        <Columns className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm">Karşılaştır</span>
-                    </button>
-                    <button onClick={() => { setOnboardingStep(0); setShowOnboarding(true); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white font-medium transition-all">
-                        <HelpCircle className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm">Yardım</span>
-                    </button>
-                </div>
-            </aside>
-
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
-                
-{/* Modals */}
+        <div className="min-h-screen pb-20 bg-gradient-to-br from-slate-950 via-[#0a0a0f] to-cosmic-900/40 text-slate-100 selection:bg-aurora-500/30 font-sans">
+            {/* Modals */}
             <ProfileModal
                 isOpen={showProfileModal}
                 onClose={() => setShowProfileModal(false)}
@@ -458,330 +372,616 @@ export default function DashboardPage() {
                 cv={selectedCVForAnalytics}
             />
 
-            
-                {/* Header Topbar */}
-                <header className="bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-white/10 h-16 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30 backdrop-blur-xl shadow-sm">
-                    {/* Mobile Logo & Menu Button */}
-                    <div className="flex items-center gap-3 lg:hidden">
-                        <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-white/10">
-                            <Menu className="w-6 h-6" />
+            {/* Header */}
+            <header className="glass border-b border-white/5 sticky top-0 z-40 bg-slate-950/40 backdrop-blur-xl shadow-glow-sm">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <Link to="/" className="flex items-center gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ring-white/10">
+                            <FileText className="w-5 h-5 text-slate-900" />
+                        </div>
+                        <span className="text-xl font-bold gradient-text">CVniz</span>
+                    </Link>
+
+                    <div className="flex items-center gap-4">
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={() => setDarkMode(!darkMode)}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            title={darkMode ? 'Açık Tema' : 'Koyu Tema'}
+                        >
+                            {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-gray-400" />}
                         </button>
-                        <Link to="/" className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
-                                <FileText className="w-4 h-4 text-white" />
-                            </div>
+
+                        {/* Help */}
+                        <button
+                            onClick={() => { setOnboardingStep(0); setShowOnboarding(true); }}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            title="Yardım"
+                        >
+                            <HelpCircle className="w-5 h-5 text-gray-400" />
+                        </button>
+
+                        {/* Notifications - Living CV */}
+                        <NotificationBell />
+
+                        {/* User Menu */}
+                        <div className="relative" ref={userMenuRef}>
+                            <button
+                                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                className="flex items-center gap-3 hover:bg-white/5 rounded-xl p-2 transition-all border border-transparent hover:border-white/10"
+                            >
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center ring-2 ring-white/20 shadow-lg">
+                                    <span className="text-sm font-bold text-white">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
+                                </div>
+                                <div className="hidden sm:block text-left leading-tight">
+                                    <div className="text-sm font-semibold text-white">{user?.name || 'Kullanıcı'}</div>
+                                    <div className="text-[10px] text-gray-400 flex items-center gap-1 font-bold uppercase tracking-widest">
+                                        {isPremium ? (
+                                            <>
+                                                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                                                <span className="text-amber-400">Pro Üye</span>
+                                            </>
+                                        ) : (
+                                            <span>Ücretsiz Plan</span>
+                                        )}
+                                    </div>
+                                </div>
+                                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            <AnimatePresence>
+                                {userMenuOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute right-0 top-full mt-3 w-64 bg-slate-950/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden py-2 z-50 ring-1 ring-white/5"
+                                    >
+                                        <div className="px-4 py-2 border-b border-white/5 mb-2">
+                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Giriş Yapılan Hesap</p>
+                                            <p className="text-sm font-medium text-white truncate">{user?.email}</p>
+                                        </div>
+
+                                        <button
+                                            onClick={() => {
+                                                setUserMenuOpen(false)
+                                                setShowProfileModal(true)
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                        >
+                                            <User className="w-4 h-4 text-purple-400" />
+                                            <span>Profil Ayarları</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                setUserMenuOpen(false)
+                                                setShowSubscriptionManager(true)
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                        >
+                                            <Crown className="w-4 h-4 text-amber-400" />
+                                            <span>Abonelik Yönetimi</span>
+                                        </button>
+
+                                        {user?.role === 'admin' && (
+                                            <Link
+                                                to="/admin"
+                                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                            >
+                                                <Settings className="w-4 h-4 text-cyan-400" />
+                                                <span>Yönetici Paneli</span>
+                                            </Link>
+                                        )}
+
+                                        <div className="my-2 border-t border-white/5"></div>
+
+                                        <button
+                                            onClick={() => {
+                                                setUserMenuOpen(false)
+                                                handleLogout()
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left"
+                                        >
+                                            <LogOut className="w-4 h-4" />
+                                            <span>Güvenli Çıkış</span>
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main className="max-w-7xl mx-auto px-6 py-8">
+                {/* Welcome Section */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 className="text-3xl md:text-4xl font-display font-extrabold tracking-tight drop-shadow-sm mb-2">
+                            {greeting}, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>! 👋
+                        </h1>
+                        <p className="text-gray-400">Kariyer yolculuğunda bugün ne yapmak istersin?</p>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                        <button
+                            onClick={() => setShowJobSearch(true)}
+                            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-500/10 transition-colors flex items-center gap-2 text-blue-300 text-sm font-semibold"
+                        >
+                            <Briefcase className="w-4 h-4" /> İş Bul
+                        </button>
+                        <button
+                            onClick={() => setShowCompareModal(true)}
+                            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-colors flex items-center gap-2 text-slate-300 text-sm font-semibold"
+                        >
+                            <Columns className="w-4 h-4" /> Karşılaştır
+                        </button>
+                        <button
+                            onClick={() => setShowCoverLetterModal(true)}
+                            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-500/30 hover:bg-cyan-500/10 transition-colors flex items-center gap-2 text-cyan-300 text-sm font-semibold"
+                        >
+                            <PenTool className="w-4 h-4" /> Ön Yazı
+                        </button>
+                        <Link to="/editor" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all flex items-center gap-2 text-sm font-semibold">
+                            <Plus className="w-4 h-4" /> Yeni CV
                         </Link>
                     </div>
+                </div>
 
-                    <div className="flex items-center gap-2 sm:gap-4 ml-auto">
-                            {/* Theme Toggle */}
-                            <button
-                                onClick={() => setDarkMode(!darkMode)}
-                                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-600 dark:text-gray-300"
-                                title={darkMode ? 'Açık Tema' : 'Koyu Tema'}
-                            >
-                                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                            </button>
+                <AnnouncementBanner />
 
-                            {/* Notifications */}
-                            <NotificationBell />
-
-                            {/* User Menu */}
-                            <div className="relative" ref={userMenuRef}>
-                                <button
-                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                    className="flex items-center gap-2 sm:gap-3 hover:bg-slate-100 dark:hover:bg-white/5 rounded-2xl p-1.5 transition-all"
-                                >
-                                    <div className="w-9 h-9 rounded-full bg-cyan-100 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-500/20 flex items-center justify-center">
-                                        <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
-                                    </div>
-                                    <div className="hidden sm:block text-left pr-2">
-                                        <div className="text-sm font-bold text-slate-800 dark:text-white leading-none mb-1">{user?.name || 'Kullanıcı'}</div>
-                                        <div className="text-[10px] text-slate-500 dark:text-gray-400 flex items-center gap-1 font-semibold">
-                                            {isPremium ? (
-                                                <><Crown className="w-3 h-3 text-amber-500" /><span className="text-amber-500">Premium</span></>
-                                            ) : (<span>Ücretsiz Plan</span>)}
-                                        </div>
-                                    </div>
-                                    <ChevronDown className={`hidden sm:block w-4 h-4 text-slate-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
-                                </button>
-
-                                <AnimatePresence>
-                                    {userMenuOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden py-2 z-50"
-                                        >
-                                            <div className="px-4 py-3 border-b border-slate-100 dark:border-white/5 mb-2 bg-slate-50/50 dark:bg-slate-900/50">
-                                                <p className="text-xs font-semibold text-slate-500 dark:text-gray-400 mb-0.5">Hesap</p>
-                                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.email}</p>
-                                            </div>
-
-                                            <button onClick={() => { setUserMenuOpen(false); setShowProfileModal(true); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                                                <User className="w-4 h-4 text-slate-400" /> Profil Ayarları
-                                            </button>
-                                            <button onClick={() => { setUserMenuOpen(false); setShowSubscriptionManager(true); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                                                <Crown className="w-4 h-4 text-amber-500" /> Abonelik
-                                            </button>
-                                            
-                                            <div className="my-2 border-t border-slate-100 dark:border-white/5"></div>
-                                            <button onClick={() => { setUserMenuOpen(false); handleLogout(); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
-                                                <LogOut className="w-4 h-4" /> Güvenli Çıkış
-                                            </button>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                {/* Compact Stats Row */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                    {[
+                        { label: 'Toplam CV', value: cvs?.length || 0, color: 'text-cyan-400', icon: <FileText className="w-5 h-5" />, bg: 'bg-cyan-500/10' },
+                        { label: 'Şablonlar', value: isPremium ? '65+' : '1', color: 'text-purple-400', icon: <LayoutGrid className="w-5 h-5" />, bg: 'bg-purple-500/10' },
+                        { label: 'İndirme', value: downloadHistory.length, color: 'text-green-400', icon: <Download className="w-5 h-5" />, bg: 'bg-green-500/10' },
+                        { label: 'Rozetler', value: `${achievements.filter(a => a.unlocked).length}/${achievements.length}`, color: 'text-amber-400', icon: <Trophy className="w-5 h-5" />, bg: 'bg-amber-500/10' }
+                    ].map((stat, i) => (
+                        <div key={i} className="glass rounded-2xl p-5 flex items-center gap-4 border border-white/5 hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 group cursor-default shadow-lg shadow-black/20">
+                            <div className={`w-12 h-12 rounded-2xl ${stat.bg} flex items-center justify-center ${stat.color} group-hover:scale-105 transition-transform border border-white/5`}>
+                                {stat.icon}
                             </div>
-                        </div>
-                </header>
-
-                {/* Scrollable Content Area */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8">
-                    <main className="max-w-6xl mx-auto space-y-8 pb-12">
-                        
-                        {/* Welcome Header */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                             <div>
-                                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1">
-                                    {greeting}, <span className="text-cyan-600 dark:text-cyan-400">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>
-                                </h1>
-                                <p className="text-slate-500 dark:text-slate-400 text-sm">Kariyer paneline hoş geldin. Bugün neler başarmak istiyorsun?</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Link to="/editor" className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-gray-100 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5">
-                                    <Plus className="w-4 h-4" />
-                                    <span>Yeni CV Oluştur</span>
-                                </Link>
+                                <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
+                                <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">{stat.label}</div>
                             </div>
                         </div>
+                    ))}
+                </div>
 
-                        {/* Top Navigation Tabs */}
-                        <div className="flex overflow-x-auto custom-scrollbar p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-xl max-w-fit">
-                            <button onClick={() => setActiveTab('cvs')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'cvs' ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800'}`}>
-                                <FileText className="w-4 h-4" /> Özgeçmişlerim
-                            </button>
-                            <button onClick={() => setActiveTab('tools')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'tools' ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800'}`}>
-                                <Briefcase className="w-4 h-4" /> Kariyer Araçları
-                            </button>
-                            <button onClick={() => setActiveTab('ai')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'ai' ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800'}`}>
-                                <Sparkles className="w-4 h-4" /> Yapay Zeka (AI)
-                            </button>
-                        </div>
+                <div className="grid lg:grid-cols-3 gap-8">
+                    {/* Main Content Area: CV List First */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* CV List Section */}
+                        <div className="glass rounded-[2.5rem] p-8 border border-white/10 shadow-glass bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
+                            {/* Decorative Background for Section */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
 
-                        {/* TAB 1: CVs */}
-                        {activeTab === 'cvs' && (
-                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-                                {/* Stats */}
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    {[
-                                        { label: 'Aktif Özgeçmiş', value: cvs?.length || 0, icon: <FileText className="text-blue-500" /> },
-                                        { label: 'Görüntülenme', value: cvs?.reduce((acc, cv) => acc + (getCVViewStats?.(cv.id)?.total || 0), 0) || 0, icon: <Eye className="text-emerald-500" /> },
-                                        { label: 'Başvurular', value: 3, icon: <Briefcase className="text-purple-500" /> },
-                                        { label: 'Profil Skoru', value: 'B+', icon: <Star className="text-amber-500" /> }
-                                    ].map((stat, i) => (
-                                        <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl p-5 flex flex-col justify-center shadow-sm">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">{stat.label}</span>
-                                                <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                                                    {stat.icon}
-                                                </div>
-                                            </div>
-                                            <div className="text-2xl font-bold text-slate-800 dark:text-white">{stat.value}</div>
-                                        </div>
-                                    ))}
+                            <div className="flex items-center justify-between mb-8 relative z-10">
+                                <div>
+                                    <h2 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 drop-shadow-sm flex items-center gap-3">
+                                        <FileText className="w-6 h-6 text-cyan-400/80" />
+                                        Özgeçmişlerim
+                                    </h2>
+                                    <p className="text-xs text-slate-500 font-semibold mt-1.5 uppercase tracking-widest">Profesyonel döküman yönetimi</p>
                                 </div>
-
-                                {/* CV Grid */}
-                                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-white/10 shadow-sm">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                                        <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                                            <LayoutGrid className="w-5 h-5 text-cyan-500" />
-                                            Kayıtlı Özgeçmişlerim
-                                        </h2>
-                                        <div className="relative">
-                                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                                            <input 
-                                                type="text" 
-                                                placeholder="CV Ara..." 
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="w-full sm:w-64 pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 text-slate-700 dark:text-white"
-                                            />
-                                        </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-white/5 focus-within:border-cyan-500/50 transition-all">
+                                        <Search className="w-4 h-4 text-slate-500" />
+                                        <input
+                                            type="text"
+                                            placeholder="Ara..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="bg-transparent border-none text-sm focus:outline-none w-32 placeholder-slate-600 font-medium"
+                                        />
                                     </div>
+                                    <div className="flex bg-black/20 rounded-xl p-1 border border-white/5">
+                                        <button
+                                            onClick={() => setViewMode('grid')}
+                                            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                                        >
+                                            <LayoutGrid className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => setViewMode('list')}
+                                            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
+                                        >
+                                            <List className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    {filteredCVs.length === 0 ? (
-                                        <div className="text-center py-16 px-4">
-                                            <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 text-slate-400">
-                                                <FileText className="w-8 h-8" />
-                                            </div>
-                                            <h3 className="text-lg font-bold text-slate-700 dark:text-white mb-2">Henüz CV bulunamadı</h3>
-                                            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-sm mx-auto">Sistemde kayıtlı bir özgeçmişiniz yok. Hemen yeni bir tane oluşturarak kariyerinize yön verin.</p>
-                                            <Link to="/editor" className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-medium transition-colors">
-                                                <Plus className="w-5 h-5" /> İlk Özgeçmişini Yarat
-                                            </Link>
-                                        </div>
-                                    ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            {filteredCVs.map((cv) => (
-                                                <div key={cv.id} className="group bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-200 dark:border-white/5 hover:border-cyan-500/30 transition-all hover:shadow-lg relative overflow-hidden">
-                                                    <div className="flex items-start justify-between mb-4 relative z-10">
-                                                        <div className="w-12 h-16 rounded-lg bg-white dark:bg-slate-700 shadow flex items-center justify-center text-2xl border border-slate-200 dark:border-white/10">
-                                                            {getTemplateEmoji(cv.template)}
-                                                        </div>
-                                                        <div className="flex gap-1">
-                                                            <Link to={`/editor/${cv.id}`} className="p-2 bg-white dark:bg-slate-700 text-slate-600 dark:text-gray-300 hover:text-cyan-500 rounded-lg shadow-sm border border-slate-200 dark:border-white/10 transition-colors">
-                                                                <Edit className="w-4 h-4" />
-                                                            </Link>
-                                                            <button onClick={() => handleShare(cv)} className="p-2 bg-white dark:bg-slate-700 text-slate-600 dark:text-gray-300 hover:text-blue-500 rounded-lg shadow-sm border border-slate-200 dark:border-white/10 transition-colors">
-                                                                <Share2 className="w-4 h-4" />
+                            {filteredCVs.length === 0 ? (
+                                <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.02]">
+                                    <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-cyan-500/20 to-blue-600/20 flex items-center justify-center mx-auto mb-6">
+                                        <FileText className="w-10 h-10 text-cyan-400 opacity-50" />
+                                    </div>
+                                    <h3 className="text-2xl font-black text-white mb-2 italic">Daha Fazlasını Hedefle 🎯</h3>
+                                    <p className="text-slate-500 mb-8 max-w-xs mx-auto text-sm">Hayalindeki işe bir adım daha yaklaşmak için ilk CV'ni hemen oluştur.</p>
+                                    <Link to="/editor" className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg text-white font-bold text-sm uppercase tracking-widest hover:shadow-cyan-500/30 transition-all active:scale-95 inline-flex items-center gap-2">
+                                        <Plus className="w-5 h-5" /> İlk CV'ni Yarat
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 gap-6' : 'space-y-4'}>
+                                    {filteredCVs.map((cv) => (
+                                        <div
+                                            key={cv.id}
+                                            className="group relative bg-white/5 backdrop-blur-md rounded-3xl p-5 border border-white/10 hover:border-aurora-400/50 transition-all duration-500 hover:bg-white/10 shadow-glass hover:shadow-glow-cyan"
+                                        >
+                                            <div className="flex gap-5">
+                                                {/* CV Miniature */}
+                                                <div className="w-24 h-32 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex-shrink-0 relative overflow-hidden group-hover:border-cyan-500/30 transition-all">
+                                                    <div className="absolute inset-0 flex items-center justify-center text-4xl group-hover:scale-125 transition-transform duration-500">
+                                                        {getTemplateEmoji(cv.template)}
+                                                    </div>
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                                                        <Link to={`/editor/${cv.id}`} className="p-2 rounded-full bg-cyan-500 text-slate-950 shadow-xl">
+                                                            <Eye className="w-4 h-4" />
+                                                        </Link>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <h3 className="text-lg font-bold text-white truncate group-hover:text-cyan-400 transition-colors">
+                                                            {cv.name}
+                                                        </h3>
+                                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                onClick={() => duplicateCV(cv.id)}
+                                                                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+                                                                title="Kopyala"
+                                                            >
+                                                                <Copy className="w-3.5 h-3.5" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setDeleteConfirm(cv.id)}
+                                                                className="p-1.5 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all"
+                                                                title="Sil"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <h3 className="font-bold text-slate-800 dark:text-white truncate mb-1 relative z-10" title={cv.name}>{cv.name}</h3>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize mb-4 relative z-10">{cv.template} Tema</p>
-                                                    <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-4 border-t border-slate-200 dark:border-white/10 relative z-10">
-                                                        <span>Güncelleme: {formatTimeAgo(cv.updatedAt)}</span>
-                                                        <button onClick={() => setDeleteConfirm(cv.id)} className="text-red-500 hover:text-red-600 p-1">Sil</button>
+                                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">
+                                                        {cv.template} ŞABLONU
+                                                    </p>
+
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <Link
+                                                            to={`/editor/${cv.id}`}
+                                                            className="flex-1 py-2 px-3 rounded-xl bg-white/5 border border-white/5 text-white hover:bg-white/10 transition-all text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5"
+                                                        >
+                                                            <Edit className="w-3 h-3" /> Düzenle
+                                                        </Link>
+                                                        <button
+                                                            onClick={() => handleShare(cv)}
+                                                            className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-all"
+                                                        >
+                                                            <Share2 className="w-4 h-4" />
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            ))}
+                                            </div>
+
+                                            {/* Bottom Action Bar (Hidden by default, shown on hover/complex layout) */}
+                                            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500">
+                                                        <Clock className="w-3 h-3" />
+                                                        {formatTimeAgo(cv.updatedAt)}
+                                                    </div>
+                                                    {getCVViewStats && getCVViewStats(cv.id)?.total > 0 && (
+                                                        <button
+                                                            onClick={() => { setSelectedCVForAnalytics(cv); setShowAnalyticsModal(true); }}
+                                                            className="flex items-center gap-1 text-[10px] font-bold text-cyan-500/80 bg-cyan-500/5 px-2 py-0.5 rounded-full hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                                                        >
+                                                            <Eye className="w-3 h-3" />
+                                                            {getCVViewStats(cv.id).total} Görüntülenme
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => { setSelectedCVForATS(cv); setShowATSModal(true); }}
+                                                        className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 transition-all"
+                                                        title="ATS Analiz"
+                                                    >
+                                                        <Target className="w-3.5 h-3.5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { setSelectedCVForVoice(cv); setShowVoiceReader(true); }}
+                                                        className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 transition-all"
+                                                        title="Sesli Oku"
+                                                    >
+                                                        <Volume2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Toolbox Section - Tabbed Interface */}
+                        <div className="glass rounded-[2.5rem] p-8 border border-white/10 shadow-glass bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                                <div>
+                                    <h2 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 drop-shadow-sm flex items-center gap-3">
+                                        <Zap className="w-6 h-6 text-yellow-400/80" />
+                                        Araç Seti
+                                    </h2>
+                                    <p className="text-xs text-slate-500 font-semibold mt-1.5 uppercase tracking-widest">Kariyerini güçlendirecek araçlar</p>
+                                </div>
+
+                                <div className="flex bg-black/40 rounded-2xl p-1.5 border border-white/5 self-start">
+                                    {[
+                                        { id: 'quick', label: 'Hızlı', icon: <Zap className="w-3.5 h-3.5" /> },
+                                        { id: 'ai', label: 'AI Araçları', icon: <Sparkles className="w-3.5 h-3.5" /> },
+                                        { id: 'design', label: 'Tasarım', icon: <Palette className="w-3.5 h-3.5" /> }
+                                    ].map(tab => (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setActiveToolTab(tab.id)}
+                                            className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${activeToolTab === tab.id
+                                                ? 'bg-white text-slate-950 shadow-lg'
+                                                : 'text-slate-500 hover:text-slate-300'
+                                                }`}
+                                        >
+                                            {tab.icon} {tab.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="animate-fade-in">
+                                {activeToolTab === 'quick' && (
+                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                        {[
+                                            { to: '/editor', label: 'Yeni CV', icon: <Plus />, color: 'from-cyan-500 to-blue-600' },
+                                            { onClick: () => setShowCVImporter(true), label: 'CV Yükle', icon: <Upload />, color: 'from-emerald-500 to-green-600', badge: 'YENİ' },
+                                            { to: '/templates', label: 'Şablonlar', icon: <LayoutGrid />, color: 'from-purple-500 to-pink-600' },
+                                            { onClick: () => setShowCompareModal(true), label: 'Karşılaştır', icon: <Columns />, color: 'from-green-500 to-emerald-600' },
+                                            { onClick: () => setShowCoverLetterModal(true), label: 'Ön Yazı', icon: <FileText />, color: 'from-amber-500 to-orange-600' }
+                                        ].map((tool, i) => (
+                                            tool.to ? (
+                                                <Link key={i} to={tool.to} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] relative">
+                                                    {tool.badge && (
+                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
+                                                            {tool.badge}
+                                                        </div>
+                                                    )}
+                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
+                                                        {tool.icon}
+                                                    </div>
+                                                    <div className="text-xs font-bold text-slate-200 uppercase tracking-widest mt-1">{tool.label}</div>
+                                                </Link>
+                                            ) : (
+                                                <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center relative">
+                                                    {tool.badge && (
+                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
+                                                            {tool.badge}
+                                                        </div>
+                                                    )}
+                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
+                                                        {tool.icon}
+                                                    </div>
+                                                    <div className="text-xs font-bold text-slate-200 uppercase tracking-widest mt-1">{tool.label}</div>
+                                                </button>
+                                            )
+                                        ))}
+                                    </div>
+                                )}
+
+                                {activeToolTab === 'ai' && (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                                        {[
+                                            { onClick: () => setShowProjectWriter(true), label: 'Proje Yazıcı', icon: <Sparkles />, color: 'from-purple-500 to-pink-600', desc: 'Proje açıklamalarını AI ile yaz', badge: 'YENİ' },
+                                            { onClick: () => setShowLinkedInOptimizer(true), label: 'LinkedIn AI', icon: <Target />, color: 'from-blue-600 to-blue-400', desc: 'LinkedIn profilini optimize et', badge: 'YENİ' },
+                                            { onClick: () => setShowEmailGenerator(true), label: 'E-posta AI', icon: <Mail />, color: 'from-emerald-500 to-teal-500', desc: 'Profesyonel başvuru e-postaları', badge: 'YENİ' },
+                                            { onClick: () => setShowReferenceLetter(true), label: 'Referans Mektubu', icon: <FileText />, color: 'from-amber-500 to-orange-500', desc: 'AI ile referans mektubu oluştur', badge: 'YENİ' },
+                                            { onClick: () => setShowTargetFit(true), label: 'Target-Fit AI', icon: <Target />, color: 'from-purple-500 to-pink-600', desc: 'CV\'yi ilana özel düzenle', badge: 'SICAK' },
+                                            { onClick: () => setShowLetterGenerator(true), label: 'Mektup Yazıcı', icon: <Mail />, color: 'from-indigo-500 to-purple-600', desc: 'Niyet & Referans mektubu' },
+                                            { onClick: () => setShowApplicationCRM(true), label: 'Başvuru Takip', icon: <Briefcase />, color: 'from-blue-500 to-cyan-600', desc: 'Trello tarzı iş takibi', badge: 'ÜCRETSİZ' },
+                                            { onClick: () => setShowAIHeadshot(true), label: 'AI Headshot', icon: <Camera />, color: 'from-pink-500 to-rose-600', desc: 'Profesyonel fotoğraf + bio' },
+                                            { onClick: () => setShowSalaryBenchmark(true), label: 'Maaş Değerin', icon: <DollarSign />, color: 'from-green-500 to-emerald-600', desc: 'Senin değerin ne?' },
+                                            { onClick: () => setShowInterviewCoachPro(true), label: 'Mülakat Koçu Pro', icon: <Play />, color: 'from-orange-500 to-red-600', desc: 'CV\'ye göre soru üretimi', badge: 'SICAK' },
+                                            { onClick: () => setShowInterviewCoach(true), label: 'Mülakat Provası', icon: <Play />, color: 'from-emerald-500 to-green-600', desc: 'AI ile mülakat provası yapın' },
+                                            { onClick: () => setShowSalaryNegotiator(true), label: 'Maaş Pazarlığı', icon: <DollarSign />, color: 'from-green-500 to-emerald-600', desc: 'Maaşınızı AI ile optimize edin' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForReview(cvs[0]), setShowReviewModal(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'CV İnceleme', icon: <Star />, color: 'from-purple-500 to-pink-600', desc: 'Expert veya AI incelemesi (Ücretli)', badge: 'SICAK' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForATS(cvs[0]), setShowATSModal(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'ATS Analizi', icon: <Target />, color: 'from-cyan-500 to-blue-600', desc: 'ATS uyumluluğunu test edin' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForTranslate(cvs[0]), setShowTranslatorModal(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Çevirmen', icon: <Globe2 />, color: 'from-indigo-500 to-purple-600', desc: 'CV\'nizi 50+ dile çevirin' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForVoice(cvs[0]), setShowVoiceReader(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Sesli Okuyucu', icon: <Volume2 />, color: 'from-orange-500 to-red-600', desc: 'CV\'nizi sesli olarak dinleyin' },
+                                            { onClick: () => setShowCareerPath(true), label: 'Yol Haritası', icon: <TrendingUp />, color: 'from-indigo-500 to-purple-600', desc: 'Kariyer adımlarınızı planlayın' },
+                                            { onClick: () => setShowSkillsGap(true), label: 'Beceri Analizi', icon: <BarChart3 />, color: 'from-orange-500 to-red-600', desc: 'Eksik becerilerinizi bulun' },
+                                            { onClick: () => setShowPortfolioBuilder(true), label: 'Portfolio', icon: <Layout />, color: 'from-pink-500 to-rose-600', desc: 'Web sitenize özel portfolyo' },
+                                            { onClick: () => setShowCareerTest(true), label: 'Kariyer Testi', icon: <Target />, color: 'from-yellow-500 to-orange-600', desc: 'Sana en uygun mesleği bul' }
+                                        ].map((tool, i) => (
+                                            <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center relative overflow-hidden">
+                                                {tool.badge && (
+                                                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
+                                                        {tool.badge}
+                                                    </div>
+                                                )}
+                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
+                                                    {tool.icon}
+                                                </div>
+                                                <div className="text-xs font-black text-white uppercase tracking-widest mb-1">{tool.label}</div>
+                                                <div className="text-[10px] text-slate-500 font-medium leading-tight">{tool.desc}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {activeToolTab === 'design' && (
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                        {[
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForCSS(cvs[0]), setShowCSSEditor(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'CSS Editörü', icon: <PenTool />, color: 'from-blue-500 to-indigo-600' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowLayoutManager(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Sürükle-Bırak', icon: <LayoutGrid />, color: 'from-cyan-500 to-blue-600' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowVideoCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Video CV', icon: <Video />, color: 'from-red-500 to-rose-600' },
+                                            { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowAnimatedCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Animated CV', icon: <Zap />, color: 'from-purple-500 to-pink-600' }
+                                        ].map((tool, i) => (
+                                            <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center">
+                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
+                                                    {tool.icon}
+                                                </div>
+                                                <div className="text-xs font-black text-white uppercase tracking-widest">{tool.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Sidebar - Social & Activity */}
+                    <div className="space-y-8">
+                        {/* Achievements Mini */}
+                        <div className="glass-card rounded-[2rem] p-6 border border-white/5 shadow-xl">
+                            <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                                <Trophy className="w-4 h-4 text-amber-400" />
+                                Başarı Rozetleri
+                            </h3>
+                            <div className="grid grid-cols-3 gap-3">
+                                {achievements.map((badge) => (
+                                    <div key={badge.id} className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${badge.unlocked ? badge.color + ' shadow-lg' : 'bg-white/5 grayscale opacity-30 cursor-help'}`} title={badge.title}>
+                                        {badge.icon}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Recent Activity Mini */}
+                        <div className="glass-card rounded-[2rem] p-6 border border-white/5 shadow-xl">
+                            <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                                <History className="w-4 h-4 text-purple-400" />
+                                Son Aktivite
+                            </h3>
+                            <div className="space-y-4">
+                                {activities.length === 0 ? (
+                                    <div className="text-sm text-gray-500 italic py-4">Henüz aktivite bulunmuyor.</div>
+                                ) : (
+                                    activities.map((activity, i) => (
+                                        <div key={i} className="flex gap-4 group">
+                                            <div className="relative flex flex-col items-center">
+                                                <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-slate-900 transition-all">
+                                                    <Activity className="w-4 h-4" />
+                                                </div>
+                                                {i !== activities.length - 1 && <div className="w-px h-8 bg-white/5 my-1"></div>}
+                                            </div>
+                                            <div className="flex-1 pb-4">
+                                                <p className="text-sm text-white font-medium">{activity.action} <span className="text-cyan-400">{activity.cv}</span></p>
+                                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{activity.time}</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Referral & Pro */}
+                        <div className="space-y-4">
+                            {!isPremium && (
+                                <div className="p-6 rounded-[2rem] bg-gradient-to-br from-amber-400 to-orange-600 shadow-2xl shadow-orange-500/20 relative overflow-hidden group">
+                                    <Crown className="absolute -bottom-4 -right-4 w-24 h-24 text-white/10 rotate-12 group-hover:scale-125 transition-transform duration-700" />
+                                    <h3 className="text-lg font-bold text-slate-950 mb-1">Pro Üyeliğe Geç</h3>
+                                    <p className="text-slate-950/70 text-[11px] font-semibold uppercase tracking-wider mb-4">Sınırsız Şablon ve AI Gücü</p>
+                                    <Link to="/pricing" className="w-full py-3 rounded-xl bg-slate-950 text-white font-bold text-xs uppercase tracking-widest text-center block hover:scale-[1.02] transition-all">
+                                        Şimdi Yükselt
+                                    </Link>
+                                </div>
+                            )}
+
+                            {/* Revenue Features */}
+                            <div className="glass-card rounded-[2rem] p-5 border border-white/5">
+                                <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                                    <DollarSign className="w-4 h-4 text-green-400" />
+                                    Hesap & Kazanç
+                                </h3>
+                                <div className="space-y-2">
+                                    {isPremium && (
+                                        <button
+                                            onClick={() => setShowSubscriptionManager(true)}
+                                            className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyan-500/30 transition-all flex items-center gap-3 group"
+                                        >
+                                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <Settings className="w-4 h-4 text-cyan-400" />
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="text-xs font-bold text-white">Abonelik Yönetimi</p>
+                                                <p className="text-[9px] text-gray-500">Plan değiştir, dondur</p>
+                                            </div>
+                                        </button>
                                     )}
-                                </div>
-                                <ReferralWidget />
-                                <AnnouncementBanner />
-                            </motion.div>
-                        )}
-
-                        {/* TAB 2: TOOLS */}
-                        {activeTab === 'tools' && (
-                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                                <h2 className="text-xl font-bold text-slate-800 dark:text-white px-2">Profesyonel Kariyer Araçları</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                                    <button onClick={() => setShowATSModal(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-cyan-500/50 rounded-2xl transition-all shadow-sm group">
-                                        <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Target className="w-6 h-6" />
+                                    <button
+                                        onClick={() => setShowGiftCard(true)}
+                                        className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-pink-500/30 transition-all flex items-center gap-3 group"
+                                    >
+                                        <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Gift className="w-4 h-4 text-pink-400" />
                                         </div>
-                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">ATS Analizi</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">CV'nizi sistemler için optimize edin ve uyumluluk puanını görün.</p>
-                                    </button>
-
-                                    <button onClick={() => setShowCoverLetterModal(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-blue-500/50 rounded-2xl transition-all shadow-sm group">
-                                        <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <FileText className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Ön Yazı Oluşturucu</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Başvurduğunuz işe özel profesyonel ön yazılar (Cover Letter) hazırlayın.</p>
-                                    </button>
-
-                                    <button onClick={() => setShowTranslatorModal(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-purple-500/50 rounded-2xl transition-all shadow-sm group">
-                                        <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Globe2 className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Profesyonel Çevirmen</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">CV'nizi saniyeler içinde yabancı dillere eksiksiz çevirin.</p>
-                                    </button>
-
-                                    <button onClick={() => setShowInterviewCoach(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-emerald-500/50 rounded-2xl transition-all shadow-sm group">
-                                        <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Briefcase className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Mülakat Koçu</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Sıkça sorulan sorularla mülakatlara hazırlanıp pratik yapın.</p>
-                                    </button>
-                                    
-                                    <button onClick={() => setShowSalaryNegotiator(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-amber-500/50 rounded-2xl transition-all shadow-sm group">
-                                        <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <DollarSign className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Maaş Karşılaştır</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Sektörel maaş beklentilerini analiz ederek doğru müzakere yapın.</p>
-                                    </button>
-                                    
-                                    <button onClick={() => setShowCareerTest(true)} className="flex flex-col items-start p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:border-indigo-500/50 rounded-2xl transition-all shadow-sm group">
-                                        <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <Award className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-base font-bold text-slate-800 dark:text-white mb-2">Kariyer Testi</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 text-left line-clamp-2">Kişilik testleri ile yeteneklerinize uygun ideal meslekleri bulun.</p>
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* TAB 3: AI TOOLS */}
-                        {activeTab === 'ai' && (
-                            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                                <h2 className="text-xl font-bold text-slate-800 dark:text-white px-2">Yapay Zeka Destekli Asistan</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                    <button onClick={() => setShowProjectWriter(true)} className="flex items-center gap-5 p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 border border-cyan-100 dark:border-white/5 hover:border-cyan-400 rounded-2xl transition-all shadow-sm group text-left">
-                                        <div className="w-14 h-14 rounded-2xl bg-cyan-500 text-white flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                                            <Sparkles className="w-7 h-7" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">AI Proje Yazarı</h3>
-                                            <p className="text-sm text-slate-600 dark:text-slate-400">Projeleriniz için profesyonel açıklamalar ve vaka analizleri üretin.</p>
+                                        <div className="text-left">
+                                            <p className="text-xs font-bold text-white">Hediye Kartı</p>
+                                            <p className="text-[9px] text-gray-500">Premium hediye et</p>
                                         </div>
                                     </button>
-
-                                    <button onClick={() => setShowLinkedInOptimizer(true)} className="flex items-center gap-5 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900 border border-blue-100 dark:border-white/5 hover:border-blue-400 rounded-2xl transition-all shadow-sm group text-left">
-                                        <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                                            <Link2 className="w-7 h-7" />
+                                    <button
+                                        onClick={() => setShowAffiliate(true)}
+                                        className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-purple-500/30 transition-all flex items-center gap-3 group"
+                                    >
+                                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <TrendingUp className="w-4 h-4 text-purple-400" />
                                         </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">LinkedIn Optimizer</h3>
-                                            <p className="text-sm text-slate-600 dark:text-slate-400">LinkedIn profilinizi inceleyip daha dikkat çekici hale getirin.</p>
-                                        </div>
-                                    </button>
-                                    
-                                    <button onClick={() => setShowReferenceLetter(true)} className="flex items-center gap-5 p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-800 dark:to-slate-900 border border-amber-100 dark:border-white/5 hover:border-amber-400 rounded-2xl transition-all shadow-sm group text-left">
-                                        <div className="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                                            <Mail className="w-7 h-7" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">AI Referans Mektubu</h3>
-                                            <p className="text-sm text-slate-600 dark:text-slate-400">Otomatik referans ve niyet mektupları hazırlayın.</p>
+                                        <div className="text-left">
+                                            <p className="text-xs font-bold text-white">Affiliate Program</p>
+                                            <p className="text-[9px] text-gray-500">Paylaş ve kazan</p>
                                         </div>
                                     </button>
                                 </div>
-                            </motion.div>
-                        )}
-                    </main>
-                </div>
-            
-{/* Delete Modal */ }
-    {
-        deleteConfirm && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                <div className="glass-card rounded-2xl p-6 max-w-sm w-full animate-scale-in">
-                    <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
-                        <Trash2 className="w-8 h-8 text-red-400" />
-                    </div>
-                    <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
-                    <p className="text-slate-500 dark:text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => setDeleteConfirm(null)}
-                            className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
-                        >
-                            Vazgeç
-                        </button>
-                        <button
-                            onClick={() => handleDelete(deleteConfirm)}
-                            className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
-                        >
-                            Sil
-                        </button>
+                            </div>
+
+                            <ReferralWidget />
+                        </div>
                     </div>
                 </div>
-            </div>
-        )
-    }
 
-    {/* CV Review Modal */ }
+            </main>
+
+            {/* Delete Modal */}
+            {
+                deleteConfirm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                        <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-sm w-full animate-scale-in shadow-2xl shadow-black/50 ring-1 ring-white/5">
+                            <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+                                <Trash2 className="w-8 h-8 text-red-400" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
+                            <p className="text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setDeleteConfirm(null)}
+                                    className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
+                                >
+                                    Vazgeç
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(deleteConfirm)}
+                                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
+                                >
+                                    Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* CV Review Modal */}
             <CVReviewRequest
                 isOpen={showReviewModal}
                 onClose={() => {
@@ -821,7 +1021,7 @@ export default function DashboardPage() {
                 onClose={() => setShowPortfolioBuilder(false)}
             />
 
-    {/* New Feature Modals */ }
+            {/* New Feature Modals */}
             <TargetFitAI
                 isOpen={showTargetFit}
                 onClose={() => setShowTargetFit(false)}
@@ -852,66 +1052,60 @@ export default function DashboardPage() {
                 onClose={() => setShowSalaryBenchmark(false)}
             />
 
-    {/* Revenue Feature Modals */ }
-    {
-        showSubscriptionManager && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
-                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Abonelik Yönetimi</h2>
-                        <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                            <X className="w-5 h-5" />
-                        </button>
+            {/* Revenue Feature Modals */}
+            {showSubscriptionManager && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
+                    <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-white">Abonelik Yönetimi</h2>
+                            <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <SubscriptionManager />
                     </div>
-                    <SubscriptionManager />
                 </div>
-            </div>
-        )
-    }
+            )}
 
-    {
-        showGiftCard && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
-                <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">🎁 Hediye Kartları</h2>
-                        <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                            <X className="w-5 h-5" />
-                        </button>
+            {showGiftCard && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
+                    <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-2xl shadow-pink-500/10 ring-1 ring-white/5">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-white">🎁 Hediye Kartları</h2>
+                            <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <GiftCardManager />
                     </div>
-                    <GiftCardManager />
                 </div>
-            </div>
-        )
-    }
+            )}
 
-    {
-        showAffiliate && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
-                <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 rounded-2xl p-6 border border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">💰 Affiliate Program</h2>
-                        <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                            <X className="w-5 h-5" />
-                        </button>
+            {showAffiliate && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
+                    <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-2xl shadow-purple-500/10 ring-1 ring-white/5">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-white">💰 Affiliate Program</h2>
+                            <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <AffiliateDashboard />
                     </div>
-                    <AffiliateDashboard />
                 </div>
-            </div>
-        )
-    }
+            )}
 
-    <UpsellModal
-        isOpen={showUpsell}
-        onClose={() => setShowUpsell(false)}
-        triggerType={upsellType}
-        onUpgrade={() => {
-            setShowUpsell(false)
-            navigate('/pricing')
-        }}
-    />
+            <UpsellModal
+                isOpen={showUpsell}
+                onClose={() => setShowUpsell(false)}
+                triggerType={upsellType}
+                onUpgrade={() => {
+                    setShowUpsell(false)
+                    navigate('/pricing')
+                }}
+            />
 
-    {/* AI Feature Modals */ }
+            {/* AI Feature Modals */}
             <AIProjectWriter
                 isOpen={showProjectWriter}
                 onClose={() => setShowProjectWriter(false)}
@@ -936,19 +1130,19 @@ export default function DashboardPage() {
                 onClose={() => setShowReferenceLetter(false)}
             />
 
-    {/* CV Importer Modal */ }
-    <CVImporter
-        isOpen={showCVImporter}
-        onClose={() => setShowCVImporter(false)}
-        onImport={(importedCV) => {
-            if (importedCV) {
-                toast.success('CV başarıyla içe aktarıldı!')
-                navigate(`/editor/${importedCV.id}`)
-            }
-        }}
-    />
-            
-</div>
-        </div>
+            {/* CV Importer Modal */}
+            <CVImporter
+                isOpen={showCVImporter}
+                onClose={() => setShowCVImporter(false)}
+                darkMode={darkMode}
+                onImport={(importedCV) => {
+                    if (importedCV) {
+                        toast.success('CV başarıyla içe aktarıldı!')
+                        navigate(`/editor/${importedCV.id}`)
+                    }
+                }}
+            />
+        </div >
     )
 }
+

@@ -67,7 +67,7 @@ export default function KeyboardShortcutsModal({ isOpen, onClose }) {
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-md"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -76,7 +76,7 @@ export default function KeyboardShortcutsModal({ isOpen, onClose }) {
 
           {/* Modal */}
           <motion.div
-            className="relative w-full max-w-md rounded-2xl bg-[#0f1115] border border-white/10 shadow-2xl shadow-black/50 overflow-hidden"
+            className="relative w-full max-w-md rounded-[2rem] bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 overflow-hidden"
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 16 }}

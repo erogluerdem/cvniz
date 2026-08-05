@@ -7,6 +7,7 @@ import {
     X, FileText, Sparkles, Building2, Briefcase, MessageSquare,
     ChevronDown, Check, Loader2, Copy, Download, Edit3, ArrowRight
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 export default function CoverLetterGenerator({ isOpen, onClose, onSuccess }) {
     const { user } = useAuth()
@@ -49,6 +50,7 @@ export default function CoverLetterGenerator({ isOpen, onClose, onSuccess }) {
     const handleCopy = () => {
         navigator.clipboard.writeText(editedContent)
         setCopied(true)
+        toast.success("Panoya kopyalandı!")
         setTimeout(() => setCopied(false), 2000)
     }
 
@@ -61,15 +63,16 @@ export default function CoverLetterGenerator({ isOpen, onClose, onSuccess }) {
     }
 
     const handleDone = () => {
-        if (onSuccess) onSuccess()
+        if (onSuccess) onSuccess(editedContent)
+        toast.success("İşlem tamamlandı!")
         handleClose()
     }
 
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-            <div className="w-full max-w-3xl glass-card rounded-3xl overflow-hidden my-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
+            <div className="w-full max-w-3xl bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] overflow-hidden my-4">
                 {/* Header */}
                 <div className="p-6 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-purple-500/10">
                     <div className="flex items-center justify-between">

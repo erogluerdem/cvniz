@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCV } from '../context/CVContext'
+import { aiAPI } from '../services/api'
 
 // E-posta türleri
 const EMAIL_TYPES = [
@@ -184,11 +185,25 @@ export default function AIEmailGenerator({ isOpen, onClose }) {
     const handleGenerate = async () => {
         setIsGenerating(true)
         
-        // Simüle AI işleme
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        
-        const email = generateEmail(emailType, input, cvData, tone)
-        setGeneratedEmail(email)
+        try {
+            const response = await aiAPI.generateEmail({
+                type: emailType,
+                input,
+                cvData,
+                tone
+            });
+            if (response.success && response.data) {
+                setGeneratedEmail({ subject: response.data.subject, body: response.data.body });
+            } else {
+                throw new Error("API returned no data");
+            }
+        } catch (error) {
+            console.warn("AI Email API call failed, falling back to local simulation.", error);
+            // Simüle AI işleme (Fallback)
+            await new Promise(resolve => setTimeout(resolve, 800));
+            const email = generateEmail(emailType, input, cvData, tone)
+            setGeneratedEmail(email)
+        }
         
         setIsGenerating(false)
         setStep(3)
@@ -196,10 +211,26 @@ export default function AIEmailGenerator({ isOpen, onClose }) {
 
     const handleRegenerate = async () => {
         setIsGenerating(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
         
-        const email = generateEmail(emailType, input, cvData, tone)
-        setGeneratedEmail(email)
+        try {
+            const response = await aiAPI.generateEmail({
+                type: emailType,
+                input,
+                cvData,
+                tone,
+                regenerate: true
+            });
+            if (response.success && response.data) {
+                setGeneratedEmail({ subject: response.data.subject, body: response.data.body });
+            } else {
+                throw new Error("API returned no data");
+            }
+        } catch (error) {
+            console.warn("AI Email API call failed, falling back to local simulation.", error);
+            await new Promise(resolve => setTimeout(resolve, 800));
+            const email = generateEmail(emailType, input, cvData, tone)
+            setGeneratedEmail(email)
+        }
         
         setIsGenerating(false)
     }
@@ -274,14 +305,14 @@ export default function AIEmailGenerator({ isOpen, onClose }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
                 onClick={(e) => e.target === e.currentTarget && onClose()}
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl border border-gray-700 shadow-2xl"
+                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
                 >
                     {/* Header */}
                     <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6">

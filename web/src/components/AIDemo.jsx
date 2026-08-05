@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Sparkles, Send, Loader2, Wand2, ArrowRight, AlertCircle, ShieldCheck, Clock, ChevronDown } from 'lucide-react'
 import { generateProfileSummary, isAIConfigured } from '../services/AIService'
 
-export default function AIDemo() {
+export default function AIDemo({ isDayMode }) {
     const navigate = useNavigate()
     const [jobTitle, setJobTitle] = useState('')
     const [result, setResult] = useState('')
@@ -118,9 +118,9 @@ export default function AIDemo() {
     }
 
     return (
-        <div className="glass-card rounded-3xl p-8 md:p-12 relative overflow-hidden bg-gradient-to-br from-purple-500/5 to-cyan-500/5 border border-white/10 shadow-2xl">
+        <div className={`rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl transition-colors duration-500 ${isDayMode ? 'bg-white border border-slate-200/60 shadow-day' : 'glass-card bg-gradient-to-br from-purple-500/5 to-cyan-500/5 border border-white/10'}`}>
             <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                <Sparkles className="w-32 h-32 text-cyan-400" />
+                <Sparkles className={`w-32 h-32 ${isDayMode ? 'text-cyan-600' : 'text-cyan-400'}`} />
             </div>
 
             <div className="relative z-10 space-y-10">
@@ -131,10 +131,10 @@ export default function AIDemo() {
                             <span>AI Özelliklerini Deneyin</span>
                         </div>
 
-                        <h2 className="text-3xl md:text-4xl font-bold leading-tight">
-                            AI ile <span className="gradient-text">kişisel marka hikayenizi</span> birkaç saniyede yazdırın
+                        <h2 className={`text-3xl md:text-4xl font-bold leading-tight ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                            AI ile <span className={`font-black text-transparent bg-clip-text bg-gradient-to-r ${isDayMode ? 'from-cyan-600 to-blue-600' : 'from-cyan-400 to-purple-500'}`}>kişisel marka hikayenizi</span> birkaç saniyede yazdırın
                         </h2>
-                        <p className="text-gray-400 text-lg">
+                        <p className={`text-lg ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
                             Rolünüzü, hedeflediğiniz pozisyonu ve çalıştığınız sektörü paylaşın; CVniz AI tonu, odak noktalarını ve başarı vurgularını kendiliğinden ayarlasın.
                         </p>
 
@@ -143,7 +143,10 @@ export default function AIDemo() {
                                 <button
                                     key={role}
                                     onClick={() => setJobTitle(role)}
-                                    className={`px-4 py-1.5 rounded-full border text-sm transition ${jobTitle === role ? 'border-cyan-400 text-cyan-200 bg-cyan-400/10' : 'border-white/10 text-gray-400 hover:border-cyan-400/60 hover:text-white'}`}
+                                    className={`px-4 py-2 rounded-full border text-sm transition-all font-medium ${jobTitle === role
+                                            ? 'border-cyan-500 bg-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+                                            : (isDayMode ? 'border-slate-200 text-slate-600 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50' : 'border-white/10 text-gray-400 hover:border-cyan-400/60 hover:text-white hover:bg-white/5')
+                                        }`}
                                 >
                                     {role}
                                 </button>
@@ -154,34 +157,36 @@ export default function AIDemo() {
                             {featureHighlights.map((feature) => {
                                 const Icon = feature.icon
                                 return (
-                                    <div key={feature.title} className="p-4 rounded-2xl border border-white/10 bg-black/20 flex items-start gap-4">
-                                        <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-300">
+                                    <div key={feature.title} className={`p-4 rounded-2xl flex items-start gap-4 transition-all hover:scale-105 border ${isDayMode ? 'bg-sky-50/50 border-sky-100 shadow-sm' : 'bg-black/20 border-white/10'}`}>
+                                        <div className={`p-3 rounded-xl ${isDayMode ? 'bg-sky-200/50 text-sky-700' : 'bg-cyan-500/10 text-cyan-300'}`}>
                                             <Icon className="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <p className="text-white font-semibold">{feature.title}</p>
-                                            <p className="text-sm text-gray-400">{feature.description}</p>
+                                            <p className={`font-semibold ${isDayMode ? 'text-slate-800' : 'text-white'}`}>{feature.title}</p>
+                                            <p className={`text-sm mt-1 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>{feature.description}</p>
                                         </div>
                                     </div>
                                 )
                             })}
                         </div>
 
-                        <div className="flex flex-wrap gap-6 pt-4 border-t border-white/5 text-sm text-gray-400">
+                        <div className={`flex flex-wrap gap-6 pt-6 border-t text-sm ${isDayMode ? 'border-slate-200 text-slate-600' : 'border-white/5 text-gray-400'}`}>
                             <div>
-                                <p className="text-3xl font-bold text-white">120K+</p>
-                                <p className="text-xs uppercase tracking-[0.25em] text-gray-500">AI Destekli CV</p>
+                                <p className={`text-3xl font-black ${isDayMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600' : 'text-white'}`}>120K+</p>
+                                <p className={`text-xs uppercase tracking-[0.25em] font-bold mt-1 ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>AI Destekli CV</p>
                             </div>
-                            <div className="flex items-center gap-2 max-w-xs">
-                                <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                                <p>Veri gizliliği için yerel önbellek ve uçtan uca şifreleme kullanıyoruz.</p>
+                            <div className="flex items-center gap-3 max-w-xs">
+                                <div className={`p-2 rounded-full ${isDayMode ? 'bg-emerald-100 text-emerald-600' : 'bg-emerald-500/10 text-emerald-400'}`}>
+                                    <ShieldCheck className="w-5 h-5" />
+                                </div>
+                                <p className="font-medium leading-relaxed">Veri gizliliği için yerel önbellek ve uçtan uca şifreleme kullanıyoruz.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-black/40 border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-[0_20px_60px_rgba(15,23,42,0.4)] space-y-6">
                         <div className="space-y-2">
-                            <label className="text-xs uppercase tracking-[0.3em] text-gray-400">Rolünüz</label>
+                            <label className="text-xs uppercase tracking-[0.3em] font-bold text-slate-400">Rolünüz</label>
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <input
                                     type="text"
@@ -189,7 +194,7 @@ export default function AIDemo() {
                                     onChange={(e) => setJobTitle(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
                                     placeholder="Örn: Kıdemli Yazılım Mühendisi"
-                                    className="flex-1 bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition text-base"
+                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all text-base placeholder:text-slate-500"
                                 />
                                 <button
                                     onClick={handleGenerate}
@@ -201,14 +206,14 @@ export default function AIDemo() {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <span className="text-xs text-gray-500 uppercase tracking-[0.35em]">Popüler roller</span>
+                        <div className="space-y-3">
+                            <span className="text-xs uppercase tracking-[0.35em] font-bold text-slate-400">Popüler roller</span>
                             <div className="flex flex-wrap gap-2">
                                 {roleSuggestions.map((role) => (
                                     <button
                                         key={`${role}-chip`}
                                         onClick={() => setJobTitle(role)}
-                                        className="px-3 py-1.5 text-xs rounded-full bg-white/5 border border-white/10 text-gray-300 hover:border-cyan-400/60"
+                                        className="px-4 py-2 text-xs rounded-full font-medium transition-all bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-700 hover:border-cyan-500 hover:text-white"
                                     >
                                         {role}
                                     </button>
@@ -216,30 +221,30 @@ export default function AIDemo() {
                             </div>
                         </div>
 
-                        <div className="border border-white/10 rounded-2xl p-4 space-y-4 bg-black/20">
+                        <div className="border border-slate-700/50 rounded-2xl p-4 space-y-4 bg-slate-800/30">
                             <button
                                 onClick={() => setShowAdvanced((prev) => !prev)}
-                                className="w-full flex items-center justify-between text-sm text-gray-300"
+                                className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-white transition-colors"
                             >
                                 <span>Daha fazla bağlam ekle</span>
                                 <ChevronDown className={`w-4 h-4 transition ${showAdvanced ? 'rotate-180' : ''}`} />
                             </button>
 
                             {showAdvanced && (
-                                <div className="space-y-3">
+                                <div className="space-y-3 pt-2">
                                     <input
                                         type="text"
                                         value={sector}
                                         onChange={(e) => setSector(e.target.value)}
                                         placeholder="Sektör (örn. Fintech, Sağlık, SaaS)"
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                                        className="w-full bg-slate-900/50 border border-slate-700/50 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-500"
                                     />
                                     <select
                                         value={seniority}
                                         onChange={(e) => setSeniority(e.target.value)}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 appearance-none"
+                                        className="w-full bg-slate-900/50 border border-slate-700/50 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 appearance-none"
                                     >
-                                        <option value="">Kıdem seviyeniz</option>
+                                        <option value="" className="text-slate-500">Kıdem seviyeniz</option>
                                         {seniorityOptions.map((level) => (
                                             <option key={level} value={level}>{level}</option>
                                         ))}
@@ -249,9 +254,9 @@ export default function AIDemo() {
                                         value={targetRole}
                                         onChange={(e) => setTargetRole(e.target.value)}
                                         placeholder="Hedeflenen rol (örn. Ürün Direktörü)"
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                                        className="w-full bg-slate-900/50 border border-slate-700/50 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-500"
                                     />
-                                    <p className="text-xs text-gray-500">Bu bilgiler tonlama, vurgu ve başarı metriklerini kişiselleştirmek için kullanılır.</p>
+                                    <p className="text-xs text-slate-400 font-medium">Bu bilgiler tonlama, vurgu ve başarı metriklerini kişiselleştirmek için kullanılır.</p>
                                 </div>
                             )}
                         </div>

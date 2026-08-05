@@ -3,8 +3,11 @@ import { Camera, Lock, User, Briefcase, GraduationCap, Wrench, Plus, Trash2, Lan
 import { templates } from '../data/templates'
 import { aiAPI, mediaAPI } from '../services/api'
 import { useToast } from '../context/ToastContext'
-import QRCodeDisplay from './QRCodeDisplay'
 import MagicWandButton from './MagicWandButton'
+import PersonalInfoForm from './forms/PersonalInfoForm'
+import ExperienceForm from './forms/ExperienceForm'
+import EducationForm from './forms/EducationForm'
+import SkillsForm from './forms/SkillsForm'
 import AIHeadshotModal from './AIHeadshotModal'
 
 export default function CVForm({
@@ -1065,38 +1068,6 @@ export default function CVForm({
         }))
     }
 
-
-    const InputLabel = ({ label, icon: Icon }) => (
-        <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">
-            {Icon && <Icon className="w-3 h-3 text-cyan-500/50" />}
-            {label}
-        </label>
-    )
-
-    const TextInput = ({ label, icon, section, ...props }) => (
-        <div className="group">
-            <InputLabel label={label} icon={icon} />
-            <input
-                {...props}
-                onFocus={() => setHighlightedField(section || label)}
-                onBlur={() => setHighlightedField(null)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/40 transition-all group-hover:border-white/20"
-            />
-        </div>
-    )
-
-    const TextArea = ({ label, icon, section, ...props }) => (
-        <div className="group">
-            <InputLabel label={label} icon={icon} />
-            <textarea
-                {...props}
-                onFocus={() => setHighlightedField(section || label)}
-                onBlur={() => setHighlightedField(null)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/40 transition-all group-hover:border-white/20 resize-none min-h-[120px]"
-            />
-        </div>
-    )
-
     const generateAISummary = async () => {
         if (!user) {
             const btn = document.getElementById('auth-modal-trigger')
@@ -1241,373 +1212,50 @@ export default function CVForm({
 
             {/* Tab Content */}
             {activeTab === 'personal' && (
-                <div className="space-y-6">
-                    {/* Photo Upload Section */}
-                    <div className="flex items-center gap-6 p-6 bg-white/5 rounded-2xl border border-white/10 relative overflow-hidden group">
-                        <div className="relative shrink-0">
-                            {cvData.personal.photo ? (
-                                <img src={cvData.personal.photo} alt="Profile" className="w-24 h-24 rounded-2xl object-cover border-2 border-cyan-500/50" />
-                            ) : (
-                                <div className="w-24 h-24 rounded-2xl bg-slate-800 flex items-center justify-center border-2 border-dashed border-white/10">
-                                    <User className="w-10 h-10 text-slate-600" />
-                                </div>
-                            )}
-                            {isPremium && (
-                                <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-cyan-500 rounded-xl flex items-center justify-center cursor-pointer hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/20">
-                                    <Camera className="w-4 h-4 text-slate-950" />
-                                    <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
-                                </label>
-                            )}
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex items-center justify-between mb-1">
-                                <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
-                                    Profil Fotoğrafı
-                                    {!isPremium && <Lock className="w-3 h-3 text-amber-500" />}
-                                </h3>
-                                {isPremium && (
-                                    <button
-                                        onClick={() => setShowHeadshotModal(true)}
-                                        className="text-[10px] font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
-                                    >
-                                        <Sparkles className="w-3 h-3" />
-                                        AI Headshot
-                                    </button>
-                                )}
-                            </div>
-                            <p className="text-[10px] text-slate-500 font-medium">
-                                {isPremium
-                                    ? 'Özgeçmişinizi kişiselleştirmek için bir fotoğraf yükleyin veya yapay zeka ile profesyonel bir portre oluşturun.'
-                                    : 'Fotoğraf özelliği Premium üyeler içindir.'}
-                            </p>
-                            {!isPremium && (
-                                <button
-                                    onClick={() => document.getElementById('premium-panel-trigger')?.click()}
-                                    className="mt-3 text-[9px] font-black text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors"
-                                >
-                                    PREMIUM'A GEÇ
-                                </button>
-                            )}
-                        </div>
-                        {cvData.personal.photo && isPremium && (
-                            <button
-                                onClick={() => updatePersonal('photo', '')}
-                                className="absolute top-4 right-4 p-2 rounded-lg bg-red-500/10 text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500/20"
-                            >
-                                <Trash2 className="w-3 h-3" />
-                            </button>
-                        )}
-                    </div>
-
-                    <TextInput
-                        label="Ad Soyad"
-                        value={cvData.personal.fullName}
-                        onChange={(e) => updatePersonal('fullName', e.target.value)}
-                        placeholder="Örn. Ahmet Yılmaz"
-                        icon={User}
-                        section="personal"
-                    />
-                    <div className="relative">
-                        <TextArea
-                            label="Özet Giriş"
-                            value={cvData.personal.summary}
-                            onChange={(e) => updatePersonal('summary', e.target.value)}
-                            placeholder="Kariyer hedeflerinizi ve uzmanlıklarınızı kısaca anlatın..."
-                            icon={Sparkles}
-                            section="personal_summary"
-                        />
-                        <div className="absolute top-0 right-0 flex gap-2">
-                            <MagicWandButton
-                                text={cvData.personal.summary}
-                                onImprove={(newText) => updatePersonal('summary', newText)}
-                                className="bg-white/5"
-                            />
-                            <button
-                                onClick={generateAISummary}
-                                className="py-1 px-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex items-center gap-2"
-                            >
-                                <Sparkles className="w-3 h-3" /> AI İLE YAZ
-                            </button>
-                        </div>
-                    </div>
-                    <TextInput
-                        label="Ünvan"
-                        value={cvData.personal.title}
-                        onChange={(e) => updatePersonal('title', e.target.value)}
-                        placeholder="Örn. Senior Software Engineer"
-                        icon={Briefcase}
-                        section="personal"
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                        <TextInput
-                            label="E-posta"
-                            type="email"
-                            value={cvData.personal.email}
-                            onChange={(e) => updatePersonal('email', e.target.value)}
-                            placeholder="mail@ornek.com"
-                            icon={Mail}
-                            section="personal"
-                        />
-                        <TextInput
-                            label="Telefon"
-                            value={cvData.personal.phone}
-                            onChange={(e) => updatePersonal('phone', e.target.value)}
-                            placeholder="+90 5XX"
-                            icon={Phone}
-                            section="personal"
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <TextInput
-                            label="Konum"
-                            value={cvData.personal.location}
-                            onChange={(e) => updatePersonal('location', e.target.value)}
-                            placeholder="İstanbul, TR"
-                            icon={MapPin}
-                            section="personal"
-                        />
-                        <TextInput
-                            label="LinkedIn"
-                            value={cvData.personal.linkedin}
-                            onChange={(e) => updatePersonal('linkedin', e.target.value)}
-                            placeholder="linkedin.com/in/..."
-                            icon={LinkIcon}
-                            section="personal"
-                        />
-                    </div>
-                </div>
+                <PersonalInfoForm 
+                    cvData={cvData}
+                    updatePersonal={updatePersonal}
+                    isPremium={isPremium}
+                    setShowHeadshotModal={setShowHeadshotModal}
+                    handlePhotoChange={handlePhotoChange}
+                    generateAISummary={generateAISummary}
+                    setHighlightedField={setHighlightedField}
+                />
             )}
 
             {/* Experience Tab */}
             {activeTab === 'experience' && (
-                <div className="space-y-6">
-                    {cvData.experience.map((exp, index) => (
-                        <div key={exp.id} className="p-6 bg-white/[0.02] border border-white/10 rounded-2xl relative group/item hover:bg-white/[0.04] transition-all">
-                            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover/item:opacity-100 transition-all">
-                                <button
-                                    onClick={() => moveExperience(index, 'up')}
-                                    disabled={index === 0}
-                                    className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white disabled:opacity-30"
-                                >
-                                    <ChevronUp className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => moveExperience(index, 'down')}
-                                    disabled={index === cvData.experience.length - 1}
-                                    className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white disabled:opacity-30"
-                                >
-                                    <ChevronDown className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => removeExperience(exp.id)}
-                                    className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-
-                            <div className="flex items-center gap-2 mb-6 text-cyan-400 font-bold text-[10px] uppercase tracking-widest">
-                                <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-[10px]">
-                                    {index + 1}
-                                </div>
-                                Deneyim Kaydı
-                            </div>
-
-                            <div className="space-y-4">
-                                <TextInput
-                                    label="Şirket"
-                                    value={exp.company}
-                                    onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
-                                    placeholder="Google"
-                                />
-                                <TextInput
-                                    label="Pozisyon"
-                                    value={exp.position}
-                                    onChange={(e) => updateExperience(exp.id, 'position', e.target.value)}
-                                    placeholder="Senior Developer"
-                                />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <TextInput
-                                        label="Başlangıç"
-                                        value={exp.startDate}
-                                        onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
-                                        placeholder="Ocak 2020"
-                                    />
-                                    <TextInput
-                                        label="Bitiş"
-                                        value={exp.endDate}
-                                        onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
-                                        placeholder="Günümüz"
-                                    />
-                                </div>
-                                <div className="relative">
-                                    <TextArea
-                                        label="Açıklama / Başarılar"
-                                        value={exp.description}
-                                        onChange={(e) => updateExperience(exp.id, 'description', e.target.value)}
-                                        placeholder="Sorumluluklarınız ve elde ettiğiniz başarılar..."
-                                        section="experience"
-                                    />
-                                    <div className="absolute top-0 right-0 flex gap-2">
-                                        <MagicWandButton
-                                            text={exp.description}
-                                            onImprove={(newText) => updateExperience(exp.id, 'description', newText)}
-                                            className="bg-white/5"
-                                        />
-                                        <button
-                                            onClick={() => generateAIExperience(exp.id, exp.company, exp.position)}
-                                            className="py-1 px-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[9px] font-black uppercase tracking-widest hover:bg-purple-500/20 transition-all flex items-center gap-2"
-                                        >
-                                            <Sparkles className="w-3 h-3" /> AI ÖNERİSİ
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    <button
-                        onClick={addExperience}
-                        className="w-full py-4 rounded-2xl border border-dashed border-white/10 bg-white/5 flex items-center justify-center gap-3 text-sm font-bold text-slate-400 hover:border-cyan-500/50 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all group"
-                    >
-                        <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                        Yeni Deneyim Ekle
-                    </button>
-                </div>
+                <ExperienceForm
+                    cvData={cvData}
+                    moveExperience={moveExperience}
+                    removeExperience={removeExperience}
+                    updateExperience={updateExperience}
+                    generateAIExperience={generateAIExperience}
+                    addExperience={addExperience}
+                />
             )}
 
             {/* Education Tab */}
             {activeTab === 'education' && (
-                <div className="space-y-6">
-                    {cvData.education.map((edu, index) => (
-                        <div key={edu.id} className="p-6 bg-white/[0.02] border border-white/10 rounded-2xl relative group/item hover:bg-white/[0.04] transition-all">
-                            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover/item:opacity-100 transition-all">
-                                <button
-                                    onClick={() => moveEducation(index, 'up')}
-                                    disabled={index === 0}
-                                    className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white disabled:opacity-30"
-                                >
-                                    <ChevronUp className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => moveEducation(index, 'down')}
-                                    disabled={index === cvData.education.length - 1}
-                                    className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white disabled:opacity-30"
-                                >
-                                    <ChevronDown className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => removeEducation(edu.id)}
-                                    className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-
-                            <div className="flex items-center gap-2 mb-6 text-purple-400 font-bold text-[10px] uppercase tracking-widest">
-                                <div className="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center text-[10px]">
-                                    {index + 1}
-                                </div>
-                                Eğitim Kaydı
-                            </div>
-
-                            <div className="space-y-4">
-                                <TextInput
-                                    label="Okul / Üniversite"
-                                    value={edu.school}
-                                    onChange={(e) => updateEducation(edu.id, 'school', e.target.value)}
-                                    placeholder="Stanford University"
-                                    icon={GraduationCap}
-                                    section="education"
-                                />
-                                <TextInput
-                                    label="Bölüm / Derece"
-                                    value={edu.degree}
-                                    onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
-                                    placeholder="Computer Science, MSc"
-                                    section="education"
-                                />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <TextInput
-                                        label="Başlangıç"
-                                        value={edu.startDate}
-                                        onChange={(e) => updateEducation(edu.id, 'startDate', e.target.value)}
-                                        placeholder="2016"
-                                    />
-                                    <TextInput
-                                        label="Bitiş"
-                                        value={edu.endDate}
-                                        onChange={(e) => updateEducation(edu.id, 'endDate', e.target.value)}
-                                        placeholder="2020"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    <button
-                        onClick={addEducation}
-                        className="w-full py-4 rounded-2xl border border-dashed border-white/10 bg-white/5 flex items-center justify-center gap-3 text-sm font-bold text-slate-400 hover:border-purple-500/50 hover:text-purple-400 hover:bg-purple-500/5 transition-all group"
-                    >
-                        <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                        Yeni Eğitim Ekle
-                    </button>
-                </div>
+                <EducationForm
+                    cvData={cvData}
+                    moveEducation={moveEducation}
+                    removeEducation={removeEducation}
+                    updateEducation={updateEducation}
+                    addEducation={addEducation}
+                />
             )}
 
             {/* Skills Tab */}
             {activeTab === 'skills' && (
-                <div className="space-y-8">
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-end">
-                            <InputLabel label="Beceri Ekle" icon={Wrench} />
-                            <button
-                                onClick={suggestSkills}
-                                className="mb-2 text-[9px] font-black text-purple-400 hover:text-purple-300 uppercase tracking-widest bg-purple-500/5 px-2 py-1 rounded border border-purple-500/10 flex items-center gap-1"
-                            >
-                                <Sparkles className="w-2.5 h-2.5" /> ÖNERİ AL
-                            </button>
-                        </div>
-                        <div className="flex gap-3">
-                            <input
-                                type="text"
-                                value={newSkill}
-                                onChange={(e) => setNewSkill(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-                                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
-                                placeholder="Örn. React.js, Python, Leadership"
-                            />
-                            <button
-                                onClick={addSkill}
-                                className="px-6 py-3 rounded-xl bg-cyan-500 text-slate-950 font-black text-[10px] uppercase tracking-widest hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/20"
-                            >
-                                <Plus className="w-5 h-5 inline mr-1" /> EKLE
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                        {cvData.skills.map((skill, index) => (
-                            <div
-                                key={index}
-                                className="group flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-red-500/50 hover:bg-red-500/5 transition-all cursor-pointer"
-                                onClick={() => removeSkill(skill)}
-                            >
-                                <span className="text-sm font-medium text-slate-300 group-hover:text-red-400 transition-colors">{skill}</span>
-                                <Trash2 className="w-3 h-3 text-slate-600 group-hover:text-red-400 transition-colors" />
-                            </div>
-                        ))}
-                    </div>
-
-                    {cvData.skills.length === 0 && (
-                        <div className="text-center py-16 border-2 border-dashed border-white/5 rounded-[32px] bg-white/[0.01]">
-                            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6">
-                                <Wrench className="w-8 h-8 text-slate-600" />
-                            </div>
-                            <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Henüz beceri eklenmedi</p>
-                        </div>
-                    )}
-                </div>
+                <SkillsForm
+                    cvData={cvData}
+                    newSkill={newSkill}
+                    setNewSkill={setNewSkill}
+                    addSkill={addSkill}
+                    removeSkill={removeSkill}
+                    suggestSkills={suggestSkills}
+                />
             )}
 
             {/* Projects Tab */}

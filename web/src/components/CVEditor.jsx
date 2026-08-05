@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { ArrowLeft, Download, Eye, Printer, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ArrowLeft, Download, Eye, Printer, ChevronLeft, ChevronRight, Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 import CVForm from './CVForm'
 import CVPreview from './CVPreview'
 import { sampleCVData, emptyCV } from '../data/sampleData'
@@ -35,6 +35,8 @@ export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBack
     const [isExporting, setIsExporting] = useState(false)
     const [showPaymentModal, setShowPaymentModal] = useState(false)
     const [isPremiumUser, setIsPremiumUser] = useState(false)
+    const [isFullscreen, setIsFullscreen] = useState(false)
+    const [zoom, setZoom] = useState(100)
 
     const currentTemplate = templates.find(t => t.id === selectedTemplate)
     const needsPayment = currentTemplate?.isPremium && !isPremiumUser
@@ -77,91 +79,94 @@ export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBack
     }
 
     return (
-        <div className="min-h-screen">
+        <div className={`min-h-screen ${isFullscreen ? 'bg-slate-950/95 fixed inset-0 z-[100] overflow-hidden' : ''}`}>
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 glass">
-                <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={onBackToHome}
-                            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                            <span className="hidden sm:inline">Geri</span>
-                        </button>
-                        <div className="h-6 w-px bg-white/20"></div>
-                        <h1 className="font-semibold gradient-text">CV Editör</h1>
-                    </div>
-
-                    {/* Template Selector */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => {
-                                const currentIndex = templates.findIndex(t => t.id === selectedTemplate)
-                                const prevIndex = (currentIndex - 1 + templates.length) % templates.length
-                                setSelectedTemplate(templates[prevIndex].id)
-                            }}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                        >
-                            <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-lg glass-card">
-                            <span className="text-sm">{currentTemplate?.name}</span>
-                            {currentTemplate?.isPremium && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500">
-                                    PRO
-                                </span>
-                            )}
+            {!isFullscreen && (
+                <header className="fixed top-0 left-0 right-0 z-50 glass">
+                    <div className="max-w-full mx-auto px-4 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={onBackToHome}
+                                className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                                <span className="hidden sm:inline">Geri</span>
+                            </button>
+                            <div className="h-6 w-px bg-white/20"></div>
+                            <h1 className="font-semibold gradient-text">CV Editör</h1>
                         </div>
-                        <button
-                            onClick={() => {
-                                const currentIndex = templates.findIndex(t => t.id === selectedTemplate)
-                                const nextIndex = (currentIndex + 1) % templates.length
-                                setSelectedTemplate(templates[nextIndex].id)
-                            }}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                        >
-                            <ChevronRight className="w-5 h-5" />
-                        </button>
-                    </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setShowPreview(!showPreview)}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors md:hidden"
-                            title="Önizleme"
-                        >
-                            <Eye className="w-5 h-5" />
-                        </button>
-                        <button
-                            onClick={handlePrint}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors hidden sm:flex"
-                            title="Yazdır"
-                        >
-                            <Printer className="w-5 h-5" />
-                        </button>
-                        <button
-                            onClick={handleExportPDF}
-                            disabled={isExporting}
-                            className="btn-premium text-sm flex items-center gap-2"
-                        >
-                            <Download className="w-4 h-4" />
-                            <span className="hidden sm:inline">
-                                {isExporting ? 'İşleniyor...' : 'PDF İndir'}
-                            </span>
-                        </button>
+                        {/* Template Selector */}
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    const currentIndex = templates.findIndex(t => t.id === selectedTemplate)
+                                    const prevIndex = (currentIndex - 1 + templates.length) % templates.length
+                                    setSelectedTemplate(templates[prevIndex].id)
+                                }}
+                                className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            >
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-lg glass-card">
+                                <span className="text-sm">{currentTemplate?.name}</span>
+                                {currentTemplate?.isPremium && (
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500">
+                                        PRO
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const currentIndex = templates.findIndex(t => t.id === selectedTemplate)
+                                    const nextIndex = (currentIndex + 1) % templates.length
+                                    setSelectedTemplate(templates[nextIndex].id)
+                                }}
+                                className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            >
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowPreview(!showPreview)}
+                                className="p-2 rounded-lg hover:bg-white/10 transition-colors md:hidden"
+                                title="Önizleme"
+                            >
+                                <Eye className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={handlePrint}
+                                className="p-2 rounded-lg hover:bg-white/10 transition-colors hidden sm:flex"
+                                title="Yazdır"
+                            >
+                                <Printer className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={handleExportPDF}
+                                disabled={isExporting}
+                                className="btn-premium text-sm flex items-center gap-2"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span className="hidden sm:inline">
+                                    {isExporting ? 'İşleniyor...' : 'PDF İndir'}
+                                </span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            )}
 
             {/* Main Content */}
-            <div className="pt-20 pb-8 px-4">
-                <div className="max-w-[1800px] mx-auto">
-                    <div className="flex flex-col lg:flex-row gap-6">
+            <div className={`${isFullscreen ? 'h-full p-4 flex flex-col' : 'pt-20 pb-8 px-4'}`}>
+                <div className={`${isFullscreen ? 'flex-1 overflow-hidden flex flex-col' : 'max-w-[1800px] mx-auto'}`}>
+                    <div className={`flex flex-col lg:flex-row gap-6 ${isFullscreen ? 'h-full' : ''}`}>
                         {/* Left Side - Form */}
-                        <div className={`lg:w-[45%] ${!showPreview ? 'w-full' : 'hidden lg:block'}`}>
-                            <div className="glass-card rounded-2xl p-6 sticky top-24">
+                        {!isFullscreen && (
+                            <div className={`lg:w-[45%] ${!showPreview ? 'w-full' : 'hidden lg:block'}`}>
+                                <div className="glass-card rounded-2xl p-6 sticky top-24">
                                 {/* Quick Actions */}
                                 <div className="flex gap-2 mb-6">
                                     <button
@@ -181,15 +186,58 @@ export default function CVEditor({ selectedTemplate, setSelectedTemplate, onBack
                                 <CVForm cvData={cvData} setCvData={setCvData} />
                             </div>
                         </div>
+                        )}
 
                         {/* Right Side - Preview */}
-                        <div className={`lg:w-[55%] ${showPreview ? 'w-full' : 'hidden lg:block'}`}>
-                            <div className="sticky top-24">
-                                <CVPreview
-                                    cvData={cvData}
-                                    template={selectedTemplate}
-                                    showWatermark={!isPremiumUser}
-                                />
+                        <div className={`${isFullscreen ? 'w-full flex-1 flex flex-col' : `lg:w-[55%] ${showPreview ? 'w-full' : 'hidden lg:block'}`}`}>
+                            {/* Toolbar (Zoom & Fullscreen) */}
+                            <div className="flex items-center justify-between mb-4 glass rounded-2xl p-2 border border-white/5 sticky top-24 z-10">
+                                <div className="flex items-center gap-1">
+                                    <button 
+                                        onClick={() => setZoom(Math.max(50, zoom - 10))}
+                                        className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                        title="Uzaklaş"
+                                    >
+                                        <ZoomOut className="w-4 h-4" />
+                                    </button>
+                                    <span className="text-xs font-bold text-slate-300 w-12 text-center">{zoom}%</span>
+                                    <button 
+                                        onClick={() => setZoom(Math.min(150, zoom + 10))}
+                                        className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                        title="Yakınlaş"
+                                    >
+                                        <ZoomIn className="w-4 h-4" />
+                                    </button>
+                                    <div className="w-px h-4 bg-white/10 mx-1"></div>
+                                    <button 
+                                        onClick={() => setZoom(100)}
+                                        className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                        title="Sıfırla"
+                                    >
+                                        <RotateCcw className="w-4 h-4" />
+                                    </button>
+                                </div>
+                                
+                                <button 
+                                    onClick={() => setIsFullscreen(!isFullscreen)}
+                                    className="p-2 hover:bg-white/10 rounded-lg text-cyan-400 transition-colors flex items-center gap-2 px-3"
+                                >
+                                    {isFullscreen ? (
+                                        <><Minimize2 className="w-4 h-4" /><span className="text-xs font-bold hidden sm:inline">Küçült</span></>
+                                    ) : (
+                                        <><Maximize2 className="w-4 h-4" /><span className="text-xs font-bold hidden sm:inline">Tam Ekran</span></>
+                                    )}
+                                </button>
+                            </div>
+
+                            <div className={`${isFullscreen ? 'flex-1 overflow-auto flex justify-center custom-scrollbar pb-10' : 'sticky top-40'}`}>
+                                <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center', transition: 'transform 0.2s ease-out' }}>
+                                    <CVPreview
+                                        cvData={cvData}
+                                        template={selectedTemplate}
+                                        showWatermark={!isPremiumUser}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

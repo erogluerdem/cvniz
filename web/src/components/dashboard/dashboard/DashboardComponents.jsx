@@ -2,9 +2,8 @@
 import { useState, useEffect } from 'react'
 import {
     Bell, X, User, Mail, Lock, Camera, Sparkles, Check, Gift, Download, AlertCircle,
-    Trophy, Play, ArrowRight, Zap, FileText, Crown, Share2, Columns, LayoutTemplate, Bot
+    Trophy, Play, ArrowRight, Zap, FileText, Crown, Share2, Columns
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 
 // ============ NOTIFICATION PANEL ============
 export function NotificationPanel({ isOpen, onClose, notifications = [] }) {
@@ -14,13 +13,13 @@ export function NotificationPanel({ isOpen, onClose, notifications = [] }) {
         <div className="absolute top-full right-0 mt-2 w-80 glass-card rounded-xl overflow-hidden z-50 animate-scale-in">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
                 <h3 className="font-bold">Bildirimler</h3>
-                <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
+                <button onClick={onClose} className="text-gray-400 hover:text-white">
                     <X className="w-4 h-4" />
                 </button>
             </div>
             <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                    <div className="p-6 text-center text-slate-500 dark:text-gray-400">
+                    <div className="p-6 text-center text-gray-400">
                         <Bell className="w-8 h-8 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">Henüz bildirim yok</p>
                     </div>
@@ -33,7 +32,7 @@ export function NotificationPanel({ isOpen, onClose, notifications = [] }) {
                                 </div>
                                 <div>
                                     <p className="text-sm">{notif.message}</p>
-                                    <p className="text-xs text-slate-600 dark:text-gray-500 mt-1">{notif.time}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{notif.time}</p>
                                 </div>
                             </div>
                         </div>
@@ -98,11 +97,11 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-            <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-lg w-full animate-scale-in max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <div className="glass-card rounded-2xl p-6 max-w-lg w-full animate-scale-in max-h-[90vh] overflow-y-auto custom-scrollbar">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-bold">Profili Düzenle</h3>
-                    <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
+                    <button onClick={onClose} className="text-gray-400 hover:text-white">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -120,7 +119,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                 {/* Info Banner */}
                 <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-3 mb-4 flex items-start gap-3">
                     <Sparkles className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-slate-700 dark:text-gray-300">
+                    <p className="text-xs text-gray-300">
                         Bu bilgiler yeni CV oluştururken <span className="text-cyan-400 font-bold">otomatik doldurulur</span>. Tek seferlik kaydedin, her CV'de kullanın!
                     </p>
                 </div>
@@ -129,9 +128,9 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     {/* Basic Info */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Ad Soyad</label>
+                            <label className="block text-sm text-gray-400 mb-1">Ad Soyad</label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                 <input
                                     type="text"
                                     value={name}
@@ -142,7 +141,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Ünvan</label>
+                            <label className="block text-sm text-gray-400 mb-1">Ünvan</label>
                             <input
                                 type="text"
                                 value={title}
@@ -155,9 +154,9 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Email</label>
+                            <label className="block text-sm text-gray-400 mb-1">Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                 <input
                                     type="email"
                                     value={email}
@@ -167,7 +166,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Telefon</label>
+                            <label className="block text-sm text-gray-400 mb-1">Telefon</label>
                             <input
                                 type="tel"
                                 value={phone}
@@ -179,7 +178,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Konum</label>
+                        <label className="block text-sm text-gray-400 mb-1">Konum</label>
                         <input
                             type="text"
                             value={location}
@@ -191,7 +190,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">LinkedIn</label>
+                            <label className="block text-sm text-gray-400 mb-1">LinkedIn</label>
                             <input
                                 type="url"
                                 value={linkedin}
@@ -201,7 +200,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Website</label>
+                            <label className="block text-sm text-gray-400 mb-1">Website</label>
                             <input
                                 type="url"
                                 value={website}
@@ -213,7 +212,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Profesyonel Özet</label>
+                        <label className="block text-sm text-gray-400 mb-1">Profesyonel Özet</label>
                         <textarea
                             value={summary}
                             onChange={(e) => setSummary(e.target.value)}
@@ -223,7 +222,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     </div>
 
                     <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-1">Doğum Tarihi</label>
+                        <label className="block text-sm text-gray-400 mb-1">Doğum Tarihi</label>
                         <input
                             type="date"
                             value={birthDate}
@@ -237,7 +236,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                         <p className="text-sm font-semibold mb-3">Şifre Değiştir (isteğe bağlı)</p>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                 <input
                                     type="password"
                                     value={currentPassword}
@@ -247,7 +246,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                                 />
                             </div>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 dark:text-gray-500" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                 <input
                                     type="password"
                                     value={newPassword}
@@ -267,7 +266,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
                     <button
                         onClick={handleSave}
                         disabled={saveSuccess}
-                        className={`flex-1 py-3 justify-center flex items-center gap-2 rounded-xl font-bold transition-all ${saveSuccess ? 'bg-green-500 text-slate-900 dark:text-white' : 'btn-premium'}`}
+                        className={`flex-1 py-3 justify-center flex items-center gap-2 rounded-xl font-bold transition-all ${saveSuccess ? 'bg-green-500 text-white' : 'btn-premium'}`}
                     >
                         {saveSuccess ? (
                             <>
@@ -287,106 +286,54 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
 // ============ ONBOARDING TOUR ============
 export function OnboardingTour({ isOpen, onClose, step, setStep }) {
     const steps = [
-        { title: 'CVniz\'a Hoş Geldiniz! 🎉', desc: 'Saniyeler içinde profesyonel bir özgeçmiş oluşturmaya hazır mısınız?', icon: <Sparkles className="w-10 h-10 text-white" />, color: 'from-blue-500 to-cyan-400' },
-        { title: 'Yeni CV Oluşturun', desc: 'Editörümüzle bilgilerinizi kolayca girin, gerisini bize bırakın.', icon: <FileText className="w-10 h-10 text-white" />, color: 'from-purple-500 to-indigo-500' },
-        { title: 'Premium Şablonlar', desc: 'Sektörünüze özel, özenle tasarlanmış 65+ şablon arasından seçim yapın.', icon: <LayoutTemplate className="w-10 h-10 text-white" />, color: 'from-amber-500 to-orange-500' },
-        { title: 'Yapay Zeka Destekli', desc: 'Tıkandığınız yerde AI asistanımız profesyonel özetinizi ve deneyimlerinizi yazsın.', icon: <Bot className="w-10 h-10 text-white" />, color: 'from-emerald-400 to-green-600' },
-        { title: 'Hazırsınız!', desc: 'Artık mülakatlara davet edilme şansınızı artıracak o mükemmel CV\'yi oluşturabilirsiniz.', icon: <Trophy className="w-10 h-10 text-white" />, color: 'from-cyan-500 to-blue-600' }
+        { title: 'CVniz\'a Hoş Geldiniz! 🎉', desc: 'Size profesyonel CV oluşturmayı öğreteceğiz.', target: 'welcome' },
+        { title: 'Yeni CV Oluşturun', desc: 'Buradan hızlıca yeni bir CV oluşturabilirsiniz.', target: 'new-cv' },
+        { title: 'Şablonları Keşfedin', desc: '65+ profesyonel şablon arasından seçin.', target: 'templates' },
+        { title: 'AI Asistanı Kullanın', desc: 'Yapay zeka ile içerik oluşturun.', target: 'ai' },
+        { title: 'Hazırsınız!', desc: 'Artık profesyonel CV\'ler oluşturabilirsiniz.', target: 'done' }
     ]
 
     if (!isOpen) return null
 
     return (
-        <AnimatePresence>
-            <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-            >
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-                    <motion.div 
-                        animate={{ 
-                            scale: [1, 1.2, 1],
-                            opacity: [0.1, 0.2, 0.1] 
-                        }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className={`w-96 h-96 rounded-full bg-gradient-to-br ${steps[step].color} blur-[100px]`}
-                    />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
+            <div className="glass-card rounded-2xl p-8 max-w-md w-full animate-scale-in text-center">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mx-auto mb-6">
+                    {step === 4 ? <Trophy className="w-10 h-10 text-white" /> : <Play className="w-10 h-10 text-white" />}
                 </div>
 
-                <motion.div 
-                    initial={{ scale: 0.9, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    transition={{ type: "spring", bounce: 0.4 }}
-                    className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 max-w-md w-full text-center shadow-2xl z-10 relative overflow-hidden"
-                >
-                    {/* Progress indicators */}
-                    <div className="flex justify-center gap-2 mb-8 relative z-10">
-                        {steps.map((_, i) => (
-                            <motion.div 
-                                key={i} 
-                                className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'bg-cyan-400 w-8' : i < step ? 'bg-cyan-400/50 w-4' : 'bg-gray-700 w-4'}`} 
-                                layout
-                            />
-                        ))}
-                    </div>
+                <h3 className="text-2xl font-bold mb-3">{steps[step].title}</h3>
+                <p className="text-gray-400 mb-8">{steps[step].desc}</p>
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={step}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative z-10"
-                        >
-                            <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${steps[step].color} flex items-center justify-center mx-auto mb-6 shadow-xl transform rotate-3`}>
-                                <motion.div
-                                    animate={{ rotate: [-3, 3, -3], scale: [1, 1.05, 1] }}
-                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                >
-                                    {steps[step].icon}
-                                </motion.div>
-                            </div>
+                {/* Progress dots */}
+                <div className="flex justify-center gap-2 mb-6">
+                    {steps.map((_, i) => (
+                        <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === step ? 'bg-cyan-400 w-6' : i < step ? 'bg-cyan-400' : 'bg-gray-600'}`} />
+                    ))}
+                </div>
 
-                            <h3 className="text-2xl font-black mb-3 tracking-tight">{steps[step].title}</h3>
-                            <p className="text-slate-400 mb-8 leading-relaxed px-4">{steps[step].desc}</p>
-                        </motion.div>
-                    </AnimatePresence>
-
-                    <div className="flex gap-3 relative z-10">
-                        {step > 0 && (
-                            <button onClick={() => setStep(step - 1)} className="px-6 py-3 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors font-medium">
-                                Geri
-                            </button>
-                        )}
-                        <button 
-                            onClick={() => {
-                                if (step < steps.length - 1) {
-                                    setStep(step + 1)
-                                } else {
-                                    onClose()
-                                }
-                            }} 
-                            className="flex-1 btn-premium py-3 rounded-2xl justify-center font-bold text-lg shadow-lg shadow-cyan-500/25"
-                        >
-                            {step < steps.length - 1 ? (
-                                <>Devam <ArrowRight className="w-5 h-5 ml-1" /></>
-                            ) : (
-                                <>Başla <Zap className="w-5 h-5 ml-1" /></>
-                            )}
-                        </button>
-                    </div>
-
-                    {step < steps.length - 1 && (
-                        <button onClick={onClose} className="mt-6 text-sm text-slate-500 hover:text-white transition-colors relative z-10">
-                            Turu Atla
+                <div className="flex gap-3">
+                    {step > 0 && (
+                        <button onClick={() => setStep(step - 1)} className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors">
+                            Geri
                         </button>
                     )}
-                </motion.div>
-            </motion.div>
-        </AnimatePresence>
+                    {step < steps.length - 1 ? (
+                        <button onClick={() => setStep(step + 1)} className="flex-1 btn-premium py-3 justify-center">
+                            Devam <ArrowRight className="w-4 h-4 ml-1" />
+                        </button>
+                    ) : (
+                        <button onClick={onClose} className="flex-1 btn-premium py-3 justify-center">
+                            Başla <Zap className="w-4 h-4 ml-1" />
+                        </button>
+                    )}
+                </div>
+
+                <button onClick={onClose} className="mt-4 text-sm text-gray-500 hover:text-gray-400">
+                    Turu Atla
+                </button>
+            </div>
+        </div>
     )
 }
 
@@ -411,14 +358,14 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-            <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-4xl w-full animate-scale-in shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <div className="glass-card rounded-2xl p-6 max-w-4xl w-full animate-scale-in">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-bold flex items-center gap-2">
                         <Columns className="w-5 h-5 text-cyan-400" />
                         CV Karşılaştır
                     </h3>
-                    <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
+                    <button onClick={onClose} className="text-gray-400 hover:text-white">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -426,7 +373,7 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                 <div className="grid md:grid-cols-2 gap-6">
                     {/* CV 1 */}
                     <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-2">İlk CV</label>
+                        <label className="block text-sm text-gray-400 mb-2">İlk CV</label>
                         <select
                             value={cv1 || ''}
                             onChange={(e) => setCv1(e.target.value)}
@@ -440,14 +387,14 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                         {cv1 && (
                             <div className="mt-4 p-4 bg-white/5 rounded-xl">
                                 <p className="font-semibold">{cvs.find(c => c.id === cv1)?.name}</p>
-                                <p className="text-sm text-slate-500 dark:text-gray-400 capitalize">{cvs.find(c => c.id === cv1)?.template} Şablon</p>
+                                <p className="text-sm text-gray-400 capitalize">{cvs.find(c => c.id === cv1)?.template} Şablon</p>
                             </div>
                         )}
                     </div>
 
                     {/* CV 2 */}
                     <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-2">İkinci CV</label>
+                        <label className="block text-sm text-gray-400 mb-2">İkinci CV</label>
                         <select
                             value={cv2 || ''}
                             onChange={(e) => setCv2(e.target.value)}
@@ -461,7 +408,7 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                         {cv2 && (
                             <div className="mt-4 p-4 bg-white/5 rounded-xl">
                                 <p className="font-semibold">{cvs.find(c => c.id === cv2)?.name}</p>
-                                <p className="text-sm text-slate-500 dark:text-gray-400 capitalize">{cvs.find(c => c.id === cv2)?.template} Şablon</p>
+                                <p className="text-sm text-gray-400 capitalize">{cvs.find(c => c.id === cv2)?.template} Şablon</p>
                             </div>
                         )}
                     </div>
@@ -475,15 +422,15 @@ export function CompareModal({ isOpen, onClose, cvs = [] }) {
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Deneyim</div>
-                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.experience?.length || 0} vs {data2?.experience?.length || 0}</div>
+                                    <div className="text-xl font-bold text-white">{data1?.experience?.length || 0} vs {data2?.experience?.length || 0}</div>
                                 </div>
                                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Beceriler</div>
-                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.skills?.length || 0} vs {data2?.skills?.length || 0}</div>
+                                    <div className="text-xl font-bold text-white">{data1?.skills?.length || 0} vs {data2?.skills?.length || 0}</div>
                                 </div>
                                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                                     <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Eğitim</div>
-                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.education?.length || 0} vs {data2?.education?.length || 0}</div>
+                                    <div className="text-xl font-bold text-white">{data1?.education?.length || 0} vs {data2?.education?.length || 0}</div>
                                 </div>
                             </div>
                         </div>
@@ -537,10 +484,10 @@ export const sampleNotifications = [
 ]
 
 export const getAchievements = (cvCount, isPremium) => [
-    { id: 'first-cv', title: 'İlk CV', icon: <FileText className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: true, color: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
-    { id: 'pro-member', title: 'Pro Üye', icon: <Crown className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: isPremium, color: 'bg-gradient-to-br from-amber-500 to-orange-600' },
-    { id: 'five-cvs', title: '5 CV Master', icon: <Trophy className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: cvCount >= 5, color: 'bg-gradient-to-br from-purple-500 to-pink-600' },
-    { id: 'downloader', title: 'İndirici', icon: <Download className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: true, color: 'bg-gradient-to-br from-green-500 to-emerald-600' },
-    { id: 'sharer', title: 'Paylaşımcı', icon: <Share2 className="w-5 h-5 text-slate-900 dark:text-white" />, unlocked: false, color: 'bg-gradient-to-br from-blue-500 to-indigo-600' }
+    { id: 'first-cv', title: 'İlk CV', icon: <FileText className="w-5 h-5 text-white" />, unlocked: true, color: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
+    { id: 'pro-member', title: 'Pro Üye', icon: <Crown className="w-5 h-5 text-white" />, unlocked: isPremium, color: 'bg-gradient-to-br from-amber-500 to-orange-600' },
+    { id: 'five-cvs', title: '5 CV Master', icon: <Trophy className="w-5 h-5 text-white" />, unlocked: cvCount >= 5, color: 'bg-gradient-to-br from-purple-500 to-pink-600' },
+    { id: 'downloader', title: 'İndirici', icon: <Download className="w-5 h-5 text-white" />, unlocked: true, color: 'bg-gradient-to-br from-green-500 to-emerald-600' },
+    { id: 'sharer', title: 'Paylaşımcı', icon: <Share2 className="w-5 h-5 text-white" />, unlocked: false, color: 'bg-gradient-to-br from-blue-500 to-indigo-600' }
 ]
 

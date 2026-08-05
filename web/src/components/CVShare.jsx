@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { X, Copy, Download, Share2, Printer, Check, Link } from 'lucide-react'
+import { X, Copy, Download, Share2, Printer, Check, Link, Linkedin, Smartphone } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 export default function CVShare({ isOpen, onClose, cv }) {
     const [copied, setCopied] = useState(false)
@@ -62,16 +63,37 @@ export default function CVShare({ isOpen, onClose, cv }) {
                 </div>
 
                 {/* Content */}
-                <div className="p-8 flex flex-col items-center">
-                    {/* QR Code */}
-                    <div className="p-4 bg-white rounded-2xl mb-6 shadow-lg shadow-blue-500/20">
-                        <QRCodeSVG
-                            id="cv-qr-code"
-                            value={shareUrl}
-                            size={200}
-                            level="H"
-                            includeMargin={true}
-                        />
+                <div className="p-6 flex flex-col items-center">
+                    {/* Animated QR Code Presentation */}
+                    <div className="relative mb-8 mt-4 group">
+                        <motion.div 
+                            animate={{ y: [-10, 10, -10] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            className="p-4 bg-white rounded-3xl shadow-2xl shadow-blue-500/30 relative z-10 border-4 border-slate-900/10"
+                        >
+                            <QRCodeSVG
+                                id="cv-qr-code"
+                                value={shareUrl}
+                                size={180}
+                                level="H"
+                                includeMargin={true}
+                                fgColor="#020617" // slate-950
+                                cornerRadius={4}
+                            />
+                            {/* Scanning line animation */}
+                            <motion.div 
+                                animate={{ top: ['0%', '100%', '0%'] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                className="absolute left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_10px_rgba(59,130,246,0.8)] z-20 pointer-events-none"
+                            />
+                        </motion.div>
+                        
+                        {/* Decorative background elements */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] bg-blue-500/20 rounded-full blur-[50px] pointer-events-none z-0"></div>
+                        
+                        <div className="absolute -right-6 -top-6 text-slate-500/30 w-24 h-24 pointer-events-none z-0">
+                            <Smartphone className="w-full h-full" strokeWidth={1} />
+                        </div>
                     </div>
 
                     <div className="w-full space-y-4">
@@ -100,17 +122,25 @@ export default function CVShare({ isOpen, onClose, cv }) {
                                 onClick={downloadQR}
                                 className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-medium text-sm"
                             >
-                                <Download className="w-4 h-4" />
+                                <Download className="w-4 h-4 text-cyan-400" />
                                 QR İndir
                             </button>
                             <button
                                 onClick={handlePrint}
                                 className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-medium text-sm"
                             >
-                                <Printer className="w-4 h-4" />
+                                <Printer className="w-4 h-4 text-slate-400" />
                                 Yazdır
                             </button>
                         </div>
+                        
+                        <button
+                            onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')}
+                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#0a66c2]/10 hover:bg-[#0a66c2]/20 border border-[#0a66c2]/30 text-[#0a66c2] hover:text-[#0a66c2] transition-all font-bold text-sm shadow-lg shadow-[#0a66c2]/10"
+                        >
+                            <Linkedin className="w-5 h-5 fill-current" />
+                            LinkedIn'de Paylaş
+                        </button>
                     </div>
                 </div>
 

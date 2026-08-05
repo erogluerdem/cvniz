@@ -295,7 +295,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen pb-20 bg-gradient-to-br from-slate-950 via-[#0a0a0f] to-cosmic-900/40 text-slate-100 selection:bg-aurora-500/30 font-sans">
+        <div className={`min-h-screen pb-20 font-sans transition-colors duration-500 ${darkMode ? 'bg-gradient-to-br from-slate-950 via-[#0a0a0f] to-cosmic-900/40 text-slate-100 selection:bg-aurora-500/30' : 'bg-slate-50 text-slate-900 selection:bg-sky-200'}`}>
             {/* Modals */}
             <ProfileModal
                 isOpen={showProfileModal}
@@ -373,32 +373,32 @@ export default function DashboardPage() {
             />
 
             {/* Header */}
-            <header className="glass border-b border-white/5 sticky top-0 z-40 bg-slate-950/40 backdrop-blur-xl shadow-glow-sm">
+            <header className={`border-b sticky top-0 z-40 backdrop-blur-xl transition-all duration-300 ${darkMode ? 'glass border-white/5 bg-slate-950/40 shadow-glow-sm' : 'bg-white/80 border-slate-200 shadow-sm'}`}>
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ring-white/10">
-                            <FileText className="w-5 h-5 text-slate-900" />
+                    <Link to="/" className="flex items-center gap-2 group">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${darkMode ? 'bg-gradient-to-br from-cyan-400 to-slate-200 ring-1 ring-white/10 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'bg-gradient-to-br from-sky-500 to-blue-600 shadow-md group-hover:shadow-lg'}`}>
+                            <FileText className={`w-5 h-5 ${darkMode ? 'text-slate-900' : 'text-white'}`} />
                         </div>
-                        <span className="text-xl font-bold gradient-text">CVniz</span>
+                        <span className={`text-xl font-bold ${darkMode ? 'gradient-text' : 'bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-blue-800'}`}>CVniz</span>
                     </Link>
 
                     <div className="flex items-center gap-4">
                         {/* Theme Toggle */}
                         <button
                             onClick={() => setDarkMode(!darkMode)}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-white/10' : 'hover:bg-slate-200'}`}
                             title={darkMode ? 'Açık Tema' : 'Koyu Tema'}
                         >
-                            {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-gray-400" />}
+                            {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-600" />}
                         </button>
 
                         {/* Help */}
                         <button
                             onClick={() => { setOnboardingStep(0); setShowOnboarding(true); }}
-                            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                            className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-white/10' : 'hover:bg-slate-200'}`}
                             title="Yardım"
                         >
-                            <HelpCircle className="w-5 h-5 text-gray-400" />
+                            <HelpCircle className={`w-5 h-5 ${darkMode ? 'text-gray-400' : 'text-slate-600'}`} />
                         </button>
 
                         {/* Notifications - Living CV */}
@@ -408,13 +408,13 @@ export default function DashboardPage() {
                         <div className="relative" ref={userMenuRef}>
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="flex items-center gap-3 hover:bg-white/5 rounded-xl p-2 transition-all border border-transparent hover:border-white/10"
+                                className={`flex items-center gap-3 rounded-xl p-2 transition-all border ${darkMode ? 'hover:bg-white/5 border-transparent hover:border-white/10' : 'hover:bg-slate-100 border-transparent hover:border-slate-200'}`}
                             >
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center ring-2 ring-white/20 shadow-lg">
                                     <span className="text-sm font-bold text-white">{user?.name?.[0]?.toUpperCase() || 'U'}</span>
                                 </div>
                                 <div className="hidden sm:block text-left leading-tight">
-                                    <div className="text-sm font-semibold text-white">{user?.name || 'Kullanıcı'}</div>
+                                    <div className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-slate-800'}`}>{user?.name || 'Kullanıcı'}</div>
                                     <div className="text-[10px] text-gray-400 flex items-center gap-1 font-bold uppercase tracking-widest">
                                         {isPremium ? (
                                             <>
@@ -435,11 +435,11 @@ export default function DashboardPage() {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute right-0 top-full mt-3 w-64 bg-slate-950/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden py-2 z-50 ring-1 ring-white/5"
+                                        className={`absolute right-0 top-full mt-3 w-64 backdrop-blur-2xl rounded-2xl overflow-hidden py-2 z-50 ${darkMode ? 'bg-slate-950/90 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5' : 'bg-white/95 border border-slate-200 shadow-xl'}`}
                                     >
-                                        <div className="px-4 py-2 border-b border-white/5 mb-2">
-                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Giriş Yapılan Hesap</p>
-                                            <p className="text-sm font-medium text-white truncate">{user?.email}</p>
+                                        <div className={`px-4 py-2 border-b mb-2 ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
+                                            <p className={`text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-500' : 'text-slate-400'}`}>Giriş Yapılan Hesap</p>
+                                            <p className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-slate-800'}`}>{user?.email}</p>
                                         </div>
 
                                         <button
@@ -447,7 +447,7 @@ export default function DashboardPage() {
                                                 setUserMenuOpen(false)
                                                 setShowProfileModal(true)
                                             }}
-                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${darkMode ? 'text-gray-300 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}
                                         >
                                             <User className="w-4 h-4 text-purple-400" />
                                             <span>Profil Ayarları</span>
@@ -498,27 +498,27 @@ export default function DashboardPage() {
                 {/* Welcome Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-display font-extrabold tracking-tight drop-shadow-sm mb-2">
+                        <h1 className={`text-3xl md:text-4xl font-display font-extrabold tracking-tight drop-shadow-sm mb-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                             {greeting}, <span className="gradient-text">{user?.name?.split(' ')[0] || 'Kullanıcı'}</span>! 👋
                         </h1>
-                        <p className="text-gray-400">Kariyer yolculuğunda bugün ne yapmak istersin?</p>
+                        <p className={darkMode ? 'text-gray-400' : 'text-slate-500'}>Kariyer yolculuğunda bugün ne yapmak istersin?</p>
                     </div>
                     <div className="flex flex-wrap gap-3">
                         <button
                             onClick={() => setShowJobSearch(true)}
-                            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-blue-500/10 transition-colors flex items-center gap-2 text-blue-300 text-sm font-semibold"
+                            className={`px-5 py-2.5 rounded-xl border transition-colors flex items-center gap-2 text-sm font-semibold ${darkMode ? 'bg-white/5 border-white/10 hover:border-blue-500/30 hover:bg-blue-500/10 text-blue-300' : 'bg-white border-slate-200 hover:border-blue-500/30 hover:bg-blue-50/50 text-blue-600 shadow-sm'}`}
                         >
                             <Briefcase className="w-4 h-4" /> İş Bul
                         </button>
                         <button
                             onClick={() => setShowCompareModal(true)}
-                            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-colors flex items-center gap-2 text-slate-300 text-sm font-semibold"
+                            className={`px-5 py-2.5 rounded-xl border transition-colors flex items-center gap-2 text-sm font-semibold ${darkMode ? 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10 text-slate-300' : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 shadow-sm'}`}
                         >
                             <Columns className="w-4 h-4" /> Karşılaştır
                         </button>
                         <button
                             onClick={() => setShowCoverLetterModal(true)}
-                            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-500/30 hover:bg-cyan-500/10 transition-colors flex items-center gap-2 text-cyan-300 text-sm font-semibold"
+                            className={`px-5 py-2.5 rounded-xl border transition-colors flex items-center gap-2 text-sm font-semibold ${darkMode ? 'bg-white/5 border-white/10 hover:border-cyan-500/30 hover:bg-cyan-500/10 text-cyan-300' : 'bg-white border-slate-200 hover:border-cyan-500/30 hover:bg-cyan-50/50 text-cyan-600 shadow-sm'}`}
                         >
                             <PenTool className="w-4 h-4" /> Ön Yazı
                         </button>
@@ -533,18 +533,18 @@ export default function DashboardPage() {
                 {/* Compact Stats Row */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                     {[
-                        { label: 'Toplam CV', value: cvs?.length || 0, color: 'text-cyan-400', icon: <FileText className="w-5 h-5" />, bg: 'bg-cyan-500/10' },
-                        { label: 'Şablonlar', value: isPremium ? '65+' : '1', color: 'text-purple-400', icon: <LayoutGrid className="w-5 h-5" />, bg: 'bg-purple-500/10' },
-                        { label: 'İndirme', value: downloadHistory.length, color: 'text-green-400', icon: <Download className="w-5 h-5" />, bg: 'bg-green-500/10' },
-                        { label: 'Rozetler', value: `${achievements.filter(a => a.unlocked).length}/${achievements.length}`, color: 'text-amber-400', icon: <Trophy className="w-5 h-5" />, bg: 'bg-amber-500/10' }
+                        { label: 'Toplam CV', value: cvs?.length || 0, color: darkMode ? 'text-cyan-400' : 'text-cyan-600', icon: <FileText className="w-5 h-5" />, bg: darkMode ? 'bg-cyan-500/10' : 'bg-cyan-100' },
+                        { label: 'Şablonlar', value: isPremium ? '65+' : '1', color: darkMode ? 'text-purple-400' : 'text-purple-600', icon: <LayoutGrid className="w-5 h-5" />, bg: darkMode ? 'bg-purple-500/10' : 'bg-purple-100' },
+                        { label: 'İndirme', value: downloadHistory.length, color: darkMode ? 'text-green-400' : 'text-green-600', icon: <Download className="w-5 h-5" />, bg: darkMode ? 'bg-green-500/10' : 'bg-green-100' },
+                        { label: 'Rozetler', value: `${achievements.filter(a => a.unlocked).length}/${achievements.length}`, color: darkMode ? 'text-amber-400' : 'text-amber-600', icon: <Trophy className="w-5 h-5" />, bg: darkMode ? 'bg-amber-500/10' : 'bg-amber-100' }
                     ].map((stat, i) => (
-                        <div key={i} className="glass rounded-2xl p-5 flex items-center gap-4 border border-white/5 hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 group cursor-default shadow-lg shadow-black/20">
-                            <div className={`w-12 h-12 rounded-2xl ${stat.bg} flex items-center justify-center ${stat.color} group-hover:scale-105 transition-transform border border-white/5`}>
+                        <div key={i} className={`rounded-2xl p-5 flex items-center gap-4 border transition-all duration-300 group cursor-default shadow-lg ${darkMode ? 'glass border-white/5 hover:border-white/10 hover:bg-white/[0.03] shadow-black/20' : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-xl shadow-slate-200/50'}`}>
+                            <div className={`w-12 h-12 rounded-2xl ${stat.bg} flex items-center justify-center ${stat.color} group-hover:scale-105 transition-transform border ${darkMode ? 'border-white/5' : 'border-transparent'}`}>
                                 {stat.icon}
                             </div>
                             <div>
                                 <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
-                                <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">{stat.label}</div>
+                                <div className={`text-[11px] font-semibold uppercase tracking-widest mt-0.5 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{stat.label}</div>
                             </div>
                         </div>
                     ))}
@@ -554,30 +554,30 @@ export default function DashboardPage() {
                     {/* Main Content Area: CV List First */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* CV List Section */}
-                        <div className="glass rounded-[2.5rem] p-8 border border-white/10 shadow-glass bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
+                        <div className={`rounded-[2.5rem] p-8 border transition-all duration-500 relative overflow-hidden ${darkMode ? 'glass border-white/10 shadow-glass bg-white/[0.02] hover:bg-white/[0.04]' : 'bg-white border-slate-200 shadow-xl shadow-slate-200/50'}`}>
                             {/* Decorative Background for Section */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />
+                            {darkMode && <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] pointer-events-none" />}
 
                             <div className="flex items-center justify-between mb-8 relative z-10">
                                 <div>
-                                    <h2 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 drop-shadow-sm flex items-center gap-3">
-                                        <FileText className="w-6 h-6 text-cyan-400/80" />
+                                    <h2 className={`text-2xl font-display font-bold drop-shadow-sm flex items-center gap-3 ${darkMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400' : 'text-slate-900'}`}>
+                                        <FileText className={`w-6 h-6 ${darkMode ? 'text-cyan-400/80' : 'text-sky-500'}`} />
                                         Özgeçmişlerim
                                     </h2>
-                                    <p className="text-xs text-slate-500 font-semibold mt-1.5 uppercase tracking-widest">Profesyonel döküman yönetimi</p>
+                                    <p className={`text-xs font-semibold mt-1.5 uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>Profesyonel döküman yönetimi</p>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-white/5 focus-within:border-cyan-500/50 transition-all">
-                                        <Search className="w-4 h-4 text-slate-500" />
+                                    <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${darkMode ? 'bg-black/20 border-white/5 focus-within:border-cyan-500/50' : 'bg-slate-50 border-slate-200 focus-within:border-sky-500/50'}`}>
+                                        <Search className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                                         <input
                                             type="text"
                                             placeholder="Ara..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="bg-transparent border-none text-sm focus:outline-none w-32 placeholder-slate-600 font-medium"
+                                            className={`bg-transparent border-none text-sm focus:outline-none w-32 font-medium ${darkMode ? 'placeholder-slate-600 text-slate-200' : 'placeholder-slate-400 text-slate-800'}`}
                                         />
                                     </div>
-                                    <div className="flex bg-black/20 rounded-xl p-1 border border-white/5">
+                                    <div className={`flex rounded-xl p-1 border ${darkMode ? 'bg-black/20 border-white/5' : 'bg-slate-50 border-slate-200'}`}>
                                         <button
                                             onClick={() => setViewMode('grid')}
                                             className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-500/20' : 'text-slate-500 hover:text-slate-300'}`}
@@ -595,31 +595,79 @@ export default function DashboardPage() {
                             </div>
 
                             {filteredCVs.length === 0 ? (
-                                <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.02]">
-                                    <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-cyan-500/20 to-blue-600/20 flex items-center justify-center mx-auto mb-6">
-                                        <FileText className="w-10 h-10 text-cyan-400 opacity-50" />
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={`relative rounded-[2.5rem] border backdrop-blur-xl p-10 overflow-hidden group ${darkMode ? 'border-white/10 bg-slate-900/50' : 'border-slate-200 bg-slate-50'}`}
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    
+                                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                                        <div className="flex-1 text-center md:text-left">
+                                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-500 mb-6 ring-1 ring-cyan-500/30 shadow-inner">
+                                                <Sparkles className="w-8 h-8" />
+                                            </div>
+                                            <h3 className={`text-3xl font-black mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>Kariyerinize İlk Adımı Atın</h3>
+                                            <p className={`mb-8 max-w-md leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                                                Henüz bir özgeçmiş oluşturmadınız. Şablonlarımızı kullanarak dakikalar içinde profesyonel bir CV hazırlayabilir veya yapay zeka ile otomatik doldurabilirsiniz.
+                                            </p>
+                                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                                                <Link 
+                                                    to="/editor" 
+                                                    className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg text-white font-bold text-sm uppercase tracking-widest hover:shadow-cyan-500/30 transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center gap-2"
+                                                >
+                                                    <Plus className="w-5 h-5" /> CV Oluştur
+                                                </Link>
+                                                <button className={`px-8 py-4 rounded-2xl border font-bold text-sm uppercase tracking-widest transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center gap-2 ${darkMode ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white' : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 shadow-sm'}`}>
+                                                    Şablonları İncele
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="hidden md:block w-72 relative perspective-1000">
+                                            <motion.div 
+                                                animate={{ 
+                                                    rotateY: [-5, 5, -5],
+                                                    rotateX: [5, -5, 5],
+                                                    y: [-10, 10, -10]
+                                                }}
+                                                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                                                className="relative w-full aspect-[1/1.4] rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm shadow-2xl p-4 overflow-hidden"
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+                                                <div className="h-4 w-1/2 bg-white/20 rounded-full mb-4" />
+                                                <div className="h-2 w-3/4 bg-white/10 rounded-full mb-2" />
+                                                <div className="h-2 w-5/6 bg-white/10 rounded-full mb-6" />
+                                                
+                                                <div className="grid grid-cols-2 gap-2 mb-4">
+                                                    <div className="h-16 bg-white/5 rounded-lg" />
+                                                    <div className="h-16 bg-white/5 rounded-lg" />
+                                                </div>
+                                                
+                                                <div className="space-y-2">
+                                                    <div className="h-2 w-full bg-white/10 rounded-full" />
+                                                    <div className="h-2 w-full bg-white/10 rounded-full" />
+                                                    <div className="h-2 w-2/3 bg-white/10 rounded-full" />
+                                                </div>
+                                            </motion.div>
+                                        </div>
                                     </div>
-                                    <h3 className="text-2xl font-black text-white mb-2 italic">Daha Fazlasını Hedefle 🎯</h3>
-                                    <p className="text-slate-500 mb-8 max-w-xs mx-auto text-sm">Hayalindeki işe bir adım daha yaklaşmak için ilk CV'ni hemen oluştur.</p>
-                                    <Link to="/editor" className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg text-white font-bold text-sm uppercase tracking-widest hover:shadow-cyan-500/30 transition-all active:scale-95 inline-flex items-center gap-2">
-                                        <Plus className="w-5 h-5" /> İlk CV'ni Yarat
-                                    </Link>
-                                </div>
+                                </motion.div>
                             ) : (
                                 <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 gap-6' : 'space-y-4'}>
                                     {filteredCVs.map((cv) => (
                                         <div
                                             key={cv.id}
-                                            className="group relative bg-white/5 backdrop-blur-md rounded-3xl p-5 border border-white/10 hover:border-aurora-400/50 transition-all duration-500 hover:bg-white/10 shadow-glass hover:shadow-glow-cyan"
+                                            className={`group relative backdrop-blur-md rounded-3xl p-5 border transition-all duration-500 ${darkMode ? 'bg-white/5 border-white/10 hover:border-aurora-400/50 hover:bg-white/10 shadow-glass hover:shadow-glow-cyan' : 'bg-slate-50 border-slate-200 hover:border-sky-400/50 hover:bg-white shadow-sm hover:shadow-lg'}`}
                                         >
                                             <div className="flex gap-5">
                                                 {/* CV Miniature */}
-                                                <div className="w-24 h-32 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex-shrink-0 relative overflow-hidden group-hover:border-cyan-500/30 transition-all">
+                                                <div className={`w-24 h-32 rounded-2xl border flex-shrink-0 relative overflow-hidden transition-all ${darkMode ? 'bg-gradient-to-br from-white/10 to-white/5 border-white/10 group-hover:border-cyan-500/30' : 'bg-white border-slate-200 group-hover:border-sky-500/30 shadow-inner'}`}>
                                                     <div className="absolute inset-0 flex items-center justify-center text-4xl group-hover:scale-125 transition-transform duration-500">
                                                         {getTemplateEmoji(cv.template)}
                                                     </div>
                                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
-                                                        <Link to={`/editor/${cv.id}`} className="p-2 rounded-full bg-cyan-500 text-slate-950 shadow-xl">
+                                                        <Link to={`/editor/${cv.id}`} className="p-2 rounded-full bg-cyan-500 text-slate-950 shadow-xl hover:scale-110 transition-transform">
                                                             <Eye className="w-4 h-4" />
                                                         </Link>
                                                     </div>
@@ -627,20 +675,20 @@ export default function DashboardPage() {
 
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex justify-between items-start mb-1">
-                                                        <h3 className="text-lg font-bold text-white truncate group-hover:text-cyan-400 transition-colors">
+                                                        <h3 className={`text-lg font-bold truncate transition-colors ${darkMode ? 'text-white group-hover:text-cyan-400' : 'text-slate-900 group-hover:text-sky-600'}`}>
                                                             {cv.name}
                                                         </h3>
                                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <button
                                                                 onClick={() => duplicateCV(cv.id)}
-                                                                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-all"
+                                                                className={`p-1.5 rounded-lg transition-all ${darkMode ? 'hover:bg-white/10 text-slate-400 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-900'}`}
                                                                 title="Kopyala"
                                                             >
                                                                 <Copy className="w-3.5 h-3.5" />
                                                             </button>
                                                             <button
                                                                 onClick={() => setDeleteConfirm(cv.id)}
-                                                                className="p-1.5 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all"
+                                                                className={`p-1.5 rounded-lg transition-all ${darkMode ? 'hover:bg-red-500/20 text-slate-400 hover:text-red-400' : 'hover:bg-red-100 text-slate-500 hover:text-red-600'}`}
                                                                 title="Sil"
                                                             >
                                                                 <Trash2 className="w-3.5 h-3.5" />
@@ -654,13 +702,13 @@ export default function DashboardPage() {
                                                     <div className="flex flex-wrap gap-2">
                                                         <Link
                                                             to={`/editor/${cv.id}`}
-                                                            className="flex-1 py-2 px-3 rounded-xl bg-white/5 border border-white/5 text-white hover:bg-white/10 transition-all text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5"
+                                                            className={`flex-1 py-2 px-3 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 ${darkMode ? 'bg-white/5 border-white/5 text-white hover:bg-white/10' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'}`}
                                                         >
                                                             <Edit className="w-3 h-3" /> Düzenle
                                                         </Link>
                                                         <button
                                                             onClick={() => handleShare(cv)}
-                                                            className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-all"
+                                                            className={`p-2 rounded-xl border transition-all ${darkMode ? 'bg-cyan-500/10 border-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20' : 'bg-sky-50 border-sky-100 text-sky-600 hover:bg-sky-100 shadow-sm'}`}
                                                         >
                                                             <Share2 className="w-4 h-4" />
                                                         </button>
@@ -669,9 +717,9 @@ export default function DashboardPage() {
                                             </div>
 
                                             {/* Bottom Action Bar (Hidden by default, shown on hover/complex layout) */}
-                                            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                                            <div className={`mt-4 pt-4 border-t flex items-center justify-between ${darkMode ? 'border-white/5' : 'border-slate-200'}`}>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500">
+                                                    <div className={`flex items-center gap-1 text-[10px] font-bold ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                                                         <Clock className="w-3 h-3" />
                                                         {formatTimeAgo(cv.updatedAt)}
                                                     </div>
@@ -688,14 +736,14 @@ export default function DashboardPage() {
                                                 <div className="flex gap-2">
                                                     <button
                                                         onClick={() => { setSelectedCVForATS(cv); setShowATSModal(true); }}
-                                                        className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 transition-all"
+                                                        className={`p-1.5 rounded-lg transition-all ${darkMode ? 'bg-white/5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10' : 'bg-slate-100 text-slate-500 hover:text-purple-600 hover:bg-purple-100'}`}
                                                         title="ATS Analiz"
                                                     >
                                                         <Target className="w-3.5 h-3.5" />
                                                     </button>
                                                     <button
                                                         onClick={() => { setSelectedCVForVoice(cv); setShowVoiceReader(true); }}
-                                                        className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 transition-all"
+                                                        className={`p-1.5 rounded-lg transition-all ${darkMode ? 'bg-white/5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10' : 'bg-slate-100 text-slate-500 hover:text-indigo-600 hover:bg-indigo-100'}`}
                                                         title="Sesli Oku"
                                                     >
                                                         <Volume2 className="w-3.5 h-3.5" />
@@ -709,17 +757,17 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Toolbox Section - Tabbed Interface */}
-                        <div className="glass rounded-[2.5rem] p-8 border border-white/10 shadow-glass bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500">
+                        <div className={`rounded-[2.5rem] p-8 border transition-all duration-500 ${darkMode ? 'glass border-white/10 shadow-glass bg-white/[0.02] hover:bg-white/[0.04]' : 'bg-white border-slate-200 shadow-xl shadow-slate-200/50'}`}>
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                                 <div>
-                                    <h2 className="text-2xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 drop-shadow-sm flex items-center gap-3">
-                                        <Zap className="w-6 h-6 text-yellow-400/80" />
+                                    <h2 className={`text-2xl font-display font-bold drop-shadow-sm flex items-center gap-3 ${darkMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400' : 'text-slate-900'}`}>
+                                        <Zap className={`w-6 h-6 ${darkMode ? 'text-yellow-400/80' : 'text-amber-500'}`} />
                                         Araç Seti
                                     </h2>
-                                    <p className="text-xs text-slate-500 font-semibold mt-1.5 uppercase tracking-widest">Kariyerini güçlendirecek araçlar</p>
+                                    <p className={`text-xs font-semibold mt-1.5 uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>Kariyerini güçlendirecek araçlar</p>
                                 </div>
 
-                                <div className="flex bg-black/40 rounded-2xl p-1.5 border border-white/5 self-start">
+                                <div className={`flex rounded-2xl p-1.5 border self-start ${darkMode ? 'bg-black/40 border-white/5' : 'bg-slate-100 border-slate-200'}`}>
                                     {[
                                         { id: 'quick', label: 'Hızlı', icon: <Zap className="w-3.5 h-3.5" /> },
                                         { id: 'ai', label: 'AI Araçları', icon: <Sparkles className="w-3.5 h-3.5" /> },
@@ -729,8 +777,8 @@ export default function DashboardPage() {
                                             key={tab.id}
                                             onClick={() => setActiveToolTab(tab.id)}
                                             className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${activeToolTab === tab.id
-                                                ? 'bg-white text-slate-950 shadow-lg'
-                                                : 'text-slate-500 hover:text-slate-300'
+                                                ? (darkMode ? 'bg-white text-slate-950 shadow-lg' : 'bg-white text-slate-900 shadow-sm border border-slate-200')
+                                                : (darkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700')
                                                 }`}
                                         >
                                             {tab.icon} {tab.label}
@@ -750,28 +798,28 @@ export default function DashboardPage() {
                                             { onClick: () => setShowCoverLetterModal(true), label: 'Ön Yazı', icon: <FileText />, color: 'from-amber-500 to-orange-600' }
                                         ].map((tool, i) => (
                                             tool.to ? (
-                                                <Link key={i} to={tool.to} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] relative">
+                                                <Link key={i} to={tool.to} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] relative ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
                                                     {tool.badge && (
-                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
+                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-500 text-[8px] font-black tracking-widest animate-pulse">
                                                             {tool.badge}
                                                         </div>
                                                     )}
-                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
+                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
                                                         {tool.icon}
                                                     </div>
-                                                    <div className="text-xs font-bold text-slate-200 uppercase tracking-widest mt-1">{tool.label}</div>
+                                                    <div className={`text-xs font-bold uppercase tracking-widest mt-1 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>{tool.label}</div>
                                                 </Link>
                                             ) : (
-                                                <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center relative">
+                                                <button key={i} onClick={tool.onClick} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] flex flex-col items-center text-center relative ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
                                                     {tool.badge && (
-                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
+                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-500 text-[8px] font-black tracking-widest animate-pulse">
                                                             {tool.badge}
                                                         </div>
                                                     )}
-                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
+                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
                                                         {tool.icon}
                                                     </div>
-                                                    <div className="text-xs font-bold text-slate-200 uppercase tracking-widest mt-1">{tool.label}</div>
+                                                    <div className={`text-xs font-bold uppercase tracking-widest mt-1 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>{tool.label}</div>
                                                 </button>
                                             )
                                         ))}
@@ -802,17 +850,17 @@ export default function DashboardPage() {
                                             { onClick: () => setShowPortfolioBuilder(true), label: 'Portfolio', icon: <Layout />, color: 'from-pink-500 to-rose-600', desc: 'Web sitenize özel portfolyo' },
                                             { onClick: () => setShowCareerTest(true), label: 'Kariyer Testi', icon: <Target />, color: 'from-yellow-500 to-orange-600', desc: 'Sana en uygun mesleği bul' }
                                         ].map((tool, i) => (
-                                            <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center relative overflow-hidden">
+                                            <button key={i} onClick={tool.onClick} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] flex flex-col items-center text-center relative overflow-hidden ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
                                                 {tool.badge && (
-                                                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[8px] font-black tracking-widest animate-pulse">
+                                                    <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[8px] font-black tracking-widest animate-pulse ${darkMode ? 'bg-cyan-500/20 text-cyan-400' : 'bg-sky-100 text-sky-600'}`}>
                                                         {tool.badge}
                                                     </div>
                                                 )}
                                                 <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
                                                     {tool.icon}
                                                 </div>
-                                                <div className="text-xs font-black text-white uppercase tracking-widest mb-1">{tool.label}</div>
-                                                <div className="text-[10px] text-slate-500 font-medium leading-tight">{tool.desc}</div>
+                                                <div className={`text-xs font-black uppercase tracking-widest mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{tool.label}</div>
+                                                <div className={`text-[10px] font-medium leading-tight ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{tool.desc}</div>
                                             </button>
                                         ))}
                                     </div>
@@ -826,11 +874,11 @@ export default function DashboardPage() {
                                             { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowVideoCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Video CV', icon: <Video />, color: 'from-red-500 to-rose-600' },
                                             { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowAnimatedCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Animated CV', icon: <Zap />, color: 'from-purple-500 to-pink-600' }
                                         ].map((tool, i) => (
-                                            <button key={i} onClick={tool.onClick} className="group p-5 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all hover:scale-[1.02] flex flex-col items-center text-center">
-                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg`}>
+                                            <button key={i} onClick={tool.onClick} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] flex flex-col items-center text-center ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
+                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
                                                     {tool.icon}
                                                 </div>
-                                                <div className="text-xs font-black text-white uppercase tracking-widest">{tool.label}</div>
+                                                <div className={`text-xs font-black uppercase tracking-widest ${darkMode ? 'text-white' : 'text-slate-900'}`}>{tool.label}</div>
                                             </button>
                                         ))}
                                     </div>
@@ -842,8 +890,8 @@ export default function DashboardPage() {
                     {/* Right Sidebar - Social & Activity */}
                     <div className="space-y-8">
                         {/* Achievements Mini */}
-                        <div className="glass-card rounded-[2rem] p-6 border border-white/5 shadow-xl">
-                            <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                        <div className={`rounded-[2rem] p-6 border shadow-xl ${darkMode ? 'glass-card border-white/5' : 'bg-white border-slate-200 shadow-slate-200/50'}`}>
+                            <h3 className={`text-sm font-bold mb-6 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 <Trophy className="w-4 h-4 text-amber-400" />
                                 Başarı Rozetleri
                             </h3>
@@ -857,8 +905,8 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Recent Activity Mini */}
-                        <div className="glass-card rounded-[2rem] p-6 border border-white/5 shadow-xl">
-                            <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                        <div className={`rounded-[2rem] p-6 border shadow-xl ${darkMode ? 'glass-card border-white/5' : 'bg-white border-slate-200 shadow-slate-200/50'}`}>
+                            <h3 className={`text-sm font-bold mb-6 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                                 <History className="w-4 h-4 text-purple-400" />
                                 Son Aktivite
                             </h3>
@@ -869,14 +917,14 @@ export default function DashboardPage() {
                                     activities.map((activity, i) => (
                                         <div key={i} className="flex gap-4 group">
                                             <div className="relative flex flex-col items-center">
-                                                <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-slate-900 transition-all">
+                                                <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all group-hover:scale-110 ${darkMode ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-slate-900' : 'bg-sky-100 border-sky-200 text-sky-600 group-hover:bg-sky-500 group-hover:text-white'}`}>
                                                     <Activity className="w-4 h-4" />
                                                 </div>
-                                                {i !== activities.length - 1 && <div className="w-px h-8 bg-white/5 my-1"></div>}
+                                                {i !== activities.length - 1 && <div className={`w-px h-8 my-1 ${darkMode ? 'bg-white/5' : 'bg-slate-200'}`}></div>}
                                             </div>
                                             <div className="flex-1 pb-4">
-                                                <p className="text-sm text-white font-medium">{activity.action} <span className="text-cyan-400">{activity.cv}</span></p>
-                                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{activity.time}</p>
+                                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-slate-800'}`}>{activity.action} <span className={darkMode ? 'text-cyan-400' : 'text-sky-600'}>{activity.cv}</span></p>
+                                                <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${darkMode ? 'text-gray-500' : 'text-slate-400'}`}>{activity.time}</p>
                                             </div>
                                         </div>
                                     ))
@@ -898,48 +946,48 @@ export default function DashboardPage() {
                             )}
 
                             {/* Revenue Features */}
-                            <div className="glass-card rounded-[2rem] p-5 border border-white/5">
-                                <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                                    <DollarSign className="w-4 h-4 text-green-400" />
+                            <div className={`rounded-[2rem] p-5 border ${darkMode ? 'glass-card border-white/5' : 'bg-white border-slate-200 shadow-sm'}`}>
+                                <h3 className={`text-sm font-bold mb-4 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                                    <DollarSign className="w-4 h-4 text-green-500" />
                                     Hesap & Kazanç
                                 </h3>
                                 <div className="space-y-2">
                                     {isPremium && (
                                         <button
                                             onClick={() => setShowSubscriptionManager(true)}
-                                            className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyan-500/30 transition-all flex items-center gap-3 group"
+                                            className={`w-full p-3 rounded-xl border transition-all flex items-center gap-3 group ${darkMode ? 'bg-white/5 hover:bg-white/10 border-white/5 hover:border-cyan-500/30' : 'bg-slate-50 hover:bg-slate-100 border-slate-200 hover:border-sky-300'}`}
                                         >
-                                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                <Settings className="w-4 h-4 text-cyan-400" />
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${darkMode ? 'bg-cyan-500/20' : 'bg-sky-100'}`}>
+                                                <Settings className={`w-4 h-4 ${darkMode ? 'text-cyan-400' : 'text-sky-600'}`} />
                                             </div>
                                             <div className="text-left">
-                                                <p className="text-xs font-bold text-white">Abonelik Yönetimi</p>
-                                                <p className="text-[9px] text-gray-500">Plan değiştir, dondur</p>
+                                                <p className={`text-xs font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Abonelik Yönetimi</p>
+                                                <p className={`text-[9px] ${darkMode ? 'text-gray-500' : 'text-slate-500'}`}>Plan değiştir, dondur</p>
                                             </div>
                                         </button>
                                     )}
                                     <button
                                         onClick={() => setShowGiftCard(true)}
-                                        className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-pink-500/30 transition-all flex items-center gap-3 group"
+                                        className={`w-full p-3 rounded-xl border transition-all flex items-center gap-3 group ${darkMode ? 'bg-white/5 hover:bg-white/10 border-white/5 hover:border-pink-500/30' : 'bg-slate-50 hover:bg-slate-100 border-slate-200 hover:border-pink-300'}`}
                                     >
-                                        <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Gift className="w-4 h-4 text-pink-400" />
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${darkMode ? 'bg-pink-500/20' : 'bg-pink-100'}`}>
+                                            <Gift className={`w-4 h-4 ${darkMode ? 'text-pink-400' : 'text-pink-600'}`} />
                                         </div>
                                         <div className="text-left">
-                                            <p className="text-xs font-bold text-white">Hediye Kartı</p>
-                                            <p className="text-[9px] text-gray-500">Premium hediye et</p>
+                                            <p className={`text-xs font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Hediye Kartı</p>
+                                            <p className={`text-[9px] ${darkMode ? 'text-gray-500' : 'text-slate-500'}`}>Premium hediye et</p>
                                         </div>
                                     </button>
                                     <button
                                         onClick={() => setShowAffiliate(true)}
-                                        className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-purple-500/30 transition-all flex items-center gap-3 group"
+                                        className={`w-full p-3 rounded-xl border transition-all flex items-center gap-3 group ${darkMode ? 'bg-white/5 hover:bg-white/10 border-white/5 hover:border-purple-500/30' : 'bg-slate-50 hover:bg-slate-100 border-slate-200 hover:border-purple-300'}`}
                                     >
-                                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <TrendingUp className="w-4 h-4 text-purple-400" />
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'}`}>
+                                            <TrendingUp className={`w-4 h-4 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
                                         </div>
                                         <div className="text-left">
-                                            <p className="text-xs font-bold text-white">Affiliate Program</p>
-                                            <p className="text-[9px] text-gray-500">Paylaş ve kazan</p>
+                                            <p className={`text-xs font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Affiliate Program</p>
+                                            <p className={`text-[9px] ${darkMode ? 'text-gray-500' : 'text-slate-500'}`}>Paylaş ve kazan</p>
                                         </div>
                                     </button>
                                 </div>
@@ -956,22 +1004,22 @@ export default function DashboardPage() {
             {
                 deleteConfirm && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-                        <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-sm w-full animate-scale-in shadow-2xl shadow-black/50 ring-1 ring-white/5">
+                        <div className={`backdrop-blur-3xl rounded-[2rem] p-8 max-w-sm w-full animate-scale-in shadow-2xl ring-1 ${darkMode ? 'bg-slate-950/90 border border-white/10 shadow-black/50 ring-white/5' : 'bg-white/95 border border-slate-200 shadow-slate-300/50 ring-slate-100'}`}>
                             <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
-                                <Trash2 className="w-8 h-8 text-red-400" />
+                                <Trash2 className="w-8 h-8 text-red-500" />
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-center">CV'yi Sil</h3>
-                            <p className="text-gray-400 mb-6 text-center">Bu işlem geri alınamaz.</p>
+                            <h3 className={`text-xl font-bold mb-2 text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>CV'yi Sil</h3>
+                            <p className={`mb-6 text-center ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>Bu işlem geri alınamaz.</p>
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => setDeleteConfirm(null)}
-                                    className="flex-1 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors"
+                                    className={`flex-1 py-3 rounded-xl border transition-colors ${darkMode ? 'border-white/20 hover:bg-white/10 text-white' : 'border-slate-200 hover:bg-slate-100 text-slate-700'}`}
                                 >
                                     Vazgeç
                                 </button>
                                 <button
                                     onClick={() => handleDelete(deleteConfirm)}
-                                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-colors"
+                                    className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition-colors shadow-lg shadow-red-500/30"
                                 >
                                     Sil
                                 </button>
@@ -1055,11 +1103,11 @@ export default function DashboardPage() {
             {/* Revenue Feature Modals */}
             {showSubscriptionManager && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={(e) => e.target === e.currentTarget && setShowSubscriptionManager(false)}>
-                    <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
+                    <div className={`w-full max-w-3xl max-h-[90vh] overflow-y-auto backdrop-blur-3xl rounded-[2rem] p-8 shadow-2xl ring-1 ${darkMode ? 'bg-slate-950/95 border border-white/10 shadow-cyan-500/10 ring-white/5' : 'bg-white/95 border border-slate-200 shadow-slate-300/50 ring-slate-100'}`}>
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">Abonelik Yönetimi</h2>
-                            <button onClick={() => setShowSubscriptionManager(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                                <X className="w-5 h-5" />
+                            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Abonelik Yönetimi</h2>
+                            <button onClick={() => setShowSubscriptionManager(false)} className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-slate-100'}`}>
+                                <X className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-slate-600'}`} />
                             </button>
                         </div>
                         <SubscriptionManager />
@@ -1069,11 +1117,11 @@ export default function DashboardPage() {
 
             {showGiftCard && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={(e) => e.target === e.currentTarget && setShowGiftCard(false)}>
-                    <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-2xl shadow-pink-500/10 ring-1 ring-white/5">
+                    <div className={`w-full max-w-3xl max-h-[90vh] overflow-y-auto backdrop-blur-3xl rounded-[2rem] p-8 shadow-2xl ring-1 ${darkMode ? 'bg-slate-950/95 border border-white/10 shadow-pink-500/10 ring-white/5' : 'bg-white/95 border border-slate-200 shadow-slate-300/50 ring-slate-100'}`}>
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">🎁 Hediye Kartları</h2>
-                            <button onClick={() => setShowGiftCard(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                                <X className="w-5 h-5" />
+                            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>🎁 Hediye Kartları</h2>
+                            <button onClick={() => setShowGiftCard(false)} className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-slate-100'}`}>
+                                <X className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-slate-600'}`} />
                             </button>
                         </div>
                         <GiftCardManager />
@@ -1083,11 +1131,11 @@ export default function DashboardPage() {
 
             {showAffiliate && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={(e) => e.target === e.currentTarget && setShowAffiliate(false)}>
-                    <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 shadow-2xl shadow-purple-500/10 ring-1 ring-white/5">
+                    <div className={`w-full max-w-4xl max-h-[90vh] overflow-y-auto backdrop-blur-3xl rounded-[2rem] p-8 shadow-2xl ring-1 ${darkMode ? 'bg-slate-950/95 border border-white/10 shadow-purple-500/10 ring-white/5' : 'bg-white/95 border border-slate-200 shadow-slate-300/50 ring-slate-100'}`}>
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">💰 Affiliate Program</h2>
-                            <button onClick={() => setShowAffiliate(false)} className="p-2 hover:bg-gray-800 rounded-lg">
-                                <X className="w-5 h-5" />
+                            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>💰 Affiliate Program</h2>
+                            <button onClick={() => setShowAffiliate(false)} className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-slate-100'}`}>
+                                <X className={`w-5 h-5 ${darkMode ? 'text-white' : 'text-slate-600'}`} />
                             </button>
                         </div>
                         <AffiliateDashboard />
@@ -1142,6 +1190,61 @@ export default function DashboardPage() {
                     }
                 }}
             />
+
+            {/* Mobile Bottom Navigation (App Experience) */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 pt-2 pointer-events-none">
+                <div className={`backdrop-blur-2xl rounded-[2rem] shadow-2xl p-2 flex items-center justify-between pointer-events-auto border ${darkMode ? 'bg-slate-950/90 border-white/10' : 'bg-white/90 border-slate-200'}`}>
+                    <button 
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+                        className={`flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition-colors ${darkMode ? 'text-cyan-400 bg-cyan-500/10' : 'text-sky-600 bg-sky-50'}`}
+                    >
+                        <LayoutGrid className="w-5 h-5" />
+                        <span className="text-[10px] font-bold">Ana Sayfa</span>
+                    </button>
+                    
+                    <button 
+                        onClick={() => setShowJobSearch(true)} 
+                        className={`flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-sky-600 hover:bg-slate-50'}`}
+                    >
+                        <Briefcase className="w-5 h-5" />
+                        <span className="text-[10px] font-bold">İş Bul</span>
+                    </button>
+                    
+                    <Link 
+                        to="/editor"
+                        className={`flex-shrink-0 w-12 h-12 -mt-6 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white flex items-center justify-center border-4 hover:scale-105 transition-transform ${darkMode ? 'shadow-lg shadow-cyan-500/30 border-slate-950' : 'shadow-md border-white'}`}
+                    >
+                        <Plus className="w-6 h-6" />
+                    </Link>
+                    
+                    <button 
+                        onClick={() => {
+                            if (!isPremium) {
+                                setShowUpsell(true);
+                                setUpsellType('generic');
+                            } else {
+                                setShowSubscriptionManager(true);
+                            }
+                        }} 
+                        className={`flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-sky-600 hover:bg-slate-50'}`}
+                    >
+                        <Crown className="w-5 h-5" />
+                        <span className="text-[10px] font-bold">{isPremium ? 'Pro' : 'Premium'}</span>
+                    </button>
+                    
+                    <button 
+                        onClick={() => setShowProfileModal(true)} 
+                        className={`flex-1 flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-sky-600 hover:bg-slate-50'}`}
+                    >
+                        <User className="w-5 h-5" />
+                        <span className="text-[10px] font-bold">Profil</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Added padding at the bottom of the main content to avoid overlap with bottom bar */}
+            <div className="h-24 md:h-0"></div>
+            
         </div >
     )
 }

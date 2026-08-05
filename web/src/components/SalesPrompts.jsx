@@ -373,6 +373,16 @@ export function StickyBottomCTA({ show = true }) {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [dismissed])
 
+    // Auto-dismiss after 10 seconds of being visible
+    useEffect(() => {
+        if (isVisible && !dismissed) {
+            const timer = setTimeout(() => {
+                setDismissed(true)
+            }, 10000)
+            return () => clearTimeout(timer)
+        }
+    }, [isVisible, dismissed])
+
     if (isAdmin || !show || !isVisible || dismissed) return null
 
     return (

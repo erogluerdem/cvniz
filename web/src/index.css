@@ -1632,31 +1632,25 @@
   background: radial-gradient(circle at center, rgba(14, 165, 233, 0.25) 0%, transparent 70%);
 }
 
-/* Hero Floating Cards - Enhanced */
+/* Floating CTA - Gentle Breathing Animation */
 .hero-float-card {
-  animation: hero-float 6s ease-in-out infinite;
+  animation: cta-gentle-float 4s ease-in-out infinite;
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-@keyframes hero-float {
+@keyframes cta-gentle-float {
   0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-15px) rotate(1deg);
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px) rotate(-1deg);
-  }
-  75% {
-    transform: translateY(-20px) rotate(0.5deg);
+    transform: translateY(-6px);
   }
 }
 
-/* Hero Float Card Delayed */
+/* For elements needing a delayed float */
 .hero-float-card-delayed {
-  animation: hero-float 7s ease-in-out infinite;
+  animation: cta-gentle-float 4s ease-in-out infinite;
   animation-delay: -2s;
 }
 

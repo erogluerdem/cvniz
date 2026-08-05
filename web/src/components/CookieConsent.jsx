@@ -23,7 +23,7 @@ export default function CookieConsent() {
     if (!isVisible) return null
 
     return (
-        <div className="fixed bottom-4 left-4 z-[100] max-w-[340px] w-[calc(100%-2rem)] animate-in slide-in-from-bottom-8 duration-500">
+        <div className="fixed bottom-24 left-4 z-[100] max-w-[340px] w-[calc(100%-2rem)] animate-in slide-in-from-bottom-8 duration-500">
             <div className="relative w-full glass-card rounded-2xl border border-white/10 p-5 shadow-2xl overflow-hidden group bg-slate-900/90 backdrop-blur-xl">
                 <div className="relative z-10">
                     <div className="flex items-start gap-3 mb-3">

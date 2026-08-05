@@ -937,7 +937,7 @@ export default function EditorPage() {
                                 onClick={() => setViewportMode(item.id)}
                                 className={`p-2 rounded-xl transition-all duration-300 relative group ${viewportMode === item.id
                                     ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-                                    : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
+                                    : isDayMode ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'
                                     }`}
                                 title={item.label}
                             >
@@ -1484,8 +1484,8 @@ export default function EditorPage() {
                                     }
                                 }}
                                 className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative touch-target ${activeTab === tab.id
-                                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                                    : 'text-slate-500 hover:bg-white/5 hover:text-slate-300 border border-transparent'
+                                    ? (isDayMode ? 'bg-cyan-50 text-cyan-600 border border-cyan-200 font-medium shadow-sm' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20')
+                                    : (isDayMode ? 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent' : 'text-slate-500 hover:bg-white/5 hover:text-slate-300 border border-transparent')
                                     } ${draggedTabId === tab.id ? 'opacity-50' : ''}`}
                             >
                                 <div 
@@ -1495,7 +1495,7 @@ export default function EditorPage() {
                                 >
                                     <GripVertical className="w-3 h-3" />
                                 </div>
-                                <div className={`${activeTab === tab.id ? 'text-cyan-400 scale-110' : 'text-slate-500 group-hover:scale-110'} transition-transform ml-2 md:ml-4`}>
+                                <div className={`${activeTab === tab.id ? (isDayMode ? 'text-cyan-600 scale-110' : 'text-cyan-400 scale-110') : 'text-slate-500 group-hover:scale-110'} transition-transform ml-2 md:ml-4`}>
                                     {tab.icon}
                                 </div>
                                 <span className={`text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300 overflow-hidden ${sidebarCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100 block'}`}>

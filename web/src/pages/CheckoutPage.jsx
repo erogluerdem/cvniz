@@ -24,6 +24,7 @@ export default function CheckoutPage() {
     const [couponCode, setCouponCode] = useState('')
     const [couponError, setCouponError] = useState('')
     const [iyzicoHtml, setIyzicoHtml] = useState(null) // New state for Iyzico content
+    const [uiTheme, setUiTheme] = useState('night')
     const [errors, setErrors] = useState({})
     const [paymentSuccess, setPaymentSuccess] = useState(false)
     const [paymentResult, setPaymentResult] = useState(null)
@@ -111,6 +112,26 @@ export default function CheckoutPage() {
         setBillingCycle(cycle)
     }, [searchParams, setSelectedPlan, setBillingCycle])
 
+    // Theme logic
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        const stored = window.localStorage.getItem('CVniz-home-theme')
+        if (stored === 'day' || stored === 'night') {
+            setUiTheme(stored)
+        }
+        
+        const handler = (event) => {
+            const nextTheme = event.detail
+            if (nextTheme === 'day' || nextTheme === 'night') {
+                setUiTheme(nextTheme)
+            }
+        }
+        window.addEventListener('CVniz-theme-change', handler)
+        return () => window.removeEventListener('CVniz-theme-change', handler)
+    }, [])
+
+    const darkMode = uiTheme === 'night'
+
     // Redirect if not logged in
     useEffect(() => {
         if (!user) {
@@ -173,9 +194,9 @@ export default function CheckoutPage() {
 
     if (paymentSuccess) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
+            <div className={`min-h-screen flex items-center justify-center p-4 ${darkMode ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-slate-50'}`}>
                 <div className="max-w-lg w-full text-center">
-                    <div className="glass-card rounded-3xl p-8 relative overflow-hidden">
+                    <div className={`${darkMode ? 'glass-card' : 'bg-white border border-slate-200 shadow-xl'} rounded-3xl p-8 relative overflow-hidden`}>
                         <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-cyan-500/10" />
 
                         <div className="relative z-10">
@@ -188,21 +209,21 @@ export default function CheckoutPage() {
                                 Pro üyeliğiniz aktif edildi. Tüm premium özelliklere erişebilirsiniz.
                             </p>
 
-                            <div className="bg-white/5 rounded-2xl p-4 mb-6 text-left">
+                            <div className={`${darkMode ? 'bg-white/5 text-left' : 'bg-slate-50 border border-slate-100 text-left'} rounded-2xl p-4 mb-6`}>
                                 <div className="flex justify-between text-sm mb-2">
-                                    <span className="text-gray-400">İşlem No</span>
+                                    <span className={darkMode ? 'text-gray-400' : 'text-slate-500'}>İşlem No</span>
                                     <span className="font-mono">{paymentResult?.id}</span>
                                 </div>
                                 <div className="flex justify-between text-sm mb-2">
-                                    <span className="text-gray-400">Plan</span>
+                                    <span className={darkMode ? 'text-gray-400' : 'text-slate-500'}>Plan</span>
                                     <span>{paymentResult?.planName}</span>
                                 </div>
                                 <div className="flex justify-between text-sm mb-2">
-                                    <span className="text-gray-400">Ödeme Tipi</span>
+                                    <span className={darkMode ? 'text-gray-400' : 'text-slate-500'}>Ödeme Tipi</span>
                                     <span>{billingOptions.find(b => b.id === paymentResult?.billingCycle)?.label}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400">Tutar</span>
+                                    <span className={darkMode ? 'text-gray-400' : 'text-slate-500'}>Tutar</span>
                                     <span className="font-bold text-green-400">{paymentResult?.amount}₺</span>
                                 </div>
                             </div>
@@ -210,7 +231,7 @@ export default function CheckoutPage() {
                             <div className="flex gap-3">
                                 <Link
                                     to="/dashboard"
-                                    className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors font-medium"
+                                    className={`flex-1 py-3 rounded-xl transition-colors font-medium ${darkMode ? 'bg-white/10 hover:bg-white/20' : 'bg-slate-200 hover:bg-slate-300 text-slate-800'}`}
                                 >
                                     Panele Git
                                 </Link>
@@ -229,19 +250,19 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-12 px-4">
+        <div className={`min-h-screen py-12 px-4 ${darkMode ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
             <div className="max-w-5xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <button
                         onClick={() => navigate(-1)}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+                        className={`p-2 rounded-xl transition-colors ${darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}`}
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
                         <h1 className="text-2xl font-bold">Ödeme</h1>
-                        <p className="text-sm text-gray-400">Güvenli ödeme ile Pro'ya geçin</p>
+                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>Güvenli ödeme ile Pro'ya geçin</p>
                     </div>
                 </div>
 
@@ -254,7 +275,7 @@ export default function CheckoutPage() {
                     {/* Left Column - Form */}
                     <div className="lg:col-span-3 space-y-6">
                         {/* Billing Cycle Selection */}
-                        <div className="glass-card rounded-2xl p-6">
+                        <div className={`${darkMode ? 'glass-card' : 'bg-white border border-slate-200 shadow-md'} rounded-2xl p-6`}>
                             <h2 className="font-bold mb-4 flex items-center gap-2">
                                 <Calendar className="w-5 h-5 text-cyan-400" />
                                 Fatura Dönemi
@@ -266,8 +287,8 @@ export default function CheckoutPage() {
                                         key={option.id}
                                         onClick={() => setBillingCycle(option.id)}
                                         className={`p-4 rounded-xl border-2 transition-all relative ${billingCycle === option.id
-                                            ? 'border-cyan-500 bg-cyan-500/10'
-                                            : 'border-white/10 hover:border-white/20'
+                                            ? (darkMode ? 'border-cyan-500 bg-cyan-500/10' : 'border-cyan-500 bg-cyan-50')
+                                            : (darkMode ? 'border-white/10 hover:border-white/20' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50')
                                             }`}
                                     >
                                         {option.badge && (
@@ -277,10 +298,10 @@ export default function CheckoutPage() {
                                         )}
                                         <option.icon className={`w-6 h-6 mb-2 ${billingCycle === option.id ? 'text-cyan-400' : 'text-gray-500'}`} />
                                         <div className="font-bold text-sm">{option.label}</div>
-                                        <div className="text-[10px] text-gray-500">{option.desc}</div>
+                                        <div className={`text-[10px] ${darkMode ? 'text-gray-500' : 'text-slate-500'}`}>{option.desc}</div>
                                         <div className="mt-2 font-bold text-lg">
                                             {selectedPlan?.price[option.id]}₺
-                                            {option.id !== 'lifetime' && <span className="text-xs text-gray-500">/ay</span>}
+                                            {option.id !== 'lifetime' && <span className={`text-xs ${darkMode ? 'text-gray-500' : 'text-slate-400'}`}>/ay</span>}
                                         </div>
                                     </button>
                                 ))}
@@ -288,18 +309,18 @@ export default function CheckoutPage() {
                         </div>
 
                         {/* Payment Method Selection */}
-                        <div className="glass-card rounded-2xl p-6">
+                        <div className={`${darkMode ? 'glass-card' : 'bg-white border border-slate-200 shadow-md'} rounded-2xl p-6`}>
                             <h2 className="font-bold mb-4 flex items-center gap-2">
                                 <CreditCard className="w-5 h-5 text-cyan-400" />
                                 Ödeme Yöntemi
                             </h2>
 
-                            <div className="flex p-1 bg-white/5 rounded-xl mb-6">
+                            <div className={`flex p-1 rounded-xl mb-6 ${darkMode ? 'bg-white/5' : 'bg-slate-100'}`}>
                                 <button
                                     onClick={() => setPaymentMethod('card')}
                                     className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all ${paymentMethod === 'card'
                                         ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
-                                        : 'text-gray-400 hover:text-white'
+                                        : (darkMode ? 'text-gray-400 hover:text-white' : 'text-slate-500 hover:text-slate-900')
                                         }`}
                                 >
                                     <CreditCard className="w-4 h-4" />
@@ -309,7 +330,7 @@ export default function CheckoutPage() {
                                     onClick={() => setPaymentMethod('bank')}
                                     className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all ${paymentMethod === 'bank'
                                         ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20'
-                                        : 'text-gray-400 hover:text-white'
+                                        : (darkMode ? 'text-gray-400 hover:text-white' : 'text-slate-500 hover:text-slate-900')
                                         }`}
                                 >
                                     <Landmark className="w-4 h-4" />
@@ -319,7 +340,7 @@ export default function CheckoutPage() {
 
                             {paymentMethod === 'card' ? (
                                 <div className="space-y-4 animate-fade-in">
-                                    <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-200 text-sm mb-4 flex items-start gap-3">
+                                    <div className={`p-4 rounded-xl border text-sm mb-4 flex items-start gap-3 ${darkMode ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-200' : 'bg-cyan-50 border-cyan-200 text-cyan-800'}`}>
                                         <Shield className="w-5 h-5 shrink-0" />
                                         <p>Ödemeniz <strong>Iyzico</strong> güvencesiyle işlenecektir. Aşağıdaki butona tıkladığınızda güvenli ödeme formu açılacaktır.</p>
                                     </div>
@@ -328,10 +349,10 @@ export default function CheckoutPage() {
                                     <div id="iyzico-container" className="min-h-[100px]">
                                         {!iyzicoHtml && (
                                             <div className="text-center py-8">
-                                                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <CreditCard className="w-8 h-8 text-gray-400" />
+                                                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${darkMode ? 'bg-white/5' : 'bg-slate-100'}`}>
+                                                    <CreditCard className={`w-8 h-8 ${darkMode ? 'text-gray-400' : 'text-slate-400'}`} />
                                                 </div>
-                                                <p className="text-gray-300 text-sm mb-6 max-w-xs mx-auto">
+                                                <p className={`text-sm mb-6 max-w-xs mx-auto ${darkMode ? 'text-gray-300' : 'text-slate-600'}`}>
                                                     Devam etmek için aşağıdaki butona tıklayın.
                                                 </p>
                                             </div>
@@ -339,7 +360,7 @@ export default function CheckoutPage() {
                                     </div>
 
                                     {errors.submit && (
-                                        <div className="p-3 rounded-xl bg-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                                        <div className={`p-3 rounded-xl text-sm flex items-center gap-2 ${darkMode ? 'bg-red-500/20 text-red-400' : 'bg-red-50 text-red-600'}`}>
                                             <AlertCircle className="w-4 h-4" />
                                             {errors.submit}
                                         </div>
@@ -369,30 +390,30 @@ export default function CheckoutPage() {
                                 <div className="space-y-6 animate-fade-in">
                                     {/* Bank Accounts */}
                                     <div className="space-y-4">
-                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                        <div className={`p-4 rounded-xl border ${darkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'}`}>
                                             <div className="flex items-center gap-3 mb-3">
-                                                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${darkMode ? 'bg-white/10' : 'bg-white border border-slate-200 shadow-sm'}`}>
                                                     <span className="font-bold text-lg">GB</span>
                                                 </div>
                                                 <div>
                                                     <h4 className="font-bold">Garanti Bankası</h4>
-                                                    <p className="text-xs text-gray-400">CVniz Teknoloji A.Ş.</p>
+                                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>CVniz Teknoloji A.Ş.</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center justify-between bg-black/20 p-3 rounded-lg mb-2">
-                                                <code className="text-sm font-mono text-cyan-400">TR12 0006 2000 0001 2345 6789 01</code>
-                                                <button onClick={() => navigator.clipboard.writeText('TR12 0006 2000 0001 2345 6789 01')} className="text-gray-500 hover:text-white p-1">
+                                            <div className={`flex items-center justify-between p-3 rounded-lg mb-2 ${darkMode ? 'bg-black/20' : 'bg-white border border-slate-200'}`}>
+                                                <code className="text-sm font-mono text-cyan-500">TR12 0006 2000 0001 2345 6789 01</code>
+                                                <button onClick={() => navigator.clipboard.writeText('TR12 0006 2000 0001 2345 6789 01')} className={`${darkMode ? 'text-gray-500 hover:text-white' : 'text-slate-400 hover:text-slate-800'} p-1`}>
                                                     <Copy className="w-4 h-4" />
                                                 </button>
                                             </div>
-                                            <p className="text-[10px] text-gray-500 text-center">
+                                            <p className={`text-[10px] text-center ${darkMode ? 'text-gray-500' : 'text-slate-500'}`}>
                                                 Açıklama kısmına <strong>{user?.email}</strong> yazmayı unutmayın.
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Upload Form */}
-                                    <div className="border-t border-white/10 pt-6">
+                                    <div className={`border-t pt-6 ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
                                         <h3 className="font-bold mb-4 flex items-center gap-2">
                                             <Upload className="w-4 h-4 text-purple-400" />
                                             Ödeme Bildirimi
@@ -400,18 +421,18 @@ export default function CheckoutPage() {
 
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="block text-sm text-gray-400 mb-2">Gönderen Ad Soyad</label>
+                                                <label className={`block text-sm mb-2 ${darkMode ? 'text-gray-400' : 'text-slate-600'}`}>Gönderen Ad Soyad</label>
                                                 <input
                                                     type="text"
                                                     value={bankForm.senderName}
                                                     onChange={(e) => setBankForm({ ...bankForm, senderName: e.target.value })}
                                                     placeholder="Örn: Ahmet Yılmaz"
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500/50 transition-colors"
+                                                    className={`w-full rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500/50 transition-colors ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-slate-200'}`}
                                                 />
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm text-gray-400 mb-2">Dekont Yükle</label>
+                                                <label className={`block text-sm mb-2 ${darkMode ? 'text-gray-400' : 'text-slate-600'}`}>Dekont Yükle</label>
                                                 <div className="relative group cursor-pointer">
                                                     <input
                                                         type="file"
@@ -420,16 +441,16 @@ export default function CheckoutPage() {
                                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                                     />
                                                     <div className={`border-2 border-dashed rounded-xl p-6 text-center transition-all ${bankForm.file
-                                                        ? 'border-green-500/50 bg-green-500/10'
-                                                        : 'border-white/10 bg-white/5 group-hover:border-white/20 group-hover:bg-white/10'
+                                                        ? (darkMode ? 'border-green-500/50 bg-green-500/10' : 'border-green-500 bg-green-50')
+                                                        : (darkMode ? 'border-white/10 bg-white/5 group-hover:border-white/20 group-hover:bg-white/10' : 'border-slate-300 bg-slate-50 group-hover:border-slate-400 group-hover:bg-slate-100')
                                                         }`}>
                                                         {bankForm.file ? (
-                                                            <div className="flex items-center justify-center gap-2 text-green-400">
+                                                            <div className={`flex items-center justify-center gap-2 ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
                                                                 <CheckCircle className="w-5 h-5" />
                                                                 <span className="font-medium text-sm truncate max-w-[200px]">{bankForm.file.name}</span>
                                                             </div>
                                                         ) : (
-                                                            <div className="text-gray-400">
+                                                            <div className={darkMode ? 'text-gray-400' : 'text-slate-500'}>
                                                                 <Upload className="w-6 h-6 mx-auto mb-2 opacity-50" />
                                                                 <p className="text-sm">Dosya seçmek için tıklayın</p>
                                                                 <p className="text-[10px] mt-1 opacity-50">JPG, PNG veya PDF</p>
@@ -449,7 +470,7 @@ export default function CheckoutPage() {
                                                 type="button"
                                                 onClick={handleBankSubmit}
                                                 disabled={isProcessing || localProcessing}
-                                                className="w-full py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                                                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 ${darkMode ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white shadow-md'}`}
                                             >
                                                 {isProcessing || localProcessing ? (
                                                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -469,19 +490,19 @@ export default function CheckoutPage() {
 
                     {/* Right Column - Summary */}
                     <div className="lg:col-span-2">
-                        <div className="glass-card rounded-2xl p-6 sticky top-24">
+                        <div className={`${darkMode ? 'glass-card' : 'bg-white border border-slate-200 shadow-md'} rounded-2xl p-6 sticky top-24`}>
                             <h2 className="font-bold mb-4 flex items-center gap-2">
                                 <Crown className="w-5 h-5 text-amber-400" />
                                 Sipariş Özeti
                             </h2>
 
                             {/* Selected Plan */}
-                            <div className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-xl p-4 mb-4 border border-cyan-500/20">
+                            <div className={`rounded-xl p-4 mb-4 border ${darkMode ? 'bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border-cyan-500/20' : 'bg-cyan-50 border-cyan-200'}`}>
                                 <div className="flex items-center gap-3 mb-3">
-                                    <Sparkles className="w-8 h-8 text-cyan-400" />
+                                    <Sparkles className="w-8 h-8 text-cyan-500" />
                                     <div>
                                         <div className="font-bold">{selectedPlan?.name} Plan</div>
-                                        <div className="text-xs text-gray-400">
+                                        <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>
                                             {billingOptions.find(b => b.id === billingCycle)?.label} faturalama
                                         </div>
                                     </div>
@@ -489,8 +510,8 @@ export default function CheckoutPage() {
                                 <div className="space-y-1">
                                     {selectedPlan?.features.map((feature, i) => (
                                         <div key={i} className="flex items-center gap-2 text-xs">
-                                            <Check className="w-3 h-3 text-green-400" />
-                                            <span className="text-gray-300">{feature}</span>
+                                            <Check className="w-3 h-3 text-green-500" />
+                                            <span className={darkMode ? 'text-gray-300' : 'text-slate-700'}>{feature}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -498,17 +519,17 @@ export default function CheckoutPage() {
 
                             {/* Coupon */}
                             <div className="mb-4">
-                                <label className="block text-sm text-gray-400 mb-2">Kupon Kodu</label>
+                                <label className={`block text-sm mb-2 ${darkMode ? 'text-gray-400' : 'text-slate-600'}`}>Kupon Kodu</label>
                                 {appliedCoupon ? (
-                                    <div className="flex items-center justify-between bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3">
+                                    <div className={`flex items-center justify-between border rounded-xl px-4 py-3 ${darkMode ? 'bg-green-500/10 border-green-500/30' : 'bg-green-50 border-green-200'}`}>
                                         <div className="flex items-center gap-2">
-                                            <Tag className="w-4 h-4 text-green-400" />
-                                            <span className="font-bold text-green-400">{appliedCoupon.code}</span>
-                                            <span className="text-xs text-gray-400">
+                                            <Tag className={`w-4 h-4 ${darkMode ? 'text-green-400' : 'text-green-600'}`} />
+                                            <span className={`font-bold ${darkMode ? 'text-green-400' : 'text-green-700'}`}>{appliedCoupon.code}</span>
+                                            <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-green-600/70'}`}>
                                                 ({appliedCoupon.type === 'percent' ? `%${appliedCoupon.discount}` : `${appliedCoupon.discount}₺`} indirim)
                                             </span>
                                         </div>
-                                        <button onClick={removeCoupon} className="text-gray-400 hover:text-white">
+                                        <button onClick={removeCoupon} className={`${darkMode ? 'text-gray-400 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}>
                                             <X className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -519,12 +540,12 @@ export default function CheckoutPage() {
                                             value={couponCode}
                                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                                             placeholder="Kupon kodu girin"
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500/50"
+                                            className={`flex-1 border rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-cyan-500/50 ${darkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}
                                         />
                                         <button
                                             type="button"
                                             onClick={handleApplyCoupon}
-                                            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-sm"
+                                            className={`px-4 py-2 rounded-xl transition-colors text-sm ${darkMode ? 'bg-white/10 hover:bg-white/20' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
                                         >
                                             Uygula
                                         </button>
@@ -534,26 +555,26 @@ export default function CheckoutPage() {
                             </div>
 
                             {/* Price Breakdown */}
-                            <div className="border-t border-white/10 pt-4 space-y-2">
+                            <div className={`border-t pt-4 space-y-2 ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400">Plan Ücreti</span>
+                                    <span className={darkMode ? 'text-gray-400' : 'text-slate-600'}>Plan Ücreti</span>
                                     <span>{originalPrice}₺</span>
                                 </div>
                                 {appliedCoupon && (
-                                    <div className="flex justify-between text-sm text-green-400">
+                                    <div className={`flex justify-between text-sm ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
                                         <span>Kupon İndirimi</span>
                                         <span>-{originalPrice - finalPrice}₺</span>
                                     </div>
                                 )}
-                                <div className="flex justify-between text-lg font-bold pt-2 border-t border-white/10">
+                                <div className={`flex justify-between text-lg font-bold pt-2 border-t ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
                                     <span>Toplam</span>
-                                    <span className="text-cyan-400">{finalPrice}₺</span>
+                                    <span className="text-cyan-500">{finalPrice}₺</span>
                                 </div>
                             </div>
 
                             {/* Trust Badges */}
-                            <div className="mt-6 pt-4 border-t border-white/10">
-                                <div className="flex items-center justify-center gap-4 text-[10px] text-gray-500">
+                            <div className={`mt-6 pt-4 border-t ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                <div className={`flex items-center justify-center gap-4 text-[10px] ${darkMode ? 'text-gray-500' : 'text-slate-500'}`}>
                                     <div className="flex items-center gap-1">
                                         <Shield className="w-3 h-3" /> Güvenli
                                     </div>

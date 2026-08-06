@@ -801,7 +801,7 @@ export default function DashboardPage() {
                                 {activeToolTab === 'quick' && (
                                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                         {[
-                                            { to: '/editor', label: 'Yeni CV', icon: <Plus />, color: 'from-cyan-500 to-blue-600' },
+                                            { to: '/editor?new=true', label: 'Yeni CV', icon: <Plus />, color: 'from-cyan-500 to-blue-600' },
                                             { onClick: () => setShowCVImporter(true), label: 'CV Yükle', icon: <Upload />, color: 'from-emerald-500 to-green-600', badge: 'YENİ' },
                                             { to: '/templates', label: 'Şablonlar', icon: <LayoutGrid />, color: 'from-purple-500 to-pink-600' },
                                             { onClick: () => setShowCompareModal(true), label: 'Karşılaştır', icon: <Columns />, color: 'from-green-500 to-emerald-600' },

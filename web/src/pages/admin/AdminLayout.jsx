@@ -7,7 +7,8 @@ import {
  Search, Bell, RefreshCw, Activity, Home, Megaphone, FileSpreadsheet, Key, Languages,
  Shield, Zap, Target, FlaskConical, Share2, MessageCircle, Image, Palette, Building2,
  Star, Briefcase, Users2, X, Trash2, ExternalLink, ChevronDown, ChevronRight, TrendingUp, Layout, Moon, Sun,
- Sparkles, Clock, Network, UserCog, HeartHandshake, Link as LinkIcon, Lock, Box, ShieldAlert, Scale, Cloud
+ Sparkles, Clock, Network, UserCog, HeartHandshake, Link as LinkIcon, Lock, Box, ShieldAlert, Scale, Cloud,
+ BookOpen, HelpCircle, Globe, MailOpen, Cpu, Award, Building, MessageSquare
 } from 'lucide-react'
 import CommandPalette from '../../components/admin/CommandPalette'
 
@@ -32,13 +33,13 @@ const menuGroups = [
  { path: '/admin/users', icon: <Users className="w-4 h-4" />, label: 'Kullanıcılar'},
  { path: '/admin/cvs', icon: <FileText className="w-4 h-4" />, label: 'CV\'ler'},
  { path: '/admin/cv-reviews', icon: <Star className="w-4 h-4" />, label: 'CV İnceleme'},
- { path: '/admin/announcements', icon: <Megaphone className="w-4 h-4" />, label: 'Duyurular'},
+ { path: '/admin/blog', icon: <BookOpen className="w-4 h-4" />, label: 'Blog Yönetimi'},
  { path: '/admin/site-content', icon: <Home className="w-4 h-4" />, label: 'Site İçeriği'},
- { path: '/admin/ab-tests', icon: <Activity className="w-4 h-4" />, label: 'A/B Testleri'},
+ { path: '/admin/announcements', icon: <Megaphone className="w-4 h-4" />, label: 'Duyurular'},
  { path: '/admin/media', icon: <Image className="w-4 h-4" />, label: 'Medya'},
  { path: '/admin/templates', icon: <Package className="w-4 h-4" />, label: 'Şablonlar'},
  { path: '/admin/roles', icon: <UserCog className="w-4 h-4" />, label: 'Rol Yönetimi'},
- { path: '/admin/nps-feedback', icon: <HeartHandshake className="w-4 h-4" />, label: 'NPS & Geribildirim'},
+ { path: '/admin/career-paths', icon: <Award className="w-4 h-4" />, label: 'Kariyer Yolları'},
  ]
 },
  {
@@ -57,11 +58,13 @@ const menuGroups = [
  label: 'Pazarlama & Büyüme',
  icon: <TrendingUp className="w-4 h-4" />,
  items: [
- { path: '/admin/referrals', icon: <Share2 className="w-4 h-4" />, label: 'Referral'},
  { path: '/admin/campaigns', icon: <Target className="w-4 h-4" />, label: 'Kampanyalar'},
+ { path: '/admin/affiliate', icon: <Network className="w-4 h-4" />, label: 'Affiliate & Partner'},
+ { path: '/admin/partners', icon: <HeartHandshake className="w-4 h-4" />, label: 'İş Ortakları'},
+ { path: '/admin/referrals', icon: <Share2 className="w-4 h-4" />, label: 'Referral Sistemi'},
  { path: '/admin/abtests', icon: <FlaskConical className="w-4 h-4" />, label: 'A/B Testler'},
  { path: '/admin/job-board', icon: <Briefcase className="w-4 h-4" />, label: 'İş İlanları'},
- { path: '/admin/partners', icon: <Users2 className="w-4 h-4" />, label: 'Partnerler'},
+ { path: '/admin/enterprise', icon: <Building className="w-4 h-4" />, label: 'Kurumsal Aboneler'},
  { path: '/admin/enterprise-crm', icon: <Building2 className="w-4 h-4" />, label: 'Kurumsal CRM'},
  ]
 },
@@ -71,18 +74,22 @@ const menuGroups = [
  icon: <Settings className="w-4 h-4" />,
  items: [
  { path: '/admin/emails', icon: <Mail className="w-4 h-4" />, label: 'E-posta'},
+ { path: '/admin/email-templates', icon: <MailOpen className="w-4 h-4" />, label: 'E-posta Şablonları'},
  { path: '/admin/sms-providers', icon: <MessageCircle className="w-4 h-4" />, label: 'SMS Sağlayıcıları'},
- { path: '/admin/support', icon: <MessageCircle className="w-4 h-4" />, label: 'Destek Talepleri'},
+ { path: '/admin/support', icon: <HelpCircle className="w-4 h-4" />, label: 'Destek Talepleri'},
+ { path: '/admin/faq', icon: <MessageSquare className="w-4 h-4" />, label: 'SSS Yönetimi'},
+ { path: '/admin/nps-feedback', icon: <HeartHandshake className="w-4 h-4" />, label: 'NPS & Geribildirim'},
  { path: '/admin/security', icon: <Shield className="w-4 h-4" />, label: 'Güvenlik'},
  { path: '/admin/anti-fraud', icon: <ShieldAlert className="w-4 h-4" />, label: 'Anti-Fraud'},
  { path: '/admin/gdpr-compliance', icon: <Scale className="w-4 h-4" />, label: 'KVKK & GDPR'},
+ { path: '/admin/seo', icon: <Globe className="w-4 h-4" />, label: 'SEO Ayarları'},
  { path: '/admin/api', icon: <Key className="w-4 h-4" />, label: 'API Yönetimi'},
  { path: '/admin/ai-settings', icon: <Zap className="w-4 h-4" />, label: 'AI Ayarları'},
+ { path: '/admin/ai-prompts', icon: <Sparkles className="w-4 h-4" />, label: 'AI Promptleri'},
  { path: '/admin/logs', icon: <Activity className="w-4 h-4" />, label: 'Sistem Logları'},
  { path: '/admin/theme', icon: <Palette className="w-4 h-4" />, label: 'Tema'},
  { path: '/admin/translations', icon: <Languages className="w-4 h-4" />, label: 'Çeviriler'},
  { path: '/admin/settings', icon: <Settings className="w-4 h-4" />, label: 'Ayarlar'},
- { path: '/admin/ai-prompts', icon: <Sparkles className="w-4 h-4" />, label: 'AI Promptleri'},
  { path: '/admin/integrations', icon: <LinkIcon className="w-4 h-4" />, label: 'Entegrasyonlar'},
  { path: '/admin/sessions', icon: <Lock className="w-4 h-4" />, label: 'Aktif Oturumlar'},
  { path: '/admin/cron-jobs', icon: <Clock className="w-4 h-4" />, label: 'Zamanlanmış Görevler'},
@@ -154,22 +161,22 @@ export default function AdminLayout() {
  <CommandPalette 
  isOpen={showCommandPalette} 
  onClose={() => setShowCommandPalette(false)} 
- menuGroups={menuGroups}
- isDayMode={isDayMode}
+ menuGroups={menuGroups} 
  />
+ 
  {/* Sidebar */}
- <aside className={`w-64 border-r p-4 flex flex-col fixed h-full shadow-2xl z-20 transition-colors duration-500 ${isDayMode ? 'bg-white border-slate-200' : 'bg-white/5 border-white/10'}`}>
- <Link to="/" className="flex items-center gap-2 mb-6">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center">
- <FileText className="w-5 h-5 text-slate-900" />
+ <aside className={`w-72 border-r p-5 flex flex-col fixed h-full z-20 transition-all duration-500 ${isDayMode ? 'bg-white/90 backdrop-blur-xl border-slate-200 shadow-xl' : 'bg-[#0B1120]/95 backdrop-blur-2xl border-white/[0.05] shadow-[4px_0_24px_rgba(0,0,0,0.5)]'}`}>
+ <Link to="/" className="flex items-center gap-3 mb-8 px-2 group">
+ <div className={`w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300`}>
+ <FileText className="w-5 h-5 text-white" />
  </div>
  <div>
- <span className="text-xl font-bold gradient-text">CVniz</span>
- <span className="block text-xs text-red-400 font-semibold uppercase tracking-wider">Admin Panel</span>
+ <span className={`text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r ${isDayMode ? 'from-slate-900 to-slate-700' : 'from-white to-slate-300'}`}>CVniz</span>
+ <span className="block text-[10px] text-cyan-500 font-bold uppercase tracking-[0.2em] mt-0.5">Admin Panel</span>
  </div>
  </Link>
 
- <nav className="flex-1 space-y-1.5 overflow-y-auto pr-2 custom-scrollbar">
+ <nav className="flex-1 space-y-2 overflow-y-auto pr-2 custom-scrollbar -mr-2">
  {menuGroups.map(group => {
  const isGroupOpen = openGroups.includes(group.id)
  const isAnyItemActive = group.items.some(item => isActive(item))
@@ -178,40 +185,48 @@ export default function AdminLayout() {
  <div key={group.id} className="space-y-1">
  <button
  onClick={() => toggleGroup(group.id)}
- className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-300 group ${isAnyItemActive
- ? (isDayMode ? 'text-cyan-600 bg-cyan-50' : 'text-cyan-400 bg-cyan-500/5')
- : (isDayMode ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-50' : 'text-gray-400 hover:text-white hover:bg-white/5')
-} ${isGroupOpen ? (isDayMode ? 'bg-slate-50' : 'bg-white/5') : ''}`}
+ className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-300 group ${
+ isAnyItemActive
+ ? (isDayMode ? 'text-cyan-700 bg-cyan-50 shadow-sm border border-cyan-100' : 'text-cyan-400 bg-cyan-500/10 border border-cyan-500/20')
+ : (isDayMode ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/50' : 'text-slate-400 hover:text-white hover:bg-white/5')
+ } ${isGroupOpen && !isAnyItemActive ? (isDayMode ? 'bg-slate-50' : 'bg-white/[0.02]') : ''}`}
  >
  <div className="flex items-center gap-3">
- <div className={`w-5 h-5 flex items-center justify-center transition-colors ${isAnyItemActive ? (isDayMode ? 'text-cyan-600' : 'text-cyan-400') : (isDayMode ? 'text-slate-400 group-hover:text-slate-600' : 'text-gray-500 group-hover:text-gray-300')}`}>
+ <div className={`w-5 h-5 flex items-center justify-center transition-colors ${
+ isAnyItemActive ? (isDayMode ? 'text-cyan-600' : 'text-cyan-400') : (isDayMode ? 'text-slate-400 group-hover:text-cyan-500' : 'text-slate-500 group-hover:text-cyan-400')
+ }`}>
  {group.icon}
  </div>
- <span className={`text-xs font-semibold uppercase tracking-[0.15em] text-left transition-colors ${isAnyItemActive ? (isDayMode ? 'text-cyan-600' : 'text-cyan-400') : ''}`}>
+ <span className={`text-xs font-bold uppercase tracking-[0.1em] text-left transition-colors ${
+ isAnyItemActive ? (isDayMode ? 'text-cyan-700' : 'text-cyan-400') : ''
+ }`}>
  {group.label}
  </span>
  </div>
- <ChevronDown className={`w-3 h-3 opacity-30 transition-transform duration-300 ${isGroupOpen ? 'rotate-180 opacity-60' : ''}`} />
+ <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isGroupOpen ? 'rotate-180 text-cyan-500' : 'opacity-40'}`} />
  </button>
 
  <div
  className={`grid transition-all duration-300 ease-in-out ${isGroupOpen ? 'grid-rows-[1fr] opacity-100 mt-1' : 'grid-rows-[0fr] opacity-0'
-}`}
+ }`}
  >
- <div className="overflow-hidden pl-4 border-l-2 border-white/5 ml-[1.35rem] space-y-1">
+ <div className={`overflow-hidden pl-5 border-l border-dashed ml-5 space-y-0.5 ${isDayMode ? 'border-slate-300' : 'border-white/10'}`}>
  {group.items.map(item => (
  <Link
  key={item.path}
  to={item.path}
- className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all text-[13px] group relative ${isActive(item)
- ? (isDayMode ? 'bg-cyan-50 text-cyan-600 font-semibold' : 'bg-cyan-500/20 text-cyan-400 font-semibold shadow-[0_0_15px_rgba(6,182,212,0.1)]')
- : (isDayMode ? 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' : 'text-gray-500 hover:bg-white/5 hover:text-white')
-}`}
+ className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-[13px] group relative ${
+ isActive(item)
+ ? (isDayMode ? 'bg-white text-cyan-600 font-bold shadow-sm border border-slate-100' : 'bg-cyan-500/10 text-cyan-400 font-bold border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.05)]')
+ : (isDayMode ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-white font-medium')
+ }`}
  >
  {isActive(item) && (
- <div className="absolute left-0 w-1 h-3 bg-cyan-500 rounded-full" />
+ <div className="absolute -left-[1.3rem] top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-cyan-500 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
  )}
- <div className={`w-4 h-4 flex items-center justify-center ${isActive(item) ? (isDayMode ? 'text-cyan-600' : 'text-cyan-400') : (isDayMode ? 'text-slate-400 group-hover:text-slate-600' : 'text-gray-600 group-hover:text-gray-300')}`}>
+ <div className={`w-4 h-4 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${
+ isActive(item) ? (isDayMode ? 'text-cyan-600' : 'text-cyan-400') : (isDayMode ? 'text-slate-400 group-hover:text-cyan-500' : 'text-slate-500 group-hover:text-cyan-400')
+ }`}>
  {item.icon}
  </div>
  <span className="truncate">{item.label}</span>
@@ -221,33 +236,35 @@ export default function AdminLayout() {
  </div>
  </div>
  )
-})}
+ })}
  </nav>
 
- <div className={`border-t pt-4 mt-4 transition-colors ${isDayMode ? 'border-slate-200' : 'border-white/10'}`}>
- <div className={`flex items-center gap-3 mb-4 p-2 rounded-xl border transition-colors ${isDayMode ? 'bg-cyan-50 border-cyan-100' : 'bg-cyan-500/10 border-cyan-500/20'}`}>
- <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center shadow-lg">
+ <div className={`mt-6 pt-4 border-t transition-colors ${isDayMode ? 'border-slate-200' : 'border-white/10'}`}>
+ <div className={`flex items-center gap-3 mb-4 p-3 rounded-2xl border transition-colors ${isDayMode ? 'bg-slate-50 border-slate-200 hover:bg-slate-100' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}>
+ <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
  <Shield className="w-5 h-5 text-white" />
  </div>
- <div>
- <div className={`font-bold text-sm ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{user?.name || 'Admin'}</div>
- <div className={`text-xs font-bold uppercase tracking-wider ${isDayMode ? 'text-cyan-600' : 'text-cyan-400'}`}>Süper Admin</div>
+ <div className="flex-1 min-w-0">
+ <div className={`font-bold text-sm truncate ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{user?.name || 'Admin'}</div>
+ <div className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${isDayMode ? 'text-cyan-600' : 'text-cyan-400'}`}>Süper Admin</div>
  </div>
  </div>
  <button
  onClick={handleLogout}
- className={`w-full flex items-center justify-center gap-2 py-2.5 transition-all rounded-xl ${isDayMode ? 'text-slate-500 hover:text-red-500 hover:bg-red-50' : 'text-gray-400 hover:text-white hover:bg-red-500/10 hover:text-red-400'}`}
+ className={`w-full flex items-center justify-center gap-2 py-2.5 transition-all rounded-xl border ${
+ isDayMode ? 'text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-100 border-transparent' : 'text-slate-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 border-transparent'
+ }`}
  >
  <LogOut className="w-4 h-4" />
- <span className="text-sm font-medium">Güvenli Çıkış</span>
+ <span className="text-sm font-semibold">Güvenli Çıkış</span>
  </button>
  </div>
  </aside>
 
  {/* Main Content */}
- <main className={`flex-1 ml-64 p-6 min-h-screen transition-colors duration-500 ${isDayMode ? 'bg-slate-50/50' : 'bg-slate-950/50'}`}>
+ <main className={`flex-1 ml-72 p-8 min-h-screen transition-all duration-500 ${isDayMode ? 'bg-slate-50' : 'bg-[#050B14]'}`}>
  {/* Header */}
- <header className={`flex items-center justify-between mb-8 sticky top-0 z-30 py-2 backdrop-blur-md -mx-6 px-6 border-b transition-colors duration-500 ${isDayMode ? 'bg-white/80 border-slate-200' : 'bg-slate-950/80 border-white/5'}`}>
+ <header className={`flex items-center justify-between mb-8 sticky top-0 z-30 py-3 backdrop-blur-xl -mx-8 px-8 border-b transition-colors duration-500 ${isDayMode ? 'bg-white/80 border-slate-200' : 'bg-[#0B1120]/80 border-white/5'}`}>
  <div>
  <div className="flex items-center gap-2 text-xs text-gray-500 uppercase tracking-wider mb-1">
  <Home className="w-3 h-3" />

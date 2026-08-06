@@ -8,7 +8,7 @@ const mockCollaborators = [
   { id: 3, name: 'Murat D.', email: 'murat@mail.com', avatar: 'MD', color: 'from-amber-500 to-orange-500' },
 ]
 
-export default function CollaborationBadge({ cvId, cvName, isOpen, onToggle }) {
+export default function CollaborationBadge({ cvId, cvName, isOpen, onToggle, position = 'right' }) {
   const [copied, setCopied] = useState(false)
   const [permission, setPermission] = useState('edit')
   const [email, setEmail] = useState('')
@@ -82,11 +82,10 @@ export default function CollaborationBadge({ cvId, cvName, isOpen, onToggle }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.96 }}
               transition={{ type: 'spring', damping: 24, stiffness: 380 }}
-              className="absolute right-0 top-full mt-3 z-[150] w-[380px]
+              className={`absolute ${position === 'left' ? 'left-0' : 'right-0'} top-full mt-3 z-[150] w-[380px] sm:w-[380px] max-w-[90vw]
                          rounded-2xl overflow-hidden
-                         bg-[#0f1115]/80 backdrop-blur-2xl
-                         border border-white/10
-                         shadow-[0_24px_80px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.08)]"
+                         bg-slate-900 shadow-[0_24px_80px_rgba(0,0,0,0.8),0_0_40px_rgba(6,182,212,0.15)]
+                         border border-slate-700/50`}
             >
               {/* Header */}
               <div className="relative px-5 pt-5 pb-4 border-b border-white/5">

@@ -24,6 +24,10 @@ const AISettings = require('../models/AISettings');
 const AIUsageLog = require('../models/AIUsageLog');
 const Theme = require('../models/Theme');
 const CVView = require('../models/CVView');
+const BlogPost = require('../models/BlogPost');
+const FAQ = require('../models/FAQ');
+const CareerPath = require('../models/CareerPath');
+const SEOSettings = require('../models/SEOSettings');
 const logger = require('../utils/logger');
 const { authenticate, adminOnly } = require('../middleware/auth');
 
@@ -1533,6 +1537,114 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
         console.error('Reports error:', error);
         res.status(500).json({ error: 'Raporlar hazırlanamadı' });
     }
+});
+
+// ================= BLOG ROUTES =================
+router.get('/blog', authenticate, adminOnly, async (req, res) => {
+    try {
+        const posts = await BlogPost.find().populate('author', 'name email').sort('-createdAt');
+        res.json({ success: true, posts });
+    } catch (error) { res.status(500).json({ error: 'Blog yazıları getirilemedi' }); }
+});
+router.post('/blog', authenticate, adminOnly, async (req, res) => {
+    try {
+        const post = new BlogPost({ ...req.body, author: req.user.id });
+        await post.save();
+        res.json({ success: true, post });
+    } catch (error) { res.status(500).json({ error: 'Blog yazısı oluşturulamadı' }); }
+});
+router.put('/blog/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const post = await BlogPost.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, post });
+    } catch (error) { res.status(500).json({ error: 'Blog yazısı güncellenemedi' }); }
+});
+router.delete('/blog/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await BlogPost.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'Blog yazısı silinemedi' }); }
+});
+
+// ================= FAQ ROUTES =================
+router.get('/faqs', authenticate, adminOnly, async (req, res) => {
+    try {
+        const faqs = await FAQ.find().sort('order');
+        res.json({ success: true, faqs });
+    } catch (error) { res.status(500).json({ error: 'SSS getirilemedi' }); }
+});
+router.post('/faqs', authenticate, adminOnly, async (req, res) => {
+    try {
+        const faq = new FAQ(req.body);
+        await faq.save();
+        res.json({ success: true, faq });
+    } catch (error) { res.status(500).json({ error: 'SSS oluşturulamadı' }); }
+});
+router.put('/faqs/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const faq = await FAQ.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, faq });
+    } catch (error) { res.status(500).json({ error: 'SSS güncellenemedi' }); }
+});
+router.delete('/faqs/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await FAQ.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'SSS silinemedi' }); }
+});
+
+// ================= CAREER PATHS ROUTES =================
+router.get('/career-paths', authenticate, adminOnly, async (req, res) => {
+    try {
+        const paths = await CareerPath.find().sort('-createdAt');
+        res.json({ success: true, paths });
+    } catch (error) { res.status(500).json({ error: 'Kariyer yolları getirilemedi' }); }
+});
+router.post('/career-paths', authenticate, adminOnly, async (req, res) => {
+    try {
+        const path = new CareerPath(req.body);
+        await path.save();
+        res.json({ success: true, path });
+    } catch (error) { res.status(500).json({ error: 'Kariyer yolu oluşturulamadı' }); }
+});
+router.put('/career-paths/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const path = await CareerPath.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, path });
+    } catch (error) { res.status(500).json({ error: 'Kariyer yolu güncellenemedi' }); }
+});
+router.delete('/career-paths/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await CareerPath.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'Kariyer yolu silinemedi' }); }
+});
+
+// ================= SEO ROUTES =================
+router.get('/seo', authenticate, adminOnly, async (req, res) => {
+    try {
+        const seoData = await SEOSettings.find().sort('path');
+        res.json({ success: true, seoData });
+    } catch (error) { res.status(500).json({ error: 'SEO ayarları getirilemedi' }); }
+});
+router.post('/seo', authenticate, adminOnly, async (req, res) => {
+    try {
+        const seoItem = new SEOSettings(req.body);
+        await seoItem.save();
+        res.json({ success: true, seoItem });
+    } catch (error) { res.status(500).json({ error: 'SEO ayarı oluşturulamadı' }); }
+});
+router.put('/seo/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const seoItem = await SEOSettings.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, seoItem });
+    } catch (error) { res.status(500).json({ error: 'SEO ayarı güncellenemedi' }); }
+});
+router.delete('/seo/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await SEOSettings.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'SEO ayarı silinemedi' }); }
 });
 
 module.exports = router;

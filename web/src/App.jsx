@@ -63,6 +63,12 @@ const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
 const AdminDashboardPage = lazy(() => import('./pages/admin/DashboardPage'))
 const AdminUsersPage = lazy(() => import('./pages/admin/UsersPage'))
 const AdminCVsPage = lazy(() => import('./pages/admin/CVsPage'))
+const AdminBlogPage = lazy(() => import('./pages/admin/BlogPage'))
+const AdminFAQPage = lazy(() => import('./pages/admin/FAQPage'))
+const AdminCareerPathsPage = lazy(() => import('./pages/admin/CareerPathsPage'))
+const AdminAffiliatePage = lazy(() => import('./pages/admin/AffiliatePage'))
+const AdminEmailTemplatesPage = lazy(() => import('./pages/admin/EmailTemplatesPage'))
+const AdminSEOPage = lazy(() => import('./pages/admin/SEOPage'))
 const AdminPaymentsPage = lazy(() => import('./pages/admin/PaymentsPage'))
 const AdminTemplatesPage = lazy(() => import('./pages/admin/TemplatesPage'))
 const AdminSettingsPage = lazy(() => import('./pages/admin/SettingsPage'))
@@ -370,6 +376,12 @@ function AnimatedRoutes() {
                     <Route index element={<AdminDashboardPage />} />
                     <Route path="users" element={<AdminUsersPage />} />
                     <Route path="cvs" element={<AdminCVsPage />} />
+                    <Route path="blog" element={<AdminBlogPage />} />
+                    <Route path="faq" element={<AdminFAQPage />} />
+                    <Route path="career-paths" element={<AdminCareerPathsPage />} />
+                    <Route path="affiliate" element={<AdminAffiliatePage />} />
+                    <Route path="email-templates" element={<AdminEmailTemplatesPage />} />
+                    <Route path="seo" element={<AdminSEOPage />} />
                     <Route path="payments" element={<AdminPaymentsPage />} />
                     <Route path="settings" element={<AdminSettingsPage />} />
                     <Route path="analytics" element={<AdminAnalyticsPage />} />

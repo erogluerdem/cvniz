@@ -540,6 +540,13 @@ export default function EditorPage() {
 
     // Load draft on mount for guests
     useEffect(() => {
+        const isNew = searchParams.get('new') === 'true'
+        if (isNew) {
+            localStorage.removeItem('cv_draft_data')
+            setCvData(emptyCV)
+            return
+        }
+
         if (!user && !cvId) {
             const draft = localStorage.getItem('cv_draft_data')
             if (draft) {
@@ -552,7 +559,7 @@ export default function EditorPage() {
                 } catch (e) { console.error('Draft load error', e) }
             }
         }
-    }, [])
+    }, [searchParams, user, cvId])
 
     // URL params initialization
     useEffect(() => {
@@ -1890,6 +1897,7 @@ export default function EditorPage() {
             {/* LinkedIn Import Modal */}
             <LinkedInImport
                 isOpen={showLinkedInModal}
+                isDayMode={isDayMode}
                 onClose={() => setShowLinkedInModal(false)}
                 onImport={(data) => {
                     if (data?.personal) {
@@ -1990,76 +1998,124 @@ export default function EditorPage() {
 
             {/* Industry Selection Modal */}
             {showIndustryModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setShowIndustryModal(false)} />
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+                    {/* Immersive Blurred Backdrop */}
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
+                        onClick={() => setShowIndustryModal(false)} 
+                    />
+                    
+                    {/* Decorative Ambient Orbs */}
+                    <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full mix-blend-multiply filter blur-[128px] animate-pulse pointer-events-none" />
+                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-[128px] animate-pulse pointer-events-none" style={{ animationDelay: '2s' }} />
+
                     <motion.div
-                        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                        initial={{ scale: 0.9, opacity: 0, y: 30 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                        className={`relative z-10 w-full max-w-3xl rounded-3xl p-8 shadow-2xl ${isDayMode ? 'bg-gradient-to-br from-white to-slate-50 border border-slate-200' : 'bg-gradient-to-br from-slate-900 to-slate-800 border border-white/10'}`}
+                        exit={{ scale: 0.95, opacity: 0, y: -20 }}
+                        transition={{ type: "spring", duration: 0.6, bounce: 0.3 }}
+                        className={`relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.15)] overflow-hidden ${
+                            isDayMode 
+                                ? 'bg-white/95 border border-white/50 backdrop-blur-3xl' 
+                                : 'bg-slate-900/90 border border-slate-700/50 backdrop-blur-3xl'
+                        }`}
                     >
-                        {/* Header with Icon */}
-                        <div className="flex items-center gap-4 mb-2">
-                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-500/25">
-                                <Sparkles className="w-7 h-7 text-white" />
+                        {/* Shimmering Top Accent Line */}
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 opacity-80" />
+
+                        {/* Modal Header */}
+                        <div className="flex-none px-8 pt-8 pb-5 flex items-start justify-between relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="relative group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-500" />
+                                    <div className={`relative w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-transform duration-500 group-hover:scale-105 ${
+                                        isDayMode ? 'bg-gradient-to-br from-white to-slate-50 border border-slate-100' : 'bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700'
+                                    }`}>
+                                        <Sparkles className="w-6 h-6 text-cyan-500 drop-shadow-sm" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 className={`text-xl font-bold tracking-tight ${isDayMode ? 'text-slate-800' : 'text-white'}`}>
+                                        Örnek CV Seçin
+                                    </h2>
+                                    <p className={`text-xs mt-1 font-medium ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                                        Hangi sektörden hazır içerik görmek istersiniz?
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className={`text-2xl font-bold ${isDayMode ? 'text-slate-800' : 'text-white'}`}>Örnek CV Seçin</h2>
-                                <p className={`text-sm mt-1 ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>Hangi sektörden hazır içerik görmek istersiniz?</p>
-                            </div>
+
+                            <button
+                                onClick={() => setShowIndustryModal(false)}
+                                className={`p-2 rounded-xl transition-all duration-300 hover:rotate-90 ${
+                                    isDayMode 
+                                        ? 'bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600' 
+                                        : 'bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400'
+                                }`}
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
                         </div>
 
-                        <button
-                            onClick={() => setShowIndustryModal(false)}
-                            className={`absolute top-6 right-6 p-2 rounded-xl transition-all ${isDayMode ? 'hover:bg-slate-100 text-slate-400 hover:text-slate-600' : 'hover:bg-white/10 text-slate-400 hover:text-white'}`}
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-
-                        {/* Industry Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6 max-h-[55vh] overflow-y-auto custom-scrollbar pr-2">
-                            {Object.entries(industryLabels).map(([key, label], index) => (
-                                <motion.button
-                                    key={key}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    onClick={() => loadIndustrySample(key)}
-                                    className={`group relative p-5 rounded-2xl text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${isDayMode
-                                        ? 'bg-white border border-slate-200 hover:border-cyan-300 hover:shadow-cyan-200/50'
-                                        : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyan-500/50 hover:shadow-cyan-500/20'
-                                    }`}
-                                >
-                                    {/* Gradient Overlay on Hover */}
-                                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-blue-500/0 group-hover:from-cyan-500/5 group-hover:to-blue-500/5 transition-all duration-300" />
-
-                                    {/* Content */}
-                                    <div className="relative">
-                                        {/* Industry Icon */}
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-all duration-300 group-hover:scale-110 ${isDayMode
-                                            ? 'bg-gradient-to-br from-cyan-100 to-blue-100 text-cyan-600 group-hover:from-cyan-500 group-hover:to-blue-500 group-hover:text-white'
-                                            : 'bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-400 group-hover:from-cyan-500 group-hover:to-blue-500 group-hover:text-white'
+                        {/* Industry Grid Area */}
+                        <div className="flex-1 overflow-y-auto px-8 pb-4 custom-scrollbar relative z-10">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {Object.entries(industryLabels).map(([key, label], index) => (
+                                    <motion.button
+                                        key={key}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.03 + 0.1 }}
+                                        onClick={() => loadIndustrySample(key)}
+                                        className={`group relative h-28 rounded-2xl text-left transition-all duration-500 hover:-translate-y-1 overflow-hidden flex flex-col justify-end p-4 ${
+                                            isDayMode
+                                                ? 'bg-white hover:bg-slate-50 border border-slate-200 hover:border-cyan-300 shadow-sm hover:shadow-lg hover:shadow-cyan-100/50'
+                                                : 'bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-900/40'
+                                        }`}
+                                    >
+                                        {/* Icon Container - Floats to Top Right */}
+                                        <div className={`absolute top-3 right-3 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 ${
+                                            isDayMode
+                                                ? 'bg-cyan-50 text-cyan-600 group-hover:bg-cyan-500 group-hover:text-white group-hover:shadow-sm group-hover:shadow-cyan-200'
+                                                : 'bg-slate-700/50 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white group-hover:shadow-md group-hover:shadow-cyan-900'
                                         }`}>
                                             {getIndustryIcon(key)}
                                         </div>
 
-                                        <h3 className={`font-semibold text-sm leading-tight ${isDayMode ? 'text-slate-700 group-hover:text-slate-900' : 'text-slate-200 group-hover:text-white'}`}>
-                                            {label}
-                                        </h3>
-
-                                        <div className={`mt-2 text-xs transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 ${isDayMode ? 'text-cyan-600' : 'text-cyan-400'}`}>
-                                            Örneği Yükle →
+                                        {/* Content Bottom */}
+                                        <div className="relative z-10">
+                                            <h3 className={`font-semibold text-[14px] leading-tight transition-colors duration-300 pr-8 ${
+                                                isDayMode ? 'text-slate-700 group-hover:text-cyan-700' : 'text-slate-200 group-hover:text-cyan-300'
+                                            }`}>
+                                                {label}
+                                            </h3>
+                                            
+                                            <div className="mt-1.5 flex items-center gap-1.5 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider ${isDayMode ? 'text-cyan-600' : 'text-cyan-400'}`}>
+                                                    İncele
+                                                </span>
+                                                <div className={`w-3 h-3 rounded-full flex items-center justify-center ${isDayMode ? 'bg-cyan-100 text-cyan-700' : 'bg-cyan-900 text-cyan-300'}`}>
+                                                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </motion.button>
-                            ))}
+
+                                        {/* Subtle Hover Gradient Base */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                    </motion.button>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Footer Info */}
-                        <div className={`mt-6 pt-4 border-t text-center text-xs ${isDayMode ? 'border-slate-200 text-slate-400' : 'border-white/10 text-slate-500'}`}>
-                            <span className="inline-flex items-center gap-1">
-                                <CheckCircle className="w-3 h-3" />
-                                Seçtiğiniz örnek, mevcut CV verilerinizin üzerine yazılacaktır
+                        <div className={`flex-none mt-2 mx-8 mb-6 pt-4 border-t text-center relative z-10 ${
+                            isDayMode ? 'border-slate-200/60' : 'border-slate-700/50'
+                        }`}>
+                            <span className="inline-flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-medium">
+                                <AlertTriangle className="w-3.5 h-3.5" />
+                                Seçtiğiniz örnek mevcut CV verilerinizin üzerine yazılacaktır. İndirmeyi unutmayın!
                             </span>
                         </div>
                     </motion.div>

@@ -446,8 +446,29 @@ export const adminAPI = {
         api.delete(`/admin/themes/${id}`),
     setActiveTheme: (slug) =>
         api.post('/admin/themes/set-active', { slug }),
-    setActiveTheme: (slug) =>
-        api.post('/admin/themes/set-active', { slug }),
+    // Blog
+    getBlogPosts: () => api.get('/admin/blog'),
+    createBlogPost: (data) => api.post('/admin/blog', data),
+    updateBlogPost: (id, data) => api.put(`/admin/blog/${id}`, data),
+    deleteBlogPost: (id) => api.delete(`/admin/blog/${id}`),
+
+    // FAQ
+    getFaqs: () => api.get('/admin/faqs'),
+    createFaq: (data) => api.post('/admin/faqs', data),
+    updateFaq: (id, data) => api.put(`/admin/faqs/${id}`, data),
+    deleteFaq: (id) => api.delete(`/admin/faqs/${id}`),
+
+    // Career Paths
+    getCareerPaths: () => api.get('/admin/career-paths'),
+    createCareerPath: (data) => api.post('/admin/career-paths', data),
+    updateCareerPath: (id, data) => api.put(`/admin/career-paths/${id}`, data),
+    deleteCareerPath: (id) => api.delete(`/admin/career-paths/${id}`),
+
+    // SEO
+    getSeoSettings: () => api.get('/admin/seo'),
+    createSeoSetting: (data) => api.post('/admin/seo', data),
+    updateSeoSetting: (id, data) => api.put(`/admin/seo/${id}`, data),
+    deleteSeoSetting: (id) => api.delete(`/admin/seo/${id}`),
 };
 
 // ============ AI API ============

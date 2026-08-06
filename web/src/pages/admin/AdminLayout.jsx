@@ -6,7 +6,8 @@ import {
  LayoutDashboard, Users, FileText, CreditCard, Package, Tag, Mail, Settings, LogOut,
  Search, Bell, RefreshCw, Activity, Home, Megaphone, FileSpreadsheet, Key, Languages,
  Shield, Zap, Target, FlaskConical, Share2, MessageCircle, Image, Palette, Building2,
- Star, Briefcase, Users2, X, Trash2, ExternalLink, ChevronDown, ChevronRight, TrendingUp, Layout, Moon, Sun
+ Star, Briefcase, Users2, X, Trash2, ExternalLink, ChevronDown, ChevronRight, TrendingUp, Layout, Moon, Sun,
+ Sparkles, Clock, Network, UserCog, HeartHandshake, Link as LinkIcon, Lock, Box, ShieldAlert, Scale, Cloud
 } from 'lucide-react'
 import CommandPalette from '../../components/admin/CommandPalette'
 
@@ -20,6 +21,7 @@ const menuGroups = [
  { path: '/admin/analytics', icon: <Activity className="w-4 h-4" />, label: 'Analitik'},
  { path: '/admin/live-stats', icon: <Activity className="w-4 h-4" />, label: 'Canlı İstatistik'},
  { path: '/admin/reports', icon: <FileSpreadsheet className="w-4 h-4" />, label: 'Raporlar'},
+ { path: '/admin/storage-monitor', icon: <Cloud className="w-4 h-4" />, label: 'Depolama & S3'},
  ]
 },
  {
@@ -35,6 +37,8 @@ const menuGroups = [
  { path: '/admin/ab-tests', icon: <Activity className="w-4 h-4" />, label: 'A/B Testleri'},
  { path: '/admin/media', icon: <Image className="w-4 h-4" />, label: 'Medya'},
  { path: '/admin/templates', icon: <Package className="w-4 h-4" />, label: 'Şablonlar'},
+ { path: '/admin/roles', icon: <UserCog className="w-4 h-4" />, label: 'Rol Yönetimi'},
+ { path: '/admin/nps-feedback', icon: <HeartHandshake className="w-4 h-4" />, label: 'NPS & Geribildirim'},
  ]
 },
  {
@@ -44,6 +48,8 @@ const menuGroups = [
  items: [
  { path: '/admin/payments', icon: <CreditCard className="w-4 h-4" />, label: 'Ödemeler'},
  { path: '/admin/coupons', icon: <Tag className="w-4 h-4" />, label: 'Kuponlar'},
+ { path: '/admin/payment-gateways', icon: <CreditCard className="w-4 h-4" />, label: 'Sanal POS\'lar'},
+ { path: '/admin/subscription-plans', icon: <Box className="w-4 h-4" />, label: 'Abonelik Paketleri'},
  ]
 },
  {
@@ -56,7 +62,7 @@ const menuGroups = [
  { path: '/admin/abtests', icon: <FlaskConical className="w-4 h-4" />, label: 'A/B Testler'},
  { path: '/admin/job-board', icon: <Briefcase className="w-4 h-4" />, label: 'İş İlanları'},
  { path: '/admin/partners', icon: <Users2 className="w-4 h-4" />, label: 'Partnerler'},
- { path: '/admin/enterprise', icon: <Building2 className="w-4 h-4" />, label: 'Kurumsal'},
+ { path: '/admin/enterprise-crm', icon: <Building2 className="w-4 h-4" />, label: 'Kurumsal CRM'},
  ]
 },
  {
@@ -65,14 +71,21 @@ const menuGroups = [
  icon: <Settings className="w-4 h-4" />,
  items: [
  { path: '/admin/emails', icon: <Mail className="w-4 h-4" />, label: 'E-posta'},
+ { path: '/admin/sms-providers', icon: <MessageCircle className="w-4 h-4" />, label: 'SMS Sağlayıcıları'},
  { path: '/admin/support', icon: <MessageCircle className="w-4 h-4" />, label: 'Destek Talepleri'},
  { path: '/admin/security', icon: <Shield className="w-4 h-4" />, label: 'Güvenlik'},
+ { path: '/admin/anti-fraud', icon: <ShieldAlert className="w-4 h-4" />, label: 'Anti-Fraud'},
+ { path: '/admin/gdpr-compliance', icon: <Scale className="w-4 h-4" />, label: 'KVKK & GDPR'},
  { path: '/admin/api', icon: <Key className="w-4 h-4" />, label: 'API Yönetimi'},
  { path: '/admin/ai-settings', icon: <Zap className="w-4 h-4" />, label: 'AI Ayarları'},
  { path: '/admin/logs', icon: <Activity className="w-4 h-4" />, label: 'Sistem Logları'},
  { path: '/admin/theme', icon: <Palette className="w-4 h-4" />, label: 'Tema'},
  { path: '/admin/translations', icon: <Languages className="w-4 h-4" />, label: 'Çeviriler'},
  { path: '/admin/settings', icon: <Settings className="w-4 h-4" />, label: 'Ayarlar'},
+ { path: '/admin/ai-prompts', icon: <Sparkles className="w-4 h-4" />, label: 'AI Promptleri'},
+ { path: '/admin/integrations', icon: <LinkIcon className="w-4 h-4" />, label: 'Entegrasyonlar'},
+ { path: '/admin/sessions', icon: <Lock className="w-4 h-4" />, label: 'Aktif Oturumlar'},
+ { path: '/admin/cron-jobs', icon: <Clock className="w-4 h-4" />, label: 'Zamanlanmış Görevler'},
  ]
 }
 ]

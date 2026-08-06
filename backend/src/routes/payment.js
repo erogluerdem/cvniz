@@ -147,13 +147,27 @@ router.post('/callback', async (req, res) => {
             // Let's assume 30 days for simplicity or fetch plan from result.basketItems
             const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
+            // Extract plan details from Iyzico itemTransactions (which map to basketItems)
+            const planId = (result.itemTransactions && result.itemTransactions[0]) ? result.itemTransactions[0].itemId : 'pro';
+            
+            // Determine dynamic limits based on planId
+            let planDetails = {
+                planId: planId,
+                planName: planId === 'enterprise' ? 'Kurumsal' : (planId === 'pro' ? 'Pro Sürüm' : 'Premium'),
+                cvLimit: planId === 'enterprise' ? 9999 : 5,
+                aiCredits: planId === 'enterprise' ? 9999 : 50,
+                templates: planId === 'enterprise' ? 'Tümü + Özel' : 'Tümü',
+                exportPdf: true,
+                watermarked: false
+            };
+
             // Save Payment Record
             const payment = await Payment.create({
                 userId: userId,
                 userEmail: result.buyerEmail || 'unknown@email.com',
                 userName: 'Iyzico User',
-                planId: 'premium',
-                planName: 'Premium Plan (Iyzico)',
+                planId: planId,
+                planName: planDetails.planName,
                 amount: result.paidPrice,
                 status: 'completed',
                 provider: 'iyzico',
@@ -162,10 +176,11 @@ router.post('/callback', async (req, res) => {
                 expiresAt
             });
 
-            // Activate User
+            // Activate User and set Dynamic Limits
             const user = await User.findByIdAndUpdate(userId, {
                 isPremium: true,
-                premiumExpiresAt: expiresAt
+                premiumExpiresAt: expiresAt,
+                planDetails: planDetails
             });
 
             // NOTIFICATIONS

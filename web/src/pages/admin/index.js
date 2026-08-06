@@ -44,3 +44,20 @@ export { default as EnterprisePage} from './EnterprisePage'
 export { default as CVReviewsPage} from './CVReviewsPage'
 export { default as JobBoardPage} from './JobBoardPage'
 export { default as PartnersPage} from './PartnersPage'
+
+// New Advanced Features
+export { default as AIPromptsPage } from './AIPromptsPage'
+export { default as RolesPage } from './RolesPage'
+export { default as NPSFeedbackPage } from './NPSFeedbackPage'
+export { default as IntegrationsPage } from './IntegrationsPage'
+export { default as EnterpriseCRMPage } from './EnterpriseCRMPage'
+export { default as SessionsPage } from './SessionsPage'
+export { default as CronJobsPage } from './CronJobsPage'
+export { default as PaymentGatewaysPage } from './PaymentGatewaysPage'
+export { default as SmsProvidersPage } from './SmsProvidersPage'
+
+// Enterprise SaaS Features
+export { default as SubscriptionPlansPage } from './SubscriptionPlansPage'
+export { default as AntiFraudPage } from './AntiFraudPage'
+export { default as GDPRCompliancePage } from './GDPRCompliancePage'
+export { default as StorageMonitorPage } from './StorageMonitorPage'

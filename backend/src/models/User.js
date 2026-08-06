@@ -39,6 +39,15 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
+    planDetails: {
+        planId: { type: String, default: 'free' },
+        planName: { type: String, default: 'Basic (Ücretsiz)' },
+        cvLimit: { type: Number, default: 1 },
+        aiCredits: { type: Number, default: 0 },
+        templates: { type: String, default: 'Standart' },
+        exportPdf: { type: Boolean, default: false },
+        watermarked: { type: Boolean, default: true }
+    },
     authProvider: {
         type: String,
         enum: ['local', 'google', 'linkedin', 'apple'],

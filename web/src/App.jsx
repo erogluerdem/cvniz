@@ -99,6 +99,21 @@ const AdminCVReviewsPage = lazy(() => import('./pages/admin/CVReviewsPage'))
 const AdminJobBoardPage = lazy(() => import('./pages/admin/JobBoardPage'))
 const AdminPartnersPage = lazy(() => import('./pages/admin/PartnersPage'))
 
+// Admin - Advanced Features
+const AdminAIPromptsPage = lazy(() => import('./pages/admin/AIPromptsPage'))
+const AdminRolesPage = lazy(() => import('./pages/admin/RolesPage'))
+const AdminNPSFeedbackPage = lazy(() => import('./pages/admin/NPSFeedbackPage'))
+const AdminIntegrationsPage = lazy(() => import('./pages/admin/IntegrationsPage'))
+const AdminEnterpriseCRMPage = lazy(() => import('./pages/admin/EnterpriseCRMPage'))
+const AdminSessionsPage = lazy(() => import('./pages/admin/SessionsPage'))
+const AdminCronJobsPage = lazy(() => import('./pages/admin/CronJobsPage'))
+const AdminPaymentGatewaysPage = lazy(() => import('./pages/admin/PaymentGatewaysPage'))
+const AdminSmsProvidersPage = lazy(() => import('./pages/admin/SmsProvidersPage'))
+const AdminSubscriptionPlansPage = lazy(() => import('./pages/admin/SubscriptionPlansPage'))
+const AdminAntiFraudPage = lazy(() => import('./pages/admin/AntiFraudPage'))
+const AdminGDPRCompliancePage = lazy(() => import('./pages/admin/GDPRCompliancePage'))
+const AdminStorageMonitorPage = lazy(() => import('./pages/admin/StorageMonitorPage'))
+
 // Legal Pages
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'))
@@ -381,6 +396,21 @@ function AnimatedRoutes() {
                     <Route path="cv-reviews" element={<AdminCVReviewsPage />} />
                     <Route path="job-board" element={<AdminJobBoardPage />} />
                     <Route path="partners" element={<AdminPartnersPage />} />
+                    
+                    {/* Advanced Admin Routes */}
+                    <Route path="ai-prompts" element={<AdminAIPromptsPage />} />
+                    <Route path="roles" element={<AdminRolesPage />} />
+                    <Route path="nps-feedback" element={<AdminNPSFeedbackPage />} />
+                    <Route path="integrations" element={<AdminIntegrationsPage />} />
+                    <Route path="enterprise-crm" element={<AdminEnterpriseCRMPage />} />
+                    <Route path="sessions" element={<AdminSessionsPage />} />
+                    <Route path="cron-jobs" element={<AdminCronJobsPage />} />
+                    <Route path="payment-gateways" element={<AdminPaymentGatewaysPage />} />
+                    <Route path="sms-providers" element={<AdminSmsProvidersPage />} />
+                    <Route path="subscription-plans" element={<AdminSubscriptionPlansPage />} />
+                    <Route path="anti-fraud" element={<AdminAntiFraudPage />} />
+                    <Route path="gdpr-compliance" element={<AdminGDPRCompliancePage />} />
+                    <Route path="storage-monitor" element={<AdminStorageMonitorPage />} />
                 </Route>
 
                 {/* Checkout - No Layout */}

@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useCV } from '../context/CVContext'
 import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import {
     X, Camera, Upload, Sparkles, Loader2, CheckCircle, Download,
     Crown, CreditCard, Image, User, Briefcase, Palette, Zap,
-    FileText, MessageSquare, Copy, ChevronRight, RefreshCw
+    FileText, MessageSquare, Copy, ChevronRight, RefreshCw, Check
 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
@@ -108,15 +110,18 @@ export default function AIHeadshot({ isOpen, onClose }) {
                 const data = await response.json()
                 setResult(data.job)
                 if (!isPremium) setCredits(credits - 1)
+                toast.success('Fotoğraf başarıyla oluşturuldu!')
             } else if (response.status === 403) {
                 setError('credits')
             } else {
                 const data = await response.json()
                 setError(data.error || 'Fotoğraf işlenemedi')
+                toast.error(data.error || 'Fotoğraf işlenemedi')
             }
         } catch (err) {
             console.error('Upload error:', err)
             setError('Bağlantı hatası')
+            toast.error('Bağlantı hatası')
         }
 
         setIsUploading(false)
@@ -124,7 +129,10 @@ export default function AIHeadshot({ isOpen, onClose }) {
 
     // Generate bio
     const handleGenerateBio = async () => {
-        if (!selectedCV) return
+        if (!selectedCV) {
+            toast.error('Lütfen bir CV seçin')
+            return
+        }
 
         setIsGenerating(true)
         setGeneratedBio(null)
@@ -143,9 +151,13 @@ export default function AIHeadshot({ isOpen, onClose }) {
             if (response.ok) {
                 const data = await response.json()
                 setGeneratedBio(data.bio)
+                toast.success('Bio oluşturuldu!')
+            } else {
+                toast.error('Bio oluşturulamadı')
             }
         } catch (err) {
             console.error('Bio generation error:', err)
+            toast.error('Bağlantı hatası')
         }
 
         setIsGenerating(false)
@@ -153,7 +165,10 @@ export default function AIHeadshot({ isOpen, onClose }) {
 
     // Generate elevator pitch
     const handleGeneratePitch = async () => {
-        if (!selectedCV) return
+        if (!selectedCV) {
+            toast.error('Lütfen bir CV seçin')
+            return
+        }
 
         setIsGenerating(true)
         setGeneratedPitch(null)
@@ -172,9 +187,13 @@ export default function AIHeadshot({ isOpen, onClose }) {
             if (response.ok) {
                 const data = await response.json()
                 setGeneratedPitch(data)
+                toast.success('Elevator Pitch oluşturuldu!')
+            } else {
+                toast.error('Elevator Pitch oluşturulamadı')
             }
         } catch (err) {
             console.error('Pitch generation error:', err)
+            toast.error('Bağlantı hatası')
         }
 
         setIsGenerating(false)
@@ -183,6 +202,7 @@ export default function AIHeadshot({ isOpen, onClose }) {
     const handleCopy = (text) => {
         navigator.clipboard.writeText(text)
         setCopied(true)
+        toast.success('Panoya kopyalandı!')
         setTimeout(() => setCopied(false), 2000)
     }
 
@@ -196,40 +216,53 @@ export default function AIHeadshot({ isOpen, onClose }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
-            <div className="w-full max-w-3xl bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 overflow-hidden my-4">
-                {/* Header */}
-                <div className="p-6 border-b border-white/10 bg-gradient-to-r from-pink-500/10 to-purple-500/10">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center">
-                                <Camera className="w-6 h-6 text-white" />
+        <AnimatePresence>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+                onClick={(e) => e.target === e.currentTarget && onClose()}
+            >
+                <motion.div 
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="relative w-full max-w-4xl bg-[#0F1115] border border-[#10B981]/20 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.1)] overflow-hidden my-4 flex flex-col max-h-[90vh]"
+                >
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between p-6 border-b border-white/5 bg-gradient-to-r from-[#10B981]/10 to-transparent gap-4 relative overflow-hidden">
+                        <div className="flex items-center gap-4 relative z-10">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                                <Camera className="w-6 h-6 text-black" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold">AI Headshot & Bio</h2>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    AI Profil & Bio <Sparkles size={16} className="text-[#10B981]" />
+                                </h2>
                                 <p className="text-sm text-gray-400">Profesyonel fotoğraf ve biyografi</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto relative z-10">
                             {tab === 'headshot' && (
-                                <div className="px-3 py-1.5 rounded-lg bg-pink-500/20 border border-pink-500/30 flex items-center gap-2">
-                                    <CreditCard className="w-4 h-4 text-pink-400" />
-                                    <span className="text-sm font-bold text-pink-400">{credits} Kredi</span>
+                                <div className="px-4 py-2 rounded-xl bg-black/40 border border-[#10B981]/30 flex items-center gap-2 shadow-inner">
+                                    <CreditCard className="w-4 h-4 text-[#10B981]" />
+                                    <span className="text-sm font-bold text-white">{credits} Kredi</span>
                                 </div>
                             )}
-                            <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/10">
-                                <X className="w-5 h-5" />
+                            <button onClick={onClose} className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex gap-2 p-4 border-b border-white/5 bg-black/20 overflow-x-auto scrollbar-none">
                         <button
                             onClick={() => setTab('headshot')}
-                            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all ${tab === 'headshot'
-                                ? 'bg-pink-500 text-white'
-                                : 'bg-white/10 hover:bg-white/20'
+                            className={`px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-bold whitespace-nowrap ${tab === 'headshot'
+                                ? 'bg-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
                                 }`}
                         >
                             <Camera className="w-4 h-4" />
@@ -237,9 +270,9 @@ export default function AIHeadshot({ isOpen, onClose }) {
                         </button>
                         <button
                             onClick={() => setTab('bio')}
-                            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all ${tab === 'bio'
-                                ? 'bg-pink-500 text-white'
-                                : 'bg-white/10 hover:bg-white/20'
+                            className={`px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-bold whitespace-nowrap ${tab === 'bio'
+                                ? 'bg-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
                                 }`}
                         >
                             <FileText className="w-4 h-4" />
@@ -247,381 +280,419 @@ export default function AIHeadshot({ isOpen, onClose }) {
                         </button>
                         <button
                             onClick={() => setTab('pitch')}
-                            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all ${tab === 'pitch'
-                                ? 'bg-pink-500 text-white'
-                                : 'bg-white/10 hover:bg-white/20'
+                            className={`px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-bold whitespace-nowrap ${tab === 'pitch'
+                                ? 'bg-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
                                 }`}
                         >
                             <MessageSquare className="w-4 h-4" />
                             Elevator Pitch
                         </button>
                     </div>
-                </div>
 
-                {/* Content */}
-                <div className="p-6 max-h-[65vh] overflow-y-auto">
-                    {/* Credits Error */}
-                    {error === 'credits' && (
-                        <div className="text-center py-10">
-                            <div className="w-20 h-20 rounded-full bg-pink-500/20 flex items-center justify-center mx-auto mb-4">
-                                <CreditCard className="w-10 h-10 text-pink-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2">Kredi Gerekli</h3>
-                            <p className="text-gray-400 mb-6">
-                                Profesyonel headshot oluşturmak için kredi gerekli
-                            </p>
-
-                            <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-6">
-                                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
-                                    <div className="text-2xl font-bold text-pink-400">1</div>
-                                    <div className="text-xs text-gray-500">fotoğraf</div>
-                                    <div className="text-lg font-semibold mt-1">{HEADSHOT_PRICE}₺</div>
+                    {/* Content Area */}
+                    <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                        
+                        {/* Credits Error Section */}
+                        {error === 'credits' && (
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-center py-12 max-w-lg mx-auto"
+                            >
+                                <div className="w-20 h-20 rounded-full bg-[#10B981]/10 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                                    <CreditCard className="w-10 h-10 text-[#10B981]" />
                                 </div>
-                                <div className="p-4 rounded-xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-pink-500/30 text-center relative">
-                                    <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full">
-                                        Tasarruf!
-                                    </span>
-                                    <div className="text-2xl font-bold text-pink-400">3</div>
-                                    <div className="text-xs text-gray-500">fotoğraf</div>
-                                    <div className="text-lg font-semibold mt-1">{BUNDLE_PRICE}₺</div>
+                                <h3 className="text-2xl font-bold text-white mb-2">Kredi Gerekli</h3>
+                                <p className="text-gray-400 mb-8">
+                                    Profesyonel headshot oluşturmak için krediniz bulunmuyor.
+                                </p>
+
+                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                    <div className="p-5 rounded-2xl bg-black/40 border border-white/5 text-center transition-all hover:border-white/10">
+                                        <div className="text-3xl font-bold text-white mb-1">1</div>
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Fotoğraf</div>
+                                        <div className="text-xl font-bold text-[#10B981]">{HEADSHOT_PRICE}₺</div>
+                                    </div>
+                                    <div className="p-5 rounded-2xl bg-gradient-to-br from-[#10B981]/10 to-transparent border border-[#10B981]/30 text-center relative transition-all hover:border-[#10B981]/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                                        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#10B981] text-black text-xs font-bold rounded-full whitespace-nowrap shadow-md">
+                                            Popüler Seçim
+                                        </span>
+                                        <div className="text-3xl font-bold text-white mb-1">3</div>
+                                        <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Fotoğraf</div>
+                                        <div className="text-xl font-bold text-[#10B981]">{BUNDLE_PRICE}₺</div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="flex gap-3 justify-center">
-                                <Link
-                                    to="/pricing?product=headshot"
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold flex items-center gap-2"
-                                >
-                                    <CreditCard className="w-5 h-5" />
-                                    Kredi Satın Al
-                                </Link>
-                                <button
-                                    onClick={() => setError(null)}
-                                    className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20"
-                                >
-                                    Geri
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Headshot Tab */}
-                    {tab === 'headshot' && error !== 'credits' && (
-                        <div className="space-y-6">
-                            {!result ? (
-                                <>
-                                    {/* Upload Area */}
-                                    <div
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className={`relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${preview
-                                            ? 'border-pink-500/50 bg-pink-500/5'
-                                            : 'border-white/20 hover:border-pink-500/50 hover:bg-white/5'
-                                            }`}
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <button
+                                        onClick={() => setError(null)}
+                                        className="px-6 py-4 rounded-xl bg-white/5 text-white font-bold hover:bg-white/10 transition-all"
                                     >
-                                        <input
-                                            ref={fileInputRef}
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleFileSelect}
-                                            className="hidden"
-                                        />
+                                        Geri Dön
+                                    </button>
+                                    <Link
+                                        to="/pricing?product=headshot"
+                                        className="px-8 py-4 rounded-xl bg-[#10B981] text-black font-bold flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                    >
+                                        <CreditCard className="w-5 h-5" />
+                                        Kredi Satın Al
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        )}
 
-                                        {preview ? (
-                                            <div className="flex items-center justify-center gap-8">
-                                                <div className="relative">
-                                                    <img
-                                                        src={preview}
-                                                        alt="Preview"
-                                                        className="w-48 h-48 object-cover rounded-2xl"
-                                                    />
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); resetHeadshot(); }}
-                                                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center"
-                                                    >
-                                                        <X className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                                <div className="text-6xl">→</div>
-                                                <div className="w-48 h-48 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
-                                                    <Sparkles className="w-12 h-12 text-pink-400" />
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <Upload className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                                                <h3 className="text-lg font-bold mb-2">Selfie Yükle</h3>
-                                                <p className="text-sm text-gray-400">
-                                                    Yüzünüzün net göründüğü bir fotoğraf seçin
-                                                </p>
-                                                <p className="text-xs text-gray-500 mt-2">
-                                                    JPEG, PNG veya WebP • Max 10MB
-                                                </p>
-                                            </>
-                                        )}
-                                    </div>
-
-                                    {/* Style Selection */}
-                                    {preview && (
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                                🎨 Stil Seçin
-                                            </label>
-                                            <div className="grid grid-cols-5 gap-2">
-                                                {HEADSHOT_STYLES.map(style => (
-                                                    <button
-                                                        key={style.id}
-                                                        onClick={() => setSelectedStyle(style.id)}
-                                                        className={`p-3 rounded-xl text-center transition-all ${selectedStyle === style.id
-                                                            ? 'bg-pink-500/20 border-2 border-pink-500'
-                                                            : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
-                                                            }`}
-                                                    >
-                                                        <div className="text-2xl mb-1">{style.icon}</div>
-                                                        <div className="text-xs font-medium">{style.name}</div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Error */}
-                                    {error && error !== 'credits' && (
-                                        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                                            {error}
-                                        </div>
-                                    )}
-
-                                    {/* Generate Button */}
-                                    {preview && (
-                                        <div className="text-center">
-                                            <button
-                                                onClick={handleUpload}
-                                                disabled={isUploading}
-                                                className="px-10 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold flex items-center gap-3 mx-auto hover:shadow-lg hover:shadow-pink-500/20 transition-all disabled:opacity-50"
+                        <AnimatePresence mode="wait">
+                            {/* Headshot Tab */}
+                            {tab === 'headshot' && error !== 'credits' && (
+                                <motion.div
+                                    key="headshot"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-8"
+                                >
+                                    {!result ? (
+                                        <>
+                                            {/* Upload Area */}
+                                            <div
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className={`relative border-2 border-dashed rounded-3xl p-10 md:p-12 text-center cursor-pointer transition-all duration-300 ${
+                                                    preview
+                                                    ? 'border-[#10B981]/50 bg-[#10B981]/5 shadow-[0_0_30px_rgba(16,185,129,0.1)]'
+                                                    : 'border-white/10 hover:border-[#10B981]/50 hover:bg-[#10B981]/5'
+                                                    }`}
                                             >
-                                                {isUploading ? (
-                                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                                <input
+                                                    ref={fileInputRef}
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleFileSelect}
+                                                    className="hidden"
+                                                />
+
+                                                {preview ? (
+                                                    <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                                                        <div className="relative group">
+                                                            <img
+                                                                src={preview}
+                                                                alt="Preview"
+                                                                className="w-48 h-48 md:w-56 md:h-56 object-cover rounded-2xl shadow-xl"
+                                                            />
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); resetHeadshot(); }}
+                                                                className="absolute -top-3 -right-3 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
+                                                            >
+                                                                <X className="w-5 h-5" />
+                                                            </button>
+                                                        </div>
+                                                        <div className="text-4xl text-gray-500 rotate-90 md:rotate-0">→</div>
+                                                        <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl bg-gradient-to-br from-[#10B981]/20 to-[#059669]/20 flex items-center justify-center border border-[#10B981]/30 relative overflow-hidden">
+                                                            <div className="absolute inset-0 bg-[#10B981]/10 blur-xl"></div>
+                                                            <Sparkles className="w-16 h-16 text-[#10B981] relative z-10" />
+                                                        </div>
+                                                    </div>
                                                 ) : (
-                                                    <Sparkles className="w-6 h-6" />
+                                                    <div className="py-8">
+                                                        <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-6">
+                                                            <Upload className="w-10 h-10 text-gray-400" />
+                                                        </div>
+                                                        <h3 className="text-xl font-bold text-white mb-2">Fotoğrafınızı Yükleyin</h3>
+                                                        <p className="text-gray-400 mb-4">
+                                                            Yüzünüzün net göründüğü, iyi ışıklandırılmış bir selfie seçin.
+                                                        </p>
+                                                        <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-gray-400 font-medium tracking-wide">
+                                                            JPEG, PNG veya WebP • Max 10MB
+                                                        </div>
+                                                    </div>
                                                 )}
-                                                Profesyonel Fotoğraf Oluştur
-                                            </button>
-                                            <p className="text-xs text-gray-500 mt-3">
-                                                {isPremium ? 'Premium üye - ücretsiz' : `1 kredi kullanılacak (${HEADSHOT_PRICE}₺)`}
+                                            </div>
+
+                                            {/* Style Selection */}
+                                            {preview && (
+                                                <motion.div 
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="bg-black/20 border border-white/5 rounded-3xl p-6"
+                                                >
+                                                    <label className="flex items-center gap-2 text-sm font-bold text-white mb-4">
+                                                        <Palette className="w-5 h-5 text-[#10B981]" /> Stil Seçimi
+                                                    </label>
+                                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                                        {HEADSHOT_STYLES.map(style => (
+                                                            <button
+                                                                key={style.id}
+                                                                onClick={() => setSelectedStyle(style.id)}
+                                                                className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all ${selectedStyle === style.id
+                                                                    ? 'bg-[#10B981]/20 border border-[#10B981] shadow-[0_0_20px_rgba(16,185,129,0.15)]'
+                                                                    : 'bg-white/5 border border-transparent hover:bg-white/10 hover:border-white/10'
+                                                                    }`}
+                                                            >
+                                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all ${
+                                                                    selectedStyle === style.id ? 'bg-[#10B981] shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-black/40 text-gray-400'
+                                                                }`}>
+                                                                    {style.icon}
+                                                                </div>
+                                                                <div className="text-center">
+                                                                    <div className={`font-bold text-sm mb-1 ${selectedStyle === style.id ? 'text-[#10B981]' : 'text-white'}`}>{style.name}</div>
+                                                                    <div className="text-xs text-gray-500 line-clamp-1">{style.description}</div>
+                                                                </div>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+
+                                            {/* Error */}
+                                            {error && error !== 'credits' && (
+                                                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-3">
+                                                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                                                    {error}
+                                                </div>
+                                            )}
+
+                                            {/* Generate Button */}
+                                            {preview && (
+                                                <div className="text-center pt-4">
+                                                    <button
+                                                        onClick={handleUpload}
+                                                        disabled={isUploading}
+                                                        className="w-full md:w-auto md:min-w-[300px] px-8 py-4 rounded-2xl bg-[#10B981] text-black font-bold flex items-center justify-center gap-3 mx-auto hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50"
+                                                    >
+                                                        {isUploading ? (
+                                                            <><Loader2 className="w-5 h-5 animate-spin" /> İşleniyor...</>
+                                                        ) : (
+                                                            <><Sparkles className="w-5 h-5" /> Oluştur (1 Kredi)</>
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        /* Result Display */
+                                        <motion.div 
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="text-center"
+                                        >
+                                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#10B981]/20 mb-6">
+                                                <CheckCircle className="w-8 h-8 text-[#10B981]" />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-white mb-2">İşlem Başarılı!</h3>
+                                            <p className="text-gray-400 mb-8 max-w-md mx-auto">
+                                                Fotoğrafınız işleniyor. Hazır olduğunda email ile bilgilendirileceksiniz ve panelinizde görebileceksiniz.
                                             </p>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                /* Result */
-                                <div className="text-center py-8">
-                                    <div className="w-64 h-64 mx-auto rounded-2xl overflow-hidden mb-6 shadow-2xl">
-                                        <img
-                                            src={result.resultUrl || preview}
-                                            alt="Processed"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-2">Fotoğrafınız Hazır! 🎉</h3>
-                                    <p className="text-gray-400 mb-6">Profesyonel headshot'ınız oluşturuldu</p>
 
-                                    <div className="flex gap-3 justify-center">
-                                        <a
-                                            href={result.resultUrl || preview}
-                                            download="headshot.jpg"
-                                            className="px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold flex items-center gap-2"
-                                        >
-                                            <Download className="w-5 h-5" />
-                                            İndir
-                                        </a>
-                                        <button
-                                            onClick={resetHeadshot}
-                                            className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 flex items-center gap-2"
-                                        >
-                                            <RefreshCw className="w-5 h-5" />
-                                            Yeni Fotoğraf
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                                            <div className="bg-black/40 border border-white/5 rounded-3xl p-6 md:p-8 max-w-sm mx-auto mb-8">
+                                                <div className="w-32 h-32 mx-auto relative mb-6">
+                                                    <div className="absolute inset-0 border-4 border-[#10B981]/30 border-t-[#10B981] rounded-full animate-spin"></div>
+                                                    <div className="absolute inset-2 bg-gradient-to-br from-[#10B981]/10 to-transparent rounded-full flex items-center justify-center">
+                                                        <Image className="w-10 h-10 text-[#10B981]" />
+                                                    </div>
+                                                </div>
+                                                <div className="font-bold text-white">Tahmini Süre: ~2 Dk</div>
+                                                <div className="text-sm text-gray-500">Stil: {HEADSHOT_STYLES.find(s => s.id === result.style)?.name}</div>
+                                            </div>
 
-                    {/* Bio Tab */}
-                    {tab === 'bio' && (
-                        <div className="space-y-6">
-                            {/* CV Selection */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                    📄 CV Seçin
-                                </label>
-                                <div className="grid md:grid-cols-2 gap-3">
-                                    {cvs?.map(cv => (
-                                        <button
-                                            key={cv.id}
-                                            onClick={() => setSelectedCV(cv.id)}
-                                            className={`p-4 rounded-xl text-left transition-all ${selectedCV === cv.id
-                                                ? 'bg-pink-500/20 border-2 border-pink-500'
-                                                : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
-                                                }`}
-                                        >
-                                            <div className="font-medium">{cv.name}</div>
-                                            <div className="text-sm text-gray-400">{cv.template}</div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Generate Button */}
-                            <div className="text-center">
-                                <button
-                                    onClick={handleGenerateBio}
-                                    disabled={!selectedCV || isGenerating}
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold flex items-center gap-2 mx-auto disabled:opacity-50"
-                                >
-                                    {isGenerating ? (
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                    ) : (
-                                        <Sparkles className="w-5 h-5" />
-                                    )}
-                                    LinkedIn "Hakkında" Oluştur
-                                </button>
-                            </div>
-
-                            {/* Result */}
-                            {generatedBio && (
-                                <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h4 className="font-bold flex items-center gap-2">
-                                            <CheckCircle className="w-5 h-5 text-green-400" />
-                                            LinkedIn Biyografiniz
-                                        </h4>
-                                        <button
-                                            onClick={() => handleCopy(generatedBio.content)}
-                                            className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm flex items-center gap-1"
-                                        >
-                                            {copied ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                                            {copied ? 'Kopyalandı' : 'Kopyala'}
-                                        </button>
-                                    </div>
-                                    <p className="text-gray-300 leading-relaxed">{generatedBio.content}</p>
-                                    <div className="mt-4 flex items-center gap-4 text-xs text-gray-500">
-                                        <span>{generatedBio.characterCount} karakter</span>
-                                        <span>Sektör: {generatedBio.industry}</span>
-                                    </div>
-
-                                    {generatedBio.suggestions && (
-                                        <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                                            <h5 className="text-sm font-bold text-amber-400 mb-2">💡 İyileştirme Önerileri</h5>
-                                            <ul className="text-xs text-gray-400 space-y-1">
-                                                {generatedBio.suggestions.map((s, i) => (
-                                                    <li key={i} className="flex items-start gap-2">
-                                                        <ChevronRight className="w-3 h-3 text-amber-400 flex-shrink-0 mt-0.5" />
-                                                        {s}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Pitch Tab */}
-                    {tab === 'pitch' && (
-                        <div className="space-y-6">
-                            {/* CV Selection */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                    📄 CV Seçin
-                                </label>
-                                <div className="grid md:grid-cols-2 gap-3">
-                                    {cvs?.map(cv => (
-                                        <button
-                                            key={cv.id}
-                                            onClick={() => setSelectedCV(cv.id)}
-                                            className={`p-4 rounded-xl text-left transition-all ${selectedCV === cv.id
-                                                ? 'bg-pink-500/20 border-2 border-pink-500'
-                                                : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
-                                                }`}
-                                        >
-                                            <div className="font-medium">{cv.name}</div>
-                                            <div className="text-sm text-gray-400">{cv.template}</div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Purpose Selection */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                    🎯 Kullanım Amacı
-                                </label>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {PITCH_PURPOSES.map(p => (
-                                        <button
-                                            key={p.id}
-                                            onClick={() => setPitchPurpose(p.id)}
-                                            className={`p-3 rounded-xl text-center transition-all ${pitchPurpose === p.id
-                                                ? 'bg-pink-500/20 border-2 border-pink-500'
-                                                : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
-                                                }`}
-                                        >
-                                            <div className="font-medium text-sm">{p.name}</div>
-                                            <div className="text-xs text-gray-500">{p.description}</div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Generate Button */}
-                            <div className="text-center">
-                                <button
-                                    onClick={handleGeneratePitch}
-                                    disabled={!selectedCV || isGenerating}
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold flex items-center gap-2 mx-auto disabled:opacity-50"
-                                >
-                                    {isGenerating ? (
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                    ) : (
-                                        <MessageSquare className="w-5 h-5" />
-                                    )}
-                                    30 Saniyelik Pitch Oluştur
-                                </button>
-                            </div>
-
-                            {/* Result */}
-                            {generatedPitch && (
-                                <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h4 className="font-bold flex items-center gap-2">
-                                            <CheckCircle className="w-5 h-5 text-green-400" />
-                                            Asansör Konuşmanız
-                                        </h4>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-gray-500">{generatedPitch.duration}</span>
                                             <button
-                                                onClick={() => handleCopy(generatedPitch.pitch)}
-                                                className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm flex items-center gap-1"
+                                                onClick={resetHeadshot}
+                                                className="px-8 py-4 rounded-xl bg-white/5 text-white font-bold hover:bg-white/10 transition-all"
                                             >
-                                                {copied ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                                                {copied ? 'Kopyalandı' : 'Kopyala'}
+                                                Yeni Fotoğraf Yükle
                                             </button>
+                                        </motion.div>
+                                    )}
+                                </motion.div>
+                            )}
+
+                            {/* LinkedIn Bio Tab */}
+                            {tab === 'bio' && (
+                                <motion.div
+                                    key="bio"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="bg-black/20 border border-white/5 rounded-3xl p-6">
+                                        <label className="flex items-center gap-2 text-sm font-bold text-white mb-3">
+                                            <FileText className="w-5 h-5 text-[#10B981]" /> Kaynak CV
+                                        </label>
+                                        <select
+                                            value={selectedCV || ''}
+                                            onChange={(e) => setSelectedCV(e.target.value)}
+                                            className="w-full px-4 py-4 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all cursor-pointer"
+                                        >
+                                            <option value="">Profilinizi seçin...</option>
+                                            {cvs?.map(cv => (
+                                                <option key={cv.id || cv._id} value={cv.id || cv._id} className="bg-[#0F1115]">
+                                                    {cv.name || 'İsimsiz CV'}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {!generatedBio ? (
+                                        <button
+                                            onClick={handleGenerateBio}
+                                            disabled={isGenerating || !selectedCV}
+                                            className="w-full py-4 rounded-2xl bg-[#10B981] text-black font-bold flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50"
+                                        >
+                                            {isGenerating ? (
+                                                <><Loader2 className="w-5 h-5 animate-spin" /> Oluşturuluyor...</>
+                                            ) : (
+                                                <><Sparkles className="w-5 h-5" /> LinkedIn Bio Oluştur</>
+                                            )}
+                                        </button>
+                                    ) : (
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="space-y-6"
+                                        >
+                                            <div className="bg-black/40 border border-white/10 rounded-3xl p-6 md:p-8 relative group">
+                                                <button
+                                                    onClick={() => handleCopy(generatedBio)}
+                                                    className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-[#10B981]/10 text-gray-400 hover:text-[#10B981] rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                    title="Kopyala"
+                                                >
+                                                    {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                                                </button>
+                                                <div className="text-gray-300 whitespace-pre-wrap leading-relaxed text-lg">
+                                                    {generatedBio}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-4">
+                                                <button
+                                                    onClick={() => setGeneratedBio(null)}
+                                                    className="px-6 py-4 rounded-2xl bg-white/5 text-gray-300 font-bold hover:bg-white/10 transition-colors"
+                                                >
+                                                    Yeniden Dene
+                                                </button>
+                                                <button
+                                                    onClick={() => handleCopy(generatedBio)}
+                                                    className="flex-1 py-4 rounded-2xl bg-[#10B981] text-black font-bold flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                                >
+                                                    {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                                                    Panoya Kopyala
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </motion.div>
+                            )}
+
+                            {/* Elevator Pitch Tab */}
+                            {tab === 'pitch' && (
+                                <motion.div
+                                    key="pitch"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="bg-black/20 border border-white/5 rounded-3xl p-6 space-y-6">
+                                        <div>
+                                            <label className="flex items-center gap-2 text-sm font-bold text-white mb-3">
+                                                <FileText className="w-5 h-5 text-[#10B981]" /> Kaynak CV
+                                            </label>
+                                            <select
+                                                value={selectedCV || ''}
+                                                onChange={(e) => setSelectedCV(e.target.value)}
+                                                className="w-full px-4 py-4 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#10B981] outline-none transition-all cursor-pointer"
+                                            >
+                                                <option value="">Profilinizi seçin...</option>
+                                                {cvs?.map(cv => (
+                                                    <option key={cv.id || cv._id} value={cv.id || cv._id} className="bg-[#0F1115]">
+                                                        {cv.name || 'İsimsiz CV'}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="flex items-center gap-2 text-sm font-bold text-white mb-3">
+                                                <Target className="w-5 h-5 text-[#10B981]" /> Kullanım Amacı
+                                            </label>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                {PITCH_PURPOSES.map(purpose => (
+                                                    <button
+                                                        key={purpose.id}
+                                                        onClick={() => setPitchPurpose(purpose.id)}
+                                                        className={`p-4 rounded-xl flex flex-col items-start gap-1 transition-all ${
+                                                            pitchPurpose === purpose.id
+                                                                ? 'bg-[#10B981]/20 border border-[#10B981] shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                                                                : 'bg-white/5 border border-transparent hover:bg-white/10'
+                                                        }`}
+                                                    >
+                                                        <span className={`font-bold text-sm ${pitchPurpose === purpose.id ? 'text-[#10B981]' : 'text-white'}`}>
+                                                            {purpose.name}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500 text-left">{purpose.description}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
-                                    <p className="text-gray-300 leading-relaxed text-lg italic">
-                                        "{generatedPitch.pitch}"
-                                    </p>
-                                    <div className="mt-4 text-xs text-gray-500">
-                                        {generatedPitch.wordCount} kelime
-                                    </div>
-                                </div>
+
+                                    {!generatedPitch ? (
+                                        <button
+                                            onClick={handleGeneratePitch}
+                                            disabled={isGenerating || !selectedCV}
+                                            className="w-full py-4 rounded-2xl bg-[#10B981] text-black font-bold flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50"
+                                        >
+                                            {isGenerating ? (
+                                                <><Loader2 className="w-5 h-5 animate-spin" /> Oluşturuluyor...</>
+                                            ) : (
+                                                <><Sparkles className="w-5 h-5" /> Konuşma Metnini Hazırla</>
+                                            )}
+                                        </button>
+                                    ) : (
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="space-y-6"
+                                        >
+                                            <div className="bg-black/40 border border-white/10 rounded-3xl p-6 md:p-8 relative group">
+                                                <button
+                                                    onClick={() => handleCopy(generatedPitch.content || generatedPitch)}
+                                                    className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-[#10B981]/10 text-gray-400 hover:text-[#10B981] rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                    title="Kopyala"
+                                                >
+                                                    {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                                                </button>
+                                                <div className="flex gap-4 items-start">
+                                                    <div className="text-4xl">💬</div>
+                                                    <div className="text-gray-300 font-medium italic text-lg leading-relaxed">
+                                                        "{generatedPitch.content || generatedPitch}"
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-4">
+                                                <button
+                                                    onClick={() => setGeneratedPitch(null)}
+                                                    className="px-6 py-4 rounded-2xl bg-white/5 text-gray-300 font-bold hover:bg-white/10 transition-colors"
+                                                >
+                                                    Yeniden Dene
+                                                </button>
+                                                <button
+                                                    onClick={() => handleCopy(generatedPitch.content || generatedPitch)}
+                                                    className="flex-1 py-4 rounded-2xl bg-[#10B981] text-black font-bold flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                                >
+                                                    {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                                                    Panoya Kopyala
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </motion.div>
                             )}
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     )
 }

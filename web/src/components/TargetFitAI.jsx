@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useCV } from '../context/CVContext'
 import { Link } from 'react-router-dom'
@@ -9,7 +10,6 @@ import {
 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
-
 const CREDIT_PRICE = 49.90
 
 export default function TargetFitAI({ isOpen, onClose }) {
@@ -27,7 +27,6 @@ export default function TargetFitAI({ isOpen, onClose }) {
     const [result, setResult] = useState(null)
     const [error, setError] = useState(null)
 
-    // Fetch credits on mount
     useEffect(() => {
         if (isOpen && token) {
             fetchCredits()
@@ -48,7 +47,6 @@ export default function TargetFitAI({ isOpen, onClose }) {
         }
     }
 
-    // Analyze job listing
     const handleAnalyze = async () => {
         if (!selectedCV) {
             setError('Lütfen bir CV seçin')
@@ -98,7 +96,6 @@ export default function TargetFitAI({ isOpen, onClose }) {
         setIsLoading(false)
     }
 
-    // Tailor CV
     const handleTailor = async () => {
         if (credits < 1) {
             setError('credits')
@@ -155,371 +152,363 @@ export default function TargetFitAI({ isOpen, onClose }) {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
-            <div className="w-full max-w-3xl bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] overflow-hidden my-4">
-                {/* Header */}
-                <div className="p-6 border-b border-white/10 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-                                <Target className="w-6 h-6 text-white" />
+        <AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#09090B]/90 backdrop-blur-md"
+                onClick={(e) => e.target === e.currentTarget && onClose()}
+            >
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="relative w-full max-w-3xl bg-[#0F1115] border border-[#10B981]/20 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.1)] overflow-hidden flex flex-col max-h-[90vh]"
+                >
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-6 border-b border-white/5 bg-gradient-to-r from-[#10B981]/10 to-transparent relative overflow-hidden">
+                        <div className="flex items-center gap-4 relative z-10">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/20">
+                                <Target className="text-white" size={24} />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold">Target-Fit AI</h2>
-                                <p className="text-sm text-gray-400">İlana özel CV oluştur</p>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">Target-Fit AI <Sparkles size={16} className="text-[#10B981]" /></h2>
+                                <p className="text-sm text-gray-400">İlana özel, anahtar kelime optimizasyonlu CV oluştur</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            {/* Credit display */}
-                            <div className="px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center gap-2">
-                                <CreditCard className="w-4 h-4 text-purple-400" />
-                                <span className="text-sm font-bold text-purple-400">{credits} Kredi</span>
+                        
+                        <div className="flex items-center gap-4">
+                            <div className="px-4 py-2 bg-black/40 border border-[#10B981]/30 rounded-xl flex items-center gap-2">
+                                <CreditCard size={16} className="text-[#10B981]" />
+                                <span className="font-bold text-white">{credits} Kredi</span>
                             </div>
-                            <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/10">
-                                <X className="w-5 h-5" />
+                            <button
+                                onClick={onClose}
+                                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors relative z-10"
+                            >
+                                <X size={24} />
                             </button>
                         </div>
                     </div>
-                </div>
 
-                {/* Content */}
-                <div className="p-6 max-h-[70vh] overflow-y-auto">
-                    {/* Error: No credits */}
-                    {error === 'credits' && (
-                        <div className="text-center py-10">
-                            <div className="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
-                                <CreditCard className="w-10 h-10 text-purple-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2">Kredi Gerekli</h3>
-                            <p className="text-gray-400 mb-6">
-                                Her CV düzenleme 1 kredi harcar ({CREDIT_PRICE}₺)
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                <Link
-                                    to="/pricing?product=target-fit"
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold flex items-center justify-center gap-2"
-                                >
-                                    <CreditCard className="w-5 h-5" />
-                                    Kredi Satın Al
-                                </Link>
-                                <button
-                                    onClick={() => setError(null)}
-                                    className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20"
-                                >
-                                    Geri Dön
-                                </button>
-                            </div>
-
-                            {/* Package options */}
-                            <div className="mt-8 grid grid-cols-3 gap-3 max-w-md mx-auto">
-                                {[
-                                    { credits: 1, price: 49.90 },
-                                    { credits: 5, price: 199, discount: '20%' },
-                                    { credits: 10, price: 349, discount: '30%' }
-                                ].map(pkg => (
-                                    <div key={pkg.credits} className="p-3 rounded-xl bg-white/5 border border-white/10 text-center relative">
-                                        {pkg.discount && (
-                                            <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full">
-                                                {pkg.discount}
-                                            </span>
-                                        )}
-                                        <div className="text-2xl font-bold text-purple-400">{pkg.credits}</div>
-                                        <div className="text-xs text-gray-500">kredi</div>
-                                        <div className="text-sm font-semibold mt-1">{pkg.price}₺</div>
-                                    </div>
-                                ))}
+                    {/* Progress Indicator */}
+                    {(step === 'input' || step === 'preview' || step === 'success') && (
+                        <div className="px-6 py-4 border-b border-white/5 bg-black/40">
+                            <div className="flex items-center gap-4 max-w-sm">
+                                {[1, 2, 3].map((s) => {
+                                    const isActive = (s === 1 && step === 'input') || 
+                                                     (s === 2 && step === 'preview') || 
+                                                     (s === 3 && step === 'success') ||
+                                                     (step === 'success' && s < 3) ||
+                                                     (step === 'preview' && s < 2);
+                                                     
+                                    return (
+                                        <div key={s} className="flex items-center flex-1 last:flex-none">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                                                isActive
+                                                    ? 'bg-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]' 
+                                                    : 'bg-white/5 text-gray-500'
+                                            }`}>
+                                                {s}
+                                            </div>
+                                            {s < 3 && (
+                                                <div className={`flex-1 h-0.5 mx-2 rounded-full transition-all duration-300 ${
+                                                    (step === 'preview' && s === 1) || (step === 'success') ? 'bg-[#10B981]' : 'bg-white/10'
+                                                }`} />
+                                            )}
+                                        </div>
+                                    )
+                                })}
                             </div>
                         </div>
                     )}
 
-                    {/* Step 1: Input */}
-                    {step === 'input' && error !== 'credits' && (
-                        <div className="space-y-6">
-                            {/* Info Card */}
-                            <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-                                <div className="flex items-start gap-3">
-                                    <Sparkles className="w-6 h-6 text-purple-400 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-bold text-white mb-1">Nasıl Çalışır?</h4>
-                                        <p className="text-sm text-gray-400">
-                                            1. İş ilanı linkini yapıştırın → 2. AI anahtar kelimeleri çıkarır →
-                                            3. CV'niz saniyeler içinde o ilana özel hale getirilir
+                    {/* Content Area */}
+                    <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-[#10B981]/30 scrollbar-track-transparent">
+                        <AnimatePresence mode="wait">
+                            
+                            {/* STEP 1: Input */}
+                            {step === 'input' && (
+                                <motion.div
+                                    key="input"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    {/* How it works Banner */}
+                                    <div className="bg-gradient-to-br from-black/40 to-[#10B981]/5 border border-[#10B981]/20 rounded-2xl p-5">
+                                        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                                            <Sparkles size={18} className="text-[#10B981]" />
+                                            Nasıl Çalışır?
+                                        </h3>
+                                        <p className="text-gray-400 text-sm">
+                                            1. İş ilanı linkini yapıştırın → 2. AI ilanı analiz eder → 3. CV'niz, iş ilanındaki gereksinimlere ve anahtar kelimelere göre saniyeler içinde mükemmel uyumlu hale getirilerek baştan yazılır (1 Kredi).
                                         </p>
                                     </div>
-                                </div>
-                            </div>
 
-                            {/* CV Selection */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                    📄 Düzenlenecek CV
-                                </label>
-                                <div className="grid md:grid-cols-2 gap-3">
-                                    {cvs?.map(cv => (
-                                        <button
-                                            key={cv.id}
-                                            onClick={() => setSelectedCV(cv.id)}
-                                            className={`p-4 rounded-xl text-left transition-all ${selectedCV === cv.id
-                                                ? 'bg-purple-500/20 border-2 border-purple-500'
-                                                : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
-                                                }`}
-                                        >
-                                            <div className="font-medium">{cv.name}</div>
-                                            <div className="text-sm text-gray-400">{cv.template}</div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Input Mode Toggle */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                    🎯 İş İlanı
-                                </label>
-                                <div className="flex gap-2 mb-4">
-                                    <button
-                                        onClick={() => setInputMode('url')}
-                                        className={`px-4 py-2 rounded-lg transition-all ${inputMode === 'url'
-                                            ? 'bg-purple-500 text-white'
-                                            : 'bg-white/10 hover:bg-white/20'
-                                            }`}
-                                    >
-                                        <Link2 className="w-4 h-4 inline mr-2" />
-                                        Link ile
-                                    </button>
-                                    <button
-                                        onClick={() => setInputMode('text')}
-                                        className={`px-4 py-2 rounded-lg transition-all ${inputMode === 'text'
-                                            ? 'bg-purple-500 text-white'
-                                            : 'bg-white/10 hover:bg-white/20'
-                                            }`}
-                                    >
-                                        <FileText className="w-4 h-4 inline mr-2" />
-                                        Metin ile
-                                    </button>
-                                </div>
-
-                                {inputMode === 'url' ? (
-                                    <input
-                                        type="url"
-                                        value={jobUrl}
-                                        onChange={(e) => setJobUrl(e.target.value)}
-                                        placeholder="https://kariyer.net/is-ilani/..."
-                                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-purple-500 focus:outline-none"
-                                    />
-                                ) : (
-                                    <textarea
-                                        value={jobText}
-                                        onChange={(e) => setJobText(e.target.value)}
-                                        placeholder="İş ilanı metnini buraya yapıştırın..."
-                                        rows={6}
-                                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-purple-500 focus:outline-none resize-none"
-                                    />
-                                )}
-
-                                <p className="text-xs text-gray-500 mt-2">
-                                    Desteklenen siteler: Kariyer.net, LinkedIn, Indeed, SecretCV, Yenibiriş
-                                </p>
-                            </div>
-
-                            {/* Error display */}
-                            {error && error !== 'credits' && (
-                                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-2">
-                                    <AlertCircle className="w-4 h-4" />
-                                    {error}
-                                </div>
-                            )}
-
-                            {/* Analyze Button */}
-                            <div className="text-center">
-                                <button
-                                    onClick={handleAnalyze}
-                                    disabled={!selectedCV || isLoading}
-                                    className="px-10 py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold flex items-center gap-3 mx-auto hover:shadow-lg hover:shadow-purple-500/20 transition-all disabled:opacity-50"
-                                >
-                                    <Target className="w-6 h-6" />
-                                    İlanı Analiz Et
-                                </button>
-                                <p className="text-xs text-gray-500 mt-3">
-                                    Analiz ücretsiz • Düzenleme 1 kredi ({CREDIT_PRICE}₺)
-                                </p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 2: Analyzing */}
-                    {step === 'analyzing' && (
-                        <div className="text-center py-16">
-                            <Loader2 className="w-16 h-16 mx-auto mb-4 text-purple-400 animate-spin" />
-                            <h3 className="text-lg font-bold mb-2">İlan Analiz Ediliyor...</h3>
-                            <p className="text-gray-400">Anahtar kelimeler ve gereksinimler çıkarılıyor</p>
-                        </div>
-                    )}
-
-                    {/* Step 3: Preview */}
-                    {step === 'preview' && jobData && (
-                        <div className="space-y-6">
-                            {/* Job Summary */}
-                            <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                                        <Briefcase className="w-7 h-7 text-purple-400" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-white">{jobData.title || 'İş İlanı'}</h3>
-                                        {jobData.company && (
-                                            <div className="flex items-center gap-1 text-gray-400 text-sm mt-1">
-                                                <Building className="w-4 h-4" />
-                                                {jobData.company}
-                                            </div>
-                                        )}
-                                        {jobData.url && (
-                                            <a
-                                                href={jobData.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-purple-400 text-sm flex items-center gap-1 mt-1 hover:underline"
-                                            >
-                                                <ExternalLink className="w-3 h-3" /> İlanı Görüntüle
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Extracted Keywords */}
-                            {jobData.skills?.length > 0 && (
-                                <div>
-                                    <h4 className="font-bold mb-3 flex items-center gap-2">
-                                        <Tag className="w-5 h-5 text-cyan-400" />
-                                        Tespit Edilen Anahtar Kelimeler ({jobData.skills.length})
-                                    </h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {jobData.skills.slice(0, 15).map((skill, i) => (
-                                            <span key={i} className="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-lg text-sm">
-                                                {skill}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Requirements */}
-                            {jobData.requirements?.length > 0 && (
-                                <div>
-                                    <h4 className="font-bold mb-3 flex items-center gap-2">
-                                        <CheckCircle className="w-5 h-5 text-green-400" />
-                                        Gereksinimler ({jobData.requirements.length})
-                                    </h4>
-                                    <div className="space-y-1 max-h-40 overflow-y-auto">
-                                        {jobData.requirements.slice(0, 8).map((req, i) => (
-                                            <div key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                                                <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0 mt-0.5" />
-                                                {req}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* What will happen */}
-                            <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
-                                <h4 className="font-bold mb-2 text-purple-400">AI Ne Yapacak?</h4>
-                                <ul className="text-sm text-gray-400 space-y-1">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle className="w-4 h-4 text-green-400" />
-                                        Profesyonel özet bu ilana göre yeniden yazılacak
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle className="w-4 h-4 text-green-400" />
-                                        İlgili deneyimler öne çıkarılacak
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle className="w-4 h-4 text-green-400" />
-                                        Beceriler ilana uygun sıralanacak
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle className="w-4 h-4 text-green-400" />
-                                        Anahtar kelimeler doğal şekilde eklenecek
-                                    </li>
-                                </ul>
-                            </div>
-
-                            {/* Tailor Button */}
-                            <div className="flex gap-3 justify-center">
-                                <button
-                                    onClick={() => setStep('input')}
-                                    className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-                                >
-                                    Geri
-                                </button>
-                                <button
-                                    onClick={handleTailor}
-                                    disabled={isLoading}
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold flex items-center gap-2 hover:shadow-lg transition-all disabled:opacity-50"
-                                >
-                                    {isLoading ? (
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                    ) : (
-                                        <Zap className="w-5 h-5" />
+                                    {error && error !== 'credits' && (
+                                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl flex items-center gap-3">
+                                            <AlertCircle size={20} />
+                                            {error}
+                                        </div>
                                     )}
-                                    CV'yi Düzenle (1 Kredi)
-                                </button>
-                            </div>
-                        </div>
-                    )}
 
-                    {/* Step 4: Success */}
-                    {step === 'success' && result && (
-                        <div className="text-center py-8">
-                            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
-                                <CheckCircle className="w-10 h-10 text-green-400" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-2">CV Hazır! 🎉</h3>
-                            <p className="text-gray-400 mb-6">
-                                "{result.tailoredCV?.name}" olarak kaydedildi
-                            </p>
-
-                            {/* Changes Made */}
-                            {result.changes?.length > 0 && (
-                                <div className="text-left max-w-md mx-auto mb-6">
-                                    <h4 className="font-bold mb-3 text-center">Yapılan Değişiklikler</h4>
-                                    <div className="space-y-2">
-                                        {result.changes.map((change, i) => (
-                                            <div key={i} className="p-3 rounded-lg bg-white/5 flex items-start gap-2">
-                                                <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-                                                <span className="text-sm text-gray-300">{change.description}</span>
-                                            </div>
-                                        ))}
+                                    {/* CV Selection */}
+                                    <div>
+                                        <label className="flex items-center gap-2 text-sm font-bold text-white mb-3">
+                                            <FileText size={16} className="text-[#10B981]" /> Düzenlenecek CV
+                                        </label>
+                                        <select
+                                            value={selectedCV || ''}
+                                            onChange={(e) => setSelectedCV(e.target.value)}
+                                            className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all"
+                                        >
+                                            <option value="">CV Seçiniz...</option>
+                                            {cvs?.map(cv => (
+                                                <option key={cv.id || cv._id} value={cv.id || cv._id} className="bg-[#0F1115]">
+                                                    {cv.name || 'İsimsiz CV'}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
-                                </div>
+
+                                    {/* Job Input */}
+                                    <div>
+                                        <label className="flex items-center gap-2 text-sm font-bold text-white mb-3">
+                                            <Target size={16} className="text-[#10B981]" /> İş İlanı
+                                        </label>
+                                        
+                                        <div className="flex gap-2 mb-3">
+                                            <button
+                                                onClick={() => setInputMode('url')}
+                                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                                                    inputMode === 'url'
+                                                        ? 'bg-[#10B981] text-black'
+                                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                                }`}
+                                            >
+                                                <Link2 size={16} /> Link ile
+                                            </button>
+                                            <button
+                                                onClick={() => setInputMode('text')}
+                                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+                                                    inputMode === 'text'
+                                                        ? 'bg-[#10B981] text-black'
+                                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                                }`}
+                                            >
+                                                <FileText size={16} /> Metin ile
+                                            </button>
+                                        </div>
+
+                                        {inputMode === 'url' ? (
+                                            <input
+                                                type="url"
+                                                value={jobUrl}
+                                                onChange={(e) => setJobUrl(e.target.value)}
+                                                placeholder="https://kariyer.net/is-ilani/..."
+                                                className="w-full px-4 py-4 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all"
+                                            />
+                                        ) : (
+                                            <textarea
+                                                value={jobText}
+                                                onChange={(e) => setJobText(e.target.value)}
+                                                placeholder="İş ilanının tamamını buraya yapıştırın..."
+                                                className="w-full h-32 px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all resize-none"
+                                            />
+                                        )}
+                                        {inputMode === 'url' && (
+                                            <p className="text-xs text-gray-500 mt-2">Desteklenen siteler: Kariyer.net, LinkedIn, Indeed, vb.</p>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        onClick={handleAnalyze}
+                                        disabled={isLoading}
+                                        className="w-full py-4 mt-6 bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#10B981]/20 transition-all group"
+                                    >
+                                        <Target size={20} className="group-hover:scale-110 transition-transform" /> 
+                                        İlanı Analiz Et
+                                    </button>
+                                    <p className="text-center text-xs text-gray-500">Analiz ücretsiz • Düzenleme 1 kredi</p>
+                                </motion.div>
                             )}
 
-                            {/* Actions */}
-                            <div className="flex flex-wrap gap-3 justify-center">
-                                <Link
-                                    to={`/editor/${result.tailoredCV?.id || result.tailoredCV?._id}`}
-                                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold flex items-center gap-2"
+                            {/* STEP 2: Analyzing Loading */}
+                            {step === 'analyzing' && (
+                                <motion.div
+                                    key="analyzing"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex flex-col items-center justify-center py-12"
                                 >
-                                    <FileText className="w-5 h-5" />
-                                    CV'yi İncele
-                                </Link>
-                                <button
-                                    onClick={resetFlow}
-                                    className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 flex items-center gap-2"
-                                >
-                                    <ArrowRight className="w-5 h-5" />
-                                    Başka İlan için Düzenle
-                                </button>
-                            </div>
+                                    <div className="relative">
+                                        <div className="w-20 h-20 border-4 border-white/10 rounded-full"></div>
+                                        <div className="w-20 h-20 border-4 border-[#10B981] rounded-full border-t-transparent animate-spin absolute top-0 left-0 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <Target className="text-[#10B981]" size={24} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mt-6 mb-2">İlan Analiz Ediliyor</h3>
+                                    <p className="text-gray-400 max-w-sm text-center">Yapay zeka iş ilanını okuyor ve anahtar kelimeleri çıkarıyor...</p>
+                                </motion.div>
+                            )}
 
-                            <p className="text-xs text-gray-500 mt-4">
-                                Kalan kredi: {result.creditsRemaining}
-                            </p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
+                            {/* STEP 3: Preview */}
+                            {step === 'preview' && jobData && (
+                                <motion.div
+                                    key="preview"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="bg-black/40 border border-white/5 rounded-3xl p-6">
+                                        <div className="flex items-start justify-between mb-6">
+                                            <div>
+                                                <h3 className="text-2xl font-bold text-white mb-1">{jobData.title || 'Pozisyon'}</h3>
+                                                <p className="text-gray-400 flex items-center gap-2">
+                                                    <Building size={16} /> {jobData.company || 'Şirket'}
+                                                </p>
+                                            </div>
+                                            <div className="px-3 py-1 bg-[#10B981]/10 text-[#10B981] rounded-full text-sm font-bold flex items-center gap-1">
+                                                <CheckCircle size={14} /> Analiz Tamamlandı
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <h4 className="text-sm font-bold text-gray-300 mb-2 flex items-center gap-2">
+                                                    <Tag size={16} className="text-[#10B981]" /> Aranan Anahtar Kelimeler
+                                                </h4>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {jobData.skills?.length > 0 ? jobData.skills.map((skill, i) => (
+                                                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-300">
+                                                            {skill}
+                                                        </span>
+                                                    )) : (
+                                                        <span className="text-gray-500 text-sm">Belirgin bir kelime bulunamadı.</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <h4 className="text-sm font-bold text-gray-300 mb-2 flex items-center gap-2">
+                                                    <Briefcase size={16} className="text-[#10B981]" /> Gereksinimler
+                                                </h4>
+                                                <ul className="space-y-2">
+                                                    {jobData.requirements?.length > 0 ? jobData.requirements.map((req, i) => (
+                                                        <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] mt-1.5 flex-shrink-0" />
+                                                            {req}
+                                                        </li>
+                                                    )) : (
+                                                        <span className="text-gray-500 text-sm">Gereksinim listesi okunamadı.</span>
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {error === 'credits' && (
+                                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <AlertCircle size={20} />
+                                                <span>Yeterli krediniz yok (Kalan: {credits})</span>
+                                            </div>
+                                            <Link to="/pricing" className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-colors text-sm">
+                                                Kredi Al
+                                            </Link>
+                                        </div>
+                                    )}
+
+                                    {error && error !== 'credits' && (
+                                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl flex items-center gap-3">
+                                            <AlertCircle size={20} />
+                                            {error}
+                                        </div>
+                                    )}
+
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={() => setStep('input')}
+                                            className="px-6 py-4 bg-white/5 text-gray-300 font-bold rounded-2xl hover:bg-white/10 transition-colors"
+                                        >
+                                            İptal
+                                        </button>
+                                        <button
+                                            onClick={handleTailor}
+                                            disabled={isLoading}
+                                            className="flex-1 py-4 bg-[#10B981] text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50"
+                                        >
+                                            {isLoading ? (
+                                                <><Loader2 size={20} className="animate-spin" /> Düzenleniyor...</>
+                                            ) : (
+                                                <><Sparkles size={20} /> CV'yi İlana Uyarla (1 Kredi)</>
+                                            )}
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* STEP 4: Success */}
+                            {step === 'success' && result && (
+                                <motion.div
+                                    key="success"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-[#10B981]/20 to-transparent border border-[#10B981]/30 rounded-3xl text-center">
+                                        <div className="w-16 h-16 bg-[#10B981] rounded-full flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+                                            <CheckCircle className="text-black" size={32} />
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-white mb-2">Başarıyla Uyarlanıp Kaydedildi!</h3>
+                                        <p className="text-[#10B981] font-medium">Yeni CV taslağınız CV'lerim arasına eklendi.</p>
+                                    </div>
+
+                                    <div className="bg-black/40 border border-white/5 rounded-3xl p-6">
+                                        <h4 className="font-bold text-white mb-4">Neler Değişti?</h4>
+                                        <ul className="space-y-3">
+                                            <li className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-[#10B981]/10 flex items-center justify-center mt-0.5 flex-shrink-0">
+                                                    <FileText size={12} className="text-[#10B981]" />
+                                                </div>
+                                                <p className="text-gray-300 text-sm leading-relaxed">Özet alanınız (Summary) ilandaki anahtar kelimelerle zenginleştirilerek baştan yazıldı.</p>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-[#10B981]/10 flex items-center justify-center mt-0.5 flex-shrink-0">
+                                                    <Briefcase size={12} className="text-[#10B981]" />
+                                                </div>
+                                                <p className="text-gray-300 text-sm leading-relaxed">Deneyimlerinizdeki maddeler, ilanın gereksinimlerine göre vurgulanıp optimize edildi.</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={resetFlow}
+                                            className="px-6 py-4 bg-white/5 text-gray-300 font-bold rounded-2xl hover:bg-white/10 transition-colors"
+                                        >
+                                            Yeni İlan
+                                        </button>
+                                        <Link
+                                            to={`/cv/${result.tailoredCV?._id}`}
+                                            className="flex-1 py-4 bg-[#10B981] text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                        >
+                                            Uyarlanmış CV'yi Görüntüle <ChevronRight size={20} />
+                                        </Link>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     )
 }

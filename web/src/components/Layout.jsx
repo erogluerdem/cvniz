@@ -167,18 +167,8 @@ export default function Layout() {
                 }`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="relative">
-                            <div className="w-11 h-11 rounded-2xl bg-slate-900 border border-white/20 flex items-center justify-center ring-2 ring-white/10 group-hover:ring-cyan-400 group-hover:border-cyan-400/50 transition-all duration-500 group-hover:scale-110 shadow-2xl overflow-hidden">
-                                <FileText className="w-5 h-5 text-cyan-400" />
-                                <div className="absolute inset-x-0 bottom-0 h-1 bg-cyan-400 opacity-20 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                            <div className="absolute -inset-2 rounded-2xl bg-cyan-400 opacity-0 group-hover:opacity-10 blur-xl transition-opacity animate-pulse" />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-xl font-black text-white italic tracking-tighter group-hover:text-cyan-400 transition-colors">CVniz</span>
-                            <span className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] -mt-1 hidden sm:block">AI Architect</span>
-                        </div>
+                    <Link to="/" className="flex items-center group">
+                        <img src="/logo.jpg" alt="CVniz Logo" className="w-auto h-10 rounded-xl border border-white/10 shadow-lg group-hover:scale-105 transition-all duration-300 object-contain bg-white" />
                     </Link>
 
                     {/* Desktop Nav */}
@@ -472,10 +462,7 @@ export default function Layout() {
                                 {/* Brand Column - Hidden on mobile, shown on desktop */}
                                 <div className="hidden md:block md:col-span-2">
                                     <Link to="/" className="flex items-center gap-2 mb-4 group">
-                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ${isDayMode ? 'ring-slate-100 shadow-day' : 'ring-white/10'} group-hover:scale-110 transition-transform`}>
-                                            <FileText className="w-5 h-5 text-slate-900" />
-                                        </div>
-                                        <span className="text-xl font-bold gradient-text">CVniz</span>
+                                        <img src="/logo.jpg" alt="CVniz Logo" className={`w-auto h-10 rounded-xl ring-1 ${isDayMode ? 'ring-slate-100 shadow-day' : 'ring-white/10'} group-hover:scale-110 transition-transform object-contain bg-white`} />
                                     </Link>
                                     <p className={`${footerMutedText} text-sm mb-6 leading-relaxed`}>
                                         AI destekli profesyonel CV oluşturucu. 65+ şablon, 50.000+ kullanıcı güveniyle Türkiye'nin #1 CV platformu.

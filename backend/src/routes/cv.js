@@ -6,8 +6,38 @@ const CVView = require('../models/CVView');
 const Notification = require('../models/Notification');
 const { authenticate, optionalAuth } = require('../middleware/auth');
 const { getLocationFromIP, getClientIP, parseUserAgent } = require('../utils/geoip');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const router = express.Router();
+
+// Configure storage for Video CV
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, '../../uploads/video-cvs');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'videocv-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for videos
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('video/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Sadece video dosyaları yüklenebilir!'), false);
+        }
+    }
+});
 
 // Validation middleware
 const handleValidation = (req, res, next) => {
@@ -85,6 +115,9 @@ router.get('/:id', authenticate, async (req, res) => {
                 template: cv.template,
                 data: cv.data,
                 layout: cv.layout,
+                customStyles: cv.customStyles,
+                videoUrl: cv.videoUrl,
+                animatedTemplate: cv.animatedTemplate,
                 versions: cv.versions,
                 metadata: cv.metadata,
                 isPublic: cv.isPublic,
@@ -109,8 +142,10 @@ router.post('/', authenticate, [
     try {
         const { name, template, data, layout } = req.body;
 
+        const isPremium = typeof req.user.hasPremiumAccess === 'function' ? req.user.hasPremiumAccess() : req.user.isPremium;
+        
         // Check CV limit for non-premium users
-        if (!req.user.hasPremiumAccess()) {
+        if (!isPremium) {
             const cvCount = await CV.countDocuments({
                 userId: req.user._id,
                 isArchived: false
@@ -146,6 +181,9 @@ router.post('/', authenticate, [
                 template: cv.template,
                 data: cv.data,
                 layout: cv.layout,
+                customStyles: cv.customStyles,
+                videoUrl: cv.videoUrl,
+                animatedTemplate: cv.animatedTemplate,
                 metadata: cv.metadata,
                 syncVersion: cv.syncVersion,
                 createdAt: cv.createdAt,
@@ -161,7 +199,7 @@ router.post('/', authenticate, [
 // ============ UPDATE CV ============
 router.put('/:id', authenticate, async (req, res) => {
     try {
-        const { name, template, data, layout, isPublic } = req.body;
+        const { name, template, data, layout, isPublic, customStyles, videoUrl, animatedTemplate } = req.body;
 
         const cv = await CV.findOne({
             _id: req.params.id,
@@ -170,6 +208,15 @@ router.put('/:id', authenticate, async (req, res) => {
 
         if (!cv) {
             return res.status(404).json({ error: 'CV bulunamadı' });
+        }
+
+        // Check premium status for premium features
+        const isPremium = typeof req.user.hasPremiumAccess === 'function' ? req.user.hasPremiumAccess() : req.user.isPremium;
+        
+        if (!isPremium) {
+            if (customStyles !== undefined || videoUrl !== undefined || animatedTemplate !== undefined) {
+                return res.status(403).json({ error: 'Bu özellikler Premium plan gerektirir.', code: 'PREMIUM_REQUIRED' });
+            }
         }
 
         // Update fields
@@ -183,6 +230,9 @@ router.put('/:id', authenticate, async (req, res) => {
                 cv.publicUrl = uuidv4();
             }
         }
+        if (customStyles !== undefined && isPremium) {cv.customStyles = customStyles;}
+        if (videoUrl !== undefined && isPremium) {cv.videoUrl = videoUrl;}
+        if (animatedTemplate !== undefined && isPremium) {cv.animatedTemplate = animatedTemplate;}
 
         cv.metadata.lastEdited = req.headers['x-platform'] || 'web';
         cv.calculateCompleteness();
@@ -197,6 +247,9 @@ router.put('/:id', authenticate, async (req, res) => {
                 template: cv.template,
                 data: cv.data,
                 layout: cv.layout,
+                customStyles: cv.customStyles,
+                videoUrl: cv.videoUrl,
+                animatedTemplate: cv.animatedTemplate,
                 metadata: cv.metadata,
                 isPublic: cv.isPublic,
                 publicUrl: cv.publicUrl,
@@ -208,6 +261,63 @@ router.put('/:id', authenticate, async (req, res) => {
     } catch (error) {
         console.error('Update CV error:', error);
         res.status(500).json({ error: 'CV güncelleme hatası' });
+    }
+});
+
+// ============ UPLOAD VIDEO CV ============
+router.post('/:id/video', authenticate, (req, res, next) => {
+    upload.single('video')(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            return res.status(400).json({ error: err.message });
+        } else if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+        next();
+    });
+}, async (req, res) => {
+    try {
+        const cv = await CV.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!cv) {
+            // cleanup uploaded file if CV not found
+            if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+            return res.status(404).json({ error: 'CV bulunamadı' });
+        }
+
+        const isPremium = typeof req.user.hasPremiumAccess === 'function' ? req.user.hasPremiumAccess() : req.user.isPremium;
+        if (!isPremium) {
+            if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+            return res.status(403).json({ error: 'Video CV yükleme Premium plan gerektirir.', code: 'PREMIUM_REQUIRED' });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'Lütfen bir video dosyası seçin' });
+        }
+
+        // Delete old video if exists
+        if (cv.videoUrl) {
+            const oldPath = path.join(__dirname, '../../', cv.videoUrl);
+            if (fs.existsSync(oldPath)) {
+                fs.unlinkSync(oldPath);
+            }
+        }
+
+        cv.videoUrl = `/uploads/video-cvs/${req.file.filename}`;
+        cv.metadata.lastEdited = req.headers['x-platform'] || 'web';
+        await cv.save();
+
+        res.json({
+            success: true,
+            message: 'Video CV başarıyla yüklendi',
+            videoUrl: cv.videoUrl
+        });
+    } catch (error) {
+        console.error('Video upload error:', error);
+        if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+        res.status(500).json({ error: 'Video yükleme hatası' });
     }
 });
 

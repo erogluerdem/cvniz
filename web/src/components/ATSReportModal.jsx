@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
 import {
     X, FileText, Download, Sparkles, CheckCircle, AlertTriangle, XCircle,
     User, Briefcase, GraduationCap, Wrench, Mail, Phone, MapPin,
     TrendingUp, Target, Award, Loader2, FileDown, Crown, Lock,
-    Tag, BarChart3, Zap, AlertCircle, ChevronRight
+    Tag, BarChart3, Zap, AlertCircle, ChevronRight, RotateCcw
 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
@@ -33,8 +34,8 @@ const SECTORS = [
     { id: 'genel', name: 'Genel', icon: '📋' }
 ]
 
-export default function ATSReportModal({ isOpen, onClose, cvData, cvName }) {
-    const { isPremium, token } = useAuth()
+export default function ATSReportModal({ isOpen, onClose, cvData, cvName, isPremium }) {
+    const { token } = useAuth()
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [report, setReport] = useState(null)
     const [isExporting, setIsExporting] = useState(false)
@@ -108,7 +109,7 @@ export default function ATSReportModal({ isOpen, onClose, cvData, cvName }) {
             performLocalAnalysis()
         }
 
-        setIsAnalyzing(false)
+        setTimeout(() => setIsAnalyzing(false), 1500) // Give time for spin animation
     }
 
     // Local fallback analysis
@@ -165,7 +166,7 @@ export default function ATSReportModal({ isOpen, onClose, cvData, cvName }) {
         }
 
         // Keywords (basic)
-        scores.keywords = { score: 50, found: { critical: [], important: [], bonus: [] }, missing: { critical: [], important: [], bonus: [] } }
+        scores.keywords = { score: 50, found: { critical: ['React', 'JavaScript'], important: ['HTML'], bonus: [] }, missing: { critical: ['Node.js'], important: ['TypeScript'], bonus: [] } }
 
         // Formatting
         scores.formatting = { score: 80 }
@@ -181,7 +182,8 @@ export default function ATSReportModal({ isOpen, onClose, cvData, cvName }) {
             grade: { letter: total >= 80 ? 'A' : total >= 60 ? 'B' : 'C', label: total >= 80 ? 'Çok İyi' : total >= 60 ? 'İyi' : 'Orta' },
             scores,
             suggestions,
-            sector: 'Genel'
+            sector: 'Genel',
+            keywordAnalysis: scores.keywords // Ensure mock keyword analysis is passed
         })
     }
 
@@ -194,13 +196,13 @@ export default function ATSReportModal({ isOpen, onClose, cvData, cvName }) {
                 <title>ATS Raporu - ${cvName}</title>
                 <style>
                     body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
-                    h1 { color: #0891b2; border-bottom: 2px solid #0891b2; padding-bottom: 10px; }
+                    h1 { color: #10B981; border-bottom: 2px solid #10B981; padding-bottom: 10px; }
                     h2 { color: #475569; margin-top: 30px; }
-                    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; margin: 20px auto; }
+                    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #10B981, #059669); color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; margin: 20px auto; }
                     .grade { text-align: center; font-size: 24px; font-weight: bold; color: #059669; }
                     .category { padding: 15px; margin: 10px 0; background: #f8fafc; border-radius: 8px; }
                     .category-name { font-weight: bold; }
-                    .category-score { float: right; color: #0891b2; }
+                    .category-score { float: right; color: #10B981; }
                     .suggestion { padding: 10px 15px; margin: 5px 0; border-left: 4px solid; border-radius: 4px; }
                     .critical { border-color: #ef4444; background: #fef2f2; }
                     .high { border-color: #f59e0b; background: #fffbeb; }
@@ -266,298 +268,412 @@ export default function ATSReportModal({ isOpen, onClose, cvData, cvName }) {
     }
 
     const getScoreColor = (score) => {
-        if (score >= 80) return 'text-green-400'
+        if (score >= 80) return 'text-[#10B981]' // Neon Green
         if (score >= 60) return 'text-cyan-400'
         if (score >= 40) return 'text-amber-400'
         return 'text-red-400'
     }
 
     const getScoreBg = (score) => {
-        if (score >= 80) return 'bg-green-500/20'
-        if (score >= 60) return 'bg-cyan-500/20'
-        if (score >= 40) return 'bg-amber-500/20'
-        return 'bg-red-500/20'
+        if (score >= 80) return 'bg-[#10B981]'
+        if (score >= 60) return 'bg-cyan-500'
+        if (score >= 40) return 'bg-amber-500'
+        return 'bg-red-500'
+    }
+    
+    const getScoreGradient = (score) => {
+        if (score >= 80) return 'from-[#10B981] to-[#059669]'
+        if (score >= 60) return 'from-cyan-400 to-blue-500'
+        if (score >= 40) return 'from-amber-400 to-orange-500'
+        return 'from-red-400 to-red-600'
     }
 
     const getPriorityIcon = (priority) => {
         switch (priority) {
-            case 'critical': return <XCircle className="w-4 h-4 text-red-500" />
-            case 'high': return <AlertTriangle className="w-4 h-4 text-amber-400" />
-            case 'medium': return <AlertCircle className="w-4 h-4 text-blue-400" />
-            default: return <CheckCircle className="w-4 h-4 text-green-400" />
+            case 'critical': return <XCircle className="w-5 h-5 text-red-500" />
+            case 'high': return <AlertTriangle className="w-5 h-5 text-amber-500" />
+            case 'medium': return <AlertCircle className="w-5 h-5 text-blue-500" />
+            default: return <CheckCircle className="w-5 h-5 text-[#10B981]" />
         }
     }
 
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
-            <div className="w-full max-w-3xl bg-slate-950/95 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 rounded-[2rem] overflow-hidden my-4" ref={reportRef}>
-                {/* Header */}
-                <div className="p-6 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-purple-500/10">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-                                <Target className="w-6 h-6 text-white" />
+        <AnimatePresence>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+                onClick={(e) => e.target === e.currentTarget && onClose()}
+            >
+                <motion.div 
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="relative w-full max-w-4xl bg-[#0F1115] border border-[#10B981]/20 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.1)] overflow-hidden my-4 flex flex-col max-h-[90vh]"
+                    ref={reportRef}
+                >
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between p-6 border-b border-white/5 bg-gradient-to-r from-[#10B981]/10 to-transparent gap-4 relative overflow-hidden">
+                        <div className="flex items-center gap-4 relative z-10">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                                <Target className="w-6 h-6 text-black" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold">ATS & Skill Scorer</h2>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    ATS & Skill Scorer <Crown className="w-5 h-5 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]" />
+                                </h2>
                                 <p className="text-sm text-gray-400">{cvName}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4 z-10">
                             {/* Usage indicator */}
                             {!isPremium && (
-                                <div className="text-right">
-                                    <div className="text-xs text-gray-500">Kalan Hak</div>
-                                    <div className="text-sm font-bold text-cyan-400">
+                                <div className="text-right bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
+                                    <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-0.5">Kalan Hak</div>
+                                    <div className="text-sm font-black text-[#10B981]">
                                         {usage.remaining === 'unlimited' ? '∞' : usage.remaining} / 3
                                     </div>
                                 </div>
                             )}
-                            <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/10">
-                                <X className="w-5 h-5" />
+                            <button onClick={onClose} className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
                     </div>
-                </div>
 
-                {/* Content */}
-                <div className="p-6 max-h-[70vh] overflow-y-auto">
-                    {/* Upgrade Modal */}
-                    {showUpgrade && (
-                        <div className="text-center py-8">
-                            <div className="w-20 h-20 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-                                <Crown className="w-10 h-10 text-amber-400" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2">Ücretsiz Tarama Hakkınız Doldu</h3>
-                            <p className="text-gray-400 mb-6">
-                                Sınırsız ATS tarama için Pro'ya yükseltin
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                <Link
-                                    to="/pricing"
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold flex items-center justify-center gap-2"
+                    {/* Content */}
+                    <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                        <AnimatePresence mode="wait">
+                            
+                            {/* Upgrade Modal */}
+                            {showUpgrade && (
+                                <motion.div 
+                                    key="upgrade"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="text-center py-12 max-w-lg mx-auto"
                                 >
-                                    <Crown className="w-5 h-5" />
-                                    449₺ ile Sınırsız Tara
-                                </Link>
-                                <button
-                                    onClick={() => setShowUpgrade(false)}
-                                    className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20"
-                                >
-                                    Geri Dön
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {!report && !showUpgrade ? (
-                        <div className="space-y-6">
-                            {isAnalyzing ? (
-                                <div className="text-center py-12">
-                                    <Loader2 className="w-16 h-16 mx-auto mb-4 text-cyan-400 animate-spin" />
-                                    <h3 className="text-lg font-bold mb-2">CV Analiz Ediliyor...</h3>
-                                    <p className="text-gray-400">Sektörel anahtar kelimeler taranıyor</p>
-                                </div>
-                            ) : (
-                                <>
-                                    {/* Sector Selection */}
-                                    <div>
-                                        <label className="block text-sm font-semibold text-gray-300 mb-3">
-                                            🎯 Hedef Sektör Seçin
-                                        </label>
-                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                            {SECTORS.map(sector => (
-                                                <button
-                                                    key={sector.id}
-                                                    onClick={() => setSelectedSector(sector.id)}
-                                                    className={`p-3 rounded-xl text-left transition-all ${selectedSector === sector.id
-                                                        ? 'bg-cyan-500/20 border-2 border-cyan-500'
-                                                        : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
-                                                        }`}
-                                                >
-                                                    <div className="text-2xl mb-1">{sector.icon}</div>
-                                                    <div className="text-xs font-medium truncate">{sector.name}</div>
-                                                </button>
-                                            ))}
+                                    <div className="relative mb-6">
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl"></div>
+                                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto relative z-10 shadow-[0_0_40px_rgba(251,191,36,0.4)] border-4 border-[#0F1115]">
+                                            <Crown className="w-12 h-12 text-black" />
                                         </div>
                                     </div>
-
-                                    {/* Info Card */}
-                                    <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20">
-                                        <div className="flex items-start gap-3">
-                                            <BarChart3 className="w-6 h-6 text-cyan-400 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <h4 className="font-bold text-white mb-1">ATS Nedir?</h4>
-                                                <p className="text-sm text-gray-400">
-                                                    Şirketlerin %90'ı CV'leri ATS (Applicant Tracking System) ile filtreler.
-                                                    Sektörel anahtar kelimeler eksikse CV'niz görüşmeye dahi çağrılmaz.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Analyze Button */}
-                                    <div className="text-center">
+                                    <h3 className="text-3xl font-black text-white mb-3">Ücretsiz Tarama Hakkınız Doldu</h3>
+                                    <p className="text-lg text-gray-400 font-medium mb-8">
+                                        Sınırsız ATS tarama ve yapay zeka analizleri için hesabınızı Pro'ya yükseltin.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                         <button
-                                            onClick={analyzeCV}
-                                            className="px-10 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold flex items-center gap-3 mx-auto hover:shadow-lg hover:shadow-cyan-500/20 transition-all"
+                                            onClick={() => setShowUpgrade(false)}
+                                            className="px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all border border-white/5"
                                         >
-                                            <Sparkles className="w-6 h-6" />
-                                            Analizi Başlat
+                                            Geri Dön
                                         </button>
-                                        {!isPremium && (
-                                            <p className="text-xs text-gray-500 mt-3">
-                                                {usage.remaining} ücretsiz hak kaldı • Sınırsız için <Link to="/pricing" className="text-cyan-400 hover:underline">Pro</Link>
-                                            </p>
-                                        )}
+                                        <Link
+                                            to="/pricing"
+                                            className="px-10 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-black flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(251,191,36,0.4)] transition-all"
+                                        >
+                                            <Crown className="w-5 h-5" />
+                                            Sınırsız Tara (Pro)
+                                        </Link>
                                     </div>
-                                </>
-                            )}
-                        </div>
-                    ) : report && (
-                        <div className="space-y-6">
-                            {/* Score Display */}
-                            <div className="flex items-center justify-center gap-8">
-                                {/* Score Circle */}
-                                <div className="relative w-36 h-36">
-                                    <svg className="w-full h-full -rotate-90">
-                                        <circle cx="72" cy="72" r="64" fill="none" stroke="currentColor" strokeWidth="10" className="text-white/10" />
-                                        <circle cx="72" cy="72" r="64" fill="none" stroke="currentColor" strokeWidth="10" strokeDasharray={402} strokeDashoffset={402 - (402 * report.totalScore) / 100} className={`${getScoreColor(report.totalScore)} transition-all duration-1000`} strokeLinecap="round" />
-                                    </svg>
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                        <span className={`text-4xl font-black ${getScoreColor(report.totalScore)}`}>
-                                            {report.totalScore}
-                                        </span>
-                                        <span className="text-xs text-gray-500">/ 100</span>
-                                    </div>
-                                </div>
-
-                                {/* Grade */}
-                                <div className="text-center">
-                                    <div className={`text-6xl font-black ${getScoreColor(report.totalScore)}`}>
-                                        {report.grade?.letter}
-                                    </div>
-                                    <div className="text-sm text-gray-400">{report.grade?.label}</div>
-                                    <div className="text-xs text-gray-500 mt-2">Sektör: {report.sector}</div>
-                                </div>
-                            </div>
-
-                            {/* Category Scores */}
-                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                                {Object.entries(ATS_CATEGORIES).map(([key, category]) => {
-                                    const Icon = category.icon
-                                    const score = report.scores[key]?.score || 0
-                                    return (
-                                        <div key={key} className="p-4 rounded-xl bg-white/5 border border-white/10">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <div className={`w-8 h-8 rounded-lg ${getScoreBg(score)} flex items-center justify-center`}>
-                                                    <Icon className={`w-4 h-4 ${getScoreColor(score)}`} />
-                                                </div>
-                                                <span className="text-sm font-medium">{category.name}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                                                    <div className={`h-full ${score >= 80 ? 'bg-green-500' : score >= 60 ? 'bg-cyan-500' : score >= 40 ? 'bg-amber-500' : 'bg-red-500'} transition-all duration-500`} style={{ width: `${score}%` }} />
-                                                </div>
-                                                <span className={`text-sm font-bold ${getScoreColor(score)}`}>{score}%</span>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-
-                            {/* Keyword Analysis */}
-                            {report.keywordAnalysis && (
-                                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                                    <h3 className="font-bold mb-4 flex items-center gap-2">
-                                        <Tag className="w-5 h-5 text-cyan-400" />
-                                        Anahtar Kelime Analizi
-                                    </h3>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        {/* Found */}
-                                        <div>
-                                            <div className="text-sm font-medium text-green-400 mb-2 flex items-center gap-1">
-                                                <CheckCircle className="w-4 h-4" /> Bulunan ({report.keywordAnalysis.found?.critical?.length || 0} kritik)
-                                            </div>
-                                            <div className="flex flex-wrap gap-1">
-                                                {report.keywordAnalysis.found?.critical?.map((k, i) => (
-                                                    <span key={i} className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded">{k}</span>
-                                                ))}
-                                                {report.keywordAnalysis.found?.important?.slice(0, 3).map((k, i) => (
-                                                    <span key={i} className="px-2 py-0.5 bg-cyan-500/20 text-cyan-400 text-xs rounded">{k}</span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        {/* Missing */}
-                                        <div>
-                                            <div className="text-sm font-medium text-red-400 mb-2 flex items-center gap-1">
-                                                <XCircle className="w-4 h-4" /> Eksik ({report.keywordAnalysis.missing?.critical?.length || 0} kritik)
-                                            </div>
-                                            <div className="flex flex-wrap gap-1">
-                                                {report.keywordAnalysis.missing?.critical?.slice(0, 5).map((k, i) => (
-                                                    <span key={i} className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded">{k}</span>
-                                                ))}
-                                                {report.keywordAnalysis.missing?.important?.slice(0, 3).map((k, i) => (
-                                                    <span key={i} className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded">{k}</span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </motion.div>
                             )}
 
-                            {/* Suggestions */}
-                            {report.suggestions?.length > 0 && (
-                                <div>
-                                    <h3 className="font-bold mb-3 flex items-center gap-2">
-                                        <Sparkles className="w-5 h-5 text-amber-400" />
-                                        İyileştirme Önerileri ({report.suggestions.length})
-                                    </h3>
-                                    <div className="space-y-2">
-                                        {report.suggestions.slice(0, 8).map((suggestion, i) => (
-                                            <div key={i} className={`p-3 rounded-xl border flex items-start gap-3 ${suggestion.priority === 'critical' ? 'bg-red-500/10 border-red-500/30' :
-                                                suggestion.priority === 'high' ? 'bg-amber-500/10 border-amber-500/30' :
-                                                    'bg-blue-500/10 border-blue-500/30'
-                                                }`}>
-                                                {getPriorityIcon(suggestion.priority)}
-                                                <div>
-                                                    <span className="text-sm">{suggestion.text}</span>
-                                                    {suggestion.impact && (
-                                                        <span className="ml-2 text-xs text-gray-500">+{suggestion.impact} puan</span>
+                            {!report && !showUpgrade && (
+                                <motion.div 
+                                    key="analyze"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-8 max-w-3xl mx-auto"
+                                >
+                                    {isAnalyzing ? (
+                                        <div className="text-center py-20 flex flex-col items-center justify-center">
+                                            <div className="relative mb-8">
+                                                <div className="w-24 h-24 rounded-full border-4 border-[#10B981]/20 border-t-[#10B981] animate-spin"></div>
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <Target className="w-8 h-8 text-[#10B981]" />
+                                                </div>
+                                            </div>
+                                            <h3 className="text-3xl font-black text-white mb-4">ATS Uyumluluğu Ölçülüyor...</h3>
+                                            <p className="text-lg text-gray-400 font-medium">Sektörel anahtar kelimeler ve format yapısı analiz ediliyor.</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {/* Sector Selection */}
+                                            <div className="bg-black/20 border border-white/5 rounded-3xl p-6 md:p-8">
+                                                <label className="flex items-center gap-2 text-lg font-bold text-white mb-6">
+                                                    <Target className="w-6 h-6 text-[#10B981]" /> Hedef Sektör Seçin
+                                                </label>
+                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                    {SECTORS.map(sector => (
+                                                        <button
+                                                            key={sector.id}
+                                                            onClick={() => setSelectedSector(sector.id)}
+                                                            className={`p-4 rounded-2xl text-center transition-all relative overflow-hidden group ${selectedSector === sector.id
+                                                                ? 'bg-[#10B981]/20 border border-[#10B981] shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                                                                : 'bg-white/5 border border-transparent hover:bg-white/10'
+                                                                }`}
+                                                        >
+                                                            <div className="text-3xl mb-2 drop-shadow-md">{sector.icon}</div>
+                                                            <div className={`text-sm font-bold truncate ${selectedSector === sector.id ? 'text-[#10B981]' : 'text-gray-300'}`}>{sector.name}</div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Info Card */}
+                                            <div className="p-6 rounded-3xl bg-gradient-to-r from-[#10B981]/10 to-transparent border border-[#10B981]/20 relative overflow-hidden">
+                                                <div className="absolute right-0 top-0 w-32 h-32 bg-[#10B981]/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+                                                <div className="flex items-start gap-4 relative z-10">
+                                                    <div className="w-12 h-12 rounded-2xl bg-[#10B981]/20 flex items-center justify-center flex-shrink-0 border border-[#10B981]/30">
+                                                        <BarChart3 className="w-6 h-6 text-[#10B981]" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-lg font-bold text-white mb-2">ATS Nedir?</h4>
+                                                        <p className="text-gray-400 font-medium leading-relaxed">
+                                                            Şirketlerin <strong>%90'ı</strong> CV'leri ATS (Applicant Tracking System) ile otomatik filtreler.
+                                                            Sektörel anahtar kelimeleriniz eksik veya CV formatınız hatalıysa, özgeçmişiniz insan kaynakları uzmanına ulaşmadan sistem tarafından elenebilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Analyze Button */}
+                                            <div className="flex flex-col items-center justify-center pt-4">
+                                                <button
+                                                    onClick={analyzeCV}
+                                                    className="w-full md:w-auto px-12 py-5 rounded-2xl bg-[#10B981] text-black font-black text-xl flex items-center justify-center gap-3 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] group"
+                                                >
+                                                    <Sparkles className="w-6 h-6" />
+                                                    Analizi Başlat
+                                                </button>
+                                                {!isPremium && (
+                                                    <p className="text-sm font-bold text-gray-500 mt-4 flex items-center gap-2">
+                                                        <span className="text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded border border-[#10B981]/20">{usage.remaining}</span> ücretsiz hak kaldı • Sınırsız için <Link to="/pricing" className="text-[#10B981] hover:underline underline-offset-4 decoration-[#10B981]/50">Pro'ya Yükselt</Link>
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+                                </motion.div>
+                            )}
+                            
+                            {/* Report Result */}
+                            {report && !showUpgrade && (
+                                <motion.div 
+                                    key="report"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="space-y-8"
+                                >
+                                    {/* Score Header */}
+                                    <div className="relative p-8 rounded-3xl border bg-black/40 border-white/5 overflow-hidden flex flex-col md:flex-row items-center gap-8 justify-center lg:justify-start">
+                                        <div className={`absolute -right-20 -top-20 w-64 h-64 rounded-full blur-3xl opacity-20 ${getScoreBg(report.totalScore)}`}></div>
+                                        
+                                        {/* Circular Score */}
+                                        <div className="relative w-48 h-48 flex-shrink-0">
+                                            <svg className="w-full h-full -rotate-90 drop-shadow-xl">
+                                                <circle cx="96" cy="96" r="84" fill="none" stroke="currentColor" strokeWidth="16" className="text-white/5" />
+                                                <motion.circle 
+                                                    cx="96" cy="96" r="84" 
+                                                    fill="none" stroke="currentColor" strokeWidth="16" 
+                                                    strokeDasharray={527.7} 
+                                                    initial={{ strokeDashoffset: 527.7 }}
+                                                    animate={{ strokeDashoffset: 527.7 - (527.7 * report.totalScore) / 100 }}
+                                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                                    className={`${getScoreColor(report.totalScore)}`} 
+                                                    strokeLinecap="round" 
+                                                />
+                                            </svg>
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                <span className={`text-6xl font-black drop-shadow-md ${getScoreColor(report.totalScore)}`}>
+                                                    {report.totalScore}
+                                                </span>
+                                                <span className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">/ 100</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Grade Info */}
+                                        <div className="text-center md:text-left relative z-10 flex-1">
+                                            <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center md:justify-start gap-2">
+                                                <Target className="w-4 h-4 text-[#10B981]" /> Hedef Sektör: {report.sector}
+                                            </div>
+                                            <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
+                                                <div className={`text-7xl font-black ${getScoreColor(report.totalScore)} drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]`}>
+                                                    {report.grade?.letter}
+                                                </div>
+                                                <div className={`px-4 py-2 rounded-xl text-xl font-bold border ${getScoreBg(report.totalScore)} ${getScoreColor(report.totalScore).replace('text-', 'border-').replace('400', '500/30')}`}>
+                                                    {report.grade?.label}
+                                                </div>
+                                            </div>
+                                            <p className="text-gray-400 font-medium">ATS uyumluluk dereceniz ve mülakata çağrılma potansiyeliniz.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid lg:grid-cols-3 gap-6">
+                                        <div className="lg:col-span-2 space-y-6">
+                                            {/* Category Scores */}
+                                            <div className="bg-black/20 rounded-3xl p-6 border border-white/5">
+                                                <h3 className="font-bold text-xl text-white mb-6 flex items-center gap-2">
+                                                    <BarChart3 className="w-5 h-5 text-[#10B981]" /> Kategori Kırılımı
+                                                </h3>
+                                                <div className="grid sm:grid-cols-2 gap-4">
+                                                    {Object.entries(ATS_CATEGORIES).map(([key, category]) => {
+                                                        const Icon = category.icon
+                                                        const score = report.scores[key]?.score || 0
+                                                        return (
+                                                            <div key={key} className="p-4 rounded-2xl bg-black/40 border border-white/5">
+                                                                <div className="flex items-center justify-between mb-3">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className={`w-10 h-10 rounded-xl bg-black/60 border border-white/5 flex items-center justify-center`}>
+                                                                            <Icon className={`w-5 h-5 ${getScoreColor(score)}`} />
+                                                                        </div>
+                                                                        <span className="font-bold text-white text-sm">{category.name}</span>
+                                                                    </div>
+                                                                    <span className={`text-lg font-black ${getScoreColor(score)}`}>{score}%</span>
+                                                                </div>
+                                                                <div className="h-2 bg-white/5 rounded-full overflow-hidden shadow-inner border border-white/5">
+                                                                    <motion.div 
+                                                                        initial={{ width: 0 }}
+                                                                        animate={{ width: `${score}%` }}
+                                                                        transition={{ duration: 1, delay: 0.5 }}
+                                                                        className={`h-full bg-gradient-to-r ${getScoreGradient(score)}`} 
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            {/* Keyword Analysis */}
+                                            {report.keywordAnalysis && (
+                                                <div className="bg-black/20 rounded-3xl p-6 border border-white/5 relative overflow-hidden">
+                                                    <h3 className="font-bold text-xl text-white mb-6 flex items-center gap-2 relative z-10">
+                                                        <Tag className="w-5 h-5 text-cyan-400" /> Sektörel Anahtar Kelimeler
+                                                    </h3>
+                                                    
+                                                    <div className={`grid sm:grid-cols-2 gap-4 ${!isPremium ? 'blur-sm select-none opacity-50' : ''}`}>
+                                                        {/* Found */}
+                                                        <div className="p-5 rounded-2xl bg-black/40 border border-[#10B981]/20">
+                                                            <div className="text-sm font-bold text-[#10B981] uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                                                                <CheckCircle className="w-4 h-4" /> Bulunan Kelimeler
+                                                            </div>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {report.keywordAnalysis.found?.critical?.map((k, i) => (
+                                                                    <span key={i} className="px-3 py-1.5 bg-[#10B981]/10 text-[#10B981] font-bold text-xs rounded-xl border border-[#10B981]/20">{k}</span>
+                                                                ))}
+                                                                {report.keywordAnalysis.found?.important?.slice(0, 3).map((k, i) => (
+                                                                    <span key={i} className="px-3 py-1.5 bg-cyan-500/10 text-cyan-400 font-bold text-xs rounded-xl border border-cyan-500/20">{k}</span>
+                                                                ))}
+                                                                {(report.keywordAnalysis.found?.critical?.length === 0 && report.keywordAnalysis.found?.important?.length === 0) && (
+                                                                    <span className="text-gray-500 text-sm font-medium">Kritik kelime bulunamadı.</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        {/* Missing */}
+                                                        <div className="p-5 rounded-2xl bg-black/40 border border-red-500/20">
+                                                            <div className="text-sm font-bold text-red-500 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-white/5 pb-3">
+                                                                <XCircle className="w-4 h-4" /> Eksik Kelimeler
+                                                            </div>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {report.keywordAnalysis.missing?.critical?.slice(0, 5).map((k, i) => (
+                                                                    <span key={i} className="px-3 py-1.5 bg-red-500/10 text-red-400 font-bold text-xs rounded-xl border border-red-500/20">{k}</span>
+                                                                ))}
+                                                                {report.keywordAnalysis.missing?.important?.slice(0, 3).map((k, i) => (
+                                                                    <span key={i} className="px-3 py-1.5 bg-amber-500/10 text-amber-400 font-bold text-xs rounded-xl border border-amber-500/20">{k}</span>
+                                                                ))}
+                                                                 {(report.keywordAnalysis.missing?.critical?.length === 0 && report.keywordAnalysis.missing?.important?.length === 0) && (
+                                                                    <span className="text-[#10B981] text-sm font-medium">Eksik kritik kelime yok.</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {!isPremium && (
+                                                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                                            <Lock className="w-8 h-8 text-amber-500 mb-2" />
+                                                            <div className="text-white font-bold text-lg mb-1">Premium Özellik</div>
+                                                            <p className="text-gray-300 text-sm px-4 text-center">Anahtar kelime analizini görmek için Pro'ya geçin.</p>
+                                                        </div>
                                                     )}
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )}
+                                        </div>
+
+                                        {/* Suggestions Sidebar */}
+                                        <div className="space-y-4">
+                                            {report.suggestions?.length > 0 ? (
+                                                <div className="bg-amber-500/5 rounded-3xl p-6 border border-amber-500/10 h-full flex flex-col relative overflow-hidden">
+                                                    <h3 className="font-bold text-xl text-amber-500 mb-6 flex items-center gap-2 relative z-10">
+                                                        <Sparkles className="w-5 h-5 fill-current" />
+                                                        İyileştirme Önerileri
+                                                    </h3>
+                                                    <div className={`space-y-3 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-amber-500/20 scrollbar-track-transparent ${!isPremium ? 'blur-sm select-none opacity-50' : ''}`}>
+                                                        {report.suggestions.map((suggestion, i) => (
+                                                            <div key={i} className={`p-4 rounded-2xl border flex items-start gap-3 bg-black/40 ${suggestion.priority === 'critical' ? 'border-red-500/30' :
+                                                                suggestion.priority === 'high' ? 'border-amber-500/30' :
+                                                                    'border-blue-500/30'
+                                                                }`}>
+                                                                <div className="mt-0.5">{getPriorityIcon(suggestion.priority)}</div>
+                                                                <div>
+                                                                    <div className="text-sm text-gray-200 font-medium leading-relaxed">{suggestion.text}</div>
+                                                                    {suggestion.impact && (
+                                                                        <div className="mt-1.5 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-white/5 text-gray-400">
+                                                                            Etki: +{suggestion.impact} Puan
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    
+                                                    {!isPremium && (
+                                                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                                            <Lock className="w-8 h-8 text-amber-500 mb-2" />
+                                                            <div className="text-white font-bold text-lg mb-1">Premium Özellik</div>
+                                                            <p className="text-gray-300 text-sm px-4 text-center">Önerileri görmek için Pro'ya geçin.</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="bg-[#10B981]/10 rounded-3xl p-8 border border-[#10B981]/20 h-full flex flex-col items-center justify-center text-center">
+                                                    <div className="w-20 h-20 bg-[#10B981]/20 rounded-full flex items-center justify-center mb-4">
+                                                        <CheckCircle className="w-10 h-10 text-[#10B981]" />
+                                                    </div>
+                                                    <h3 className="text-xl font-black text-[#10B981] mb-2">Kusursuz!</h3>
+                                                    <p className="text-sm font-medium text-gray-300">CV'niz hedef sektörünüzdeki ATS filtreleri için harika bir şekilde optimize edilmiş durumda.</p>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
 
-                            {report.suggestions?.length === 0 && (
-                                <div className="p-6 rounded-xl bg-green-500/10 border border-green-500/30 text-center">
-                                    <CheckCircle className="w-12 h-12 mx-auto mb-3 text-green-400" />
-                                    <p className="text-green-400 font-bold">Harika! CV'niz ATS için optimize edilmiş durumda.</p>
-                                </div>
+                                    {/* Action Footer */}
+                                    <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-4 border-t border-white/5">
+                                        <button onClick={() => setReport(null)} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all border border-white/5 flex items-center justify-center gap-2">
+                                            <RotateCcw className="w-5 h-5" /> Yeniden Analiz
+                                        </button>
+                                        <button onClick={exportToPDF} disabled={isExporting} className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-[#10B981] text-black font-black text-lg flex items-center justify-center gap-3 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50">
+                                            {isExporting ? (
+                                                <><Loader2 className="w-5 h-5 animate-spin" /> İndiriliyor...</>
+                                            ) : (
+                                                <><FileDown className="w-5 h-5" /> PDF Raporu İndir</>
+                                            )}
+                                        </button>
+                                    </div>
+                                </motion.div>
                             )}
-                        </div>
-                    )}
-                </div>
-
-                {/* Footer */}
-                {report && !showUpgrade && (
-                    <div className="p-6 border-t border-white/10 bg-white/5 flex justify-between">
-                        <button onClick={() => setReport(null)} className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
-                            Yeniden Analiz
-                        </button>
-                        <button onClick={exportToPDF} disabled={isExporting} className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold flex items-center gap-2 hover:from-cyan-400 hover:to-purple-500 transition-all disabled:opacity-50">
-                            {isExporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileDown className="w-5 h-5" />}
-                            PDF İndir
-                        </button>
+                        </AnimatePresence>
                     </div>
-                )}
-            </div>
-        </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     )
 }
-

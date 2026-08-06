@@ -180,4 +180,118 @@ router.get('/formatting-tips', async (req, res) => {
     }
 });
 
+// @desc    Generate Project Description
+// @route   POST /api/ai/project
+// @access  Private
+router.post('/project', async (req, res) => {
+    try {
+        const { input, type, outputType, lang } = req.body;
+        
+        const result = await aiService.generateProject({ input, type, outputType, lang });
+
+        await require('../services/EnhancedAnalyticsService').trackAIUsage(
+            req.user.id,
+            'project_generation',
+            { project_type: type, output_type: outputType }
+        );
+
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Project Generation Error:', error);
+        res.status(500).json({ error: 'Proje üretimi başarısız oldu.' });
+    }
+});
+
+// @desc    Optimize LinkedIn Profile
+// @route   POST /api/ai/optimize-linkedin
+// @access  Private
+router.post('/optimize-linkedin', async (req, res) => {
+    try {
+        const { cvData, lang } = req.body;
+
+        if (!cvData) {
+            return res.status(400).json({ error: 'CV verileri gereklidir.' });
+        }
+
+        const result = await aiService.optimizeLinkedIn({ cvData, lang });
+
+        await require('../services/EnhancedAnalyticsService').trackAIUsage(
+            req.user.id,
+            'linkedin_optimization',
+            { lang }
+        );
+
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('LinkedIn Optimization Error:', error);
+        res.status(500).json({ error: 'LinkedIn optimizasyonu başarısız oldu.' });
+    }
+});
+
+// @desc    Generate Email
+// @route   POST /api/ai/generate-email
+// @access  Private
+router.post('/generate-email', async (req, res) => {
+    try {
+        const { type, tone, input, cvData, lang } = req.body;
+
+        const result = await aiService.generateEmail({ type, tone, input, cvData, lang });
+
+        await require('../services/EnhancedAnalyticsService').trackAIUsage(
+            req.user.id,
+            'email_generation',
+            { email_type: type, tone }
+        );
+
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Email Generation Error:', error);
+        res.status(500).json({ error: 'E-posta üretimi başarısız oldu.' });
+    }
+});
+
+// @desc    Write Reference Letter
+// @route   POST /api/ai/write-reference
+// @access  Private
+router.post('/write-reference', async (req, res) => {
+    try {
+        const { referenceType, tone, input, cvData, lang } = req.body;
+
+        const result = await aiService.writeReferenceLetter({ referenceType, tone, input, cvData, lang });
+
+        await require('../services/EnhancedAnalyticsService').trackAIUsage(
+            req.user.id,
+            'reference_letter_generation',
+            { reference_type: referenceType, tone }
+        );
+
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Reference Letter Generation Error:', error);
+        res.status(500).json({ error: 'Referans mektubu üretimi başarısız oldu.' });
+    }
+});
+
+// @desc    Generate Cover Letter
+// @route   POST /api/ai/generate-cover-letter
+// @access  Private
+router.post('/generate-cover-letter', async (req, res) => {
+    try {
+        const { style, jobData, targetPosition, cvData, lang } = req.body;
+
+        const result = await aiService.generateCoverLetter({ style, jobData, targetPosition, cvData, lang });
+
+        await require('../services/EnhancedAnalyticsService').trackAIUsage(
+            req.user.id,
+            'cover_letter_generation',
+            { style }
+        );
+
+        res.json({ success: true, data: result });
+    } catch (error) {
+        console.error('Cover Letter Generation Error:', error);
+        res.status(500).json({ error: 'Niyet mektubu üretimi başarısız oldu.' });
+    }
+});
+
 module.exports = router;

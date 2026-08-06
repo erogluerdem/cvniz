@@ -1,34 +1,45 @@
+import { useState, useEffect } from 'react'
 import { Scale, FileWarning, Gavel, CheckCircle2, AlertCircle, Ban } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function TermsOfServicePage() {
+    const [isDayMode, setIsDayMode] = useState(() => {
+        return window.localStorage.getItem('CVniz-home-theme') === 'day'
+    })
+
+    useEffect(() => {
+        const handleThemeChange = (e) => setIsDayMode(e.detail === 'day')
+        window.addEventListener('CVniz-theme-change', handleThemeChange)
+        return () => window.removeEventListener('CVniz-theme-change', handleThemeChange)
+    }, [])
+
     return (
-        <div className="min-h-screen bg-slate-950 text-white selection:bg-cyan-500/30">
+        <div className={`min-h-screen transition-colors duration-500 ${isDayMode ? 'bg-slate-50 text-slate-900 selection:bg-cyan-500/20' : 'bg-slate-950 text-white selection:bg-cyan-500/30'}`}>
             {/* Background Decorations */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px]"></div>
+                <div className={`absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[120px] transition-colors duration-500 ${isDayMode ? 'bg-cyan-200/40' : 'bg-cyan-500/10'}`}></div>
+                <div className={`absolute bottom-0 left-1/4 w-[500px] h-[500px] rounded-full blur-[120px] transition-colors duration-500 ${isDayMode ? 'bg-blue-200/40' : 'bg-blue-500/5'}`}></div>
             </div>
 
             <section className="relative pt-32 pb-20 px-6 lg:px-12">
                 <div className="max-w-4xl mx-auto relative z-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 border-cyan-500/20">
-                        <Scale className="w-4 h-4 text-cyan-400" />
-                        <span className="text-xs font-black text-cyan-200 uppercase tracking-widest">Yasal Sözleşme</span>
+                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 border transition-colors duration-500 ${isDayMode ? 'bg-white border-cyan-200 shadow-sm' : 'glass border-cyan-500/20'}`}>
+                        <Scale className={`w-4 h-4 ${isDayMode ? 'text-cyan-600' : 'text-cyan-400'}`} />
+                        <span className={`text-xs font-black uppercase tracking-widest ${isDayMode ? 'text-cyan-600' : 'text-cyan-200'}`}>Yasal Sözleşme</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight">
-                        Kullanım <span className="gradient-text">Şartları</span>
+                        Kullanım <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Şartları</span>
                     </h1>
-                    <p className="text-gray-400 text-lg mb-12">
+                    <p className={`text-lg mb-12 font-medium ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>
                         Son Güncelleme: 25 Aralık 2024
                     </p>
 
-                    <div className="glass-card rounded-[32px] p-8 md:p-12 border-white/5 space-y-12 text-gray-300 leading-relaxed">
+                    <div className={`rounded-[32px] p-8 md:p-12 border space-y-12 leading-relaxed transition-all duration-500 ${isDayMode ? 'bg-white border-slate-200 shadow-xl shadow-slate-200/50 text-slate-600' : 'glass-card border-white/5 text-gray-300'}`}>
 
                         {/* 1. Kabul */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                                <CheckCircle2 className="w-6 h-6 text-cyan-400" />
+                            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                <CheckCircle2 className="w-6 h-6 text-cyan-500" />
                                 1. Şartların Kabulü
                             </h2>
                             <p>
@@ -38,8 +49,8 @@ export default function TermsOfServicePage() {
 
                         {/* 2. Hizmet Kapsamı */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                                <Gavel className="w-6 h-6 text-cyan-400" />
+                            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                <Gavel className="w-6 h-6 text-cyan-500" />
                                 2. Hizmet Kapsamı ve Değişiklikler
                             </h2>
                             <p>
@@ -49,8 +60,8 @@ export default function TermsOfServicePage() {
 
                         {/* 3. Hesap Güvenliği */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                                <AlertCircle className="w-6 h-6 text-cyan-400" />
+                            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                <AlertCircle className="w-6 h-6 text-cyan-500" />
                                 3. Kullanıcı Hesapları ve Güvenlik
                             </h2>
                             <p className="mb-4">Hizmetlerimizden tam yararlanmak için hesap oluşturmanız gerekebilir. Bu kapsamda:</p>
@@ -64,8 +75,8 @@ export default function TermsOfServicePage() {
 
                         {/* 4. Yasaklı Faaliyetler */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                                <Ban className="w-6 h-6 text-cyan-400" />
+                            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                <Ban className="w-6 h-6 text-cyan-500" />
                                 4. Yasaklı Faaliyetler
                             </h2>
                             <p className="mb-4">Platformu aşağıdaki amaçlar için kullanamazsınız:</p>
@@ -80,8 +91,8 @@ export default function TermsOfServicePage() {
 
                         {/* 5. Ödeme ve İptal */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                                <FileWarning className="w-6 h-6 text-cyan-400" />
+                            <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                <FileWarning className="w-6 h-6 text-cyan-500" />
                                 5. Ücretlendirme ve İade Koşulları
                             </h2>
                             <p>
@@ -91,7 +102,7 @@ export default function TermsOfServicePage() {
 
                         {/* 6. Fikri Mülkiyet */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">
+                            <h2 className={`text-2xl font-bold mb-6 border-b pb-4 ${isDayMode ? 'text-slate-900 border-slate-200' : 'text-white border-white/10'}`}>
                                 6. Fikri Mülkiyet Hakları
                             </h2>
                             <p>
@@ -101,7 +112,7 @@ export default function TermsOfServicePage() {
 
                         {/* 7. Sorumluluk Sınırı */}
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">
+                            <h2 className={`text-2xl font-bold mb-6 border-b pb-4 ${isDayMode ? 'text-slate-900 border-slate-200' : 'text-white border-white/10'}`}>
                                 7. Sorumluluğun Sınırlandırılması
                             </h2>
                             <p>
@@ -110,12 +121,12 @@ export default function TermsOfServicePage() {
                         </section>
 
                         {/* İletişim */}
-                        <section className="bg-cyan-500/5 rounded-2xl p-8 border border-cyan-500/10">
-                            <h2 className="text-xl font-bold text-white mb-4">Hukuki Sorular</h2>
+                        <section className={`rounded-2xl p-8 border ${isDayMode ? 'bg-cyan-50 border-cyan-200' : 'bg-cyan-500/5 border-cyan-500/10'}`}>
+                            <h2 className={`text-xl font-bold mb-4 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Hukuki Sorular</h2>
                             <p className="mb-6 italic">
                                 Kullanım şartlarımızla ilgili hukuki bir sorunuz varsa lütfen bize ulaşın.
                             </p>
-                            <Link to="/contact" className="text-cyan-400 font-bold hover:text-cyan-300 underline underline-offset-4">
+                            <Link to="/contact" className="text-cyan-500 font-bold hover:text-cyan-400 underline underline-offset-4">
                                 Destek Ekibiyle Görüş →
                             </Link>
                         </section>

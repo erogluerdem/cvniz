@@ -404,99 +404,148 @@ export function AchievementBadge({ icon, title, unlocked, color }) {
 }
 
 // ============ CV COMPARE MODAL ============
-export function CompareModal({ isOpen, onClose, cvs = [] }) {
+export function CompareModal({ isOpen, onClose, cvs = [], isDayMode = false }) {
     const [cv1, setCv1] = useState(null)
     const [cv2, setCv2] = useState(null)
 
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-            <div className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-8 max-w-4xl w-full animate-scale-in shadow-2xl shadow-cyan-500/10 ring-1 ring-white/5">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Columns className="w-5 h-5 text-cyan-400" />
-                        CV Karşılaştır
-                    </h3>
-                    <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* CV 1 */}
-                    <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-2">İlk CV</label>
-                        <select
-                            value={cv1 || ''}
-                            onChange={(e) => setCv1(e.target.value)}
-                            className="input-field w-full"
-                        >
-                            <option value="">CV Seçin...</option>
-                            {cvs.map(cv => (
-                                <option key={cv.id} value={cv.id}>{cv.name}</option>
-                            ))}
-                        </select>
-                        {cv1 && (
-                            <div className="mt-4 p-4 bg-white/5 rounded-xl">
-                                <p className="font-semibold">{cvs.find(c => c.id === cv1)?.name}</p>
-                                <p className="text-sm text-slate-500 dark:text-gray-400 capitalize">{cvs.find(c => c.id === cv1)?.template} Şablon</p>
+        <AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+                onClick={(e) => e.target === e.currentTarget && onClose()}
+            >
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className={`relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.15)] border ${isDayMode ? 'bg-[#f4f7f6] border-[#10B981]/20' : 'bg-[#0F1115] border-[#10B981]/20'}`}
+                >
+                    <div className="p-8">
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                                    <Columns className="text-black" size={24} />
+                                </div>
+                                <div>
+                                    <h3 className={`text-2xl font-black ${isDayMode ? 'text-slate-800' : 'text-white'}`}>
+                                        CV Karşılaştır
+                                    </h3>
+                                    <p className={`text-sm font-medium ${isDayMode ? 'text-slate-500' : 'text-[#10B981]/80'}`}>İki farklı CV'yi analiz edin ve karşılaştırın</p>
+                                </div>
                             </div>
-                        )}
-                    </div>
+                            <button onClick={onClose} className={`p-2.5 rounded-xl transition-colors ${isDayMode ? 'hover:bg-slate-200 text-slate-400' : 'hover:bg-white/10 text-gray-400 hover:text-white'}`}>
+                                <X size={20} />
+                            </button>
+                        </div>
 
-                    {/* CV 2 */}
-                    <div>
-                        <label className="block text-sm text-slate-500 dark:text-gray-400 mb-2">İkinci CV</label>
-                        <select
-                            value={cv2 || ''}
-                            onChange={(e) => setCv2(e.target.value)}
-                            className="input-field w-full"
-                        >
-                            <option value="">CV Seçin...</option>
-                            {cvs.map(cv => (
-                                <option key={cv.id} value={cv.id}>{cv.name}</option>
-                            ))}
-                        </select>
-                        {cv2 && (
-                            <div className="mt-4 p-4 bg-white/5 rounded-xl">
-                                <p className="font-semibold">{cvs.find(c => c.id === cv2)?.name}</p>
-                                <p className="text-sm text-slate-500 dark:text-gray-400 capitalize">{cvs.find(c => c.id === cv2)?.template} Şablon</p>
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {/* CV 1 */}
+                            <div className={`p-6 rounded-2xl border transition-all ${isDayMode ? 'bg-white border-slate-200' : 'bg-white/5 border-white/10 hover:border-[#10B981]/30'}`}>
+                                <label className={`block text-xs font-black uppercase tracking-widest mb-3 ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}>İlk CV</label>
+                                <select
+                                    value={cv1 || ''}
+                                    onChange={(e) => setCv1(e.target.value)}
+                                    className={`w-full p-4 rounded-xl font-medium outline-none transition-all ${
+                                        isDayMode 
+                                        ? 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[#10B981]' 
+                                        : 'bg-black/50 border border-white/10 text-white focus:border-[#10B981] hover:border-white/20'
+                                    }`}
+                                >
+                                    <option value="" className="text-gray-500">CV Seçin...</option>
+                                    {cvs.map(cv => (
+                                        <option key={cv.id} value={cv.id} className="bg-[#0F1115] text-white">{cv.name}</option>
+                                    ))}
+                                </select>
+                                {cv1 && (
+                                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`mt-4 p-4 rounded-xl border ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-black/30 border-white/5'}`}>
+                                        <p className={`font-black text-lg ${isDayMode ? 'text-slate-800' : 'text-white'}`}>{cvs.find(c => c.id === cv1)?.name}</p>
+                                        <p className={`text-sm font-bold ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}><span className="text-gray-500 font-medium capitalize">Şablon:</span> {cvs.find(c => c.id === cv1)?.template}</p>
+                                    </motion.div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                </div>
 
-                {cv1 && cv2 && (() => {
-                    const data1 = cvs.find(c => c.id === cv1)?.data
-                    const data2 = cvs.find(c => c.id === cv2)?.data
-                    return (
-                        <div className="mt-8 space-y-4">
-                            <div className="grid grid-cols-3 gap-4 text-center">
-                                <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Deneyim</div>
-                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.experience?.length || 0} vs {data2?.experience?.length || 0}</div>
-                                </div>
-                                <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Beceriler</div>
-                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.skills?.length || 0} vs {data2?.skills?.length || 0}</div>
-                                </div>
-                                <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Eğitim</div>
-                                    <div className="text-xl font-bold text-slate-900 dark:text-white">{data1?.education?.length || 0} vs {data2?.education?.length || 0}</div>
-                                </div>
+                            {/* CV 2 */}
+                            <div className={`p-6 rounded-2xl border transition-all ${isDayMode ? 'bg-white border-slate-200' : 'bg-white/5 border-white/10 hover:border-[#10B981]/30'}`}>
+                                <label className={`block text-xs font-black uppercase tracking-widest mb-3 ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}>İkinci CV</label>
+                                <select
+                                    value={cv2 || ''}
+                                    onChange={(e) => setCv2(e.target.value)}
+                                    className={`w-full p-4 rounded-xl font-medium outline-none transition-all ${
+                                        isDayMode 
+                                        ? 'bg-slate-50 border-slate-200 text-slate-800 focus:border-[#10B981]' 
+                                        : 'bg-black/50 border border-white/10 text-white focus:border-[#10B981] hover:border-white/20'
+                                    }`}
+                                >
+                                    <option value="" className="text-gray-500">CV Seçin...</option>
+                                    {cvs.map(cv => (
+                                        <option key={cv.id} value={cv.id} className="bg-[#0F1115] text-white">{cv.name}</option>
+                                    ))}
+                                </select>
+                                {cv2 && (
+                                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`mt-4 p-4 rounded-xl border ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-black/30 border-white/5'}`}>
+                                        <p className={`font-black text-lg ${isDayMode ? 'text-slate-800' : 'text-white'}`}>{cvs.find(c => c.id === cv2)?.name}</p>
+                                        <p className={`text-sm font-bold ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}><span className="text-gray-500 font-medium capitalize">Şablon:</span> {cvs.find(c => c.id === cv2)?.template}</p>
+                                    </motion.div>
+                                )}
                             </div>
                         </div>
-                    )
-                })()}
 
-                <div className="flex justify-end gap-3 mt-6">
-                    <button onClick={onClose} className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors">
-                        Kapat
-                    </button>
-                </div>
-            </div>
-        </div>
+                        <AnimatePresence>
+                            {cv1 && cv2 && (() => {
+                                const data1 = cvs.find(c => c.id === cv1)?.data
+                                const data2 = cvs.find(c => c.id === cv2)?.data
+                                return (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="mt-8 space-y-4"
+                                    >
+                                        <div className="grid grid-cols-3 gap-6 text-center">
+                                            <div className={`p-6 rounded-2xl border ${isDayMode ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#10B981]/10 border-[#10B981]/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]'}`}>
+                                                <div className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}>Deneyim</div>
+                                                <div className={`text-3xl font-black flex items-center justify-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                                    <span>{data1?.experience?.length || 0}</span>
+                                                    <span className="text-[#10B981] text-lg">vs</span>
+                                                    <span>{data2?.experience?.length || 0}</span>
+                                                </div>
+                                            </div>
+                                            <div className={`p-6 rounded-2xl border ${isDayMode ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#10B981]/10 border-[#10B981]/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]'}`}>
+                                                <div className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}>Beceriler</div>
+                                                <div className={`text-3xl font-black flex items-center justify-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                                    <span>{data1?.skills?.length || 0}</span>
+                                                    <span className="text-[#10B981] text-lg">vs</span>
+                                                    <span>{data2?.skills?.length || 0}</span>
+                                                </div>
+                                            </div>
+                                            <div className={`p-6 rounded-2xl border ${isDayMode ? 'bg-white border-slate-200 shadow-sm' : 'bg-[#10B981]/10 border-[#10B981]/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]'}`}>
+                                                <div className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDayMode ? 'text-slate-500' : 'text-[#10B981]'}`}>Eğitim</div>
+                                                <div className={`text-3xl font-black flex items-center justify-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+                                                    <span>{data1?.education?.length || 0}</span>
+                                                    <span className="text-[#10B981] text-lg">vs</span>
+                                                    <span>{data2?.education?.length || 0}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )
+                            })()}
+                        </AnimatePresence>
+
+                        <div className="flex justify-end gap-3 mt-8">
+                            <button onClick={onClose} className={`px-8 py-3.5 font-bold rounded-2xl transition-colors border ${isDayMode ? 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200' : 'bg-white/5 hover:bg-white/10 text-white border-white/10'}`}>
+                                Kapat
+                            </button>
+                        </div>
+                    </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     )
 }
 

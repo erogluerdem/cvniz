@@ -5,6 +5,8 @@ const User = require('../models/User');
 const CV = require('../models/CV');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const AIService = require('../services/AIService');
+const aiService = new AIService();
 
 // Credit pricing
 const TAILORING_CREDIT_COST = 1;
@@ -89,8 +91,37 @@ router.post('/tailor', authenticate, async (req, res) => {
             }
         }
 
-        // Tailor the CV
-        const tailoredData = tailorCVToJob(originalCV.data || originalCV, parsedJob);
+        // Tailor the CV using AI
+        const originalCVData = originalCV.data || originalCV;
+        const aiResponse = await aiService.targetFitCV(originalCVData, parsedJob, 'tr');
+        
+        if (aiResponse.error) {
+            return res.status(500).json({ error: aiResponse.message || 'AI optimizasyonu başarısız oldu' });
+        }
+
+        const tailoredData = JSON.parse(JSON.stringify(originalCVData)); // Deep clone
+        
+        // Merge AI results
+        if (aiResponse.summary) {
+            if (tailoredData.personal) {
+                tailoredData.personal.summary = aiResponse.summary;
+            } else if (tailoredData.personalInfo) {
+                tailoredData.personalInfo.summary = aiResponse.summary;
+            } else {
+                tailoredData.summary = aiResponse.summary;
+            }
+        }
+
+        if (aiResponse.experience && Array.isArray(aiResponse.experience)) {
+            // Find matches and update descriptions
+            tailoredData.experience = tailoredData.experience.map(exp => {
+                const aiExp = aiResponse.experience.find(e => e.company === exp.company && e.position === exp.position);
+                if (aiExp) {
+                    return { ...exp, description: aiExp.description };
+                }
+                return exp;
+            });
+        }
 
         // Create new CV version
         const newCV = new CV({

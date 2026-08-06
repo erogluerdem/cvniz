@@ -3,70 +3,27 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
     X, Sparkles, Wand2, Copy, Check, RefreshCw, 
     Briefcase, Code, Rocket, Target, Zap, ChevronRight,
-    FileText, ArrowRight, Lightbulb
+    FileText, ArrowRight, Lightbulb, Loader2, Bot
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { aiAPI } from '../services/api'
+import toast from 'react-hot-toast'
 
 // Proje türleri
 const PROJECT_TYPES = [
     { id: 'web', label: 'Web Uygulaması', icon: '🌐', color: 'from-blue-500 to-cyan-500' },
     { id: 'mobile', label: 'Mobil Uygulama', icon: '📱', color: 'from-purple-500 to-pink-500' },
-    { id: 'api', label: 'API / Backend', icon: '⚙️', color: 'from-green-500 to-emerald-500' },
+    { id: 'api', label: 'API / Backend', icon: '⚙️', color: 'from-emerald-500 to-teal-500' },
     { id: 'data', label: 'Data / ML', icon: '📊', color: 'from-orange-500 to-amber-500' },
-    { id: 'devops', label: 'DevOps / Infra', icon: '🔧', color: 'from-gray-500 to-slate-500' },
+    { id: 'devops', label: 'DevOps / Infra', icon: '🔧', color: 'from-slate-500 to-gray-500' },
     { id: 'other', label: 'Diğer', icon: '💡', color: 'from-indigo-500 to-violet-500' }
 ]
-
-// Örnek AI yanıtları (gerçek projede API kullanılır)
-const generateProjectDescription = (input, type) => {
-    const templates = {
-        web: [
-            `Modern ve ölçeklenebilir bir ${input.name || 'web uygulaması'} geliştirdim. ${input.tech ? `${input.tech} teknolojileri kullanarak` : ''} kullanıcı deneyimini ön planda tutan, responsive ve erişilebilir bir arayüz tasarladım. Proje kapsamında ${input.features || 'kullanıcı yönetimi, gerçek zamanlı bildirimler ve analitik dashboard'} özelliklerini implement ettim. Sonuç olarak ${input.impact || 'kullanıcı memnuniyetinde %40 artış ve sayfa yüklenme süresinde %60 iyileşme'} sağladım.`,
-            `${input.name || 'E-ticaret platformu'} için full-stack geliştirme yaptım. ${input.tech || 'React, Node.js ve PostgreSQL'} kullanarak ${input.features || 'ödeme entegrasyonu, envanter yönetimi ve müşteri portalı'} modüllerini geliştirdim. Agile metodoloji ile 3 haftalık sprintler halinde çalışarak, ${input.impact || 'go-live süresini %30 kısalttım ve 10.000+ kullanıcıya ulaştım'}.`
-        ],
-        mobile: [
-            `Cross-platform ${input.name || 'mobil uygulama'} geliştirdim. ${input.tech || 'React Native ve Firebase'} kullanarak ${input.features || 'push notification, offline mode ve biometric authentication'} özelliklerini entegre ettim. App Store ve Google Play'de yayınlanan uygulama ${input.impact || '50.000+ indirme ve 4.8 yıldız rating'} elde etti.`,
-            `Native ${input.name || 'iOS/Android uygulama'} için UI/UX odaklı geliştirme yaptım. ${input.tech || 'Swift/Kotlin'} ile ${input.features || 'real-time chat, harita entegrasyonu ve sosyal paylaşım'} modüllerini implement ettim. ${input.impact || 'Kullanıcı retention oranını %35 artırdım'}.`
-        ],
-        api: [
-            `Yüksek performanslı ${input.name || 'RESTful API'} tasarladım ve geliştirdim. ${input.tech || 'Node.js, Express ve MongoDB'} kullanarak ${input.features || 'authentication, rate limiting ve caching'} mekanizmalarını kurdum. Mikroservis mimarisi ile ${input.impact || 'günlük 1M+ request işleme kapasitesi ve %99.9 uptime'} sağladım.`,
-            `${input.name || 'GraphQL API'} geliştirdim. ${input.tech || 'Apollo Server ve PostgreSQL'} ile ${input.features || 'subscription, batching ve federation'} özelliklerini implement ettim. ${input.impact || 'API response time\'ı %70 düşürdüm ve developer experience\'ı iyileştirdim'}.`
-        ],
-        data: [
-            `${input.name || 'Veri analiz pipeline\'ı'} oluşturdum. ${input.tech || 'Python, Pandas ve Spark'} kullanarak ${input.features || 'ETL süreçleri, veri temizleme ve görselleştirme'} adımlarını otomatize ettim. ${input.impact || 'Manuel raporlama süresini %80 azalttım ve real-time dashboard\'lar oluşturdum'}.`,
-            `${input.name || 'Machine Learning modeli'} geliştirdim. ${input.tech || 'TensorFlow ve Scikit-learn'} ile ${input.features || 'tahminleme, sınıflandırma ve anomali tespiti'} algoritmalarını implement ettim. ${input.impact || '%92 doğruluk oranı ve production\'da 6 ay sorunsuz çalışma'} sağladım.`
-        ],
-        devops: [
-            `${input.name || 'CI/CD pipeline'} kurdum ve yönettim. ${input.tech || 'Docker, Kubernetes ve GitHub Actions'} kullanarak ${input.features || 'otomatik test, deployment ve monitoring'} süreçlerini oluşturdum. ${input.impact || 'Deployment süresini 2 saatten 10 dakikaya düşürdüm'}.`,
-            `${input.name || 'Cloud altyapısı'} tasarladım. ${input.tech || 'AWS/Azure/GCP'} üzerinde ${input.features || 'auto-scaling, load balancing ve disaster recovery'} çözümlerini implement ettim. ${input.impact || 'Altyapı maliyetlerini %40 azalttım ve %99.99 availability'} elde ettim.`
-        ],
-        other: [
-            `${input.name || 'Innovative proje'} geliştirdim. ${input.tech || 'Modern teknolojiler'} kullanarak ${input.features || 'benzersiz özellikler ve kullanıcı odaklı çözümler'} sundum. ${input.impact || 'Pozitif kullanıcı geri bildirimleri ve başarılı proje teslimi'} sağladım.`
-        ]
-    }
-
-    const typeTemplates = templates[type] || templates.other
-    return typeTemplates[Math.floor(Math.random() * typeTemplates.length)]
-}
-
-const generateBulletPoints = (input, type) => {
-    const bullets = [
-        `${input.tech || 'Modern teknolojiler'} kullanarak end-to-end geliştirme yaptım`,
-        `${input.features || 'Temel özellikler'} modüllerini tasarladım ve implement ettim`,
-        `Kod kalitesi için unit test ve integration test yazdım (%85+ coverage)`,
-        `Agile/Scrum metodolojisi ile cross-functional takımda çalıştım`,
-        `Code review ve pair programming ile bilgi paylaşımı yaptım`,
-        `${input.impact || 'Ölçülebilir iş sonuçları'} elde ettim`,
-        `Teknik dokümantasyon ve API documentation hazırladım`,
-        `Performance optimization ve security best practices uyguladım`
-    ]
-    return bullets.slice(0, 5)
-}
 
 export default function AIProjectWriter({ isOpen, onClose, onInsert, existingProject }) {
     const { isPremium } = useAuth()
     const [step, setStep] = useState(1)
+    
+    // State
     const [projectType, setProjectType] = useState('web')
     const [input, setInput] = useState({
         name: existingProject?.title || '',
@@ -75,13 +32,19 @@ export default function AIProjectWriter({ isOpen, onClose, onInsert, existingPro
         impact: '',
         role: ''
     })
-    const [generatedText, setGeneratedText] = useState('')
-    const [bulletPoints, setBulletPoints] = useState([])
+    
+    // AI Response State
+    const [generatedData, setGeneratedData] = useState(null)
     const [isGenerating, setIsGenerating] = useState(false)
     const [copied, setCopied] = useState(false)
     const [outputType, setOutputType] = useState('paragraph') // paragraph, bullets
 
     const handleGenerate = async () => {
+        if (!input.name || !input.tech) {
+            toast.error('Lütfen proje adı ve teknolojileri girin.');
+            return;
+        }
+
         setIsGenerating(true)
         
         try {
@@ -92,89 +55,40 @@ export default function AIProjectWriter({ isOpen, onClose, onInsert, existingPro
             });
             
             if (response.success && response.data) {
-                if (outputType === 'paragraph') {
-                    setGeneratedText(response.data.description || generateProjectDescription(input, projectType));
-                } else {
-                    setBulletPoints(response.data.bullets || generateBulletPoints(input, projectType));
+                let parsedData = response.data;
+                if (typeof parsedData === 'string') {
+                    try {
+                        parsedData = JSON.parse(parsedData);
+                    } catch (e) {
+                        const jsonStr = parsedData.substring(parsedData.indexOf('{'), parsedData.lastIndexOf('}') + 1);
+                        parsedData = JSON.parse(jsonStr);
+                    }
                 }
+                setGeneratedData(parsedData);
+                setStep(3);
             } else {
-                throw new Error("API returned no data");
+                toast.error(response.error || 'Proje oluşturulamadı.');
             }
         } catch (error) {
-            console.warn("AI Project Writer API failed, using fallback.", error);
-            await new Promise(resolve => setTimeout(resolve, 1500))
-            
-            if (outputType === 'paragraph') {
-                const description = generateProjectDescription(input, projectType)
-                setGeneratedText(description)
-            } else {
-                const bullets = generateBulletPoints(input, projectType)
-                setBulletPoints(bullets)
-            }
+            console.error('Project generation error:', error)
+            toast.error('Bağlantı hatası oluştu.')
+        } finally {
+            setIsGenerating(false)
         }
-        
-        setIsGenerating(false)
-        setStep(3)
     }
 
-    const handleRegenerate = async () => {
-        setIsGenerating(true)
-        
-        try {
-            const response = await aiAPI.generateProject({
-                input,
-                type: projectType,
-                outputType,
-                regenerate: true
-            });
-            
-            if (response.success && response.data) {
-                if (outputType === 'paragraph') {
-                    setGeneratedText(response.data.description || generateProjectDescription(input, projectType));
-                } else {
-                    setBulletPoints(response.data.bullets || generateBulletPoints(input, projectType));
-                }
-            } else {
-                throw new Error("API returned no data");
-            }
-        } catch (error) {
-            console.warn("AI Project Writer API failed, using fallback.", error);
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            
-            if (outputType === 'paragraph') {
-                const description = generateProjectDescription(input, projectType)
-                setGeneratedText(description)
-            } else {
-                const bullets = generateBulletPoints(input, projectType)
-                setBulletPoints(bullets)
-            }
-        }
-        
-        setIsGenerating(false)
-    }
-
-    const handleCopy = () => {
-        const text = outputType === 'paragraph' ? generatedText : bulletPoints.join('\n• ')
+    const handleCopy = (text) => {
         navigator.clipboard.writeText(text)
         setCopied(true)
+        toast.success('Kopyalandı!')
         setTimeout(() => setCopied(false), 2000)
     }
 
-    const handleInsert = () => {
+    const handleInsert = (text) => {
         if (onInsert) {
-            onInsert({
-                description: outputType === 'paragraph' ? generatedText : bulletPoints.join('\n• '),
-                bullets: bulletPoints
-            })
+            onInsert(text)
+            onClose()
         }
-        onClose()
-    }
-
-    const resetForm = () => {
-        setStep(1)
-        setInput({ name: '', tech: '', features: '', impact: '', role: '' })
-        setGeneratedText('')
-        setBulletPoints([])
     }
 
     if (!isOpen) return null
@@ -185,277 +99,315 @@ export default function AIProjectWriter({ isOpen, onClose, onInsert, existingPro
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                 onClick={(e) => e.target === e.currentTarget && onClose()}
             >
                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="relative w-full max-w-4xl bg-[#0B1120] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                 >
                     {/* Header */}
-                    <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                                    <Wand2 className="text-white" size={24} />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-white">AI Proje Yazıcı</h2>
-                                    <p className="text-gray-400 text-sm">Projelerinizi profesyonel dille yazın</p>
-                                </div>
+                    <div className="flex items-center justify-between p-6 border-b border-white/10 bg-white/5 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-transparent opacity-50"></div>
+                        <div className="flex items-center gap-4 relative z-10">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                                <Wand2 className="text-white" size={24} />
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
-                                <X size={20} className="text-gray-400" />
-                            </button>
+                            <div>
+                                <h2 className="text-xl font-bold text-white">AI Proje Yazıcı</h2>
+                                <p className="text-sm text-gray-400">Projelerinizi profesyonel bir CV diline çevirin</p>
+                            </div>
                         </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors relative z-10"
+                        >
+                            <X size={20} />
+                        </button>
+                    </div>
 
-                        {/* Progress Steps */}
-                        <div className="flex items-center gap-2 mt-4">
-                            {[1, 2, 3].map(s => (
-                                <div key={s} className="flex items-center">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                    {/* Progress Steps */}
+                    <div className="px-6 py-4 border-b border-white/5 bg-black/20">
+                        <div className="flex items-center gap-4 max-w-md mx-auto">
+                            {[1, 2, 3].map((s) => (
+                                <div key={s} className="flex items-center flex-1 last:flex-none">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                                         step >= s 
-                                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
-                                            : 'bg-gray-700 text-gray-400'
+                                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30' 
+                                            : 'bg-white/5 text-gray-500'
                                     }`}>
-                                        {s}
+                                        {step > s ? <Check size={16} /> : s}
                                     </div>
                                     {s < 3 && (
-                                        <div className={`w-12 h-1 mx-1 rounded ${step > s ? 'bg-purple-500' : 'bg-gray-700'}`} />
+                                        <div className={`flex-1 h-1 mx-2 rounded-full transition-all duration-300 ${
+                                            step > s ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-white/5'
+                                        }`} />
                                     )}
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="p-6">
-                        {/* Step 1: Project Type */}
-                        {step === 1 && (
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                <h3 className="text-lg font-semibold text-white mb-4">Proje Türü Seçin</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                                    {PROJECT_TYPES.map(type => (
-                                        <button
-                                            key={type.id}
-                                            onClick={() => setProjectType(type.id)}
-                                            className={`p-4 rounded-xl border transition-all text-left ${
-                                                projectType === type.id
-                                                    ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-500/50'
-                                                    : 'bg-gray-800/50 border-gray-700 hover:border-gray-600'
-                                            }`}
-                                        >
-                                            <span className="text-2xl mb-2 block">{type.icon}</span>
-                                            <span className="text-white font-medium text-sm">{type.label}</span>
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <button
-                                    onClick={() => setStep(2)}
-                                    className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                    {/* Content Area */}
+                    <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                        <AnimatePresence mode="wait">
+                            {/* STEP 1: Project Type */}
+                            {step === 1 && (
+                                <motion.div
+                                    key="step1"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
                                 >
-                                    Devam Et
-                                    <ChevronRight size={20} />
-                                </button>
-                            </motion.div>
-                        )}
-
-                        {/* Step 2: Project Details */}
-                        {step === 2 && (
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                <h3 className="text-lg font-semibold text-white mb-4">Proje Detayları</h3>
-                                
-                                <div className="space-y-4 mb-6">
-                                    <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Proje Adı *</label>
-                                        <input
-                                            type="text"
-                                            value={input.name}
-                                            onChange={(e) => setInput({ ...input, name: e.target.value })}
-                                            placeholder="Örn: E-ticaret Platformu"
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                                        />
+                                    <div className="text-center mb-8">
+                                        <h3 className="text-2xl font-bold text-white mb-2">Proje Türü Seçin</h3>
+                                        <p className="text-gray-400">Ne tür bir proje geliştirdiniz?</p>
                                     </div>
 
-                                    <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Kullandığınız Teknolojiler</label>
-                                        <input
-                                            type="text"
-                                            value={input.tech}
-                                            onChange={(e) => setInput({ ...input, tech: e.target.value })}
-                                            placeholder="Örn: React, Node.js, MongoDB"
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Ana Özellikler</label>
-                                        <input
-                                            type="text"
-                                            value={input.features}
-                                            onChange={(e) => setInput({ ...input, features: e.target.value })}
-                                            placeholder="Örn: Ödeme entegrasyonu, gerçek zamanlı bildirimler"
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Elde Edilen Sonuçlar / Etki</label>
-                                        <input
-                                            type="text"
-                                            value={input.impact}
-                                            onChange={(e) => setInput({ ...input, impact: e.target.value })}
-                                            placeholder="Örn: %40 performans artışı, 10.000+ kullanıcı"
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Çıktı Formatı</label>
-                                        <div className="flex gap-3">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        {PROJECT_TYPES.map(type => (
                                             <button
-                                                onClick={() => setOutputType('paragraph')}
-                                                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-                                                    outputType === 'paragraph'
-                                                        ? 'bg-purple-500 text-white'
-                                                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                                                key={type.id}
+                                                onClick={() => {
+                                                    setProjectType(type.id)
+                                                    setStep(2)
+                                                }}
+                                                className={`p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center text-center group hover:-translate-y-1 ${
+                                                    projectType === type.id
+                                                        ? 'bg-gradient-to-b from-white/10 to-transparent border-purple-500/50 shadow-[0_8px_30px_rgba(168,85,247,0.2)]'
+                                                        : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 hover:shadow-xl'
                                                 }`}
                                             >
-                                                📝 Paragraf
+                                                <div className={`w-14 h-14 rounded-2xl mb-4 flex items-center justify-center text-3xl bg-gradient-to-br ${type.color} shadow-inner group-hover:scale-110 transition-transform duration-300`}>
+                                                    {type.icon}
+                                                </div>
+                                                <div className="font-bold text-white group-hover:text-purple-300 transition-colors">
+                                                    {type.label}
+                                                </div>
                                             </button>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* STEP 2: Project Details */}
+                            {step === 2 && (
+                                <motion.div
+                                    key="step2"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                        Proje Adı / Konusu *
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={input.name}
+                                                        onChange={e => setInput({...input, name: e.target.value})}
+                                                        placeholder="Örn: E-ticaret Platformu"
+                                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                        Kullanılan Teknolojiler *
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={input.tech}
+                                                        onChange={e => setInput({...input, tech: e.target.value})}
+                                                        placeholder="Örn: React, Node.js, MongoDB"
+                                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                        Rolünüz
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={input.role}
+                                                        onChange={e => setInput({...input, role: e.target.value})}
+                                                        placeholder="Örn: Full Stack Developer"
+                                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none"
+                                                    />
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                        Temel Özellikler
+                                                    </label>
+                                                    <textarea
+                                                        value={input.features}
+                                                        onChange={e => setInput({...input, features: e.target.value})}
+                                                        placeholder="Örn: Gerçek zamanlı mesajlaşma, sepet yönetimi..."
+                                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none resize-none h-24"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                        Etki / Sonuç
+                                                    </label>
+                                                    <textarea
+                                                        value={input.impact}
+                                                        onChange={e => setInput({...input, impact: e.target.value})}
+                                                        placeholder="Örn: %40 performans artışı, 10 bin yeni kullanıcı..."
+                                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all outline-none resize-none h-24"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-8 pt-6 border-t border-white/10">
+                                            <label className="block text-sm font-medium text-gray-300 mb-4">
+                                                Çıktı Formatı Seçin
+                                            </label>
+                                            <div className="flex gap-4">
+                                                <button
+                                                    onClick={() => setOutputType('paragraph')}
+                                                    className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${
+                                                        outputType === 'paragraph'
+                                                            ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
+                                                            : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                                    }`}
+                                                >
+                                                    <FileText size={18} />
+                                                    Özet Paragraf
+                                                </button>
+                                                <button
+                                                    onClick={() => setOutputType('bullets')}
+                                                    className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${
+                                                        outputType === 'bullets'
+                                                            ? 'bg-purple-500/20 border-purple-500/50 text-purple-300'
+                                                            : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                                    }`}
+                                                >
+                                                    <Check size={18} />
+                                                    Madde İşaretleri
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* STEP 3: Results */}
+                            {step === 3 && generatedData && (
+                                <motion.div
+                                    key="step3"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="flex items-start justify-between gap-6">
+                                        <div className="flex-1 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-6 relative group">
+                                            <div className="absolute -top-3 -left-3 w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center shadow-lg">
+                                                <Bot size={18} className="text-white" />
+                                            </div>
+                                            
+                                            <div className="text-gray-300 leading-relaxed space-y-3">
+                                                {outputType === 'paragraph' ? (
+                                                    <p>{generatedData.description}</p>
+                                                ) : (
+                                                    <ul className="space-y-2">
+                                                        {generatedData.bullets?.map((bullet, idx) => (
+                                                            <li key={idx} className="flex gap-3">
+                                                                <Zap size={16} className="text-purple-400 shrink-0 mt-1" />
+                                                                <span>{bullet}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+
+                                            {generatedData.keywords && generatedData.keywords.length > 0 && (
+                                                <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap gap-2">
+                                                    {generatedData.keywords.map((kw, idx) => (
+                                                        <span key={idx} className="px-3 py-1 bg-white/5 rounded-full text-xs text-gray-400 border border-white/5">
+                                                            {kw}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="w-48 shrink-0 flex flex-col gap-4">
+                                            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                                                <div className="text-sm text-gray-400 mb-1">Etki Skoru</div>
+                                                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                                                    {generatedData.impact_score}
+                                                </div>
+                                            </div>
+                                            
                                             <button
-                                                onClick={() => setOutputType('bullets')}
-                                                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-                                                    outputType === 'bullets'
-                                                        ? 'bg-purple-500 text-white'
-                                                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                                                }`}
+                                                onClick={() => handleCopy(outputType === 'paragraph' ? generatedData.description : generatedData.bullets?.join('\n'))}
+                                                className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white flex items-center justify-center gap-2 transition-colors"
                                             >
-                                                📋 Madde İşaretli
+                                                {copied ? <Check size={18} className="text-green-400" /> : <Copy size={18} />}
+                                                {copied ? 'Kopyalandı' : 'Kopyala'}
+                                            </button>
+                                            
+                                            <button
+                                                onClick={() => handleInsert(outputType === 'paragraph' ? generatedData.description : generatedData.bullets?.join('\n'))}
+                                                className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 rounded-xl text-white font-medium flex items-center justify-center gap-2 transition-opacity"
+                                            >
+                                                CV'ye Ekle
+                                                <ChevronRight size={18} />
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => setStep(1)}
-                                        className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors"
-                                    >
-                                        Geri
-                                    </button>
-                                    <button
-                                        onClick={handleGenerate}
-                                        disabled={!input.name || isGenerating}
-                                        className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
-                                    >
-                                        {isGenerating ? (
-                                            <>
-                                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                                Oluşturuluyor...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Sparkles size={20} />
-                                                AI ile Oluştur
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* Step 3: Result */}
-                        {step === 3 && (
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-lg font-semibold text-white">AI Tarafından Oluşturuldu</h3>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={handleRegenerate}
-                                            disabled={isGenerating}
-                                            className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50"
-                                            title="Yeniden Oluştur"
-                                        >
-                                            <RefreshCw size={18} className={`text-gray-400 ${isGenerating ? 'animate-spin' : ''}`} />
-                                        </button>
-                                        <button
-                                            onClick={handleCopy}
-                                            className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-                                            title="Kopyala"
-                                        >
-                                            {copied ? <Check size={18} className="text-green-400" /> : <Copy size={18} className="text-gray-400" />}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="bg-gray-800/50 rounded-xl p-4 mb-6 border border-gray-700">
-                                    {outputType === 'paragraph' ? (
-                                        <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
-                                            {generatedText}
-                                        </p>
-                                    ) : (
-                                        <ul className="space-y-2">
-                                            {bulletPoints.map((bullet, i) => (
-                                                <li key={i} className="text-gray-200 flex items-start gap-2">
-                                                    <span className="text-purple-400 mt-1">•</span>
-                                                    {bullet}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-
-                                {/* Tips */}
-                                <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
-                                    <div className="flex items-start gap-3">
-                                        <Lightbulb className="text-purple-400 mt-0.5" size={20} />
-                                        <div>
-                                            <p className="text-purple-300 font-medium text-sm">İpucu</p>
-                                            <p className="text-gray-400 text-sm">
-                                                Metni CV'nize eklemeden önce kendi deneyimlerinize göre düzenleyebilirsiniz. 
-                                                Rakamlar ve somut sonuçlar işe alım yöneticilerinin dikkatini çeker.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={resetForm}
-                                        className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors"
-                                    >
-                                        Yeni Proje
-                                    </button>
-                                    <button
-                                        onClick={handleInsert}
-                                        className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                                    >
-                                        <FileText size={20} />
-                                        CV'ye Ekle
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
-                    {/* Premium Badge */}
-                    {!isPremium && (
-                        <div className="absolute top-4 right-16 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                            PRO
-                        </div>
-                    )}
+                    {/* Footer Actions */}
+                    <div className="p-6 border-t border-white/10 bg-black/40 flex justify-between items-center">
+                        {step > 1 ? (
+                            <button
+                                onClick={() => setStep(step - 1)}
+                                className="px-6 py-2.5 text-gray-400 hover:text-white transition-colors"
+                            >
+                                Geri
+                            </button>
+                        ) : <div></div>}
+
+                        {step === 2 && (
+                            <button
+                                onClick={handleGenerate}
+                                disabled={isGenerating || !isPremium}
+                                className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl flex items-center gap-2 hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-purple-500/25"
+                            >
+                                {isGenerating ? (
+                                    <><Loader2 size={20} className="animate-spin" /> Üretiliyor...</>
+                                ) : (
+                                    <><Sparkles size={20} /> Projeyi Yaz</>
+                                )}
+                            </button>
+                        )}
+                        
+                        {step === 3 && (
+                            <button
+                                onClick={handleGenerate}
+                                disabled={isGenerating}
+                                className="px-6 py-2.5 bg-white/10 text-white hover:bg-white/20 rounded-xl flex items-center gap-2 transition-colors border border-white/10"
+                            >
+                                <RefreshCw size={18} className={isGenerating ? "animate-spin" : ""} />
+                                Yeniden Üret
+                            </button>
+                        )}
+                    </div>
                 </motion.div>
             </motion.div>
         </AnimatePresence>

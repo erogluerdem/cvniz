@@ -150,24 +150,19 @@ export default function LoginPage() {
 
             <main className="relative z-10 flex h-screen overflow-hidden">
                 {/* Left Side: Branding (Desktop Only) */}
-                <div className={`hidden lg:flex flex-col justify-between w-1/2 p-10 xl:p-16 border-r h-full overflow-y-auto backdrop-blur-3xl transition-colors duration-500 ${
+                <div className={`hidden lg:flex flex-col items-center justify-center w-1/2 p-10 xl:p-16 border-r h-full overflow-y-auto backdrop-blur-3xl transition-colors duration-500 ${
                     isDayMode 
                         ? 'border-slate-200/50 bg-slate-50/60' 
                         : 'border-white/5 bg-white/[0.02]'
                 }`}>
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <Link to="/" className="flex items-center gap-3 group">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-cyan-400 blur-lg opacity-40 group-hover:opacity-70 transition-all duration-500" />
-                                <div className="relative w-10 h-10 bg-slate-900 border border-white/20 rounded-xl flex items-center justify-center">
-                                    <FileText className="w-5 h-5 text-cyan-400" />
-                                </div>
-                            </div>
-                            <span className={`text-xl font-black tracking-tighter italic ${isDayMode ? 'text-slate-900' : 'text-white'}`}>CVniz</span>
+                    <div className="w-full max-w-lg h-full flex flex-col justify-between">
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                        >
+                        <Link to="/" className="flex items-center group">
+                            <img src="/logo.jpg" alt="CVniz Logo" className="w-auto h-10 rounded-xl border border-white/10 shadow-lg group-hover:scale-105 transition-all duration-300 object-contain bg-white" />
                         </Link>
                     </motion.div>
 
@@ -186,42 +181,48 @@ export default function LoginPage() {
                             </p>
                         </motion.div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-4 sm:gap-6">
                             {stats.map((stat, i) => (
                                 <motion.div
                                     key={i}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.6 + (i * 0.1) }}
-                                    className={`p-4 rounded-xl border transition-all duration-500 group ${
+                                    className={`p-6 rounded-2xl border transition-all duration-500 group relative overflow-hidden ${
                                         isDayMode 
-                                            ? 'bg-white border-slate-200/80 shadow-sm hover:border-sky-300' 
-                                            : 'bg-white/5 border-white/10 hover:border-cyan-500/40'
+                                            ? 'bg-white/60 backdrop-blur-xl border-white/80 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 hover:bg-white/90 hover:border-cyan-200/50' 
+                                            : 'bg-white/5 backdrop-blur-xl border-white/10 hover:bg-white/10 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-900/20'
                                     }`}
                                 >
-                                    <stat.icon className="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform" />
-                                    <div className={`text-lg font-black mb-0.5 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{stat.number}</div>
-                                    <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">{stat.label}</div>
+                                    <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-20 transition-transform duration-500 group-hover:scale-110 ${isDayMode ? 'bg-gradient-to-br from-cyan-100 to-transparent' : 'bg-gradient-to-br from-cyan-900 to-transparent'}`} />
+                                    <div className="relative">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-inner ring-1 ring-white/20">
+                                            <stat.icon className="w-6 h-6 text-cyan-500" />
+                                        </div>
+                                        <div className={`text-3xl font-black tracking-tight mb-1 transition-colors ${isDayMode ? 'text-slate-900 group-hover:text-cyan-600' : 'text-white group-hover:text-cyan-400'}`}>{stat.number}</div>
+                                        <div className={`text-[10px] font-extrabold uppercase tracking-[0.2em] ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>{stat.label}</div>
+                                    </div>
                                 </motion.div>
                             ))}
                         </div>
                     </div>
 
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1 }}
-                        className="flex items-center gap-4"
-                    >
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border ${isDayMode ? 'border-emerald-500/20' : 'border-emerald-500/20'}`}>
-                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                            <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">SSL Güvenli</span>
-                        </div>
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border ${isDayMode ? 'border-blue-500/20' : 'border-blue-500/20'}`}>
-                            <Globe className="w-3.5 h-3.5 text-blue-400" />
-                            <span className="text-[9px] font-bold text-blue-400 uppercase tracking-widest">Global Standart</span>
-                        </div>
-                    </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 1 }}
+                            className="flex items-center gap-4"
+                        >
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border ${isDayMode ? 'border-emerald-500/20' : 'border-emerald-500/20'}`}>
+                                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">SSL Güvenli</span>
+                            </div>
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border ${isDayMode ? 'border-blue-500/20' : 'border-blue-500/20'}`}>
+                                <Globe className="w-4 h-4 text-blue-500" />
+                                <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Global Standart</span>
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
 
                 {/* Right Side: Login Form */}
@@ -234,11 +235,8 @@ export default function LoginPage() {
                     >
                         {/* Mobile Logo */}
                         <div className="lg:hidden flex justify-center mb-12">
-                            <Link to="/" className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-                                    <FileText className="w-6 h-6 text-white" />
-                                </div>
-                                <span className={`text-2xl font-black tracking-tighter italic ${isDayMode ? 'text-slate-900' : 'text-white'}`}>CVniz</span>
+                            <Link to="/" className="flex items-center">
+                                <img src="/logo.jpg" alt="CVniz Logo" className="w-auto h-12 rounded-xl border border-white/10 shadow-lg object-contain bg-white" />
                             </Link>
                         </div>
 

@@ -124,10 +124,7 @@ export default function LandingPage() {
             <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ring-white/10">
-                            <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" />
-                        </div>
-                        <span className="text-lg sm:text-xl font-bold gradient-text">CVniz</span>
+                        <img src="/logo.jpg" alt="CVniz Logo" className="w-auto h-9 sm:h-10 rounded-xl ring-1 ring-white/10 object-contain bg-white" />
                     </Link>
                     
                     {/* Desktop Nav */}
@@ -662,10 +659,7 @@ export default function LandingPage() {
                     <div className="grid md:grid-cols-4 gap-8 mb-8">
                         <div>
                             <div className="flex items-center gap-2 mb-4">
-                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-slate-200 flex items-center justify-center ring-1 ring-white/10">
-                                    <FileText className="w-4 h-4 text-slate-900" />
-                                </div>
-                                <span className="font-bold gradient-text">CVniz</span>
+                                <img src="/logo.jpg" alt="CVniz Logo" className="w-auto h-8 rounded-lg ring-1 ring-white/10 object-contain bg-white" />
                             </div>
                             <p className="text-gray-400 text-sm">
                                 AI destekli profesyonel CV oluşturucu. Kariyerinizi bir üst seviyeye taşıyın.

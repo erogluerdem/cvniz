@@ -466,6 +466,7 @@ export const aiAPI = {
     generateEmail: (data) => api.post('/ai/generate-email', data),
     generateHeadshot: (data) => api.post('/ai/generate-headshot', data),
     writeProject: (data) => api.post('/ai/write-project', data),
+    generateProject: (data) => api.post('/ai/project', data),
     writeReferenceLetter: (data) => api.post('/ai/write-reference', data),
     simulateInterview: (data) => api.post('/ai/simulate-interview', data),
     analyzeATS: (data) => api.post('/ai/analyze-ats', data),

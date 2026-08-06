@@ -157,6 +157,448 @@ class AIService {
             : this.callOpenAI(client, prompt);
     }
 
+    async generateProject(params) {
+        const { input, type, outputType = 'paragraph', lang = 'tr' } = params;
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const projectTypeLabels = {
+            web: 'Web Uygulaması',
+            mobile: 'Mobil Uygulama',
+            api: 'API / Backend',
+            data: 'Data / Makine Öğrenmesi',
+            devops: 'DevOps / Altyapı',
+            other: 'Genel Proje'
+        };
+        const typeLabel = projectTypeLabels[type] || 'Proje';
+
+        const prompt = lang === 'tr'
+            ? `Sen kıdemli bir İnsan Kaynakları (HR) yöneticisi ve teknik bir işe alım uzmanısın. Adayın girdiği bilgilere dayanarak, CV'sinde veya portfolyosunda sergileyeceği profesyonel bir proje açıklaması yaz.
+
+            PROJE BİLGİLERİ:
+            Tür: ${typeLabel}
+            Proje Adı/Konusu: ${input.name || 'Belirtilmedi'}
+            Kullanılan Teknolojiler: ${input.tech || 'Belirtilmedi'}
+            Temel Özellikler: ${input.features || 'Belirtilmedi'}
+            Elde Edilen Sonuç/Etki: ${input.impact || 'Belirtilmedi'}
+            Rol/Sorumluluk: ${input.role || 'Belirtilmedi'}
+            İstenen Çıktı Formatı: ${outputType === 'bullets' ? 'Madde İşaretli (Bullet Points)' : 'Paragraf (Paragraph)'}
+
+            TALİMATLAR:
+            1. Metin çok profesyonel, etki odaklı (impact-driven) ve STAR (Situation, Task, Action, Result) tekniğine uygun olmalıdır.
+            2. Eğer çıktı formatı "bullets" ise, 4-6 maddeden oluşan bir liste döndür. Her madde bir başarıyı veya teknik sorumluluğu vurgulasın.
+            3. Eğer çıktı formatı "paragraph" ise, 3-4 cümlelik akıcı, çarpıcı ve teknik detayları barındıran bir özet döndür.
+            4. JSON formatında cevap ver.
+
+            SADECE JSON FORMATINDA DÖN, BAŞKA METİN EKLEME:
+            {
+                "description": "Eğer format paragraph ise buraya yazılacak, bullets ise boş bırak",
+                "bullets": ["Eğer format bullets ise madde 1", "madde 2", ...],
+                "impact_score": 85, // 1-100 arası projenin etkileyicilik skoru
+                "keywords": ["React", "Performance", "API"] // Çıkarılan 3-5 anahtar kelime
+            }`
+            : `You are a senior HR manager and technical recruiter. Write a professional project description for a candidate's CV or portfolio based on the provided information.
+
+            PROJECT INFO:
+            Type: ${typeLabel}
+            Name/Topic: ${input.name || 'Not specified'}
+            Technologies: ${input.tech || 'Not specified'}
+            Key Features: ${input.features || 'Not specified'}
+            Impact/Result: ${input.impact || 'Not specified'}
+            Role/Responsibility: ${input.role || 'Not specified'}
+            Desired Output Format: ${outputType === 'bullets' ? 'Bullet Points' : 'Paragraph'}
+
+            INSTRUCTIONS:
+            1. The text must be highly professional, impact-driven, and loosely follow the STAR (Situation, Task, Action, Result) method.
+            2. If output format is "bullets", return a list of 4-6 bullet points highlighting technical responsibilities and achievements.
+            3. If output format is "paragraph", return a 3-4 sentence fluent, impactful summary including technical details.
+            4. Return in JSON format.
+
+            RETURN ONLY JSON, NO OTHER TEXT:
+            {
+                "description": "Write here if format is paragraph, empty otherwise",
+                "bullets": ["bullet 1", "bullet 2", ...],
+                "impact_score": 85, // 1-100 score of how impressive the project sounds
+                "keywords": ["React", "Performance", "API"] // 3-5 extracted keywords
+            }`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    async optimizeLinkedIn(params) {
+        const { cvData, lang = 'tr' } = params;
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const candidateName = cvData?.personalInfo?.name || cvData?.personal?.fullName || (lang === 'tr' ? 'Aday' : 'Candidate');
+        const candidateTitle = cvData?.personalInfo?.title || 'Profesyonel';
+        const summary = cvData?.personalInfo?.summary || '';
+        const experience = cvData?.experience || [];
+        const skills = cvData?.skills?.slice(0, 10) || [];
+
+        const prompt = lang === 'tr'
+            ? `Sen üst düzey bir LinkedIn Profil Optimizasyon Uzmanısın. Verilen CV bilgilerini inceleyerek adayın LinkedIn profilini uçuracak (optimize edecek) öneriler hazırla.
+
+            ADAY BİLGİLERİ:
+            İsim: ${candidateName}
+            Mevcut Ünvan: ${candidateTitle}
+            Mevcut Özet: ${summary}
+            Deneyim: ${JSON.stringify(experience.slice(0, 2))}
+            Yetenekler: ${JSON.stringify(skills)}
+
+            GÖREVİN:
+            1. 'score': Mevcut profil bilgilerine göre 100 üzerinden bir LinkedIn SEO & Çekicilik skoru ver (Sayı).
+            2. 'headlines': Dikkat çekici, SEO uyumlu ve emojilerle desteklenmiş en az 4 farklı Başlık (Headline) önerisi sun (Array of strings).
+            3. 'summary': Adayı anlatan, sıcak (merhaba ile başlayan), deneyimleri vurgulayan ve call-to-action (CTA) içeren mükemmel bir 'Hakkında' (About) yazısı yaz (String).
+            4. 'keywords': Adayın aranabilirliğini artıracak 10-15 yetenek/anahtar kelime ver (Array of strings).
+            5. 'tips': Profilini daha iyi hale getirmesi için 3-4 özel ipucu ver (Array of strings).
+
+            SADECE AŞAĞIDAKİ JSON FORMATINDA DÖN, BAŞKA METİN EKLEME:
+            {
+                "score": 85,
+                "headlines": ["...", "..."],
+                "summary": "...",
+                "keywords": ["...", "..."],
+                "tips": ["...", "..."]
+            }`
+            : `You are a top-tier LinkedIn Profile Optimization Expert. Analyze the provided CV info and create a comprehensive LinkedIn optimization plan.
+
+            CANDIDATE INFO:
+            Name: ${candidateName}
+            Current Title: ${candidateTitle}
+            Current Summary: ${summary}
+            Experience: ${JSON.stringify(experience.slice(0, 2))}
+            Skills: ${JSON.stringify(skills)}
+
+            YOUR TASK:
+            1. 'score': Give a LinkedIn SEO & Attractiveness score out of 100 based on the current data (Number).
+            2. 'headlines': Provide at least 4 catchy, SEO-friendly, and emoji-supported Headline suggestions (Array of strings).
+            3. 'summary': Write a perfect 'About' section that is engaging, highlights experience, and includes a call-to-action (String).
+            4. 'keywords': Provide 10-15 keywords to boost searchability (Array of strings).
+            5. 'tips': Provide 3-4 specific tips to improve the profile (Array of strings).
+
+            RETURN ONLY IN THIS JSON FORMAT:
+            {
+                "score": 85,
+                "headlines": ["...", "..."],
+                "summary": "...",
+                "keywords": ["...", "..."],
+                "tips": ["...", "..."]
+            }`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    async generateEmail(params) {
+        const { type, tone, input, cvData, lang = 'tr' } = params;
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const candidateName = cvData?.personalInfo?.name || (lang === 'tr' ? 'Aday' : 'Candidate');
+        const candidateTitle = cvData?.personalInfo?.title || 'Profesyonel';
+        const skills = cvData?.skills?.slice(0, 5).map(s => s.name).join(', ') || '';
+        
+        let typeInstruction = '';
+        if (type === 'application') typeInstruction = `İş Başvurusu: ${input.company} şirketindeki ${input.position} pozisyonu için başvuruda bulunuyor. Vurgulanacak neden: ${input.whyCompany}`;
+        else if (type === 'followup') typeInstruction = `Takip E-postası: ${input.company} şirketindeki ${input.position} pozisyonu için ${input.date} tarihinde yapılan başvuru/görüşmenin takibi.`;
+        else if (type === 'networking') typeInstruction = `Networking: Sektör profesyoneli olan ${input.recipient} ile tanışmak ve bağlantı kurmak istiyor. İletişim nedeni: ${input.reason}`;
+        else if (type === 'referral') typeInstruction = `Referans İsteme: Eski iş arkadaşı/yöneticisi ${input.recipient} kişisinden ${input.position} pozisyonu için referans/tavsiye rica ediyor.`;
+        else if (type === 'informational') typeInstruction = `Bilgi Görüşmesi (Informational Interview): ${input.company} şirketinde çalışan ${input.recipient} ile ${input.topic} hakkında 15 dakikalık kısa bir görüşme talep ediyor.`;
+        else if (type === 'thankyou') typeInstruction = `Teşekkür E-postası: ${input.company} şirketindeki ${input.position} pozisyonu için yapılan mülakat sonrası ${input.recipient} kişisine teşekkür ediyor.`;
+
+        const prompt = lang === 'tr'
+            ? `Sen kurumsal iletişim ve insan kaynakları uzmanısın. Kullanıcının talebine uygun, profesyonel bir e-posta hazırla.
+            
+            GÖNDEREN BİLGİLERİ:
+            Adı: ${candidateName}
+            Ünvanı: ${candidateTitle}
+            Yetenekleri: ${skills}
+
+            E-POSTA DETAYLARI:
+            Türü: ${typeInstruction}
+            Kime: ${input.recipient || 'Sayın İlgili'}
+            İstenen Ton/Tarz: ${tone} (Örn: Profesyonel, Samimi, Özgüvenli, Heyecanlı)
+
+            GÖREVİN:
+            1. 'subject': E-posta için çok etkili ve doğrudan bir konu başlığı yaz.
+            2. 'body': İstenen tona tamamen uygun, akıcı, imla kurallarına dikkat eden ve karşı tarafı harekete geçiren (CTA) bir e-posta metni yaz.
+
+            SADECE AŞAĞIDAKİ JSON FORMATINDA DÖN:
+            {
+                "subject": "E-posta Konusu",
+                "body": "Sayın İlgili,\\n\\n..."
+            }`
+            : `You are a corporate communications and HR expert. Draft a professional email based on the user's request.
+            
+            SENDER INFO:
+            Name: ${candidateName}
+            Title: ${candidateTitle}
+            Skills: ${skills}
+
+            EMAIL DETAILS:
+            Type: ${typeInstruction}
+            To: ${input.recipient || 'To whom it may concern'}
+            Desired Tone: ${tone} (e.g., Professional, Friendly, Confident, Enthusiastic)
+
+            YOUR TASK:
+            1. 'subject': Write a highly effective and direct subject line.
+            2. 'body': Write the email body completely matching the desired tone. Ensure it's fluent, grammatically correct, and includes a clear Call to Action (CTA).
+
+            RETURN ONLY IN THIS JSON FORMAT:
+            {
+                "subject": "Email Subject",
+                "body": "Dear [Name],\\n\\n..."
+            }`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    async writeReferenceLetter(params) {
+        const { referenceType, input, cvData, tone, lang = 'tr' } = params;
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const candidateName = cvData?.personalInfo?.name || (lang === 'tr' ? 'Aday' : 'Candidate');
+        const candidateTitle = cvData?.personalInfo?.title || 'Profesyonel';
+        const skills = cvData?.skills?.slice(0, 5).map(s => s.name).join(', ') || '';
+        
+        let typeInstruction = '';
+        if (referenceType === 'manager') typeInstruction = `Yönetici Referansı: Adayın doğrudan yöneticisi ağzından yazılacak. Vurgulanacak başarı: ${input.achievement}. Çalışılan proje: ${input.project}.`;
+        else if (referenceType === 'colleague') typeInstruction = `İş Arkadaşı Referansı: Adayla aynı seviyede çalışan iş arkadaşı ağzından yazılacak. Vurgulanacak güçlü yön: ${input.strength}. Takım çalışması/Proje: ${input.project}.`;
+        else if (referenceType === 'client') typeInstruction = `Müşteri Referansı: Adayın çalıştığı müşteri ağzından yazılacak. Memnuniyet sebebi ve başarı: ${input.achievement}. Çalışılan proje: ${input.project}.`;
+        else if (referenceType === 'professor') typeInstruction = `Akademik Referans: Adayın üniversitedeki profesörü ağzından yazılacak. Alınan ders/proje: ${input.course} - ${input.project}. Güçlü yönü: ${input.strength}.`;
+
+        const prompt = lang === 'tr'
+            ? `Sen profesyonel bir metin yazarısın. Aşağıdaki bilgilere dayanarak, çok etkileyici ve gerçekçi bir referans mektubu oluştur.
+
+            ADAY BİLGİLERİ:
+            Adı: ${candidateName}
+            Rolü: ${candidateTitle}
+            Yetenekleri: ${skills}
+
+            MEKTUP DETAYLARI:
+            Tür: ${typeInstruction}
+            Ton: ${tone} (Resmi, Samimi, Coşkulu vb.)
+            Şirket/Kurum: ${input.company || input.university || '[Şirket/Kurum Adı]'}
+            Çalışma/Eğitim Süresi: ${input.duration || '[Süre]'}
+            Başvurduğu Yeni Pozisyon: ${input.position || '[Hedef Pozisyon]'}
+
+            REFERANS VEREN BİLGİLERİ (İMZA KISMI İÇİN):
+            İsim: ${input.referrerName || '[İsim Soyisim]'}
+            Ünvan: ${input.referrerTitle || '[Ünvan]'}
+            Şirket: ${input.referrerCompany || '[Şirket]'}
+            E-posta: ${input.referrerEmail || '[E-posta]'}
+            Telefon: ${input.referrerPhone || '[Telefon]'}
+
+            GÖREVİN:
+            İstenilen tonda, akıcı, imla kurallarına uygun, çok profesyonel bir referans mektubu yaz. Mektubu normal metin/paragraf formatında hazırla (Tarih ve Yetkili Makama kısımlarını ve imza blokunu dahil et). 
+            JSON FORMATINDA DÖN:
+            {
+                "content": "Günün tarihi\\n\\nYetkili Makama,\\n\\n..."
+            }`
+            : `You are a professional copywriter. Create a highly impressive and realistic reference letter based on the following details.
+
+            CANDIDATE INFO:
+            Name: ${candidateName}
+            Role: ${candidateTitle}
+            Skills: ${skills}
+
+            LETTER DETAILS:
+            Type: ${typeInstruction}
+            Tone: ${tone} (Formal, Warm, Enthusiastic etc.)
+            Company/Institution: ${input.company || input.university || '[Company/Institution Name]'}
+            Duration: ${input.duration || '[Duration]'}
+            Target Position: ${input.position || '[Target Position]'}
+
+            REFERRER INFO (FOR SIGNATURE):
+            Name: ${input.referrerName || '[Name Surname]'}
+            Title: ${input.referrerTitle || '[Title]'}
+            Company: ${input.referrerCompany || '[Company]'}
+            Email: ${input.referrerEmail || '[Email]'}
+            Phone: ${input.referrerPhone || '[Phone]'}
+
+            YOUR TASK:
+            Write a very professional reference letter in the requested tone, grammatically correct and fluent. Include the date, salutation (To whom it may concern), and signature block.
+            RETURN IN JSON FORMAT:
+            {
+                "content": "Date\\n\\nTo whom it may concern,\\n\\n..."
+            }`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    async targetFitCV(originalCV, parsedJob, lang = 'tr') {
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const cvSummary = originalCV.personalInfo?.summary || originalCV.summary || '';
+        const cvExperience = JSON.stringify(originalCV.experience || []);
+        
+        const jobTitle = parsedJob.title || '';
+        const jobDescription = parsedJob.description || '';
+        const jobRequirements = parsedJob.requirements?.join(', ') || '';
+        const jobSkills = parsedJob.skills?.join(', ') || '';
+
+        const prompt = lang === 'tr'
+            ? `Sen uzman bir Kariyer Danışmanı ve CV Optimizasyon Uzmanısın. Amacın, verilen bir adayın CV'sini spesifik bir iş ilanına mükemmel şekilde uyumlu (Target-Fit) hale getirmektir.
+
+            ADAYIN MEVCUT BİLGİLERİ:
+            - Özet (Summary): ${cvSummary}
+            - Deneyimler (JSON): ${cvExperience}
+
+            HEDEF İŞ İLANI BİLGİLERİ:
+            - Başlık: ${jobTitle}
+            - Yetenekler/Anahtar Kelimeler: ${jobSkills}
+            - Gereksinimler: ${jobRequirements}
+            - Açıklama: ${jobDescription}
+
+            GÖREVİN:
+            1. 'summary': Adayın özetini, ilandaki anahtar kelimeleri (özellikle yetenekleri ve gereksinimleri) doğal bir şekilde içerecek ve ilana mükemmel uyum sağlayacak şekilde yeniden yaz. (Maksimum 4-5 cümle).
+            2. 'experience': Adayın deneyimlerini analiz et. İlanla en çok eşleşen deneyim maddelerini öne çıkar, ilandaki gereksinimleri karşılayan başarıları daha vurgulu hale getir. Deneyim yapısını (company, position, description, startDate vb.) bozmadan, sadece 'description' veya 'achievements' kısımlarını optimize et. (Önceki JSON formatına sadık kal).
+
+            SADECE AŞAĞIDAKİ JSON FORMATINDA DÖN (Bunun dışında hiçbir açıklama metni yazma):
+            {
+                "summary": "İlana özel yeniden yazılmış, anahtar kelimelerle zenginleştirilmiş özet metni...",
+                "experience": [
+                    {
+                        "company": "Firma Adı",
+                        "position": "Pozisyon",
+                        "description": "İlan gereksinimlerine göre optimize edilmiş ve vurgulanmış açıklama maddeleri..."
+                    }
+                ]
+            }`
+            : `You are an expert Career Coach and CV Optimization Specialist. Your goal is to perfectly tailor a candidate's CV to a specific job listing (Target-Fit).
+
+            CANDIDATE'S CURRENT INFO:
+            - Summary: ${cvSummary}
+            - Experience (JSON): ${cvExperience}
+
+            TARGET JOB INFO:
+            - Title: ${jobTitle}
+            - Skills/Keywords: ${jobSkills}
+            - Requirements: ${jobRequirements}
+            - Description: ${jobDescription}
+
+            YOUR TASK:
+            1. 'summary': Rewrite the summary to naturally incorporate the job's keywords and requirements. Make it a perfect fit for the target role. (Max 4-5 sentences).
+            2. 'experience': Analyze the candidate's experiences. Highlight and rewrite the 'description' or 'achievements' bullets to emphasize accomplishments that align perfectly with the job requirements. Keep the original JSON structure intact (company, position, dates, etc.), only modify the descriptive text.
+
+            RETURN ONLY IN THIS EXACT JSON FORMAT (No extra text):
+            {
+                "summary": "Tailored summary enriched with job keywords...",
+                "experience": [
+                    {
+                        "company": "Company Name",
+                        "position": "Position",
+                        "description": "Optimized description highlighting relevant achievements..."
+                    }
+                ]
+            }`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
+    async generateCoverLetter(params) {
+        const { style, jobData, targetPosition, cvData, lang = 'tr' } = params;
+        const client = await this.getClient();
+
+        if (!client) {
+            return { error: 'AI_NOT_CONFIGURED', message: 'AI servisi yapılandırılmamış.' };
+        }
+
+        const candidateName = cvData?.personalInfo?.name || (lang === 'tr' ? 'Aday' : 'Candidate');
+        const cvSummary = cvData?.personalInfo?.summary || cvData?.summary || '';
+        const cvExperience = JSON.stringify(cvData?.experience || []);
+        const cvSkills = cvData?.skills?.slice(0, 10).map(s => s.name).join(', ') || '';
+
+        const targetCompany = jobData?.company || '[Şirket Adı]';
+        const position = targetPosition || jobData?.title || '[Pozisyon]';
+
+        let toneInstruction = '';
+        if (style === 'professional') toneInstruction = 'Çok profesyonel, kurumsal, net ve özgüvenli bir ton.';
+        else if (style === 'creative') toneInstruction = 'Yaratıcı, tutkulu, samimi ve dinamik bir ton.';
+        else if (style === 'formal') toneInstruction = 'Geleneksel, ciddi ve çok resmi bir ton.';
+
+        const prompt = lang === 'tr'
+            ? `Sen uzman bir Kariyer Koçu ve İK Profesyonelisin. Verilen aday bilgilerine ve hedeflenen işe göre, adayın işe alım yöneticisini (Hiring Manager) etkileyecek muazzam bir Niyet Mektubu (Cover Letter) oluştur.
+
+            ADAY BİLGİLERİ:
+            - İsim: ${candidateName}
+            - Özet: ${cvSummary}
+            - Yetenekler: ${cvSkills}
+            - Deneyimler (JSON): ${cvExperience}
+
+            HEDEF ROL:
+            - Şirket: ${targetCompany}
+            - Pozisyon: ${position}
+
+            İSTENEN TON/STİL:
+            ${toneInstruction}
+
+            GÖREVİN:
+            - Adayın deneyimlerini ve yeteneklerini analiz et. Sadece hedeflenen pozisyonla (${position}) en çok eşleşen ve şirkete (${targetCompany}) en çok değer katacak deneyimlerini öne çıkararak etkileyici bir niyet mektubu yaz.
+            - Mektubu standart giriş (Sayın Yetkili / İşe Alım Yöneticisi), gelişme (neden bu pozisyon ve adayın şirkete katacağı değer) ve sonuç (aksiyona çağrı - mülakat talebi) şeklinde kurgula.
+            - Tarih ve imza (isim) bloklarını mutlaka ekle. (Normal metin formatında, paragraf boşluklarıyla).
+            
+            SADECE AŞAĞIDAKİ JSON FORMATINDA DÖN:
+            {
+                "content": "Günün tarihi\\n\\nSayın İşe Alım Yöneticisi,\\n\\n..."
+            }`
+            : `You are an expert Career Coach and HR Professional. Based on the candidate's profile and target job, create a highly compelling Cover Letter that will impress the Hiring Manager.
+
+            CANDIDATE INFO:
+            - Name: ${candidateName}
+            - Summary: ${cvSummary}
+            - Skills: ${cvSkills}
+            - Experience (JSON): ${cvExperience}
+
+            TARGET ROLE:
+            - Company: ${targetCompany}
+            - Position: ${position}
+
+            DESIRED TONE/STYLE:
+            ${toneInstruction}
+
+            YOUR TASK:
+            - Analyze the candidate's experience and skills. Highlight ONLY the achievements and skills that are most relevant to the target position (${position}) and explain the value they will bring to the company (${targetCompany}).
+            - Structure the letter with a standard introduction (Dear Hiring Manager), body (why this role and value add), and conclusion (call to action for an interview).
+            - Include the date and signature block (name).
+            
+            RETURN ONLY IN THIS JSON FORMAT:
+            {
+                "content": "Date\\n\\nDear Hiring Manager,\\n\\n..."
+            }`;
+
+        return this.provider === 'google'
+            ? this.callGoogle(prompt)
+            : this.callOpenAI(client, prompt);
+    }
+
     async generateExperience(jobTitle, lang = 'tr') {
         const client = await this.getClient();
         if (!client) {return this.mockExperience(jobTitle);}
@@ -516,3 +958,5 @@ class AIService {
         };
     }
 }
+
+module.exports = AIService;

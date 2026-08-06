@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { X, GripVertical, ChevronUp, ChevronDown, Check, Layout } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { X, GripVertical, ChevronUp, ChevronDown, Check, Layout, Lock } from 'lucide-react'
 
-export default function LayoutManagerModal({ isOpen, onClose, cv, onSave }) {
+export default function LayoutManagerModal({ isOpen, onClose, cv, onSave, isPremium }) {
     const [sections, setSections] = useState([])
 
     useEffect(() => {
@@ -43,6 +44,7 @@ export default function LayoutManagerModal({ isOpen, onClose, cv, onSave }) {
     }
 
     const handleSave = () => {
+        if (!isPremium) return;
         const layoutOrder = sections.map(s => s.id)
         onSave(cv.id, layoutOrder)
     }
@@ -50,71 +52,101 @@ export default function LayoutManagerModal({ isOpen, onClose, cv, onSave }) {
     if (!isOpen || !cv) return null
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-950/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5 w-full max-w-md overflow-hidden animate-scale-in">
-                <div className="p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-cyan-500/10 to-blue-500/10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-cyan-500 flex items-center justify-center">
-                            <Layout className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                            <h2 className="text-xl font-bold text-white">Layout Düzenle</h2>
-                            <p className="text-xs text-gray-400">Bölümlerin sırasını değiştirin.</p>
-                        </div>
-                    </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-lg transition-colors">
-                        <X className="w-5 h-5 text-gray-400" />
-                    </button>
-                </div>
+        <AnimatePresence>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+                onClick={(e) => e.target === e.currentTarget && onClose()}
+            >
+                <motion.div 
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="bg-[#0F1115] border border-[#10B981]/20 rounded-[2rem] shadow-[0_0_50px_rgba(16,185,129,0.15)] w-full max-w-md overflow-hidden relative"
+                >
+                    {/* Background Glow */}
+                    <div className="absolute top-0 left-0 w-64 h-64 bg-[#10B981]/10 rounded-full blur-[100px] pointer-events-none -translate-x-1/2 -translate-y-1/2" />
 
-                <div className="p-6">
-                    <div className="space-y-2">
-                        {sections.map((section, index) => (
-                            <div
-                                key={section.id}
-                                className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${section.fixed
-                                        ? 'bg-white/5 border-transparent opacity-50'
-                                        : 'bg-white/10 border-white/5 hover:border-cyan-500/30 group'
-                                    }`}
-                            >
-                                <div className="text-gray-500 group-hover:text-cyan-400 transition-colors">
-                                    <GripVertical className="w-5 h-5" />
-                                </div>
-                                <span className="flex-1 font-medium text-gray-200">{section.name}</span>
-                                {!section.fixed && (
-                                    <div className="flex gap-1">
-                                        <button
-                                            onClick={() => moveSection(index, 'up')}
-                                            disabled={index === 0 || sections[index - 1].fixed}
-                                            className="p-1.5 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white disabled:opacity-0"
-                                        >
-                                            <ChevronUp className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => moveSection(index, 'down')}
-                                            disabled={index === sections.length - 1}
-                                            className="p-1.5 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white disabled:opacity-0"
-                                        >
-                                            <ChevronDown className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                )}
-                                {section.fixed && (
-                                    <span className="text-[10px] uppercase font-bold text-gray-600 px-2 py-1 rounded bg-black/20">Sabit</span>
-                                )}
+                    <div className="p-8 border-b border-white/5 flex items-center justify-between relative z-10">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#10B981]/10 border border-[#10B981]/30 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                                <Layout className="w-6 h-6 text-[#10B981]" />
                             </div>
-                        ))}
+                            <div>
+                                <h2 className="text-xl font-black text-white leading-tight">Layout Düzenle</h2>
+                                <p className="text-[10px] text-[#10B981]/80 font-bold uppercase tracking-widest mt-0.5">Bölüm Sıralamasını Belirle</p>
+                            </div>
+                        </div>
+                        <button onClick={onClose} className="p-2.5 hover:bg-white/10 rounded-xl transition-colors text-gray-400 hover:text-white">
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
 
-                    <button
-                        onClick={handleSave}
-                        className="w-full mt-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-2xl font-black shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 active:scale-95"
-                    >
-                        <Check className="w-5 h-5" />
-                        SIRALAMAYI KAYDET
-                    </button>
-                </div>
-            </div>
-        </div>
+                    <div className="p-8 relative z-10">
+                        {!isPremium && (
+                            <div className="mb-6 p-4 rounded-xl bg-gray-800/50 border border-gray-700/50 flex flex-col items-center justify-center text-center">
+                                <Lock className="w-8 h-8 text-gray-500 mb-2" />
+                                <h3 className="text-white font-bold mb-1">Premium Özellik</h3>
+                                <p className="text-sm text-gray-400">CV bölümlerinin sırasını değiştirmek için Premium plana ihtiyacınız var.</p>
+                            </div>
+                        )}
+                        <div className="space-y-3 relative">
+                            {/* Overlay if not premium to prevent interaction visually although buttons can be disabled */}
+                            {!isPremium && <div className="absolute inset-0 z-10"></div>}
+                            {sections.map((section, index) => (
+                                <motion.div
+                                    layout
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    key={section.id}
+                                    className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${section.fixed || !isPremium
+                                            ? 'bg-black/40 border-white/5 opacity-50'
+                                            : 'bg-white/5 border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 group shadow-lg shadow-black/20'
+                                        }`}
+                                >
+                                    <div className={`transition-colors ${(section.fixed || !isPremium) ? 'text-gray-600' : 'text-gray-500 group-hover:text-[#10B981]'}`}>
+                                        <GripVertical className="w-5 h-5" />
+                                    </div>
+                                    <span className={`flex-1 font-bold ${(section.fixed || !isPremium) ? 'text-gray-500' : 'text-gray-200'}`}>{section.name}</span>
+                                    {(!section.fixed && isPremium) && (
+                                        <div className="flex gap-1.5">
+                                            <button
+                                                onClick={() => moveSection(index, 'up')}
+                                                disabled={index === 0 || sections[index - 1].fixed}
+                                                className="p-2 hover:bg-[#10B981]/20 rounded-xl text-gray-400 hover:text-[#10B981] disabled:opacity-0 transition-colors"
+                                            >
+                                                <ChevronUp className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => moveSection(index, 'down')}
+                                                disabled={index === sections.length - 1}
+                                                className="p-2 hover:bg-[#10B981]/20 rounded-xl text-gray-400 hover:text-[#10B981] disabled:opacity-0 transition-colors"
+                                            >
+                                                <ChevronDown className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    )}
+                                    {section.fixed && (
+                                        <span className="text-[10px] uppercase font-black text-gray-500 px-3 py-1.5 rounded-lg bg-black/40 border border-white/5">Sabit</span>
+                                    )}
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={handleSave}
+                            disabled={!isPremium}
+                            className={`w-full mt-10 py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-3 disabled:opacity-50 ${isPremium ? 'bg-[#10B981] hover:bg-[#059669] text-black shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] active:scale-[0.98]' : 'bg-gray-800 text-gray-500 cursor-not-allowed'}`}
+                        >
+                            {isPremium ? <Check className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                            {isPremium ? 'SIRALAMAYI KAYDET' : 'PREMIUM GEREKLİ'}
+                        </button>
+                    </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     )
 }

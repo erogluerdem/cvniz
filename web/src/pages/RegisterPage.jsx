@@ -178,23 +178,18 @@ export default function RegisterPage() {
 
             <main className="relative z-10 flex h-screen overflow-hidden">
                 {/* Left Side: Benefits (Desktop) */}
-                <div className={`hidden lg:flex flex-col justify-between w-1/2 p-10 xl:p-16 border-r h-full overflow-y-auto backdrop-blur-3xl transition-colors duration-500 ${
+                <div className={`hidden lg:flex flex-col items-center justify-center w-1/2 p-10 xl:p-16 border-r h-full overflow-y-auto backdrop-blur-3xl transition-colors duration-500 ${
                     isDayMode 
                         ? 'border-slate-200/50 bg-slate-50/60' 
                         : 'border-white/5 bg-white/[0.01]'
                 }`}>
-                    <motion.div
+                    <div className="w-full max-w-lg h-full flex flex-col justify-between">
+                        <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <Link to="/" className="flex items-center gap-3">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-purple-500 blur-lg opacity-40 group-hover:opacity-70 transition-all duration-500" />
-                                <div className="relative w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(124,58,237,0.4)]">
-                                    <FileText className="w-5 h-5 text-white" />
-                                </div>
-                            </div>
-                            <span className={`text-xl font-black tracking-tighter italic ${isDayMode ? 'text-slate-900' : 'text-white'}`}>CVniz</span>
+                        <Link to="/" className="flex items-center">
+                            <img src="/logo.jpg" alt="CVniz Logo" className="w-auto h-12 rounded-xl border border-white/10 shadow-lg object-contain bg-white" />
                         </Link>
                     </motion.div>
 
@@ -220,26 +215,30 @@ export default function RegisterPage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.4 + (i * 0.1) }}
-                                    className={`p-4 rounded-xl border transition-all duration-500 ${
+                                    className={`p-6 rounded-2xl border transition-all duration-500 relative overflow-hidden group ${
                                         isDayMode 
-                                            ? 'bg-white border-slate-200/80 shadow-sm' 
-                                            : 'bg-white/5 border-white/10'
+                                            ? 'bg-white/60 backdrop-blur-xl border-white/80 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 hover:bg-white/90 hover:border-purple-200/50' 
+                                            : 'bg-white/5 backdrop-blur-xl border-white/10 hover:bg-white/10 hover:-translate-y-1 hover:border-purple-500/40 hover:shadow-2xl hover:shadow-purple-900/20'
                                     }`}
                                 >
-                                    <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
-                                        <benefit.icon className="w-4 h-4 text-purple-400" />
+                                    <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-20 transition-transform duration-500 group-hover:scale-110 ${isDayMode ? 'bg-gradient-to-br from-purple-100 to-transparent' : 'bg-gradient-to-br from-purple-900 to-transparent'}`} />
+                                    <div className="relative">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-inner ring-1 ring-white/20">
+                                            <benefit.icon className="w-6 h-6 text-purple-500" />
+                                        </div>
+                                        <div className={`text-sm font-black mb-1.5 uppercase tracking-wide transition-colors ${isDayMode ? 'text-slate-900 group-hover:text-purple-600' : 'text-white group-hover:text-purple-400'}`}>{benefit.title}</div>
+                                        <div className={`text-[11px] font-bold leading-relaxed ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>{benefit.desc}</div>
                                     </div>
-                                    <div className={`text-xs font-black mb-0.5 uppercase tracking-wider ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{benefit.title}</div>
-                                    <div className="text-[10px] text-slate-500 font-bold leading-normal">{benefit.desc}</div>
                                 </motion.div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">
-                        <span>© 2024 CVNIZ PLATFORM</span>
-                        <span className="w-1 h-1 rounded-full bg-slate-800" />
-                        <span>PREMIUM EXPERIENCE</span>
+                        <div className="flex items-center gap-3 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                            <span>© 2024 CVNIZ PLATFORM</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400/50" />
+                            <span>PREMIUM EXPERIENCE</span>
+                        </div>
                     </div>
                 </div>
 

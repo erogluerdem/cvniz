@@ -1,57 +1,53 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-    X, Sparkles, Mail, Copy, Check, RefreshCw,
-    Briefcase, Send, FileText, ChevronRight, Lightbulb,
-    Edit3, Zap, ArrowRight
+    X, Mail, Copy, Check, RefreshCw,
+    Briefcase, Send, ChevronRight,
+    Loader2, Zap, User, Building, FileText,
+    MessageCircle, Users, Star, Sparkles
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCV } from '../context/CVContext'
 import { aiAPI } from '../services/api'
+import toast from 'react-hot-toast'
 
 // E-posta türleri
 const EMAIL_TYPES = [
     { 
         id: 'application', 
         label: 'İş Başvurusu', 
-        icon: '📨', 
+        icon: Briefcase, 
         description: 'Açık bir pozisyona başvuru',
-        color: 'from-blue-500 to-cyan-500'
     },
     { 
         id: 'followup', 
         label: 'Takip E-postası', 
-        icon: '🔄', 
+        icon: RefreshCw, 
         description: 'Başvuru sonrası takip',
-        color: 'from-green-500 to-emerald-500'
     },
     { 
         id: 'networking', 
         label: 'Networking', 
-        icon: '🤝', 
+        icon: Users, 
         description: 'İlk tanışma ve bağlantı kurma',
-        color: 'from-purple-500 to-pink-500'
     },
     { 
         id: 'referral', 
         label: 'Referans İsteme', 
-        icon: '⭐', 
+        icon: Star, 
         description: 'Önceki iş arkadaşından referans',
-        color: 'from-amber-500 to-orange-500'
     },
     { 
         id: 'informational', 
         label: 'Bilgi Görüşmesi', 
-        icon: '💬', 
+        icon: MessageCircle, 
         description: 'Kariyer hakkında bilgi alma',
-        color: 'from-indigo-500 to-violet-500'
     },
     { 
         id: 'thankyou', 
         label: 'Teşekkür E-postası', 
-        icon: '🙏', 
+        icon: Zap, 
         description: 'Görüşme sonrası teşekkür',
-        color: 'from-rose-500 to-pink-500'
     }
 ]
 
@@ -63,238 +59,137 @@ const TONES = [
     { id: 'enthusiastic', label: 'Heyecanlı', emoji: '🚀' }
 ]
 
-// E-posta oluşturma
-const generateEmail = (type, input, cv, tone) => {
-    const name = cv?.personalInfo?.name || 'Ad Soyad'
-    const title = cv?.personalInfo?.title || 'Profesyonel'
-    const topSkills = cv?.skills?.slice(0, 3).map(s => s.name).join(', ') || 'problem çözme'
-    
-    const templates = {
-        application: {
-            subject: `${input.position || 'Açık Pozisyon'} Başvurusu - ${name}`,
-            body: `Sayın ${input.recipient || 'Yetkili'},
-
-${input.company || '[Şirket Adı]'} bünyesinde açık olan ${input.position || '[Pozisyon]'} pozisyonu için başvurumu iletmek istiyorum.
-
-${title} olarak ${topSkills} alanlarındaki deneyimim ve becerilerimle şirketinize değer katacağıma inanıyorum. ${input.whyCompany || 'Şirketinizin sektördeki yenilikçi yaklaşımı beni oldukça heyecanlandırıyor.'}
-
-CV'mi ekte bulabilirsiniz. Görüşme fırsatı yaratmanız durumunda, neden bu pozisyon için ideal aday olduğumu daha detaylı anlatmak isterim.
-
-İlginiz için teşekkür eder, olumlu dönüşünüzü beklerim.
-
-Saygılarımla,
-${name}
-${cv?.personalInfo?.phone || ''}
-${cv?.personalInfo?.email || ''}`
-        },
-        followup: {
-            subject: `Re: ${input.position || 'Başvuru'} Takip - ${name}`,
-            body: `Sayın ${input.recipient || 'Yetkili'},
-
-${input.date || 'Geçtiğimiz hafta'} ${input.position || 'açık pozisyon'} için yapmış olduğum başvuruyu takip etmek amacıyla yazıyorum.
-
-Başvurumun durumu hakkında bilgi almak isterim. Pozisyon hâlâ açık ise, görüşme için uygun olduğumu belirtmek isterim.
-
-Bu fırsata olan ilgim devam etmekte olup, herhangi bir sorunuz olursa yanıtlamaktan memnuniyet duyarım.
-
-Teşekkürler,
-${name}`
-        },
-        networking: {
-            subject: `Bağlantı Kurma İsteği - ${name}, ${title}`,
-            body: `Merhaba ${input.recipient || ''},
-
-LinkedIn üzerinden profilinizi inceledim ve ${input.topic || 'kariyer yolculuğunuz'} beni çok etkiledi.
-
-${title} olarak sektörde deneyim kazanıyor ve sizin gibi profesyonellerden öğrenmek istiyorum. ${input.reason || 'Özellikle kariyerinizde aldığınız kararlar ve edindiğiniz deneyimler hakkında bilgi almak isterim.'}
-
-15-20 dakikalık kısa bir telefon veya video görüşmesi için müsait olur musunuz?
-
-Teşekkürler,
-${name}`
-        },
-        referral: {
-            subject: `Referans Rica - ${input.position || 'Yeni Fırsat'}`,
-            body: `Merhaba ${input.recipient || ''},
-
-Umarım her şey yolundadır. ${input.company || 'Yeni bir şirkette'} ${input.position || 'açık bir pozisyon'} için başvuru sürecindeyim ve referansınızı almak istiyorum.
-
-Birlikte çalıştığımız ${input.project || 'projeler'} sırasında gösterdiğiniz desteği unutmadım. Eğer uygunsa, benim adıma bir referans mektubu yazmanız veya referans olarak isminizi vermem mümkün olur mu?
-
-Tabii ki tamamen sizin tercihiniz, ve herhangi bir baskı hissetmenizi istemem.
-
-Teşekkürler,
-${name}`
-        },
-        informational: {
-            subject: `Bilgi Görüşmesi Talebi - ${input.topic || 'Kariyer'}`,
-            body: `Merhaba ${input.recipient || ''},
-
-${input.topic || 'Kariyer yolculuğunuz ve sektördeki deneyimleriniz'} hakkında bilgi almak amacıyla yazıyorum.
-
-${title} olarak kariyer hedeflerim doğrultusunda yol haritası çizmeye çalışıyorum. ${input.question || 'Sektöre yeni başlayanlar için tavsiyelerinizi öğrenmek isterim.'}
-
-Zamanınızın değerli olduğunun farkındayım. Size uygun bir zamanda 15-20 dakikalık bir görüşme yapabilir miyiz?
-
-Teşekkürler,
-${name}`
-        },
-        thankyou: {
-            subject: `Teşekkür - ${input.position || 'Görüşme'} Hakkında`,
-            body: `Sayın ${input.recipient || 'Yetkili'},
-
-Bugün ${input.position || 'pozisyon'} için gerçekleştirdiğimiz görüşme için teşekkür ederim.
-
-${input.highlight || 'Şirketinizin vizyonu ve ekip kültürü'} hakkında konuşmak beni çok heyecanlandırdı. Görüşmemizde öğrendiklerim, bu fırsata olan ilgimi daha da artırdı.
-
-${input.contribution || 'Deneyimlerimin bu pozisyona nasıl değer katabileceğini paylaşma fırsatı bulduğum için mutluyum.'}
-
-Süreçle ilgili sorularınız olursa bana ulaşmaktan çekinmeyin. Olumlu haberlerinizi bekliyorum.
-
-Saygılarımla,
-${name}`
-        }
-    }
-
-    return templates[type] || templates.application
-}
-
 export default function AIEmailGenerator({ isOpen, onClose }) {
     const { isPremium } = useAuth()
-    const { cvData } = useCV()
+    const { cvs } = useCV()
+
     const [step, setStep] = useState(1)
+    
+    // State
+    const [selectedCV, setSelectedCV] = useState(null)
     const [emailType, setEmailType] = useState('application')
     const [tone, setTone] = useState('professional')
     const [input, setInput] = useState({
         recipient: '',
         company: '',
         position: '',
-        whyCompany: '',
         date: '',
+        whyCompany: '',
         topic: '',
-        reason: '',
-        project: '',
-        question: '',
-        highlight: '',
-        contribution: ''
+        reason: ''
     })
-    const [generatedEmail, setGeneratedEmail] = useState({ subject: '', body: '' })
+    
+    // AI Response State
+    const [generatedEmail, setGeneratedEmail] = useState(null)
     const [isGenerating, setIsGenerating] = useState(false)
-    const [copiedField, setCopiedField] = useState(null)
+    const [copiedSubject, setCopiedSubject] = useState(false)
+    const [copiedBody, setCopiedBody] = useState(false)
+
+    const handleCopy = (text, type) => {
+        navigator.clipboard.writeText(text)
+        if (type === 'subject') {
+            setCopiedSubject(true)
+            setTimeout(() => setCopiedSubject(false), 2000)
+        } else {
+            setCopiedBody(true)
+            setTimeout(() => setCopiedBody(false), 2000)
+        }
+        toast.success('Kopyalandı!')
+    }
 
     const handleGenerate = async () => {
-        setIsGenerating(true)
-        
-        try {
-            const response = await aiAPI.generateEmail({
-                type: emailType,
-                input,
-                cvData,
-                tone
-            });
-            if (response.success && response.data) {
-                setGeneratedEmail({ subject: response.data.subject, body: response.data.body });
-            } else {
-                throw new Error("API returned no data");
-            }
-        } catch (error) {
-            console.warn("AI Email API call failed, falling back to local simulation.", error);
-            // Simüle AI işleme (Fallback)
-            await new Promise(resolve => setTimeout(resolve, 800));
-            const email = generateEmail(emailType, input, cvData, tone)
-            setGeneratedEmail(email)
+        if (!selectedCV) {
+            toast.error('Lütfen bir CV seçin.');
+            return;
         }
-        
-        setIsGenerating(false)
-        setStep(3)
-    }
 
-    const handleRegenerate = async () => {
         setIsGenerating(true)
         
         try {
+            const cv = cvs?.find(c => c.id === selectedCV)
+            const cvData = cv?.data || cv
+
             const response = await aiAPI.generateEmail({
                 type: emailType,
-                input,
-                cvData,
                 tone,
-                regenerate: true
+                input,
+                cvData
             });
+            
             if (response.success && response.data) {
-                setGeneratedEmail({ subject: response.data.subject, body: response.data.body });
+                let parsedData = response.data;
+                if (typeof parsedData === 'string') {
+                    try {
+                        parsedData = JSON.parse(parsedData);
+                    } catch (e) {
+                        const jsonStr = parsedData.substring(parsedData.indexOf('{'), parsedData.lastIndexOf('}') + 1);
+                        parsedData = JSON.parse(jsonStr);
+                    }
+                }
+                setGeneratedEmail(parsedData);
+                setStep(3);
             } else {
-                throw new Error("API returned no data");
+                toast.error(response.error || 'E-posta oluşturulamadı.');
             }
         } catch (error) {
-            console.warn("AI Email API call failed, falling back to local simulation.", error);
-            await new Promise(resolve => setTimeout(resolve, 800));
-            const email = generateEmail(emailType, input, cvData, tone)
-            setGeneratedEmail(email)
+            console.error('Email generation error:', error)
+            toast.error('Bağlantı hatası oluştu.')
+        } finally {
+            setIsGenerating(false)
         }
-        
-        setIsGenerating(false)
     }
 
-    const handleCopy = (text, field) => {
-        navigator.clipboard.writeText(text)
-        setCopiedField(field)
-        setTimeout(() => setCopiedField(null), 2000)
-    }
-
-    const handleCopyAll = () => {
-        const fullEmail = `Konu: ${generatedEmail.subject}\n\n${generatedEmail.body}`
-        navigator.clipboard.writeText(fullEmail)
-        setCopiedField('all')
-        setTimeout(() => setCopiedField(null), 2000)
-    }
-
-    const resetForm = () => {
-        setStep(1)
-        setInput({
-            recipient: '', company: '', position: '', whyCompany: '',
-            date: '', topic: '', reason: '', project: '',
-            question: '', highlight: '', contribution: ''
-        })
-        setGeneratedEmail({ subject: '', body: '' })
-    }
-
-    // İlgili input alanlarını e-posta türüne göre belirle
-    const getInputFields = () => {
-        const commonFields = [
-            { key: 'recipient', label: 'Alıcı Adı', placeholder: 'Ahmet Yılmaz' }
-        ]
-
-        const typeFields = {
-            application: [
-                { key: 'company', label: 'Şirket Adı', placeholder: 'ABC Teknoloji' },
-                { key: 'position', label: 'Pozisyon', placeholder: 'Frontend Developer' },
-                { key: 'whyCompany', label: 'Şirketi neden tercih ediyorsunuz?', placeholder: 'Şirketin yenilikçi yaklaşımı...', multiline: true }
-            ],
-            followup: [
-                { key: 'position', label: 'Başvurulan Pozisyon', placeholder: 'Frontend Developer' },
-                { key: 'date', label: 'Başvuru Tarihi', placeholder: 'Geçtiğimiz Pazartesi' }
-            ],
-            networking: [
-                { key: 'topic', label: 'İlgilendiğiniz Konu', placeholder: 'Kariyer yolculuğunuz' },
-                { key: 'reason', label: 'Neden bağlantı kurmak istiyorsunuz?', placeholder: 'Sektördeki deneyimlerinizden...', multiline: true }
-            ],
-            referral: [
-                { key: 'company', label: 'Başvurulan Şirket', placeholder: 'XYZ Şirketi' },
-                { key: 'position', label: 'Başvurulan Pozisyon', placeholder: 'Senior Developer' },
-                { key: 'project', label: 'Birlikte çalıştığınız proje', placeholder: 'E-ticaret projesi' }
-            ],
-            informational: [
-                { key: 'topic', label: 'Görüşme Konusu', placeholder: 'Sektör trendleri' },
-                { key: 'question', label: 'Sormak istediğiniz soru', placeholder: 'Kariyerinizde en değerli deneyim...', multiline: true }
-            ],
-            thankyou: [
-                { key: 'position', label: 'Görüşülen Pozisyon', placeholder: 'Frontend Developer' },
-                { key: 'highlight', label: 'Görüşmede sizi etkileyen', placeholder: 'Şirketin ekip kültürü' },
-                { key: 'contribution', label: 'Katkı sağlayacağınız alan', placeholder: 'React deneyimim ile...' }
-            ]
+    const renderInputFields = () => {
+        switch(emailType) {
+            case 'application':
+                return (
+                    <>
+                        <InputField label="Şirket Adı" value={input.company} onChange={e => setInput({...input, company: e.target.value})} icon={Building} />
+                        <InputField label="Pozisyon" value={input.position} onChange={e => setInput({...input, position: e.target.value})} icon={Briefcase} />
+                        <InputField label="Neden Bu Şirket?" value={input.whyCompany} onChange={e => setInput({...input, whyCompany: e.target.value})} isTextArea />
+                    </>
+                )
+            case 'followup':
+                return (
+                    <>
+                        <InputField label="Şirket Adı" value={input.company} onChange={e => setInput({...input, company: e.target.value})} icon={Building} />
+                        <InputField label="Pozisyon" value={input.position} onChange={e => setInput({...input, position: e.target.value})} icon={Briefcase} />
+                        <InputField label="Görüşme/Başvuru Tarihi" value={input.date} onChange={e => setInput({...input, date: e.target.value})} placeholder="Örn: Geçen Çarşamba" />
+                    </>
+                )
+            case 'networking':
+                return (
+                    <>
+                        <InputField label="Bağlantı Kurulacak Kişi (Alıcı)" value={input.recipient} onChange={e => setInput({...input, recipient: e.target.value})} icon={User} />
+                        <InputField label="Bağlantı Kurma Nedeni" value={input.reason} onChange={e => setInput({...input, reason: e.target.value})} isTextArea placeholder="Örn: Sektördeki yenilikçi paylaşımlarınızı takip ediyorum..." />
+                    </>
+                )
+            case 'referral':
+                return (
+                    <>
+                        <InputField label="Eski İş Arkadaşı/Yönetici (Alıcı)" value={input.recipient} onChange={e => setInput({...input, recipient: e.target.value})} icon={User} />
+                        <InputField label="Başvurulacak Pozisyon" value={input.position} onChange={e => setInput({...input, position: e.target.value})} icon={Briefcase} />
+                    </>
+                )
+            case 'informational':
+                return (
+                    <>
+                        <InputField label="Hedef Kişi (Alıcı)" value={input.recipient} onChange={e => setInput({...input, recipient: e.target.value})} icon={User} />
+                        <InputField label="Şirket" value={input.company} onChange={e => setInput({...input, company: e.target.value})} icon={Building} />
+                        <InputField label="Görüşülecek Konu" value={input.topic} onChange={e => setInput({...input, topic: e.target.value})} placeholder="Örn: Product Management kariyerine geçiş" />
+                    </>
+                )
+            case 'thankyou':
+                return (
+                    <>
+                        <InputField label="Mülakat Yapan Kişi (Alıcı)" value={input.recipient} onChange={e => setInput({...input, recipient: e.target.value})} icon={User} />
+                        <InputField label="Şirket" value={input.company} onChange={e => setInput({...input, company: e.target.value})} icon={Building} />
+                        <InputField label="Pozisyon" value={input.position} onChange={e => setInput({...input, position: e.target.value})} icon={Briefcase} />
+                    </>
+                )
+            default:
+                return null
         }
-
-        return [...commonFields, ...(typeFields[emailType] || [])]
     }
 
     if (!isOpen) return null
@@ -305,278 +200,278 @@ export default function AIEmailGenerator({ isOpen, onClose }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#09090B]/90 backdrop-blur-md"
                 onClick={(e) => e.target === e.currentTarget && onClose()}
             >
                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-950/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="relative w-full max-w-3xl bg-[#0F1115] border border-[#10B981]/20 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.1)] overflow-hidden flex flex-col max-h-[90vh]"
                 >
                     {/* Header */}
-                    <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
-                                    <Mail className="text-white" size={24} />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-white">AI E-posta Oluşturucu</h2>
-                                    <p className="text-gray-400 text-sm">Profesyonel e-postalar saniyeler içinde</p>
-                                </div>
+                    <div className="flex items-center justify-between p-6 border-b border-white/5 bg-gradient-to-r from-[#10B981]/10 to-transparent relative overflow-hidden">
+                        <div className="flex items-center gap-4 relative z-10">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-lg shadow-[#10B981]/20">
+                                <Mail className="text-white" size={24} />
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
-                                <X size={20} className="text-gray-400" />
-                            </button>
+                            <div>
+                                <h2 className="text-xl font-bold text-white">AI E-posta Oluşturucu</h2>
+                                <p className="text-sm text-gray-400">Profesyonel e-postalar saniyeler içinde</p>
+                            </div>
                         </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors relative z-10"
+                        >
+                            <X size={24} />
+                        </button>
+                    </div>
 
-                        {/* Progress Steps */}
-                        <div className="flex items-center gap-2 mt-4">
-                            {[1, 2, 3].map(s => (
-                                <div key={s} className="flex items-center">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                    {/* Progress Steps */}
+                    <div className="px-6 py-4 border-b border-white/5 bg-black/40">
+                        <div className="flex items-center gap-4 max-w-sm">
+                            {[1, 2, 3].map((s) => (
+                                <div key={s} className="flex items-center flex-1 last:flex-none">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                                         step >= s 
-                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white' 
-                                            : 'bg-gray-700 text-gray-400'
+                                            ? 'bg-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]' 
+                                            : 'bg-white/5 text-gray-500'
                                     }`}>
                                         {s}
                                     </div>
                                     {s < 3 && (
-                                        <div className={`w-12 h-1 mx-1 rounded ${step > s ? 'bg-emerald-500' : 'bg-gray-700'}`} />
+                                        <div className={`flex-1 h-0.5 mx-2 rounded-full transition-all duration-300 ${
+                                            step > s ? 'bg-[#10B981]' : 'bg-white/10'
+                                        }`} />
                                     )}
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="p-6">
-                        {/* Step 1: Email Type */}
-                        {step === 1 && (
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                <h3 className="text-lg font-semibold text-white mb-4">E-posta Türü Seçin</h3>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-                                    {EMAIL_TYPES.map(type => (
-                                        <button
-                                            key={type.id}
-                                            onClick={() => setEmailType(type.id)}
-                                            className={`p-4 rounded-xl border transition-all text-left ${
-                                                emailType === type.id
-                                                    ? 'bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border-emerald-500/50'
-                                                    : 'bg-gray-800/50 border-gray-700 hover:border-gray-600'
-                                            }`}
-                                        >
-                                            <div className="flex items-start gap-3">
-                                                <span className="text-2xl">{type.icon}</span>
-                                                <div>
-                                                    <p className="text-white font-medium">{type.label}</p>
-                                                    <p className="text-gray-400 text-sm">{type.description}</p>
-                                                </div>
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* Ton Seçimi */}
-                                <h4 className="text-white font-medium mb-3">Ton Seçin</h4>
-                                <div className="flex gap-2 mb-6">
-                                    {TONES.map(t => (
-                                        <button
-                                            key={t.id}
-                                            onClick={() => setTone(t.id)}
-                                            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2 ${
-                                                tone === t.id
-                                                    ? 'bg-emerald-500 text-white'
-                                                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                                            }`}
-                                        >
-                                            <span>{t.emoji}</span>
-                                            {t.label}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <button
-                                    onClick={() => setStep(2)}
-                                    className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                    {/* Content Area */}
+                    <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-[#10B981]/30 scrollbar-track-transparent">
+                        <AnimatePresence mode="wait">
+                            {/* STEP 1: Email Type & Tone */}
+                            {step === 1 && (
+                                <motion.div
+                                    key="step1"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-8"
                                 >
-                                    Devam Et
-                                    <ChevronRight size={20} />
-                                </button>
-                            </motion.div>
-                        )}
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white mb-4">E-posta Türü Seçin</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {EMAIL_TYPES.map(type => {
+                                                const Icon = type.icon;
+                                                return (
+                                                    <button
+                                                        key={type.id}
+                                                        onClick={() => setEmailType(type.id)}
+                                                        className={`p-4 rounded-2xl border transition-all duration-300 flex items-center gap-4 group ${
+                                                            emailType === type.id
+                                                                ? 'bg-[#10B981]/10 border-[#10B981]/50 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                                                                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                        }`}
+                                                    >
+                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                                                            emailType === type.id ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-black/40 text-gray-400 group-hover:text-white'
+                                                        }`}>
+                                                            <Icon size={20} />
+                                                        </div>
+                                                        <div className="text-left flex-1">
+                                                            <div className="font-bold text-white mb-1">{type.label}</div>
+                                                            <div className="text-sm text-gray-500 line-clamp-1">{type.description}</div>
+                                                        </div>
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
 
-                        {/* Step 2: Details */}
-                        {step === 2 && (
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                <h3 className="text-lg font-semibold text-white mb-4">E-posta Detayları</h3>
-                                
-                                <div className="space-y-4 mb-6">
-                                    {getInputFields().map(field => (
-                                        <div key={field.key}>
-                                            <label className="block text-gray-400 text-sm mb-2">{field.label}</label>
-                                            {field.multiline ? (
-                                                <textarea
-                                                    value={input[field.key]}
-                                                    onChange={(e) => setInput({ ...input, [field.key]: e.target.value })}
-                                                    placeholder={field.placeholder}
-                                                    rows={3}
-                                                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 resize-none"
-                                                />
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white mb-4">Ton Seçin</h3>
+                                        <div className="flex flex-wrap gap-3">
+                                            {TONES.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    onClick={() => setTone(t.id)}
+                                                    className={`px-5 py-3 rounded-xl border transition-all duration-300 flex items-center gap-2 font-medium ${
+                                                        tone === t.id
+                                                            ? 'bg-[#10B981] border-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                                                            : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                                                    }`}
+                                                >
+                                                    <span>{t.emoji}</span>
+                                                    {t.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <button
+                                        onClick={() => setStep(2)}
+                                        className="w-full py-4 bg-[#10B981] text-black font-bold rounded-2xl text-lg flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                    >
+                                        Devam Et <ChevronRight size={20} />
+                                    </button>
+                                </motion.div>
+                            )}
+
+                            {/* STEP 2: Details */}
+                            {step === 2 && (
+                                <motion.div
+                                    key="step2"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="bg-black/20 border border-white/5 rounded-3xl p-6">
+                                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                                            <FileText className="text-[#10B981]" size={20} />
+                                            E-posta Detaylarını Girin
+                                        </h3>
+                                        
+                                        <div className="space-y-4">
+                                            <div className="mb-6">
+                                                <label className="block text-sm font-medium text-gray-400 mb-2">
+                                                    Referans Alınacak CV (Yeteneklerinizi vurgulamak için) *
+                                                </label>
+                                                <select
+                                                    value={selectedCV || ''}
+                                                    onChange={(e) => setSelectedCV(e.target.value)}
+                                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all"
+                                                >
+                                                    <option value="">CV Seçiniz...</option>
+                                                    {cvs?.map(cv => (
+                                                        <option key={cv.id} value={cv.id} className="bg-[#0F1115]">
+                                                            {cv.name || 'İsimsiz CV'}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Dinamik Alanlar */}
+                                            {renderInputFields()}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={() => setStep(1)}
+                                            className="px-6 py-4 bg-white/5 text-gray-300 font-bold rounded-2xl flex items-center justify-center hover:bg-white/10 transition-colors"
+                                        >
+                                            Geri
+                                        </button>
+                                        <button
+                                            onClick={handleGenerate}
+                                            disabled={isGenerating || !selectedCV}
+                                            className="flex-1 py-4 bg-[#10B981] text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-50"
+                                        >
+                                            {isGenerating ? (
+                                                <><Loader2 size={20} className="animate-spin" /> Oluşturuluyor...</>
                                             ) : (
-                                                <input
-                                                    type="text"
-                                                    value={input[field.key]}
-                                                    onChange={(e) => setInput({ ...input, [field.key]: e.target.value })}
-                                                    placeholder={field.placeholder}
-                                                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                                                />
+                                                <><Sparkles size={20} /> E-postayı Yaz</>
                                             )}
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* STEP 3: Results */}
+                            {step === 3 && generatedEmail && (
+                                <motion.div
+                                    key="step3"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="space-y-6"
+                                >
+                                    <div className="bg-black/40 border border-white/5 rounded-3xl overflow-hidden">
+                                        {/* Subject */}
+                                        <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                            <div className="flex-1">
+                                                <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Konu Başlığı</div>
+                                                <div className="text-white font-medium">{generatedEmail.subject}</div>
+                                            </div>
+                                            <button
+                                                onClick={() => handleCopy(generatedEmail.subject, 'subject')}
+                                                className="p-2 text-gray-400 hover:text-[#10B981] hover:bg-[#10B981]/10 rounded-xl transition-all ml-4 shrink-0"
+                                                title="Konuyu Kopyala"
+                                            >
+                                                {copiedSubject ? <Check size={18} /> : <Copy size={18} />}
+                                            </button>
                                         </div>
-                                    ))}
-                                </div>
 
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => setStep(1)}
-                                        className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors"
-                                    >
-                                        Geri
-                                    </button>
-                                    <button
-                                        onClick={handleGenerate}
-                                        disabled={isGenerating}
-                                        className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
-                                    >
-                                        {isGenerating ? (
-                                            <>
-                                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                                Oluşturuluyor...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Sparkles size={20} />
-                                                E-posta Oluştur
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* Step 3: Result */}
-                        {step === 3 && (
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-lg font-semibold text-white">AI Tarafından Oluşturuldu</h3>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={handleRegenerate}
-                                            disabled={isGenerating}
-                                            className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50"
-                                            title="Yeniden Oluştur"
-                                        >
-                                            <RefreshCw size={18} className={`text-gray-400 ${isGenerating ? 'animate-spin' : ''}`} />
-                                        </button>
-                                        <button
-                                            onClick={handleCopyAll}
-                                            className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-2"
-                                        >
-                                            {copiedField === 'all' 
-                                                ? <><Check size={18} className="text-green-400" /></>
-                                                : <><Copy size={18} className="text-gray-400" /></>
-                                            }
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Subject */}
-                                <div className="mb-4">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="text-gray-400 text-sm">Konu</label>
-                                        <button
-                                            onClick={() => handleCopy(generatedEmail.subject, 'subject')}
-                                            className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1"
-                                        >
-                                            {copiedField === 'subject' ? <Check size={14} /> : <Copy size={14} />}
-                                            {copiedField === 'subject' ? 'Kopyalandı' : 'Kopyala'}
-                                        </button>
-                                    </div>
-                                    <div className="bg-gray-800/50 rounded-lg px-4 py-3 border border-gray-700">
-                                        <p className="text-white font-medium">{generatedEmail.subject}</p>
-                                    </div>
-                                </div>
-
-                                {/* Body */}
-                                <div className="mb-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="text-gray-400 text-sm">İçerik</label>
-                                        <button
-                                            onClick={() => handleCopy(generatedEmail.body, 'body')}
-                                            className="text-xs text-gray-500 hover:text-gray-300 flex items-center gap-1"
-                                        >
-                                            {copiedField === 'body' ? <Check size={14} /> : <Copy size={14} />}
-                                            {copiedField === 'body' ? 'Kopyalandı' : 'Kopyala'}
-                                        </button>
-                                    </div>
-                                    <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
-                                        <pre className="text-gray-200 whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                                            {generatedEmail.body}
-                                        </pre>
-                                    </div>
-                                </div>
-
-                                {/* Tips */}
-                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mb-6">
-                                    <div className="flex items-start gap-3">
-                                        <Lightbulb className="text-emerald-400 mt-0.5" size={20} />
-                                        <div>
-                                            <p className="text-emerald-300 font-medium text-sm">İpucu</p>
-                                            <p className="text-gray-400 text-sm">
-                                                E-postayı göndermeden önce kendi durumunuza göre düzenleyin. 
-                                                Spesifik detaylar ve kişisel dokunuşlar e-postanızı daha etkili kılar.
-                                            </p>
+                                        {/* Body */}
+                                        <div className="p-6 relative group">
+                                            <button
+                                                onClick={() => handleCopy(generatedEmail.body, 'body')}
+                                                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-[#10B981] bg-black/60 hover:bg-[#10B981]/10 border border-white/5 hover:border-[#10B981]/20 rounded-xl transition-all opacity-0 group-hover:opacity-100 backdrop-blur-md"
+                                                title="Metni Kopyala"
+                                            >
+                                                {copiedBody ? <Check size={18} /> : <Copy size={18} />}
+                                            </button>
+                                            <div className="text-gray-300 font-serif text-lg leading-relaxed whitespace-pre-wrap">
+                                                {generatedEmail.body}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={resetForm}
-                                        className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors"
-                                    >
-                                        Yeni E-posta
-                                    </button>
-                                    <a
-                                        href={`mailto:?subject=${encodeURIComponent(generatedEmail.subject)}&body=${encodeURIComponent(generatedEmail.body)}`}
-                                        className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                                    >
-                                        <Send size={20} />
-                                        E-posta Gönder
-                                    </a>
-                                </div>
-                            </motion.div>
-                        )}
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={() => setStep(2)}
+                                            className="px-6 py-4 bg-white/5 text-gray-300 font-bold rounded-2xl flex items-center justify-center hover:bg-white/10 transition-colors"
+                                        >
+                                            Düzenle
+                                        </button>
+                                        <a
+                                            href={`mailto:${input.recipient || ''}?subject=${encodeURIComponent(generatedEmail.subject)}&body=${encodeURIComponent(generatedEmail.body)}`}
+                                            className="flex-1 py-4 bg-[#10B981] text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#059669] hover:text-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                                        >
+                                            <Send size={20} /> E-posta Uygulamasında Aç
+                                        </a>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
-
-                    {/* Premium Badge */}
-                    {!isPremium && (
-                        <div className="absolute top-4 right-16 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                            PRO
-                        </div>
-                    )}
                 </motion.div>
             </motion.div>
         </AnimatePresence>
+    )
+}
+
+function InputField({ label, value, onChange, icon: Icon, isTextArea, placeholder }) {
+    return (
+        <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">{label}</label>
+            <div className="relative">
+                {Icon && !isTextArea && (
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                        <Icon size={18} />
+                    </div>
+                )}
+                {isTextArea ? (
+                    <textarea
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all resize-none h-24"
+                    />
+                ) : (
+                    <input
+                        type="text"
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        className={`w-full ${Icon ? 'pl-11' : 'px-4'} py-3 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] outline-none transition-all`}
+                    />
+                )}
+            </div>
+        </div>
     )
 }

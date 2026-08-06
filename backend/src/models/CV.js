@@ -44,6 +44,18 @@ const cvSchema = new mongoose.Schema({
         showPhoto: { type: Boolean, default: true },
         showIcons: { type: Boolean, default: true }
     },
+    customStyles: {
+        type: String,
+        default: ''
+    },
+    videoUrl: {
+        type: String,
+        default: null
+    },
+    animatedTemplate: {
+        type: String,
+        default: null
+    },
     versions: [{
         id: String,
         name: String,

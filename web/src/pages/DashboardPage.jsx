@@ -317,27 +317,32 @@ export default function DashboardPage() {
                 isOpen={showCoverLetterModal}
                 onClose={() => setShowCoverLetterModal(false)}
                 onSuccess={() => setShowCoverLetterModal(false)}
+                isPremium={isPremium}
             />
             <ATSReportModal
                 isOpen={showATSModal}
                 onClose={() => setShowATSModal(false)}
                 cvData={selectedCVForATS?.data}
                 cvName={selectedCVForATS?.name || 'CV'}
+                isPremium={isPremium}
             />
             <CVTranslator
                 isOpen={showTranslatorModal}
                 onClose={() => setShowTranslatorModal(false)}
                 cv={selectedCVForTranslate}
+                isPremium={isPremium}
             />
             <CVVoiceReader
                 isOpen={showVoiceReader}
                 onClose={() => setShowVoiceReader(false)}
                 cvData={selectedCVForVoice?.data}
+                isPremium={isPremium}
             />
             <CSSEditorModal
                 isOpen={showCSSEditor}
                 onClose={() => setShowCSSEditor(false)}
                 cv={selectedCVForCSS}
+                isPremium={isPremium}
                 onSave={async (id, css) => {
                     await updateCV(id, { customStyles: css })
                     setShowCSSEditor(false)
@@ -347,16 +352,19 @@ export default function DashboardPage() {
                 isOpen={showVideoCV}
                 onClose={() => setShowVideoCV(false)}
                 cv={selectedCVForDesign}
+                isPremium={isPremium}
             />
             <AnimatedCVModal
                 isOpen={showAnimatedCV}
                 onClose={() => setShowAnimatedCV(false)}
                 cv={selectedCVForDesign}
+                isPremium={isPremium}
             />
             <LayoutManagerModal
                 isOpen={showLayoutManager}
                 onClose={() => setShowLayoutManager(false)}
                 cv={selectedCVForDesign}
+                isPremium={isPremium}
                 onSave={async (id, layout) => {
                     await updateCV(id, { data: { ...selectedCVForDesign.data, layout } })
                     setShowLayoutManager(false)
@@ -365,11 +373,13 @@ export default function DashboardPage() {
             <CareerTestModal
                 isOpen={showCareerTest}
                 onClose={() => setShowCareerTest(false)}
+                isPremium={isPremium}
             />
             <AnalyticsModal
                 isOpen={showAnalyticsModal}
                 onClose={() => setShowAnalyticsModal(false)}
                 cv={selectedCVForAnalytics}
+                isPremium={isPremium}
             />
 
             {/* Header */}
@@ -767,7 +777,7 @@ export default function DashboardPage() {
                                     <p className={`text-xs font-semibold mt-1.5 uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>Kariyerini güçlendirecek araçlar</p>
                                 </div>
 
-                                <div className={`flex rounded-2xl p-1.5 border self-start ${darkMode ? 'bg-black/40 border-white/5' : 'bg-slate-100 border-slate-200'}`}>
+                                <div className={`flex rounded-full p-1.5 border self-start shadow-inner ${darkMode ? 'bg-slate-950/60 border-white/5' : 'bg-slate-200/50 border-slate-200/50'}`}>
                                     {[
                                         { id: 'quick', label: 'Hızlı', icon: <Zap className="w-3.5 h-3.5" /> },
                                         { id: 'ai', label: 'AI Araçları', icon: <Sparkles className="w-3.5 h-3.5" /> },
@@ -776,9 +786,9 @@ export default function DashboardPage() {
                                         <button
                                             key={tab.id}
                                             onClick={() => setActiveToolTab(tab.id)}
-                                            className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${activeToolTab === tab.id
-                                                ? (darkMode ? 'bg-white text-slate-950 shadow-lg' : 'bg-white text-slate-900 shadow-sm border border-slate-200')
-                                                : (darkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700')
+                                            className={`px-5 py-2.5 rounded-full text-[11px] font-extrabold uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${activeToolTab === tab.id
+                                                ? (darkMode ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 scale-105' : 'bg-white text-slate-900 shadow-md shadow-slate-200/50 scale-105')
+                                                : (darkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-white/50')
                                                 }`}
                                         >
                                             {tab.icon} {tab.label}
@@ -796,33 +806,36 @@ export default function DashboardPage() {
                                             { to: '/templates', label: 'Şablonlar', icon: <LayoutGrid />, color: 'from-purple-500 to-pink-600' },
                                             { onClick: () => setShowCompareModal(true), label: 'Karşılaştır', icon: <Columns />, color: 'from-green-500 to-emerald-600' },
                                             { onClick: () => setShowCoverLetterModal(true), label: 'Ön Yazı', icon: <FileText />, color: 'from-amber-500 to-orange-600' }
-                                        ].map((tool, i) => (
-                                            tool.to ? (
-                                                <Link key={i} to={tool.to} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] relative ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
+                                        ].map((tool, i) => {
+                                            const CardContent = (
+                                                <>
                                                     {tool.badge && (
-                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-500 text-[8px] font-black tracking-widest animate-pulse">
+                                                        <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm ${darkMode ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-500/20' : 'bg-gradient-to-r from-sky-100 to-blue-100 text-sky-700 border border-sky-200/50'}`}>
                                                             {tool.badge}
                                                         </div>
                                                     )}
-                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
-                                                        {tool.icon}
+                                                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 shadow-xl shadow-slate-900/10 text-white relative z-10`}>
+                                                        <div className="absolute inset-0 bg-white/20 rounded-2xl backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                        <span className="relative z-10">{tool.icon}</span>
                                                     </div>
-                                                    <div className={`text-xs font-bold uppercase tracking-widest mt-1 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>{tool.label}</div>
+                                                    <div className={`text-[13px] font-black uppercase tracking-widest mt-1 transition-colors ${darkMode ? 'text-slate-200 group-hover:text-white' : 'text-slate-700 group-hover:text-slate-900'}`}>{tool.label}</div>
+                                                </>
+                                            );
+                                            
+                                            const baseClasses = `group p-6 rounded-[2rem] border transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden transform hover:-translate-y-1 ${darkMode ? 'bg-gradient-to-b from-white/[0.04] to-transparent border-white/10 hover:border-cyan-500/30 hover:shadow-[0_0_25px_rgba(34,211,238,0.15)]' : 'bg-white border-slate-200 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-100'}`;
+
+                                            return tool.to ? (
+                                                <Link key={i} to={tool.to} className={baseClasses}>
+                                                    <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[2rem]"></div>
+                                                    {CardContent}
                                                 </Link>
                                             ) : (
-                                                <button key={i} onClick={tool.onClick} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] flex flex-col items-center text-center relative ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
-                                                    {tool.badge && (
-                                                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-500 text-[8px] font-black tracking-widest animate-pulse">
-                                                            {tool.badge}
-                                                        </div>
-                                                    )}
-                                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
-                                                        {tool.icon}
-                                                    </div>
-                                                    <div className={`text-xs font-bold uppercase tracking-widest mt-1 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>{tool.label}</div>
+                                                <button key={i} onClick={tool.onClick} className={baseClasses}>
+                                                    <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[2rem]"></div>
+                                                    {CardContent}
                                                 </button>
-                                            )
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 )}
 
@@ -850,17 +863,19 @@ export default function DashboardPage() {
                                             { onClick: () => setShowPortfolioBuilder(true), label: 'Portfolio', icon: <Layout />, color: 'from-pink-500 to-rose-600', desc: 'Web sitenize özel portfolyo' },
                                             { onClick: () => setShowCareerTest(true), label: 'Kariyer Testi', icon: <Target />, color: 'from-yellow-500 to-orange-600', desc: 'Sana en uygun mesleği bul' }
                                         ].map((tool, i) => (
-                                            <button key={i} onClick={tool.onClick} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] flex flex-col items-center text-center relative overflow-hidden ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
+                                            <button key={i} onClick={tool.onClick} className={`group p-6 rounded-[2rem] border transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden transform hover:-translate-y-1 ${darkMode ? 'bg-gradient-to-b from-white/[0.04] to-transparent border-white/10 hover:border-cyan-500/30 hover:shadow-[0_0_25px_rgba(34,211,238,0.15)]' : 'bg-white border-slate-200 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-100'}`}>
+                                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[2rem]"></div>
                                                 {tool.badge && (
-                                                    <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[8px] font-black tracking-widest animate-pulse ${darkMode ? 'bg-cyan-500/20 text-cyan-400' : 'bg-sky-100 text-sky-600'}`}>
+                                                    <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm ${darkMode ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-500/20' : 'bg-gradient-to-r from-sky-100 to-blue-100 text-sky-700 border border-sky-200/50'}`}>
                                                         {tool.badge}
                                                     </div>
                                                 )}
-                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
-                                                    {tool.icon}
+                                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 shadow-xl shadow-slate-900/10 text-white relative z-10`}>
+                                                    <div className="absolute inset-0 bg-white/20 rounded-2xl backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                    <span className="relative z-10">{tool.icon}</span>
                                                 </div>
-                                                <div className={`text-xs font-black uppercase tracking-widest mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{tool.label}</div>
-                                                <div className={`text-[10px] font-medium leading-tight ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{tool.desc}</div>
+                                                <div className={`text-[13px] font-black uppercase tracking-widest mb-1.5 transition-colors ${darkMode ? 'text-white group-hover:text-cyan-100' : 'text-slate-800 group-hover:text-slate-950'}`}>{tool.label}</div>
+                                                <div className={`text-[11px] font-medium leading-relaxed px-2 ${darkMode ? 'text-slate-400 group-hover:text-slate-300' : 'text-slate-500 group-hover:text-slate-700'}`}>{tool.desc}</div>
                                             </button>
                                         ))}
                                     </div>
@@ -874,11 +889,13 @@ export default function DashboardPage() {
                                             { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowVideoCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Video CV', icon: <Video />, color: 'from-red-500 to-rose-600' },
                                             { onClick: () => cvs?.length > 0 ? (setSelectedCVForDesign(cvs[0]), setShowAnimatedCV(true)) : toast.warning('Önce CV oluşturmanız gerekiyor'), label: 'Animated CV', icon: <Zap />, color: 'from-purple-500 to-pink-600' }
                                         ].map((tool, i) => (
-                                            <button key={i} onClick={tool.onClick} className={`group p-5 rounded-3xl border transition-all hover:scale-[1.02] flex flex-col items-center text-center ${darkMode ? 'bg-white/[0.03] border-white/5 hover:border-white/10' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:shadow-md'}`}>
-                                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-lg text-white`}>
-                                                    {tool.icon}
+                                            <button key={i} onClick={tool.onClick} className={`group p-6 rounded-[2rem] border transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden transform hover:-translate-y-1 ${darkMode ? 'bg-gradient-to-b from-white/[0.04] to-transparent border-white/10 hover:border-purple-500/30 hover:shadow-[0_0_25px_rgba(168,85,247,0.15)]' : 'bg-white border-slate-200 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-100'}`}>
+                                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[2rem]"></div>
+                                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 shadow-xl shadow-slate-900/10 text-white relative z-10`}>
+                                                    <div className="absolute inset-0 bg-white/20 rounded-2xl backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                    <span className="relative z-10">{tool.icon}</span>
                                                 </div>
-                                                <div className={`text-xs font-black uppercase tracking-widest ${darkMode ? 'text-white' : 'text-slate-900'}`}>{tool.label}</div>
+                                                <div className={`text-[13px] font-black uppercase tracking-widest transition-colors ${darkMode ? 'text-white group-hover:text-purple-100' : 'text-slate-800 group-hover:text-slate-950'}`}>{tool.label}</div>
                                             </button>
                                         ))}
                                     </div>

@@ -1576,13 +1576,14 @@ export default function CVForm({
                                 <button
                                     key={t.id}
                                     onClick={() => setSelectedTemplate(t.id)}
-                                    className={`p-3 rounded-xl border flex flex-col items-center gap-1 transition-all ${selectedTemplate === t.id
-                                        ? 'bg-cyan-500/20 border-cyan-500 ring-1 ring-cyan-500/30'
+
+                                    className={`relative flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${selectedTemplate === t.id
+                                        ? 'bg-[#10B981]/10 border-[#10B981] ring-1 ring-[#10B981]/30'
                                         : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
                                         }`}
                                 >
                                     <span className="text-lg">{t.emoji}</span>
-                                    <span className={`text-[8px] font-bold uppercase tracking-wide text-center leading-tight ${selectedTemplate === t.id ? 'text-cyan-400' : 'text-slate-500'
+                                    <span className={`text-[8px] font-bold uppercase tracking-wide text-center leading-tight ${selectedTemplate === t.id ? 'text-[#10B981]' : 'text-slate-500'
                                         }`}>
                                         {t.name}
                                     </span>
@@ -1597,13 +1598,13 @@ export default function CVForm({
                     </div>
 
                     {isWebTemplate && (
-                        <div className="space-y-6 p-5 rounded-3xl border border-white/10 bg-white/5">
+                        <div className="space-y-6 p-5 rounded-3xl border border-[#10B981]/20 bg-[#10B981]/5">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-bold text-white">Web Görünüm</p>
                                     <p className="text-[11px] text-slate-500">Canlı portföy renklerini ve fontlarını özelleştirin.</p>
                                 </div>
-                                <span className="text-[9px] font-black uppercase tracking-widest text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-3 py-1">Web CV</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/30 rounded-full px-3 py-1">Web CV</span>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1637,8 +1638,8 @@ export default function CVForm({
                                             key={font}
                                             onClick={() => setTheme(prev => ({ ...prev, webFontFamily: font }))}
                                             className={`px-4 py-3 rounded-xl border text-[10px] font-bold uppercase tracking-wider transition-all ${theme.webFontFamily === font
-                                                ? 'bg-cyan-500 border-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-                                                : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+                                                ? 'bg-[#10B981] border-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                                                : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#10B981]/30 hover:bg-[#10B981]/5'
                                                 }`}
                                             style={{ fontFamily: font }}
                                         >
@@ -1656,8 +1657,8 @@ export default function CVForm({
                                             key={option.id}
                                             onClick={() => setTheme(prev => ({ ...prev, webPattern: option.id }))}
                                             className={`flex-1 min-w-[120px] px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${theme.webPattern === option.id
-                                                ? 'bg-white/10 border-cyan-500/40 text-white'
-                                                : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/20'
+                                                ? 'bg-[#10B981]/10 border-[#10B981]/50 text-white'
+                                                : 'bg-white/5 border-white/10 text-slate-500 hover:border-[#10B981]/30 hover:bg-[#10B981]/5'
                                                 }`}
                                         >
                                             {option.label}
@@ -1679,7 +1680,7 @@ export default function CVForm({
                                                 webTextColor: preset.text,
                                                 webPattern: preset.pattern
                                             }))}
-                                            className={`p-3 rounded-2xl border flex flex-col gap-2 transition-all group ${theme.webAccentColor === preset.accent && theme.webBackgroundColor === preset.bg ? 'bg-white/10 border-cyan-500/40' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                                            className={`p-3 rounded-2xl border flex flex-col gap-2 transition-all group ${theme.webAccentColor === preset.accent && theme.webBackgroundColor === preset.bg ? 'bg-[#10B981]/10 border-[#10B981]/50 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'bg-white/5 border-white/10 hover:border-[#10B981]/30'}`}
                                         >
                                             <div className="flex gap-1 h-2 rounded-full overflow-hidden w-full">
                                                 <div className="flex-1" style={{ backgroundColor: preset.bg }} />
@@ -1709,8 +1710,8 @@ export default function CVForm({
                                     key={font.name}
                                     onClick={() => setTheme(prev => ({ ...prev, fontFamily: font.name }))}
                                     className={`px-4 py-3 rounded-xl border text-[10px] font-bold uppercase tracking-wider transition-all ${theme.fontFamily === font.name
-                                        ? 'bg-cyan-500 border-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-                                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+                                        ? 'bg-[#10B981] border-[#10B981] text-black shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#10B981]/30 hover:bg-[#10B981]/5'
                                         }`}
                                     style={{ fontFamily: font.name }}
                                 >
@@ -1735,8 +1736,8 @@ export default function CVForm({
                                     key={palette.name}
                                     onClick={() => setTheme(prev => ({ ...prev, accentColor: palette.colors[palette.colors.length - 1], paletteName: palette.name }))}
                                     className={`p-3 rounded-2xl border flex flex-col gap-2 transition-all group ${theme.paletteName === palette.name
-                                        ? 'bg-white/10 border-cyan-500/50 p-3 ring-1 ring-cyan-500/20'
-                                        : 'bg-white/5 border-white/5 hover:border-white/20'
+                                        ? 'bg-[#10B981]/10 border-[#10B981]/50 p-3 ring-1 ring-[#10B981]/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                                        : 'bg-white/5 border-white/5 hover:border-[#10B981]/30 hover:bg-[#10B981]/5'
                                         }`}
                                 >
                                     <div className="flex gap-1 h-2 rounded-full overflow-hidden w-full">
@@ -1744,7 +1745,7 @@ export default function CVForm({
                                             <div key={i} className="flex-1" style={{ backgroundColor: c }} />
                                         ))}
                                     </div>
-                                    <span className={`text-[8px] font-black uppercase tracking-widest text-center ${theme.paletteName === palette.name ? 'text-cyan-400' : 'text-slate-500 group-hover:text-slate-300'}`}>
+                                    <span className={`text-[8px] font-black uppercase tracking-widest text-center ${theme.paletteName === palette.name ? 'text-[#10B981]' : 'text-slate-500 group-hover:text-white'}`}>
                                         {palette.name}
                                     </span>
                                 </button>
@@ -1788,15 +1789,15 @@ export default function CVForm({
                         <div className="space-y-3">
                             <button
                                 onClick={() => setTheme(prev => ({ ...prev, showQrCode: !prev.showQrCode }))}
-                                className={`w-full p-4 rounded-xl border flex items-center justify-between transition-all ${theme.showQrCode ? 'bg-cyan-500/10 border-cyan-500/50 text-white' : 'bg-white/5 border-white/10 text-slate-500 hover:bg-white/10'
+                                className={`w-full p-4 rounded-xl border flex items-center justify-between transition-all ${theme.showQrCode ? 'bg-[#10B981]/10 border-[#10B981]/50 text-white shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'bg-white/5 border-white/10 text-slate-500 hover:bg-[#10B981]/5 hover:border-[#10B981]/30'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
                                     <Globe className="w-4 h-4" />
                                     <span className="text-xs font-bold uppercase tracking-widest">QR Kod (LinkedIn / Web)</span>
                                 </div>
-                                <div className={`w-8 h-4 rounded-full relative transition-colors ${theme.showQrCode ? 'bg-cyan-500' : 'bg-slate-700'}`}>
-                                    <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${theme.showQrCode ? 'left-4.5' : 'left-0.5'}`} />
+                                <div className={`w-8 h-4 rounded-full relative transition-colors ${theme.showQrCode ? 'bg-[#10B981]' : 'bg-slate-700'}`}>
+                                    <div className={`absolute top-0.5 w-3 h-3 bg-black rounded-full transition-all ${theme.showQrCode ? 'left-4.5' : 'left-0.5'}`} />
                                 </div>
                             </button>
 

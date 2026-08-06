@@ -10,7 +10,7 @@ export default function ScandiMinimalTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#fdfdfd] p-0 sm:p-12 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fdfdfd] p-0 sm:p-12 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
 
             {/* SCANDI MINIMALIST FON (Ultra Clean) */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -118,7 +118,7 @@ export default function ScandiMinimalTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase tracking-[0.6em] text-stone-200 mb-12">Academic Journey</h2>
                             <div className="space-y-16">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="group">
+                                    <div key={i} className="group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-stone-200 mb-3 uppercase tracking-widest">{edu.startDate} – {edu.endDate}</p>
                                         <h4 className="text-lg font-light text-stone-800 leading-tight mb-2 tracking-tight group-hover:text-stone-400 transition-colors uppercase">{edu.school}</h4>
                                         <p className="text-xs text-stone-400 font-light italic px-4 border-l border-stone-100">{edu.degree}</p>

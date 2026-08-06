@@ -4,7 +4,7 @@ export default function FitnessTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-zinc-950 text-white p-12" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-zinc-950 text-white p-12 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div className="max-w-4xl mx-auto border-2 border-orange-500 rounded-[48px] p-12 relative overflow-hidden bg-zinc-900 shadow-2xl">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] rounded-full" />
 
@@ -14,7 +14,7 @@ export default function FitnessTemplate({ data }) {
                             {personal.fullName?.split(' ')[0]} <br />
                             <span className="text-orange-500">{personal.fullName?.split(' ').slice(1).join(' ')}</span>
                         </h1>
-                        <p className="text-xl font-bold italic text-zinc-400 uppercase tracking-widest">{personal.title}</p>
+                        <p className="text-xl font-bold italic text-zinc-500 uppercase tracking-widest">{personal.title}</p>
                     </div>
                     <div className="bg-zinc-800 p-8 rounded-3xl border border-zinc-700">
                         <div className="space-y-4 text-sm font-bold">
@@ -29,14 +29,14 @@ export default function FitnessTemplate({ data }) {
                     <div className="md:col-span-2 space-y-16">
                         <section>
                             <h2 className="text-3xl font-black italic uppercase text-orange-500 mb-8 border-l-8 border-orange-500 pl-6">Vizyon</h2>
-                            <p className="text-zinc-400 text-lg leading-relaxed font-medium">{personal.summary}</p>
+                            <p className="text-zinc-500 text-lg leading-relaxed font-medium">{personal.summary}</p>
                         </section>
 
                         <section>
                             <h2 className="text-3xl font-black italic uppercase text-orange-500 mb-8 border-l-8 border-orange-500 pl-6">Kariyer Maratonu</h2>
                             <div className="space-y-12">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative pl-8 border-l border-zinc-700">
+                                    <div key={exp.id} className="relative pl-8 border-l border-zinc-700 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[5px] top-0 w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_10px_#f97316]" />
                                         <div className="flex justify-between items-center mb-4">
                                             <h3 className="text-xl font-bold uppercase">{exp.position}</h3>
@@ -45,7 +45,7 @@ export default function FitnessTemplate({ data }) {
                                             </span>
                                         </div>
                                         <p className="text-zinc-500 font-bold mb-4">{exp.company}</p>
-                                        <p className="text-zinc-400 leading-relaxed italic">{exp.description}</p>
+                                        <p className="text-zinc-500 leading-relaxed italic">{exp.description}</p>
                                     </div>
                                 ))}
                             </div>
@@ -57,7 +57,7 @@ export default function FitnessTemplate({ data }) {
                             <h2 className="text-xl font-black italic uppercase text-white mb-8">Güç Alanları</h2>
                             <div className="space-y-4">
                                 {skills.map(s => (
-                                    <div key={s} className="flex flex-col gap-2">
+                                    <div key={s} className="flex flex-col gap-2 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between text-xs font-black uppercase">
                                             <span>{s}</span>
                                             <span className="text-orange-500">MAX</span>
@@ -74,7 +74,7 @@ export default function FitnessTemplate({ data }) {
                             <h2 className="text-xl font-black italic uppercase text-white mb-8">Eğitim</h2>
                             <div className="space-y-8">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="bg-zinc-800/50 p-6 rounded-2xl border border-zinc-700/50">
+                                    <div key={edu.id} className="bg-zinc-800/50 p-6 rounded-2xl border border-zinc-700/50 break-inside-avoid page-break-inside-avoid">
                                         <h4 className="font-bold text-white mb-1">{edu.school}</h4>
                                         <p className="text-orange-500 text-xs font-black uppercase mb-1">{edu.degree}</p>
                                         <p className="text-zinc-500 text-[10px] font-bold">{edu.startDate} - {edu.endDate}</p>

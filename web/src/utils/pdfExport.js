@@ -221,6 +221,11 @@ export const printCV = (elementId) => {
     const element = document.getElementById(elementId)
     if (!element) return
 
+    // Get all style tags and stylesheets from the parent document
+    const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+        .map(style => style.outerHTML)
+        .join('\n');
+
     const printWindow = window.open('', '_blank')
     printWindow.document.write(`
     <!DOCTYPE html>
@@ -228,11 +233,50 @@ export const printCV = (elementId) => {
     <head>
       <title>CV - Yazdır</title>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      ${styles}
       <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        
+        /* Global Print Fixes for PDF rendering */
         @media print {
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          @page {
+             margin: 0;
+             size: A4 portrait;
+          }
+          body { 
+             margin: 0; 
+             -webkit-print-color-adjust: exact !important; 
+             print-color-adjust: exact !important; 
+             background: white !important;
+          }
+          /* Ensure the container fits A4 */
+          #${elementId} {
+             width: 210mm !important;
+             min-height: 297mm !important;
+             margin: 0 !important;
+             padding: 0 !important;
+             box-shadow: none !important;
+             transform: none !important;
+             overflow: visible !important;
+          }
+          /* Prevent page breaks inside critical sections */
+          .cv-section, .cv-item, .break-inside-avoid, section, article {
+             page-break-inside: avoid !important;
+             break-inside: avoid !important;
+             break-inside: avoid-page !important;
+          }
+          /* Remove interactive UI elements during print */
+          .no-print, button, .hover-actions {
+             display: none !important;
+          }
+          /* Fix grid/flex layouts breaking in print */
+          .grid {
+             display: grid !important;
+          }
+          .flex {
+             display: flex !important;
+          }
         }
       </style>
     </head>
@@ -243,9 +287,11 @@ export const printCV = (elementId) => {
   `)
     printWindow.document.close()
     printWindow.focus()
+    
+    // Wait slightly longer to ensure external stylesheets (Google Fonts/Tailwind CDN) load
     setTimeout(() => {
         printWindow.print()
         printWindow.close()
-    }, 500)
+    }, 1000)
 }
 

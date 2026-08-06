@@ -15,7 +15,7 @@ export default function VintageClassTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-full bg-amber-50 text-amber-950 p-8 md:p-12"
+        <div id="cv-template-wrapper" className="min-h-full bg-amber-50 text-amber-950 p-8 md:p-12 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Merriweather', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -48,7 +48,7 @@ export default function VintageClassTemplate({ data, theme, highlightedField }) 
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-10 text-center max-w-2xl mx-auto">
+                    <section className="mb-10 text-center max-w-2xl mx-auto break-inside-avoid page-break-inside-avoid">
                         <Quote className="w-8 h-8 mx-auto mb-4 text-amber-400" />
                         <p className="text-lg leading-relaxed italic text-amber-900">{personal.summary}</p>
                     </section>
@@ -88,7 +88,7 @@ export default function VintageClassTemplate({ data, theme, highlightedField }) 
                                 </h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="text-center p-4 border border-amber-200 bg-white">
+                                        <div key={ref.id} className="text-center p-4 border border-amber-200 bg-white break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-amber-700 italic">{ref.company}</p>
                                         </div>

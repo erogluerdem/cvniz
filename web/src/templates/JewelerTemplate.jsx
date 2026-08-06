@@ -33,7 +33,7 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
     }
 
     return (
-        <div className="min-h-full bg-black text-slate-400 p-0 selection:bg-[#fbbf24] selection:text-black"
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-slate-500 p-0 selection:bg-[#fbbf24] selection:text-black print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -115,7 +115,7 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
                         
                         {/* THE MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-stone-900 border border-stone-800 p-10 relative overflow-hidden shadow-2xl">
+                            <section className="space-y-10 group bg-stone-900 border border-stone-800 p-10 relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
                                     <Gem className="w-24 h-24" />
                                 </div>
@@ -129,7 +129,7 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
                         )}
 
                         {/* GEMOLOGICAL GRADING SCALE (4CS) */}
-                        <section className="bg-black border-2 border-[#fbbf24]/5 p-10 space-y-12 transition-all hover:border-[#fbbf24]/20 shadow-inner italic">
+                        <section className="bg-black border-2 border-[#fbbf24]/5 p-10 space-y-12 transition-all hover:border-[#fbbf24]/20 shadow-inner italic break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[11px] font-black tracking-[1.5em] text-[#fbbf24]/20 mb-20 italic leading-none border-b border-stone-900 pb-4 uppercase">{t.grading}</h4>
                              <div className="space-y-10">
                                 {[
@@ -138,7 +138,7 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
                                     { label: 'Color Scale', val: 'D / E' },
                                     { label: 'Carat Expertise', val: '10ct+' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/item border-b border-stone-900 pb-2">
+                                    <div key={i} className="flex justify-between items-baseline group/item border-b border-stone-900 pb-2 break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-black text-stone-600 group-hover/item:text-[#fbbf24] transition-colors">{stat.label}</p>
                                         <p className="text-2xl font-black text-white">{stat.val}</p>
                                     </div>
@@ -148,13 +148,13 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
 
                         {/* PRECISION STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-[#fbbf24]/20 flex items-center gap-4 italic mb-10 border-b border-stone-900 pb-4 uppercase">
                                     <Layers className="w-5 h-5 text-[#fbbf24]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center z-10 relative">
                                                 <span className="text-[18px] font-light uppercase tracking-widest text-slate-700 group-hover/item:text-[#fbbf24] transition-colors italic whitespace-nowrap" style={{ fontFamily: "'Playfair Display', serif" }}>{skill}</span>
                                                 <div className="h-px bg-stone-900 flex-1 mx-4" />
@@ -168,10 +168,10 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
 
                         {/* MINERAL THEORY (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-stone-950 border-y border-stone-900 uppercase italic">
+                            <section className="space-y-16 p-10 bg-stone-950 border-y border-stone-900 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-700 text-center mb-10 leading-none pb-4 border-b border-stone-900 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#fbbf24]/30 mb-6 tracking-[0.5em]">ACADEMIC_FORM_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.4em] text-stone-700 mt-4 uppercase">{edu.school}</p>
@@ -192,7 +192,7 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-stone-900 hover:border-[#fbbf24] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-stone-900 hover:border-[#fbbf24] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1.5 h-32 bg-[#fbbf24] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#fbbf24]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -200,7 +200,7 @@ export default function JewelerTemplate({ data, theme = {}, highlightedField = n
                                                     <h3 className="text-6xl text-[9.5rem] font-black text-white tracking-tighter italic group-hover:text-[#fbbf24] transition-colors duration-[1.5s] leading-none uppercase" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '-0.06em' }}>{exp.position}</h3>
                                                     <div className="flex items-center gap-8">
                                                         <div className="h-px w-20 bg-stone-900 group-hover:w-40 group-hover:bg-[#fbbf24] transition-all duration-1000 shadow-[0_0_15px_#fbbf24]" />
-                                                        <p className="text-3xl font-light italic text-slate-700 tracking-[0.4em] group-hover:text-slate-400 transition-colors italic leading-none uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>CLIENT: {exp.company}</p>
+                                                        <p className="text-3xl font-light italic text-slate-700 tracking-[0.4em] group-hover:text-slate-500 transition-colors italic leading-none uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>CLIENT: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-black text-black bg-[#fbbf24] px-10 py-4 group-hover:bg-white transition-all whitespace-nowrap italic tracking-[0.5em] shadow-3xl leading-none uppercase">

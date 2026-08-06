@@ -15,7 +15,7 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -34,7 +34,7 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
                     <div className="flex-1 text-center md:text-left">
                         <h1 className="text-3xl font-black uppercase tracking-tight mb-1 break-words">{personal.fullName || 'FULL NAME'}</h1>
                         <p className="text-red-500 font-bold uppercase tracking-widest mb-4">{personal.title || 'POSITION'}</p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-slate-400">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-slate-500">
                             {personal.email && <span>{personal.email}</span>}
                             {personal.phone && <span>{personal.phone}</span>}
                             {personal.location && <span>{personal.location}</span>}
@@ -51,7 +51,7 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
             <div className="max-w-4xl mx-auto p-8 md:p-10">
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-10 pl-6 border-l-4 border-red-600">
+                    <section className="mb-10 pl-6 border-l-4 border-red-600 break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed text-slate-600">{personal.summary}</p>
                     </section>
                 )}
@@ -62,7 +62,7 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
                         {/* Experience */}
                         {experience.length > 0 && (
                             <section className={highlightedField === 'experience' ? 'bg-red-50 p-6 -mx-6 rounded' : ''}>
-                                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8 flex items-center gap-2">
+                                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-8 flex items-center gap-2">
                                     <ArrowRight className="w-4 h-4 text-red-600" /> {t.experience}
                                 </h2>
                                 <div className="space-y-8">
@@ -85,10 +85,10 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
                         {/* References */}
                         {references?.length > 0 && (
                             <section>
-                                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-6">{t.references}</h2>
+                                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-6">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 border-l-4 border-red-600 bg-slate-50">
+                                        <div key={ref.id} className="p-4 border-l-4 border-red-600 bg-slate-50 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-slate-500">{ref.company}</p>
                                         </div>
@@ -102,11 +102,11 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
                     <aside className="space-y-8">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 bg-slate-900 text-white">
+                            <section className="p-6 bg-slate-900 text-white break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-black uppercase tracking-widest text-red-500 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-sm">
+                                        <div key={i} className="flex items-center gap-2 text-sm break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 bg-red-500" />
                                             {skill}
                                         </div>
@@ -118,10 +118,10 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
                         {/* Education */}
                         {education.length > 0 && (
                             <section className={highlightedField === 'education' ? 'bg-red-50 p-4 rounded' : ''}>
-                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">{t.education}</h3>
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">{t.education}</h3>
                                 <div className="space-y-4">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="border-b border-slate-200 pb-3">
+                                        <div key={edu.id} className="border-b border-slate-200 pb-3 break-inside-avoid page-break-inside-avoid">
                                             <h4 className="font-bold">{edu.degree}</h4>
                                             <p className="text-sm text-slate-500">{edu.school}</p>
                                         </div>
@@ -133,7 +133,7 @@ export default function CorporateEdgeTemplate({ data, theme, highlightedField })
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
                             <section>
-                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">{t.hobbies}</h3>
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (
                                         <span key={h.id} className="px-3 py-1 bg-slate-100 text-xs font-medium">{h.name}</span>

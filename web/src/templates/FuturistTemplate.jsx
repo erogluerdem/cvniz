@@ -33,7 +33,7 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#8b5cf6] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#8b5cf6] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -115,7 +115,7 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
                         
                         {/* FORESIGHT MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-12 group p-12 border border-slate-100 bg-white/50 backdrop-blur-3xl relative overflow-hidden shadow-sm">
+                            <section className="space-y-12 group p-12 border border-slate-100 bg-white/50 backdrop-blur-3xl relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-8 opacity-[0.05]">
                                     <Spark className="w-32 h-32 text-[#8b5cf6]" />
                                 </div>
@@ -129,7 +129,7 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
                         )}
 
                         {/* SIGNAL ANALYSIS HUB */}
-                        <section className="bg-white border-2 border-[#8b5cf6]/10 p-12 space-y-16 group hover:p-16 transition-all duration-1000 shadow-3xl">
+                        <section className="bg-white border-2 border-[#8b5cf6]/10 p-12 space-y-16 group hover:p-16 transition-all duration-1000 shadow-3xl break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[12px] font-black tracking-[1.5em] text-[#8b5cf6]/20 mb-20 italic leading-none border-b border-slate-50 pb-6 uppercase">{t.signals}</h4>
                              <div className="space-y-12 italic">
                                 {[
@@ -138,7 +138,7 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
                                     { label: 'Emergent Tech', val: 'High' },
                                     { label: 'Horizon Distance', val: '25y' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/item">
+                                    <div key={i} className="flex justify-between items-baseline group/item break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[11px] font-black text-slate-200 group-hover/item:text-[#8b5cf6] transition-colors uppercase">{stat.label}</p>
                                         <p className="text-4xl font-light text-slate-900">{stat.val}</p>
                                     </div>
@@ -148,13 +148,13 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
 
                         {/* STRATEGIC FORESIGHT (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-16">
+                            <section className="space-y-16 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[12px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-6 italic mb-12 border-b border-slate-100 pb-8 uppercase">
                                     <TrendingUp className="w-8 h-8 text-[#8b5cf6]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-6 border border-white bg-white/40 hover:border-[#8b5cf6]/20 transition-all cursor-default relative overflow-hidden shadow-sm">
+                                        <div key={i} className="group/item p-6 border border-white bg-white/40 hover:border-[#8b5cf6]/20 transition-all cursor-default relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 right-0 w-2 h-full bg-[#f97316] opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <span className="text-[14px] font-black uppercase tracking-widest text-[#8b5cf6]/30 group-hover:text-slate-950 transition-colors">{skill}</span>
                                         </div>
@@ -165,10 +165,10 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
 
                         {/* EVOLUTIONARY TRAINING (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-20 p-12 bg-slate-50 border-y border-slate-100 uppercase italic">
+                            <section className="space-y-20 p-12 bg-slate-50 border-y border-slate-100 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[1.2em] text-slate-300 text-center mb-16 leading-none pb-6 border-b border-white uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-black text-[#8b5cf6]/40 mb-8 tracking-[1em]">TIMELINE_ formação_0{i + 1}</p>
                                         <h4 className="text-4xl font-light italic leading-tight mb-6 group-hover/edu:scale-110 transition-transform text-slate-950 uppercase">{edu.degree}</h4>
                                         <p className="text-[14px] font-black tracking-[0.5em] text-[#f97316]/60 mt-6 uppercase">{edu.school}</p>
@@ -192,7 +192,7 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
                                 </h2>
                                 <div className="space-y-96">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-slate-50 hover:border-[#8b5cf6] transition-all duration-[1s]">
+                                        <div key={i} className="group relative pl-32 border-l border-slate-50 hover:border-[#8b5cf6] transition-all duration-[1s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-2 h-48 bg-[#8b5cf6] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-[1s] shadow-[0_0_50px_#8b5cf6]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-24 gap-16">
@@ -200,7 +200,7 @@ export default function FuturistTemplate({ data, theme = {}, highlightedField = 
                                                     <h3 className="text-7xl text-[11rem] font-light text-slate-950 tracking-tighter italic group-hover:text-[#8b5cf6] transition-colors duration-[1.5s] leading-none uppercase" style={{ letterSpacing: '-0.06em' }}>{exp.position}</h3>
                                                     <div className="flex items-center gap-10">
                                                         <div className="h-px w-32 bg-slate-50 group-hover:w-64 group-hover:bg-[#f97316] transition-all duration-[1.5s]" />
-                                                        <p className="text-4xl font-light italic text-slate-100 tracking-[1em] group-hover:text-slate-400 transition-colors uppercase">HORIZON: {exp.company}</p>
+                                                        <p className="text-4xl font-light italic text-slate-100 tracking-[1em] group-hover:text-slate-500 transition-colors uppercase">HORIZON: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[13px] font-black text-white bg-slate-900 px-16 py-8 group-hover:bg-[#8b5cf6] transition-all italic tracking-[1em] whitespace-nowrap shadow-3xl leading-none uppercase">

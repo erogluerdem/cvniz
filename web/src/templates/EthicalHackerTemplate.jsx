@@ -31,7 +31,7 @@ export default function EthicalHackerTemplate({ data, theme = {}, highlightedFie
     }
 
     return (
-        <div className="min-h-full bg-black text-[#22c55e] p-0 selection:bg-[#22c55e] selection:text-black uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-[#22c55e] p-0 selection:bg-[#22c55e] selection:text-black uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.4'
@@ -112,7 +112,7 @@ export default function EthicalHackerTemplate({ data, theme = {}, highlightedFie
                         
                         {/* THE MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-950 border border-slate-900 p-10 relative overflow-hidden shadow-2xl">
+                            <section className="space-y-10 group bg-slate-950 border border-slate-900 p-10 relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
                                     <AlertTriangle className="w-24 h-24 text-[#ef4444]" />
                                 </div>
@@ -126,13 +126,13 @@ export default function EthicalHackerTemplate({ data, theme = {}, highlightedFie
                         )}
 
                         {/* EXPLOIT STACK (SKILLS) */}
-                        <section className="space-y-12">
+                        <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-[11px] font-bold tracking-[0.8em] text-[#22c55e]/20 flex items-center gap-4 italic mb-10 border-b border-slate-900 pb-4 uppercase">
                                 <Workflow className="w-5 h-5 text-[#22c55e]" /> {t.expertise}
                             </h3>
                             <div className="grid grid-cols-1 gap-4">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="group/item p-4 border border-slate-900 bg-black/40 hover:border-[#22c55e]/30 transition-all cursor-default relative overflow-hidden">
+                                    <div key={i} className="group/item p-4 border border-slate-900 bg-black/40 hover:border-[#22c55e]/30 transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute top-0 left-0 w-1 h-full bg-[#22c55e] scale-y-0 group-hover:scale-y-100 transition-transform duration-500" />
                                         <span className="text-[10px] font-bold tracking-widest text-slate-700 group-hover:text-[#22c55e] transition-colors">{skill}</span>
                                     </div>
@@ -156,10 +156,10 @@ export default function EthicalHackerTemplate({ data, theme = {}, highlightedFie
 
                         {/* FOUNDATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-950 border-y border-slate-900 uppercase italic">
+                            <section className="space-y-16 p-10 bg-slate-950 border-y border-slate-900 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold tracking-[1em] text-white/5 text-center mb-10 leading-none pb-4 border-b border-white/5">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-bold text-[#ef4444] mb-6 tracking-[0.5em]">ROOT_FORMATION_0{i + 1}</p>
                                         <h4 className="text-3xl font-bold leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-bold tracking-[0.3em] text-[#22c55e]/40 mt-4 uppercase">{edu.school}</p>
@@ -180,7 +180,7 @@ export default function EthicalHackerTemplate({ data, theme = {}, highlightedFie
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-950 hover:border-[#22c55e] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-950 hover:border-[#22c55e] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-2 h-32 bg-[#22c55e] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#22c55e]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -195,7 +195,7 @@ export default function EthicalHackerTemplate({ data, theme = {}, highlightedFie
                                                     [{exp.startDate} :: {exp.endDate}]
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-700 leading-relaxed font-bold italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-950 pl-24 py-16 group-hover:text-slate-400 group-hover:border-[#22c55e] bg-white/[0.01] transition-all duration-1000 uppercase">
+                                            <p className="text-2xl text-slate-700 leading-relaxed font-bold italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-950 pl-24 py-16 group-hover:text-slate-500 group-hover:border-[#22c55e] bg-white/[0.01] transition-all duration-1000 uppercase">
                                                 {exp.description}
                                             </p>
                                         </div>

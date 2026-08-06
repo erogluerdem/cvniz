@@ -28,7 +28,7 @@ export default function LobbyistTemplate({ data, theme = {}, highlightedField = 
     }
 
     return (
-        <div className="min-h-full bg-[#0a0a0a] text-[#f8fafc] p-0 selection:bg-[#10b981] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0a0a] text-[#f8fafc] p-0 selection:bg-[#10b981] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Montserrat', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -101,7 +101,7 @@ export default function LobbyistTemplate({ data, theme = {}, highlightedField = 
                         )}
 
                         {/* DISCRETE LIAISON (CONTACT) */}
-                        <section className="space-y-10 pt-10 border-t border-[#ffffff05]">
+                        <section className="space-y-10 pt-10 border-t border-[#ffffff05] break-inside-avoid page-break-inside-avoid">
                              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 flex items-center gap-4">
                                  <Link2 className="w-4 h-4" /> {t.contact}
                              </h3>
@@ -118,13 +118,13 @@ export default function LobbyistTemplate({ data, theme = {}, highlightedField = 
 
                         {/* STAKEHOLDER NETWORK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-8 pt-10 border-t border-[#ffffff05]">
+                            <section className="space-y-8 pt-10 border-t border-[#ffffff05] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 flex items-center gap-4">
                                     <Globe2 className="w-4 h-4" /> {t.expertise}
                                 </h3>
                                 <div className="flex flex-wrap gap-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-4 py-2 border border-[#ffffff10] text-[10px] font-black uppercase tracking-widest hover:border-[#10b981] hover:text-[#10b981] transition-all cursor-default">
+                                        <div key={i} className="px-4 py-2 border border-[#ffffff10] text-[10px] font-black uppercase tracking-widest hover:border-[#10b981] hover:text-[#10b981] transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             {skill}
                                         </div>
                                     ))}
@@ -142,7 +142,7 @@ export default function LobbyistTemplate({ data, theme = {}, highlightedField = 
                                 </h2>
                                 <div className="space-y-32">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-12 border-l border-[#ffffff05] hover:border-[#10b981] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-12 border-l border-[#ffffff05] hover:border-[#10b981] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[3px] top-0 w-1.5 h-1.5 bg-[#10b981] scale-0 group-hover:scale-100 transition-transform duration-500 shadow-[0_0_10px_#10b981]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-6 gap-10">
@@ -173,7 +173,7 @@ export default function LobbyistTemplate({ data, theme = {}, highlightedField = 
                                 </h3>
                                 <div className="grid grid-cols-2 gap-16">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center border-l border-black/05 pl-8">
+                                        <div key={i} className="group/edu text-center border-l border-black/05 pl-8 break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black text-black/20 mb-4 tracking-[0.4em] uppercase">ACCRED_LOG_0{i + 1}</p>
                                             <h4 className="text-2xl font-black tracking-tighter leading-none mb-2 uppercase">{edu.degree}</h4>
                                             <p className="text-[11px] font-black uppercase tracking-widest opacity-40">{edu.school}</p>

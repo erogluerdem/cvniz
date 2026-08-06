@@ -10,7 +10,7 @@ export default function VogueEliteTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#f9f7f2] p-0 sm:p-12 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f9f7f2] p-0 sm:p-12 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Playfair Display', serif" }}>
 
             {/* VOGUE ELITE BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -54,7 +54,7 @@ export default function VogueEliteTemplate({ data }) {
                             { icon: Phone, value: personal.phone, label: 'Direct_Access' },
                             { icon: MapPin, value: personal.location, label: 'Base_Coordinates' }
                         ].map((item, i) => (
-                            <div key={i} className="flex flex-col items-center gap-2 group cursor-default">
+                            <div key={i} className="flex flex-col items-center gap-2 group cursor-default break-inside-avoid page-break-inside-avoid">
                                 <div className="p-3 border border-stone-100 group-hover:bg-stone-900 group-hover:text-white transition-all transform group-hover:rotate-12">
                                     <item.icon className="w-4 h-4" />
                                 </div>
@@ -66,7 +66,7 @@ export default function VogueEliteTemplate({ data }) {
                 </header>
 
                 <main className="flex-1">
-                    <section className="p-24 bg-[#fbfbfb] border-b border-stone-100 relative overflow-hidden group">
+                    <section className="p-24 bg-[#fbfbfb] border-b border-stone-100 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                         <Quote className="absolute -top-10 -right-10 w-48 h-48 text-stone-100 opacity-50 transition-transform duration-1000 group-hover:scale-110" />
                         <div className="max-w-5xl mx-auto relative z-10">
                             <h2 className="text-[9px] font-black uppercase tracking-[1em] text-stone-300 mb-12 flex items-center gap-6">
@@ -117,11 +117,11 @@ export default function VogueEliteTemplate({ data }) {
                         </div>
 
                         <div className="col-span-4 flex flex-col items-center bg-[#fafafa]">
-                            <section className="p-16 w-full border-b border-stone-100">
+                            <section className="p-16 w-full border-b border-stone-100 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.8em] text-stone-300 mb-12">The_Palette</h2>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center justify-between group cursor-default">
+                                        <div key={i} className="flex items-center justify-between group cursor-default break-inside-avoid page-break-inside-avoid">
                                             <span className="text-sm font-light tracking-widest text-stone-600 group-hover:text-stone-900 transition-colors uppercase">{skill}</span>
                                             <motion.div
                                                 whileHover={{ scale: 1.5, rotate: 45 }}
@@ -132,11 +132,11 @@ export default function VogueEliteTemplate({ data }) {
                                 </div>
                             </section>
 
-                            <section className="p-16 w-full flex-1">
+                            <section className="p-16 w-full flex-1 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.8em] text-stone-300 mb-12">Foundations</h2>
                                 <div className="space-y-16">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group">
+                                        <div key={i} className="group break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[8px] font-black text-stone-200 uppercase tracking-[0.4em] mb-3">{edu.startDate} – {edu.endDate}</p>
                                             <h4 className="text-xl font-black uppercase leading-[1.1] text-stone-800 mb-3 group-hover:italic transition-all">{edu.school}</h4>
                                             <div className="inline-block py-1 px-3 border-l-2 border-stone-200">

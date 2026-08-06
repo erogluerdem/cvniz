@@ -4,7 +4,7 @@ export default function TourismEliteTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-sky-50 p-0 sm:p-8 flex justify-center py-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-sky-50 p-0 sm:p-8 flex justify-center py-10 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             <div className="w-[210mm] min-h-[297mm] mx-auto bg-white shadow-2xl overflow-hidden border border-sky-100 flex flex-col">
                 <div className="bg-sky-900 p-12 text-center text-white relative">
                     <div className="absolute inset-0 opacity-10 flex items-center justify-center">
@@ -31,7 +31,7 @@ export default function TourismEliteTemplate({ data }) {
                             <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-sky-800 mb-12">Hizmet Kariyeri</h2>
                             <div className="space-y-12">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="group">
+                                    <div key={exp.id} className="group break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-end mb-4 border-b border-sky-50 pb-2">
                                             <p className="text-xl font-bold text-slate-800 leading-tight">
                                                 {exp.position} <span className="text-xs italic text-sky-600 font-normal ml-2">{exp.startDate} - {exp.endDate}</span>

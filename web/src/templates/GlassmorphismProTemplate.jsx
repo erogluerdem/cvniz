@@ -10,7 +10,7 @@ export default function GlassmorphismProTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-slate-950 p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-950 p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
 
             {/* VIBRANT BACKGROUND BLOBS */}
             <div className="absolute inset-0 z-0">
@@ -81,7 +81,7 @@ export default function GlassmorphismProTemplate({ data }) {
                                 { icon: Phone, value: personal.phone, label: 'Phone' },
                                 { icon: MapPin, value: personal.location, label: 'Location' }
                             ].map((item, i) => (
-                                <div key={i} className="bg-white/5 border border-white/10 p-4 rounded-3xl backdrop-blur-xl">
+                                <div key={i} className="bg-white/5 border border-white/10 p-4 rounded-3xl backdrop-blur-xl break-inside-avoid page-break-inside-avoid">
                                     <item.icon className="w-5 h-5 text-indigo-300 mx-auto mb-2" />
                                     <p className="text-[10px] text-white/40 uppercase tracking-widest mb-1">{item.label}</p>
                                     <p className="text-xs text-white font-medium truncate">{item.value}</p>
@@ -93,7 +93,7 @@ export default function GlassmorphismProTemplate({ data }) {
                     <main className="grid grid-cols-12 gap-10 flex-1">
                         {/* Summary & Experience */}
                         <div className="col-span-12 flex flex-col gap-10">
-                            <section className="relative">
+                            <section className="relative break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute -left-12 -top-4 text-9xl font-black text-white/5 pointer-events-none uppercase select-none">About</div>
                                 <div className="relative z-10 bg-white/5 border border-white/10 rounded-[40px] p-10 shadow-2xl overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl" />
@@ -104,7 +104,7 @@ export default function GlassmorphismProTemplate({ data }) {
                             </section>
 
                             <div className="grid grid-cols-12 gap-10">
-                                <section className="col-span-8 space-y-8">
+                                <section className="col-span-8 space-y-8 break-inside-avoid page-break-inside-avoid">
                                     <h2 className="text-white font-black text-2xl uppercase tracking-widest flex items-center gap-4">
                                         Experience <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
                                     </h2>
@@ -149,7 +149,7 @@ export default function GlassmorphismProTemplate({ data }) {
                                         <h2 className="text-white font-black text-lg uppercase tracking-widest mb-6">Education</h2>
                                         <div className="space-y-6">
                                             {education.map((edu, i) => (
-                                                <div key={i} className="bg-white/5 p-6 rounded-[32px] border border-white/10 group hover:bg-white/10 transition-colors">
+                                                <div key={i} className="bg-white/5 p-6 rounded-[32px] border border-white/10 group hover:bg-white/10 transition-colors break-inside-avoid page-break-inside-avoid">
                                                     <p className="text-[10px] font-black text-amber-300 mb-2 uppercase tracking-tighter">{edu.startDate} - {edu.endDate}</p>
                                                     <h4 className="text-white font-bold text-base leading-tight">{edu.school}</h4>
                                                     <p className="text-white/40 text-[10px] italic mt-2 uppercase">{edu.degree}</p>

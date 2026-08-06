@@ -28,7 +28,7 @@ export default function PhotographyTemplate({ data, theme = {}, highlightedField
     }
 
     return (
-        <div className="min-h-full bg-black text-white p-0 selection:bg-white selection:text-black"
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-white p-0 selection:bg-white selection:text-black print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '1rem' : theme?.fontSize === 'Büyük' ? '1.25rem' : '1.15rem',
@@ -118,7 +118,7 @@ export default function PhotographyTemplate({ data, theme = {}, highlightedField
                                 </h2>
                                 <div className="space-y-40">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l border-white/[0.02] hover:border-white transition-all duration-1000">
+                                        <div key={i} className="group relative pl-24 border-l border-white/[0.02] hover:border-white transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1px] top-0 w-px h-24 bg-white scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-1000 shadow-[0_0_20px_#fff]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">
@@ -145,14 +145,14 @@ export default function PhotographyTemplate({ data, theme = {}, highlightedField
                         
                         {/* OPTIC SPECIALIZATIONS (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="bg-white/5 p-16 border border-white/10 group overflow-hidden relative">
+                            <section className="bg-white/5 p-16 border border-white/10 group overflow-hidden relative break-inside-avoid page-break-inside-avoid">
                                 <Scan className="absolute -top-10 -right-10 w-48 h-48 text-white opacity-5 group-hover:rotate-[30deg] transition-transform duration-[2s]" />
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/20 mb-20 flex items-center gap-6 italic z-10 relative" style={{ fontFamily: "'Inter', sans-serif" }}>
                                     <Target className="w-6 h-6 text-white" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-10 relative z-10">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item py-2">
+                                        <div key={i} className="group/item py-2 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center mb-6">
                                                 <span className="text-2xl font-light italic tracking-[0.1em] group-hover/item:tracking-[0.3em] transition-all uppercase">{skill}</span>
                                                 <Maximize className="w-5 h-5 opacity-0 group-hover/item:opacity-100 transition-all duration-700" />
@@ -172,7 +172,7 @@ export default function PhotographyTemplate({ data, theme = {}, highlightedField
                         )}
 
                         {/* SIGNAL NODES (CONTACT) */}
-                        <section className="bg-white text-black p-16 space-y-12">
+                        <section className="bg-white text-black p-16 space-y-12 break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-[11px] font-black uppercase tracking-[1em] mb-12 italic text-center" style={{ fontFamily: "'Inter', sans-serif" }}>SIGNAL_NODES</h3>
                             <div className="space-y-8">
                                  {[
@@ -180,7 +180,7 @@ export default function PhotographyTemplate({ data, theme = {}, highlightedField
                                     { icon: Phone, value: personal.phone },
                                     { icon: Globe, value: personal.website || 'PORTFOLIO_V1' }
                                  ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div key={i} className="flex flex-col items-center gap-2 group cursor-pointer break-inside-avoid page-break-inside-avoid">
                                         <item.icon className="w-6 h-6 group-hover:scale-125 transition-transform" />
                                         <span className="text-[10px] font-black uppercase tracking-widest opacity-20 group-hover:opacity-100 transition-opacity whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">{item.value}</span>
                                     </div>
@@ -196,7 +196,7 @@ export default function PhotographyTemplate({ data, theme = {}, highlightedField
                                 </h3>
                                 <div className="space-y-20">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black opacity-40 mb-6 group-hover:opacity-100 transition-opacity tracking-[0.4em] italic uppercase" style={{ fontFamily: "'Inter', sans-serif" }}>ACADEMIC_EXP_0{i + 1}</p>
                                             <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform uppercase leading-none">{edu.degree}</h4>
                                             <p className="text-[11px] font-black uppercase tracking-[0.4em] text-white/20 group-hover:text-white transition-colors leading-none" style={{ fontFamily: "'Inter', sans-serif" }}>{edu.school}</p>

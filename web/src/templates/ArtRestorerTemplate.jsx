@@ -32,7 +32,7 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
     }
 
     return (
-        <div className="min-h-full bg-[#fef3c7] text-[#451a03] p-0 selection:bg-[#b45309] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fef3c7] text-[#451a03] p-0 selection:bg-[#b45309] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -114,7 +114,7 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
                         
                         {/* THE CONSERVATION ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white p-10 border border-[#b45309]/10 relative overflow-hidden shadow-sm">
+                            <section className="space-y-10 group bg-white p-10 border border-[#b45309]/10 relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
                                     <Palette className="w-24 h-24" />
                                 </div>
@@ -129,13 +129,13 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
 
                         {/* ANALYSIS STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-[#b45309]/20 flex items-center gap-4 italic mb-10 border-b border-[#b45309]/5 pb-4 uppercase">
                                     <Database className="w-5 h-5 text-[#b45309]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center z-10 relative">
                                                 <span className="text-[18px] font-light uppercase tracking-widest text-[#b45309]/40 group-hover/item:text-[#451a03] transition-colors italic">{skill}</span>
                                                 <div className="h-px bg-[#b45309]/5 flex-1 mx-4" />
@@ -157,9 +157,9 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
                                     { label: 'Laser Clean.', val: 'Adv.' },
                                     { label: 'Chemical Stab.', val: 'Pioneering' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-[#b45309]/10 bg-white">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-[#b45309]/10 bg-white break-inside-avoid page-break-inside-avoid">
                                         <p>{item.val}</p>
-                                        <span className="text-[8px] font-bold text-slate-400 font-sans">{item.label}</span>
+                                        <span className="text-[8px] font-bold text-slate-500 font-sans">{item.label}</span>
                                     </div>
                                 ))}
                              </div>
@@ -167,10 +167,10 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
 
                         {/* ACADEMICS (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-white border-y border-[#b45309]/10 uppercase italic">
+                            <section className="space-y-16 p-10 bg-white border-y border-[#b45309]/10 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-[#b45309]/20 text-center mb-10 leading-none pb-4 border-b border-[#b45309]/5 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#b45309]/30 mb-6 tracking-[0.5em]">ACADEMIC_ARC_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-[#451a03] uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.4em] text-[#b45309]/40 mt-4 uppercase">{edu.school}</p>
@@ -191,7 +191,7 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-[#b45309]/10 hover:border-[#b45309] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-[#b45309]/10 hover:border-[#b45309] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1px] w-px h-32 bg-[#b45309] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#b45309]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -206,7 +206,7 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
                                                     [{exp.startDate} - {exp.endDate}]
                                                 </div>
                                             </div>
-                                            <p className="text-3xl text-slate-400 leading-relaxed font-light italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-[#fef3c7] pl-24 py-16 group-hover:text-[#451a03] group-hover:border-[#b45309] bg-[#fef3c7]/20 transition-all duration-1000 uppercase">
+                                            <p className="text-3xl text-slate-500 leading-relaxed font-light italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-[#fef3c7] pl-24 py-16 group-hover:text-[#451a03] group-hover:border-[#b45309] bg-[#fef3c7]/20 transition-all duration-1000 uppercase">
                                                 {exp.description}
                                             </p>
                                         </div>

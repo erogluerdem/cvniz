@@ -4,7 +4,7 @@ export default function TechTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-900 text-gray-100" style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-900 text-gray-100 print-exact mx-auto print:mx-0" style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>
             {/* Terminal-style Header */}
             <header className="bg-slate-800 border-b border-slate-700">
                 <div className="flex items-center gap-2 px-4 py-1.5 border-b border-slate-700">
@@ -78,7 +78,7 @@ export default function TechTemplate({ data }) {
                     <section className="mb-8 break-inside-avoid">
                         <div className="bg-slate-800 rounded-lg p-5 border border-slate-700">
                             <div className="text-slate-500 text-[11px] mb-1.5">/** README.md */</div>
-                            <p className="text-slate-400 text-sm whitespace-pre-line leading-relaxed italic">
+                            <p className="text-slate-500 text-sm whitespace-pre-line leading-relaxed italic">
                                 {personal.summary}
                             </p>
                         </div>
@@ -115,7 +115,7 @@ export default function TechTemplate({ data }) {
                                                     </code>
                                                 </div>
                                                 {exp.description && (
-                                                    <pre className="text-slate-400 text-[12px] whitespace-pre-line font-sans leading-relaxed">
+                                                    <pre className="text-slate-500 text-[12px] whitespace-pre-line font-sans leading-relaxed">
                                                         {exp.description}
                                                     </pre>
                                                 )}
@@ -162,7 +162,7 @@ export default function TechTemplate({ data }) {
                                 <div className="text-green-400 text-[11px] mb-3 font-bold">$ npm list --skills</div>
                                 <div className="space-y-0.5">
                                     {skills.map((skill, index) => (
-                                        <div key={index} className="flex items-center gap-2 text-[11px]">
+                                        <div key={index} className="flex items-center gap-2 text-[11px] break-inside-avoid page-break-inside-avoid">
                                             <span className="text-slate-600">├──</span>
                                             <span className="text-cyan-400 uppercase tracking-tighter">{skill.toLowerCase().replace(/\s+/g, '-')}</span>
                                             <span className="text-slate-600">@stable</span>
@@ -178,7 +178,7 @@ export default function TechTemplate({ data }) {
                                 <div className="text-purple-400 text-[11px] mb-3 font-bold">const languages = {"{"}</div>
                                 <div className="pl-4 space-y-1">
                                     {languages.map((lang, index) => (
-                                        <div key={index} className="text-[11px]">
+                                        <div key={index} className="text-[11px] break-inside-avoid page-break-inside-avoid">
                                             <span className="text-cyan-400">"{lang.name}"</span>
                                             <span className="text-slate-500">: </span>
                                             <span className="text-green-400">"{lang.level}"</span>

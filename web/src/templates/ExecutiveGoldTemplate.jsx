@@ -19,7 +19,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
     }
 
     return (
-        <div className="min-h-full bg-[#fdfcf8] text-[#2d2a26] p-0"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fdfcf8] text-[#2d2a26] p-0 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Playfair Display', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -64,7 +64,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
                     <div className="lg:col-span-8 space-y-16">
                         {/* Executive Summary */}
                         {personal.summary && (
-                            <section className="relative">
+                            <section className="relative break-inside-avoid page-break-inside-avoid">
                                 <div className="flex items-baseline gap-4 mb-8">
                                     <h2 className="text-2xl font-bold italic border-b-2" style={{ borderColor: accentColor }}>{isEn ? 'Strategic Summary' : 'Stratejik Özet'}</h2>
                                 </div>
@@ -82,7 +82,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
                                 </h2>
                                 <div className="space-y-12">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="group relative">
+                                        <div key={exp.id} className="group relative break-inside-avoid page-break-inside-avoid">
                                             <div className="md:grid md:grid-cols-4 md:gap-8 items-start">
                                                 <div className="md:col-span-1 mb-4 md:mb-0">
                                                     <span className="text-sm font-sans font-bold uppercase tracking-widest bg-[#f4f1e9] px-3 py-1 border-l-4" style={{ borderLeftColor: accentColor }}>
@@ -111,7 +111,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 font-sans">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="border-l border-[#C5A059] pl-6 py-2">
+                                        <div key={ref.id} className="border-l border-[#C5A059] pl-6 py-2 break-inside-avoid page-break-inside-avoid">
                                             <p className="text-lg font-bold mb-1 italic">{ref.name}</p>
                                             <p className="text-xs font-black uppercase tracking-widest text-[#C5A059] mb-4">{ref.company}</p>
                                             <p className="text-sm font-medium opacity-60 italic">{ref.email} // {ref.phone}</p>
@@ -130,7 +130,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
                                 <h3 className="text-sm font-sans font-black uppercase tracking-[0.4em] mb-8 opacity-40">{t.skills}</h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-4 group">
+                                        <div key={i} className="flex items-center gap-4 group break-inside-avoid page-break-inside-avoid">
                                             <div className="w-1.5 h-1.5 bg-[#C5A059] rounded-full group-hover:scale-150 transition-transform" />
                                             <span className="text-base font-bold italic tracking-wide group-hover:translate-x-2 transition-transform">{skill}</span>
                                         </div>
@@ -161,7 +161,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
                                 <h3 className="text-sm font-sans font-black uppercase tracking-[0.4em] mb-8 opacity-40">{t.languages}</h3>
                                 <div className="space-y-3 font-sans">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="flex justify-between items-center bg-[#f4f1e9] px-4 py-2 border-r-2 border-[#C5A059]">
+                                        <div key={i} className="flex justify-between items-center bg-[#f4f1e9] px-4 py-2 border-r-2 border-[#C5A059] break-inside-avoid page-break-inside-avoid">
                                             <span className="text-sm font-bold uppercase tracking-widest">{lang.name}</span>
                                             <span className="text-[10px] font-black italic opacity-60 underline">{lang.level}</span>
                                         </div>
@@ -176,7 +176,7 @@ export default function ExecutiveGoldTemplate({ data, theme, highlightedField })
                                 <h3 className="text-sm font-sans font-black uppercase tracking-[0.4em] mb-8 opacity-40">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-3">
                                     {hobbies.map((h) => (
-                                        <div key={h.id} className="text-xs font-bold font-sans italic p-2 border border-[#e2dfd7] hover:border-[#C5A059] transition-colors flex items-center gap-2">
+                                        <div key={h.id} className="text-xs font-bold font-sans italic p-2 border border-[#e2dfd7] hover:border-[#C5A059] transition-colors flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                             <Star className="w-3 h-3 text-[#C5A059]" /> {h.name}
                                         </div>
                                     ))}

@@ -4,7 +4,7 @@ export default function ExecutiveTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-white print-exact mx-auto print:mx-0" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             {/* Luxury Header */}
             <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
                 {/* Gold accent line */}
@@ -97,7 +97,7 @@ export default function ExecutiveTemplate({ data }) {
 
                 {/* Professional Experience */}
                 {experience.length > 0 && (
-                    <section className="mb-8">
+                    <section className="mb-8 break-inside-avoid page-break-inside-avoid">
                         <div className="flex items-center gap-3 mb-4">
                             <TrendingUp className="w-5 h-5 text-amber-600" />
                             <h2 className="text-xl font-bold text-slate-800" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -173,7 +173,7 @@ export default function ExecutiveTemplate({ data }) {
                                 <h2 className="text-xl font-bold text-slate-800 mb-4">Diller</h2>
                                 <div className="space-y-2">
                                     {languages.map((lang, index) => (
-                                        <div key={index} className="flex justify-between">
+                                        <div key={index} className="flex justify-between break-inside-avoid page-break-inside-avoid">
                                             <span className="text-slate-700">{lang.name}</span>
                                             <span className="text-amber-600">{lang.level}</span>
                                         </div>

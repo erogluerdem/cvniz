@@ -14,7 +14,7 @@ export default function NeonNightTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-black text-white p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-white p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -67,11 +67,11 @@ export default function NeonNightTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-3xl tracking-[0.3em] text-purple-400 mb-8" style={{ textShadow: '0 0 10px rgba(168,85,247,0.8)' }}>{t.experience}</h2>
                                 <div className="space-y-8 font-sans">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-pink-500 pl-6">
+                                        <div key={exp.id} className="border-l-2 border-pink-500 pl-6 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-2xl font-bold text-pink-400">{exp.position}</h3>
                                             <p className="text-cyan-400">{exp.company}</p>
                                             <p className="text-sm text-gray-500 mb-2">{exp.startDate} - {exp.endDate}</p>
-                                            <p className="text-gray-400">{exp.description}</p>
+                                            <p className="text-gray-500">{exp.description}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -80,11 +80,11 @@ export default function NeonNightTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-8 border-2 border-cyan-500 bg-black/30">
+                            <section className="p-8 border-2 border-cyan-500 bg-black/30 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-3xl tracking-[0.3em] text-cyan-400 mb-6" style={{ textShadow: '0 0 10px rgba(34,211,238,0.8)' }}>{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4 font-sans">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 border border-pink-500/50 bg-black/50">
+                                        <div key={ref.id} className="p-4 border border-pink-500/50 bg-black/50 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-pink-400">{ref.name}</p>
                                             <p className="text-sm text-gray-500">{ref.company}</p>
                                         </div>
@@ -101,7 +101,7 @@ export default function NeonNightTemplate({ data, theme, highlightedField }) {
                                 <h3 className="text-2xl tracking-[0.2em] text-pink-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-2 font-sans">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-4 py-2 border border-cyan-500/50 text-cyan-300 text-sm">{skill}</div>
+                                        <div key={i} className="px-4 py-2 border border-cyan-500/50 text-cyan-300 text-sm break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -122,7 +122,7 @@ export default function NeonNightTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 border-2 border-purple-500 bg-black/30">
+                            <section className="p-6 border-2 border-purple-500 bg-black/30 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-2xl tracking-[0.2em] text-purple-400 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2 font-sans">
                                     {hobbies.map((h) => (

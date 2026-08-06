@@ -28,7 +28,7 @@ export default function StrategicAdvisorTemplate({ data, theme = {}, highlighted
     }
 
     return (
-        <div className="min-h-full bg-white text-[#1a1a1a] p-0 selection:bg-[#2563eb] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-[#1a1a1a] p-0 selection:bg-[#2563eb] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -48,7 +48,7 @@ export default function StrategicAdvisorTemplate({ data, theme = {}, highlighted
                     </div>
                     
                     <div className="flex-1 space-y-12 relative z-10">
-                        <motion.div variants={strategyVariants} className="inline-flex items-center gap-4 px-6 py-2 bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-[0.5em] border border-gray-100">
+                        <motion.div variants={strategyVariants} className="inline-flex items-center gap-4 px-6 py-2 bg-gray-50 text-gray-500 text-[10px] font-black uppercase tracking-[0.5em] border border-gray-100">
                              STRATEGIC_ADVISORY_v.5
                         </motion.div>
                         
@@ -99,13 +99,13 @@ export default function StrategicAdvisorTemplate({ data, theme = {}, highlighted
 
                         {/* CORE VALUE DRIVERS (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10 pt-10">
+                            <section className="space-y-10 pt-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-200 flex items-center gap-4">
                                      {t.expertise}
                                 </h3>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item flex flex-col gap-3">
+                                        <div key={i} className="group/item flex flex-col gap-3 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center text-xl font-bold text-[#1a1a1a]/40 group-hover/item:text-[#2563eb] transition-colors uppercase tracking-tight">
                                                 <span>{skill}</span>
                                                 <TrendingUp className="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-all" />
@@ -143,7 +143,7 @@ export default function StrategicAdvisorTemplate({ data, theme = {}, highlighted
                                 </h2>
                                 <div className="space-y-32">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-12 border-l border-gray-100 hover:border-[#2563eb] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-12 border-l border-gray-100 hover:border-[#2563eb] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2px] w-[3px] h-8 bg-[#2563eb] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-8 gap-10">
@@ -174,7 +174,7 @@ export default function StrategicAdvisorTemplate({ data, theme = {}, highlighted
                                 </h3>
                                 <div className="grid grid-cols-2 gap-20">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center space-y-6">
+                                        <div key={i} className="group/edu text-center space-y-6 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-16 h-1 bg-[#2563eb] mx-auto opacity-20 group-hover/edu:opacity-100 transition-all group-hover/edu:w-24" />
                                             <h4 className="text-4xl font-black tracking-tight leading-none uppercase group-hover/edu:scale-105 transition-transform">{edu.degree}</h4>
                                             <p className="text-[11px] font-black uppercase tracking-[0.5em] opacity-40">{edu.school}</p>

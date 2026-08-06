@@ -15,7 +15,7 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-slate-100 text-slate-800 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-100 text-slate-800 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -49,7 +49,7 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary Card */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)]">
+                    <section className="mb-8 p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed text-slate-600">{personal.summary}</p>
                     </section>
                 )}
@@ -60,16 +60,16 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
                         {/* Experience */}
                         {experience.length > 0 && (
                             <section className={`p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] ${highlightedField === 'experience' ? 'shadow-[0_20px_40px_-15px_rgba(59,130,246,0.3)]' : ''}`}>
-                                <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">{t.experience}</h2>
+                                <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">{t.experience}</h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="p-4 bg-slate-50 rounded-xl shadow-inner">
+                                        <div key={exp.id} className="p-4 bg-slate-50 rounded-xl shadow-inner break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
                                                     <h3 className="font-bold">{exp.position}</h3>
                                                     <p className="text-blue-600 text-sm">{exp.company}</p>
                                                 </div>
-                                                <span className="text-xs text-slate-400 bg-white px-2 py-1 rounded shadow-sm">{exp.startDate} - {exp.endDate}</span>
+                                                <span className="text-xs text-slate-500 bg-white px-2 py-1 rounded shadow-sm">{exp.startDate} - {exp.endDate}</span>
                                             </div>
                                             <p className="text-sm text-slate-600">{exp.description}</p>
                                         </div>
@@ -80,11 +80,11 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)]">
-                                <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">{t.references}</h2>
+                            <section className="p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] break-inside-avoid page-break-inside-avoid">
+                                <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-gradient-to-br from-slate-50 to-white rounded-xl shadow-inner border border-slate-100">
+                                        <div key={ref.id} className="p-4 bg-gradient-to-br from-slate-50 to-white rounded-xl shadow-inner border border-slate-100 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-slate-500">{ref.company}</p>
                                         </div>
@@ -98,11 +98,11 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
                     <aside className="space-y-6">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 bg-blue-600 text-white rounded-2xl shadow-[0_15px_35px_-10px_rgba(59,130,246,0.4)]">
+                            <section className="p-6 bg-blue-600 text-white rounded-2xl shadow-[0_15px_35px_-10px_rgba(59,130,246,0.4)] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-bold uppercase tracking-widest text-blue-200 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-2 bg-white/10 rounded-lg text-sm">{skill}</div>
+                                        <div key={i} className="px-3 py-2 bg-white/10 rounded-lg text-sm break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -111,10 +111,10 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
                         {/* Education */}
                         {education.length > 0 && (
                             <section className={`p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] ${highlightedField === 'education' ? 'shadow-[0_20px_40px_-15px_rgba(59,130,246,0.3)]' : ''}`}>
-                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">{t.education}</h3>
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">{t.education}</h3>
                                 <div className="space-y-4">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="p-3 bg-slate-50 rounded-xl shadow-inner">
+                                        <div key={edu.id} className="p-3 bg-slate-50 rounded-xl shadow-inner break-inside-avoid page-break-inside-avoid">
                                             <h4 className="font-bold text-sm">{edu.degree}</h4>
                                             <p className="text-slate-500 text-xs">{edu.school}</p>
                                         </div>
@@ -125,8 +125,8 @@ export default function ShadowPlayTemplate({ data, theme, highlightedField }) {
 
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)]">
-                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">{t.hobbies}</h3>
+                            <section className="p-6 bg-white rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)] break-inside-avoid page-break-inside-avoid">
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (
                                         <span key={h.id} className="px-3 py-1 bg-slate-100 rounded-full text-xs font-medium shadow-sm">{h.name}</span>

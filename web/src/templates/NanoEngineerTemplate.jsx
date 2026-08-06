@@ -32,7 +32,7 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
     }
 
     return (
-        <div className="min-h-full bg-slate-50 text-slate-400 p-0 selection:bg-[#2dd4bf] selection:text-black uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 text-slate-500 p-0 selection:bg-[#2dd4bf] selection:text-black uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -83,7 +83,7 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
                                      </p>
                                      <div className="flex gap-2 font-mono">
                                         {['ISO_1', 'CLEANROOM', 'EOP'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-100 border border-slate-200 text-[9px] font-bold text-slate-400 tracking-widest uppercase">[{tag}]</span>
+                                            <span key={tag} className="px-3 py-1 bg-slate-100 border border-slate-200 text-[9px] font-bold text-slate-500 tracking-widest uppercase">[{tag}]</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -117,14 +117,14 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
                         
                         {/* ATOMIC MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white border border-slate-200 p-10 relative overflow-hidden shadow-sm">
+                            <section className="space-y-10 group bg-white border border-slate-200 p-10 relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.05]">
                                     <Spark className="w-24 h-24 text-[#2dd4bf]" />
                                 </div>
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-slate-200 flex items-center gap-4 italic mb-8 border-b border-slate-200 pb-4 uppercase">
                                      <Target className="w-5 h-5 text-[#2dd4bf]" /> {t.summary}
                                 </h3>
-                                <p className="text-xl font-bold leading-relaxed text-slate-400 group-hover:text-slate-900 transition-colors uppercase">
+                                <p className="text-xl font-bold leading-relaxed text-slate-500 group-hover:text-slate-900 transition-colors uppercase">
                                     "{personal.summary}"
                                 </p>
                             </section>
@@ -132,13 +132,13 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
 
                         {/* PRECISION STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-200 pb-4 uppercase">
                                     <LayersIcon className="w-5 h-5 text-[#2dd4bf]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-4 border border-slate-200 bg-white hover:border-[#2dd4bf] hover:shadow-xl transition-all cursor-default">
+                                        <div key={i} className="group/item p-4 border border-slate-200 bg-white hover:border-[#2dd4bf] hover:shadow-xl transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             <span className="text-[10px] font-black tracking-widest text-slate-300 group-hover:text-[#2dd4bf] transition-colors uppercase font-mono">{skill}</span>
                                         </div>
                                     ))}
@@ -156,7 +156,7 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
                                     { icon: Binary, label: 'E-Beam' },
                                     { icon: ShieldCheck, label: 'ISO_Clean' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-slate-200 group-hover:border-[#2dd4bf]/20 transition-all bg-white">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-slate-200 group-hover:border-[#2dd4bf]/20 transition-all bg-white break-inside-avoid page-break-inside-avoid">
                                         <item.icon className="w-8 h-8" />
                                         <span>{item.label}</span>
                                     </div>
@@ -166,10 +166,10 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
 
                         {/* FOUNDATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-200 uppercase">
+                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-200 uppercase break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold tracking-[1em] text-slate-300 text-center italic mb-10 leading-none pb-4 border-b border-white uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-bold text-[#2dd4bf] mb-6 tracking-[0.5em] italic">STRUCT_FORMATION_#0{i + 1}</p>
                                         <h4 className="text-3xl font-bold italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-bold tracking-[0.3em] text-[#2dd4bf]/40 mt-4 uppercase">{edu.school}</p>
@@ -190,7 +190,7 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-100 hover:border-[#2dd4bf] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-100 hover:border-[#2dd4bf] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-1.5 h-32 bg-[#2dd4bf] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_50px_#2dd4bf]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -198,14 +198,14 @@ export default function NanoEngineerTemplate({ data, theme = {}, highlightedFiel
                                                     <h3 className="text-5xl text-[7rem] font-bold text-slate-900 tracking-tighter italic group-hover:translate-x-12 transition-transform duration-[1.5s] leading-none uppercase">{exp.position}</h3>
                                                     <div className="flex items-center gap-8">
                                                         <div className="h-px w-20 bg-slate-200 group-hover:w-40 group-hover:bg-[#2dd4bf] transition-all duration-1000 shadow-[0_0_15px_#2dd4bf]" />
-                                                        <p className="text-2xl font-bold text-slate-200 tracking-[0.8em] group-hover:text-slate-400 transition-colors italic leading-none uppercase">ENTITY: {exp.company}</p>
+                                                        <p className="text-2xl font-bold text-slate-200 tracking-[0.8em] group-hover:text-slate-500 transition-colors italic leading-none uppercase">ENTITY: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-bold text-white bg-slate-900 px-12 py-5 shadow-3xl skew-x-[-15deg] group-hover:skew-x-0 transition-all whitespace-nowrap italic tracking-[0.6em] leading-none uppercase">
                                                     [{exp.startDate} :: {exp.endDate}]
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-400 leading-relaxed font-bold italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-16 group-hover:text-slate-600 group-hover:border-[#2dd4bf] bg-slate-50 transition-all duration-1000 uppercase">
+                                            <p className="text-2xl text-slate-500 leading-relaxed font-bold italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-16 group-hover:text-slate-600 group-hover:border-[#2dd4bf] bg-slate-50 transition-all duration-1000 uppercase">
                                                 {exp.description}
                                             </p>
                                         </div>

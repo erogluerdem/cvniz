@@ -14,7 +14,7 @@ export default function PopArtTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-yellow-400 text-slate-900 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-yellow-400 text-slate-900 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Bangers', cursive",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -58,7 +58,7 @@ export default function PopArtTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-white border-4 border-black shadow-[6px_6px_0_0_#000] relative">
+                    <section className="mb-8 p-6 bg-white border-4 border-black shadow-[6px_6px_0_0_#000] relative break-inside-avoid page-break-inside-avoid">
                         <div className="absolute -top-4 -left-4 bg-red-600 text-white px-3 py-1 transform rotate-6">
                             <span className="text-lg">HEY!</span>
                         </div>
@@ -74,7 +74,7 @@ export default function PopArtTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-4xl mb-6" style={{ textShadow: '2px 2px 0 #fff' }}>{t.experience}</h2>
                                 <div className="space-y-6 font-sans">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="p-4 bg-white border-2 border-black">
+                                        <div key={exp.id} className="p-4 bg-white border-2 border-black break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-xl font-bold text-pink-600">{exp.position}</h3>
                                             <p className="text-blue-600 font-bold">{exp.company}</p>
                                             <p className="text-xs text-slate-500 mb-2">{exp.startDate} - {exp.endDate}</p>
@@ -87,11 +87,11 @@ export default function PopArtTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-green-400 border-4 border-black shadow-[6px_6px_0_0_#000]">
+                            <section className="p-6 bg-green-400 border-4 border-black shadow-[6px_6px_0_0_#000] break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-4xl mb-4" style={{ textShadow: '2px 2px 0 #fff' }}>{t.references}</h2>
                                 <div className="flex flex-wrap gap-4 font-sans">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-white border-2 border-black">
+                                        <div key={ref.id} className="p-4 bg-white border-2 border-black break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-slate-500">{ref.company}</p>
                                         </div>
@@ -104,11 +104,11 @@ export default function PopArtTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-pink-500 text-white border-4 border-black shadow-[6px_6px_0_0_#000]">
+                            <section className="p-6 bg-pink-500 text-white border-4 border-black shadow-[6px_6px_0_0_#000] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-3xl mb-4" style={{ textShadow: '2px 2px 0 #000' }}>{t.skills}</h3>
                                 <div className="space-y-2 font-sans">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-2 bg-white text-black border-2 border-black text-sm font-bold">{skill}</div>
+                                        <div key={i} className="px-3 py-2 bg-white text-black border-2 border-black text-sm font-bold break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -129,7 +129,7 @@ export default function PopArtTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-purple-500 text-white border-4 border-black shadow-[6px_6px_0_0_#000]">
+                            <section className="p-6 bg-purple-500 text-white border-4 border-black shadow-[6px_6px_0_0_#000] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-3xl mb-4" style={{ textShadow: '2px 2px 0 #000' }}>{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2 font-sans">
                                     {hobbies.map((h) => (

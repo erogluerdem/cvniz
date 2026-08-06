@@ -4,7 +4,7 @@ export default function ArchitectTemplate({ data }) {
     const { personal, experience, education, skills } = data
 
     return (
-        <div className="min-h-full bg-neutral-100" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-neutral-100 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             <header className="bg-gradient-to-r from-neutral-800 to-neutral-900 text-white px-10 py-8">
                 <div className="flex items-center gap-6">
                     <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
@@ -24,7 +24,7 @@ export default function ArchitectTemplate({ data }) {
             <div className="p-8 grid grid-cols-3 gap-6">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-neutral-600">
+                        <section className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-neutral-600 break-inside-avoid page-break-inside-avoid">
                             <h2 className="font-bold text-neutral-800 mb-2 flex items-center gap-2">
                                 <Ruler className="w-5 h-5" /> Tasarım Felsefesi
                             </h2>
@@ -33,11 +33,11 @@ export default function ArchitectTemplate({ data }) {
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm">
+                        <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="font-bold text-neutral-800 mb-4">Projeler</h2>
                             <div className="space-y-4">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-2 border-neutral-300 pl-4">
+                                    <div key={exp.id} className="border-l-2 border-neutral-300 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-bold text-gray-800">{exp.position}</h3>
                                         <p className="text-neutral-600">{exp.company}</p>
                                         <p className="text-gray-500 text-sm">{exp.startDate} - {exp.endDate}</p>
@@ -55,7 +55,7 @@ export default function ArchitectTemplate({ data }) {
                             <h2 className="font-bold mb-4">Yazılımlar</h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="text-sm">🏛️ {skill}</div>
+                                    <div key={i} className="text-sm break-inside-avoid page-break-inside-avoid">🏛️ {skill}</div>
                                 ))}
                             </div>
                         </div>
@@ -65,7 +65,7 @@ export default function ArchitectTemplate({ data }) {
                         <div className="bg-white rounded-lg p-6 shadow-sm">
                             <h2 className="font-bold text-neutral-800 mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3">
+                                <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold">{edu.school}</h3>
                                     <p className="text-neutral-600 text-sm">{edu.degree}</p>
                                 </div>

@@ -32,7 +32,7 @@ export default function AstrobiologistTemplate({ data, theme = {}, highlightedFi
     }
 
     return (
-        <div className="min-h-full bg-[#020617] text-slate-400 p-0 selection:bg-[#8b5cf6] selection:text-white uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#020617] text-slate-500 p-0 selection:bg-[#8b5cf6] selection:text-white uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -113,7 +113,7 @@ export default function AstrobiologistTemplate({ data, theme = {}, highlightedFi
                         
                         {/* THE XENOBIOLOGY MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-950 border border-slate-900 p-10 relative overflow-hidden shadow-2xl">
+                            <section className="space-y-10 group bg-slate-950 border border-slate-900 p-10 relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
                                     <Star className="w-24 h-24 text-[#8b5cf6]" />
                                 </div>
@@ -127,13 +127,13 @@ export default function AstrobiologistTemplate({ data, theme = {}, highlightedFi
                         )}
 
                         {/* ASTRO-GENOMICS STACK (SKILLS) */}
-                        <section className="space-y-12">
+                        <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/10 flex items-center gap-4 italic mb-10 border-b border-slate-900 pb-4 uppercase">
                                 <Activity className="w-5 h-5 text-[#8b5cf6]" /> {t.expertise}
                             </h3>
                             <div className="space-y-4">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="group/item p-4 border border-slate-900 bg-black/40 hover:border-[#8b5cf6]/30 transition-all cursor-default relative overflow-hidden shadow-inner">
+                                    <div key={i} className="group/item p-4 border border-slate-900 bg-black/40 hover:border-[#8b5cf6]/30 transition-all cursor-default relative overflow-hidden shadow-inner break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute top-0 left-0 w-1 h-full bg-[#8b5cf6] scale-y-0 group-hover:scale-y-100 transition-transform duration-500" />
                                         <span className="text-[10px] font-bold tracking-widest text-slate-700 group-hover:text-white transition-colors uppercase">{skill}</span>
                                     </div>
@@ -157,10 +157,10 @@ export default function AstrobiologistTemplate({ data, theme = {}, highlightedFi
 
                         {/* FOUNDATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-950 border-y border-slate-900 uppercase italic">
+                            <section className="space-y-16 p-10 bg-slate-950 border-y border-slate-900 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold tracking-[1em] text-white/5 text-center mb-10 leading-none pb-4 border-b border-white/5 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-bold text-[#8b5cf6] mb-6 tracking-[0.5em]">ACADEMIC_THREAD_#0{i + 1}</p>
                                         <h4 className="text-3xl font-bold leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-bold tracking-[0.3em] text-slate-700 mt-4 uppercase">{edu.school}</p>
@@ -181,7 +181,7 @@ export default function AstrobiologistTemplate({ data, theme = {}, highlightedFi
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-[#8b5cf6] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-[#8b5cf6] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-2 h-32 bg-[#8b5cf6] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#8b5cf6]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">

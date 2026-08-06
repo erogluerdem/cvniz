@@ -32,7 +32,7 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
     }
 
     return (
-        <div className="min-h-full bg-[#f8fafc] text-slate-800 p-0 selection:bg-[#0ea5e9] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f8fafc] text-slate-800 p-0 selection:bg-[#0ea5e9] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -76,7 +76,7 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
                                      </p>
                                      <div className="flex gap-2">
                                         {['IPCC', 'NOAA', 'GIS'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-white border border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest">[{tag}]</span>
+                                            <span key={tag} className="px-3 py-1 bg-white border border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-widest">[{tag}]</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -96,7 +96,7 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
                         </motion.div>
                     </div>
 
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-wrap justify-start items-center gap-12 mt-16 text-[11px] font-black tracking-[0.6em] text-slate-400 italic border-t border-slate-50 pt-16 uppercase font-mono">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-wrap justify-start items-center gap-12 mt-16 text-[11px] font-black tracking-[0.6em] text-slate-500 italic border-t border-slate-50 pt-16 uppercase font-mono">
                         {personal.email && <div className="flex items-center gap-4 hover:text-[#0ea5e9] transition-colors cursor-pointer"><Mail className="w-5 h-5 text-[#0ea5e9]" /> {personal.email}</div>}
                         {personal.phone && <div className="flex items-center gap-4 hover:text-[#0ea5e9] transition-colors cursor-pointer"><Phone className="w-5 h-5 text-[#0ea5e9]" /> {personal.phone}</div>}
                         {personal.location && <div className="flex items-center gap-4"><MapPin className="w-5 h-5 text-[#0ea5e9]" /> {personal.location}</div>}
@@ -110,21 +110,21 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
                         
                         {/* PLANETARY MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900 text-white p-10 border border-slate-800 relative overflow-hidden shadow-2xl">
+                            <section className="space-y-10 group bg-slate-900 text-white p-10 border border-slate-800 relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
                                     <Sun className="w-24 h-24" />
                                 </div>
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-[#0ea5e9] flex items-center gap-4 italic mb-8 border-b border-slate-800 pb-4">
                                      <Activity className="w-5 h-5" /> {t.summary}
                                 </h3>
-                                <p className="text-xl font-bold italic leading-relaxed text-slate-400 group-hover:text-white transition-colors">
+                                <p className="text-xl font-bold italic leading-relaxed text-slate-500 group-hover:text-white transition-colors">
                                     "{personal.summary}"
                                 </p>
                             </section>
                         )}
 
                         {/* PLANETARY HEALTH METRICS */}
-                        <section className="bg-white border-2 border-slate-100 p-10 space-y-12 group transition-all hover:border-[#0ea5e9]/30">
+                        <section className="bg-white border-2 border-slate-100 p-10 space-y-12 group transition-all hover:border-[#0ea5e9]/30 break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[11px] font-black tracking-[1em] text-slate-200 mb-20 italic leading-none border-b border-slate-50 pb-4 uppercase">{t.metrics}</h4>
                              <div className="space-y-10 italic">
                                 {[
@@ -133,7 +133,7 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
                                     { label: 'Glacial Mass', val: '-12%' },
                                     { label: 'Ocean pH', val: '8.07' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/item">
+                                    <div key={i} className="flex justify-between items-baseline group/item break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-black text-slate-300 group-hover/item:text-[#0ea5e9] transition-colors">{stat.label}</p>
                                         <p className="text-3xl font-black text-slate-900">{stat.val}</p>
                                     </div>
@@ -143,13 +143,13 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
 
                         {/* TERRA STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-100 pb-4 uppercase">
                                     <Terminal className="w-5 h-5 text-[#0ea5e9]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-4 border border-slate-100 bg-white hover:border-[#0ea5e9] transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-4 border border-slate-100 bg-white hover:border-[#0ea5e9] transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-full h-px bg-[#0ea5e9] translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
                                             <span className="text-xs font-black uppercase tracking-widest text-[#0ea5e9]/40 group-hover:text-slate-950 transition-colors">{skill}</span>
                                         </div>
@@ -160,13 +160,13 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
 
                         {/* SCIENTIFIC THEORY (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-200 uppercase">
+                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-200 uppercase break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-300 text-center mb-10 leading-none pb-4 border-b border-white uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#0ea5e9] mb-6 tracking-[0.5em]">ACADEMIC_THREAD_0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
-                                        <p className="text-[12px] font-black tracking-[0.4em] text-slate-400 mt-4 uppercase">{edu.school}</p>
+                                        <p className="text-[12px] font-black tracking-[0.4em] text-slate-500 mt-4 uppercase">{edu.school}</p>
                                     </div>
                                 ))}
                             </section>
@@ -184,7 +184,7 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-100 hover:border-[#0ea5e9] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-100 hover:border-[#0ea5e9] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-2 h-32 bg-[#0ea5e9] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#0ea5e9]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -192,14 +192,14 @@ export default function ClimateScientistTemplate({ data, theme = {}, highlighted
                                                     <h3 className="text-5xl text-[8rem] font-black text-slate-900 tracking-tighter italic group-hover:translate-x-12 transition-transform duration-[1.5s] leading-none uppercase">{exp.position}</h3>
                                                     <div className="flex items-center gap-10">
                                                         <div className="h-px w-20 bg-slate-100 group-hover:w-40 group-hover:bg-[#0ea5e9] transition-all duration-1000 shadow-[0_0_15px_#0ea5e9]" />
-                                                        <p className="text-3xl font-black text-slate-200 tracking-[0.8em] group-hover:text-slate-400 transition-colors italic leading-none uppercase">INSTITUTE: {exp.company}</p>
+                                                        <p className="text-3xl font-black text-slate-200 tracking-[0.8em] group-hover:text-slate-500 transition-colors italic leading-none uppercase">INSTITUTE: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-black text-white bg-slate-950 px-12 py-5 shadow-2xl transition-all whitespace-nowrap italic tracking-[0.6em] leading-none">
                                                     [{exp.startDate} :: {exp.endDate}]
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-400 leading-relaxed font-black italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-16 group-hover:text-slate-900 group-hover:border-[#0ea5e9] bg-slate-50 transition-all duration-1000 uppercase">
+                                            <p className="text-2xl text-slate-500 leading-relaxed font-black italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-16 group-hover:text-slate-900 group-hover:border-[#0ea5e9] bg-slate-50 transition-all duration-1000 uppercase">
                                                 {exp.description}
                                             </p>
                                         </div>

@@ -4,7 +4,7 @@ export default function MediaProTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-100 p-8" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-100 p-8 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Outfit', sans-serif" }}>
             <div className="bg-white shadow-2xl rounded-[40px] overflow-hidden border-2 border-slate-900">
                 <div className="grid grid-cols-12 min-h-[600px]">
                     <div className="col-span-4 bg-slate-950 text-white p-12">
@@ -50,12 +50,12 @@ export default function MediaProTemplate({ data }) {
 
                         <div className="space-y-16">
                             <section>
-                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-10 flex items-center gap-4">
+                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-10 flex items-center gap-4">
                                     Deneyimler <div className="flex-1 h-px bg-slate-100" />
                                 </h3>
                                 <div className="space-y-12">
                                     {experience.map(exp => (
-                                        <div key={exp.id} className="relative group">
+                                        <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-start mb-4">
                                                 <div>
                                                     <h4 className="text-xl font-black text-slate-900 mb-1">{exp.position}</h4>

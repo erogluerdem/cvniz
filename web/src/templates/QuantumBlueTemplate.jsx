@@ -15,7 +15,7 @@ export default function QuantumBlueTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-sky-950 via-blue-900 to-indigo-950 text-sky-100 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-sky-950 via-blue-900 to-indigo-950 text-sky-100 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -63,7 +63,7 @@ export default function QuantumBlueTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-8 bg-sky-500/5 border-l-4 border-sky-400 backdrop-blur-sm rounded-r-2xl">
+                    <section className="mb-8 p-8 bg-sky-500/5 border-l-4 border-sky-400 backdrop-blur-sm rounded-r-2xl break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed text-sky-200">{personal.summary}</p>
                     </section>
                 )}
@@ -76,7 +76,7 @@ export default function QuantumBlueTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm uppercase tracking-widest text-sky-400 mb-8">{t.experience}</h2>
                                 <div className="space-y-8">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-sky-400 before:to-transparent">
+                                        <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-px before:bg-gradient-to-b before:from-sky-400 before:to-transparent break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute left-0 top-0 w-2 h-2 bg-sky-400 rounded-full transform -translate-x-[3px]" />
                                             <h3 className="text-xl font-bold">{exp.position}</h3>
                                             <p className="text-sky-400">{exp.company}</p>
@@ -90,11 +90,11 @@ export default function QuantumBlueTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-8 bg-white/5 backdrop-blur-sm border border-sky-400/20 rounded-2xl">
+                            <section className="p-8 bg-white/5 backdrop-blur-sm border border-sky-400/20 rounded-2xl break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm uppercase tracking-widest text-sky-400 mb-6">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-sky-500/10 rounded-xl border border-sky-400/20">
+                                        <div key={ref.id} className="p-4 bg-sky-500/10 rounded-xl border border-sky-400/20 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-sky-400">{ref.company}</p>
                                         </div>
@@ -107,11 +107,11 @@ export default function QuantumBlueTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-br from-sky-500/30 to-blue-600/30 border border-sky-400/40 rounded-2xl">
+                            <section className="p-6 bg-gradient-to-br from-sky-500/30 to-blue-600/30 border border-sky-400/40 rounded-2xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-widest text-sky-200 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-4 py-2 bg-white/10 rounded-xl text-sm">{skill}</div>
+                                        <div key={i} className="px-4 py-2 bg-white/10 rounded-xl text-sm break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -132,7 +132,7 @@ export default function QuantumBlueTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white/5 border border-sky-400/20 rounded-2xl">
+                            <section className="p-6 bg-white/5 border border-sky-400/20 rounded-2xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-widest text-sky-400 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

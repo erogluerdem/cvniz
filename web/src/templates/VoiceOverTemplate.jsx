@@ -29,7 +29,7 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
     }
 
     return (
-        <div className="min-h-full bg-[#020617] text-[#94a3b8] p-0 selection:bg-[#fbbf24] selection:text-black"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#020617] text-[#94a3b8] p-0 selection:bg-[#fbbf24] selection:text-black print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -111,7 +111,7 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
                     <aside className="col-span-4 p-10 space-y-24 border-r border-white/5 bg-[#0f172a]/30">
                         
                         {/* VOCAL ATTRIBUTES */}
-                        <section className="space-y-10 group">
+                        <section className="space-y-10 group break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/10 flex items-center gap-4 italic mb-8" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
                                 <Waves className="w-5 h-5 text-[#fbbf24]" /> {t.attributes}
                             </h3>
@@ -121,7 +121,7 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
                                     { label: isEn ? 'Pitch Range' : 'Perde Aralığı', val: 'Bass-Baritone' },
                                     { label: isEn ? 'Delivery' : 'Teslimat', val: 'Professional / Narrated' }
                                 ].map((attr, i) => (
-                                    <div key={i} className="p-4 bg-white/5 border border-white/5 rounded-2xl group hover:bg-[#fbbf24]/5 transition-all">
+                                    <div key={i} className="p-4 bg-white/5 border border-white/5 rounded-2xl group hover:bg-[#fbbf24]/5 transition-all break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-1">{attr.label}</p>
                                         <p className="text-lg font-black text-white italic leading-tight">{attr.val}</p>
                                     </div>
@@ -130,7 +130,7 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
                         </section>
 
                         {/* STUDIO SPECS */}
-                        <section className="p-8 bg-black/40 border border-[#fbbf24]/10 rounded-3xl relative overflow-hidden group">
+                        <section className="p-8 bg-black/40 border border-[#fbbf24]/10 rounded-3xl relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <Laptop className="absolute -bottom-10 -right-10 w-48 h-48 text-white/5 group-hover:scale-125 transition-transform duration-[4s]" />
                              <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-[#fbbf24] mb-12 italic relative z-10">{t.specs}</h3>
                              <div className="space-y-6 relative z-10 font-mono text-[11px]">
@@ -143,13 +143,13 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
 
                         {/* CAPABILITIES (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10">
+                            <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/10 flex items-center gap-4 italic mb-8" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
                                     <Target className="w-5 h-5 text-[#fbbf24]" /> {t.expertise}
                                 </h3>
                                 <div className="flex flex-wrap gap-3">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-5 py-2 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-white/60 hover:text-[#fbbf24] hover:border-[#fbbf24] transition-all cursor-default">
+                                        <div key={i} className="px-5 py-2 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-white/60 hover:text-[#fbbf24] hover:border-[#fbbf24] transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             {skill}
                                         </div>
                                     ))}
@@ -169,7 +169,7 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
                                 </h2>
                                 <div className="space-y-32">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l border-white/5 hover:border-[#fbbf24] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-24 border-l border-white/5 hover:border-[#fbbf24] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-1 h-24 bg-[#fbbf24] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-1000 shadow-[0_0_20px_#fbbf24]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-8 gap-10">
@@ -192,13 +192,13 @@ export default function VoiceOverTemplate({ data, theme = {}, highlightedField =
 
                         {/* EDUCATION & STUDIES */}
                         {education.length > 0 && (
-                            <section className="p-16 border-2 border-dashed border-white/5 bg-black/20 group hover:border-[#fbbf24]/50 transition-all duration-700">
+                            <section className="p-16 border-2 border-dashed border-white/5 bg-black/20 group hover:border-[#fbbf24]/50 transition-all duration-700 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-white/20 mb-16 flex items-center justify-center gap-10 italic leading-none">
                                      <GraduationCap className="w-8 h-8 text-[#fbbf24]" /> {t.education}
                                 </h3>
                                 <div className="grid grid-cols-2 gap-16">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black text-white/20 mb-4 group-hover:text-[#fbbf24] transition-colors tracking-[0.5em] italic uppercase">ACADEMY_LOG_0{i + 1}</p>
                                             <h4 className="text-4xl font-black italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform uppercase leading-none text-white">{edu.degree}</h4>
                                             <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#fbbf24] group-hover:text-white transition-colors">{edu.school}</p>

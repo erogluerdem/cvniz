@@ -10,7 +10,7 @@ export default function OrganicLeavesTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#f1f5f1] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f1f5f1] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Outfit', sans-serif" }}>
 
             {/* ORGANIC BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -79,7 +79,7 @@ export default function OrganicLeavesTemplate({ data }) {
                             { icon: Phone, value: personal.phone, label: 'Phone' },
                             { icon: MapPin, value: personal.location, label: 'Location' }
                         ].map((item, i) => (
-                            <div key={i} className="flex flex-col items-center">
+                            <div key={i} className="flex flex-col items-center break-inside-avoid page-break-inside-avoid">
                                 <div className="p-3 bg-white rounded-2xl shadow-sm border border-[#f1f5f1] mb-2">
                                     <item.icon className="w-4 h-4 text-[#4a7c59]" />
                                 </div>
@@ -92,7 +92,7 @@ export default function OrganicLeavesTemplate({ data }) {
 
                 <main className="relative z-10 grid grid-cols-12 gap-16 flex-1 px-8">
                     <div className="col-span-12">
-                        <section className="p-10 bg-[#fbfcfb] rounded-[40px] border border-[#f1f5f1] relative shadow-inner">
+                        <section className="p-10 bg-[#fbfcfb] rounded-[40px] border border-[#f1f5f1] relative shadow-inner break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-[#4a7c59] font-black uppercase text-[10px] tracking-[0.4em] mb-6 flex items-center gap-3">
                                 <Sunrise className="w-4 h-4" /> The Narrative
                             </h2>
@@ -155,7 +155,7 @@ export default function OrganicLeavesTemplate({ data }) {
                             </h2>
                             <div className="space-y-8">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="p-8 bg-[#fbfcfb] border border-[#f1f5f1] rounded-[32px] group">
+                                    <div key={i} className="p-8 bg-[#fbfcfb] border border-[#f1f5f1] rounded-[32px] group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-bold text-stone-300 mb-2 uppercase tracking-widest">{edu.startDate} – {edu.endDate}</p>
                                         <h4 className="text-[#1b2b2b] font-bold text-lg leading-tight mb-2 tracking-tight group-hover:text-[#4a7c59] transition-colors">{edu.school}</h4>
                                         <p className="text-[#4a7c59] text-xs font-medium italic border-t border-stone-50 pt-2">{edu.degree}</p>

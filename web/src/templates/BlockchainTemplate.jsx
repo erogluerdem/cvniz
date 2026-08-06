@@ -4,7 +4,7 @@ export default function BlockchainTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-[#0a0f12] text-slate-300 relative overflow-hidden" style={{ fontFamily: "'Space Mono', monospace" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0f12] text-slate-300 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Space Mono', monospace" }}>
             <div className="border-emerald-500/20 shadow-[0_0_100px_rgba(16,185,129,0.05)] relative min-h-full flex flex-col">
                 {/* Background Tech UI Elements */}
                 <div className="absolute top-0 right-0 w-full h-full opacity-[0.03] pointer-events-none select-none overflow-hidden">
@@ -68,8 +68,8 @@ export default function BlockchainTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-4">
                                     {skills.map(s => (
-                                        <div key={s} className="group flex flex-col gap-2">
-                                            <div className="flex justify-between items-center text-[9px] font-black uppercase text-slate-400 opacity-70 group-hover:opacity-100 transition-opacity">
+                                        <div key={s} className="group flex flex-col gap-2 break-inside-avoid page-break-inside-avoid">
+                                            <div className="flex justify-between items-center text-[9px] font-black uppercase text-slate-500 opacity-70 group-hover:opacity-100 transition-opacity">
                                                 <span>{s}</span>
                                                 <span className="text-emerald-500">Verified</span>
                                             </div>
@@ -87,7 +87,7 @@ export default function BlockchainTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-8">
                                     {education.map(edu => (
-                                        <div key={edu.id} className="relative pl-6 border-l border-emerald-500/20 group hover:border-emerald-500 transition-colors">
+                                        <div key={edu.id} className="relative pl-6 border-l border-emerald-500/20 group hover:border-emerald-500 transition-colors break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-slate-900 border border-emerald-500 group-hover:bg-emerald-500 group-hover:shadow-[0_0_10px_#10b981] transition-all" />
                                             <p className="text-[9px] font-black text-slate-500 mb-2 uppercase">{edu.startDate} :: {edu.endDate}</p>
                                             <h4 className="text-xs font-black text-white uppercase leading-tight mb-1">{edu.school}</h4>
@@ -111,7 +111,7 @@ export default function BlockchainTemplate({ data }) {
                                 </h2>
                                 <div className="relative p-10 bg-[#0d1317] border-l-4 border-emerald-500 group">
                                     <Terminal className="absolute top-4 right-4 w-6 h-6 text-emerald-500/10 group-hover:text-emerald-500/30 transition-all" />
-                                    <p className="text-lg text-slate-400 leading-relaxed font-medium italic">
+                                    <p className="text-lg text-slate-500 leading-relaxed font-medium italic">
                                         {personal.summary}
                                     </p>
                                 </div>
@@ -123,7 +123,7 @@ export default function BlockchainTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-16">
                                     {experience.map(exp => (
-                                        <div key={exp.id} className="relative group">
+                                        <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-baseline mb-8">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />

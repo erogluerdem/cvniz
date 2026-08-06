@@ -4,7 +4,7 @@ export default function SecurityTemplate({ data }) {
     const { personal, experience, education, skills } = data
 
     return (
-        <div className="min-h-full bg-slate-100" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-100 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             <header className="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-10 py-8">
                 <div className="flex items-center gap-6">
                     <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
@@ -13,7 +13,7 @@ export default function SecurityTemplate({ data }) {
                     <div>
                         <h1 className="text-3xl font-bold">{personal.fullName || 'Ad Soyad'}</h1>
                         <p className="text-slate-300">{personal.title || 'Güvenlik Uzmanı'}</p>
-                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-slate-400">
+                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-slate-500">
                             {personal.email && <span className="flex items-center gap-1"><Mail className="w-4 h-4" /> {personal.email}</span>}
                             {personal.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {personal.phone}</span>}
                         </div>
@@ -24,19 +24,19 @@ export default function SecurityTemplate({ data }) {
             <div className="p-8 grid grid-cols-3 gap-6">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-slate-600">
+                        <section className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-slate-600 break-inside-avoid page-break-inside-avoid">
                             <p className="text-gray-600">{personal.summary}</p>
                         </section>
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm">
+                        <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
                                 <Siren className="w-5 h-5" /> Deneyim
                             </h2>
                             <div className="space-y-4">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-2 border-slate-300 pl-4">
+                                    <div key={exp.id} className="border-l-2 border-slate-300 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-bold text-gray-800">{exp.position}</h3>
                                         <p className="text-slate-600">{exp.company}</p>
                                         <p className="text-gray-500 text-sm">{exp.startDate} - {exp.endDate}</p>
@@ -54,7 +54,7 @@ export default function SecurityTemplate({ data }) {
                             <h2 className="font-bold mb-4">Yetkinlikler</h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="text-sm">🛡️ {skill}</div>
+                                    <div key={i} className="text-sm break-inside-avoid page-break-inside-avoid">🛡️ {skill}</div>
                                 ))}
                             </div>
                         </div>
@@ -64,7 +64,7 @@ export default function SecurityTemplate({ data }) {
                         <div className="bg-white rounded-lg p-6 shadow-sm">
                             <h2 className="font-bold text-slate-800 mb-4">Eğitim & Sertifikalar</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3">
+                                <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold">{edu.school}</h3>
                                     <p className="text-slate-600 text-sm">{edu.degree}</p>
                                 </div>

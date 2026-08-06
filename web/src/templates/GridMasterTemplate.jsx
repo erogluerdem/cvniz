@@ -15,7 +15,7 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-amber-50 text-slate-800 p-8"
+        <div id="cv-template-wrapper" className="min-h-full bg-amber-50 text-slate-800 p-8 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -64,7 +64,7 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="bg-white p-6 rounded-2xl shadow-sm mb-8">
+                    <section className="bg-white p-6 rounded-2xl shadow-sm mb-8 break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed">{personal.summary}</p>
                     </section>
                 )}
@@ -79,10 +79,10 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
                             </h2>
                             <div className="grid grid-cols-2 gap-6">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="p-4 bg-slate-50 rounded-xl">
+                                    <div key={exp.id} className="p-4 bg-slate-50 rounded-xl break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-bold mb-1">{exp.position}</h3>
                                         <p className="text-amber-600 text-sm font-medium">{exp.company}</p>
-                                        <p className="text-xs text-slate-400 mb-2">{exp.startDate} - {exp.endDate}</p>
+                                        <p className="text-xs text-slate-500 mb-2">{exp.startDate} - {exp.endDate}</p>
                                         <p className="text-sm text-slate-600 line-clamp-3">{exp.description}</p>
                                     </div>
                                 ))}
@@ -92,11 +92,11 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
 
                     {/* Skills - Takes 4 cols */}
                     {skills.length > 0 && (
-                        <section className="col-span-4 bg-slate-900 text-white p-6 rounded-2xl">
+                        <section className="col-span-4 bg-slate-900 text-white p-6 rounded-2xl break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-xs font-black uppercase tracking-widest text-amber-400 mb-4">{t.skills}</h3>
                             <div className="grid grid-cols-2 gap-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="bg-white/10 px-3 py-2 rounded-lg text-xs font-medium text-center">{skill}</div>
+                                    <div key={i} className="bg-white/10 px-3 py-2 rounded-lg text-xs font-medium text-center break-inside-avoid page-break-inside-avoid">{skill}</div>
                                 ))}
                             </div>
                         </section>
@@ -108,7 +108,7 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
                             <h3 className="text-xs font-black uppercase tracking-widest text-slate-900 mb-4">{t.education}</h3>
                             <div className="space-y-3">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="bg-white/20 p-3 rounded-xl">
+                                    <div key={edu.id} className="bg-white/20 p-3 rounded-xl break-inside-avoid page-break-inside-avoid">
                                         <h4 className="font-bold text-sm text-slate-900">{edu.degree}</h4>
                                         <p className="text-xs text-slate-700">{edu.school}</p>
                                     </div>
@@ -120,13 +120,13 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
                     {/* References & Hobbies */}
                     <div className="col-span-6 space-y-4">
                         {references?.length > 0 && (
-                            <section className="bg-white p-6 rounded-2xl shadow-sm">
+                            <section className="bg-white p-6 rounded-2xl shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-black uppercase tracking-widest text-amber-500 mb-3">{t.references}</h3>
                                 <div className="space-y-2">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="flex justify-between items-center text-sm">
+                                        <div key={ref.id} className="flex justify-between items-center text-sm break-inside-avoid page-break-inside-avoid">
                                             <span className="font-bold">{ref.name}</span>
-                                            <span className="text-slate-400">{ref.company}</span>
+                                            <span className="text-slate-500">{ref.company}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -134,7 +134,7 @@ export default function GridMasterTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="bg-white p-6 rounded-2xl shadow-sm">
+                            <section className="bg-white p-6 rounded-2xl shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-black uppercase tracking-widest text-amber-500 mb-3">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

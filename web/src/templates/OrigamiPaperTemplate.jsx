@@ -14,7 +14,7 @@ export default function OrigamiPaperTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-rose-50 to-amber-50 text-slate-700 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-rose-50 to-amber-50 text-slate-700 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Nunito', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -59,7 +59,7 @@ export default function OrigamiPaperTemplate({ data, theme, highlightedField }) 
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 bg-white p-6 shadow-md -rotate-1 hover:rotate-0 transition-transform">
+                    <section className="mb-8 bg-white p-6 shadow-md -rotate-1 hover:rotate-0 transition-transform break-inside-avoid page-break-inside-avoid">
                         <p className="text-base leading-relaxed text-slate-600">{personal.summary}</p>
                     </section>
                 )}
@@ -72,10 +72,10 @@ export default function OrigamiPaperTemplate({ data, theme, highlightedField }) 
                                 <h2 className="text-xs font-bold uppercase tracking-widest text-rose-500 mb-6">{t.experience}</h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-4 border-rose-200 pl-4">
+                                        <div key={exp.id} className="border-l-4 border-rose-200 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="font-bold text-slate-800">{exp.position}</h3>
                                             <p className="text-rose-600 text-sm">{exp.company}</p>
-                                            <p className="text-xs text-slate-400 mb-2">{exp.startDate} - {exp.endDate}</p>
+                                            <p className="text-xs text-slate-500 mb-2">{exp.startDate} - {exp.endDate}</p>
                                             <p className="text-sm text-slate-600">{exp.description}</p>
                                         </div>
                                     ))}
@@ -85,11 +85,11 @@ export default function OrigamiPaperTemplate({ data, theme, highlightedField }) 
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="bg-white p-6 shadow-md -rotate-1 hover:rotate-0 transition-transform">
+                            <section className="bg-white p-6 shadow-md -rotate-1 hover:rotate-0 transition-transform break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs font-bold uppercase tracking-widest text-rose-500 mb-4">{t.references}</h2>
                                 <div className="flex flex-wrap gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="bg-rose-50 p-4 shadow-sm rotate-1">
+                                        <div key={ref.id} className="bg-rose-50 p-4 shadow-sm rotate-1 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-sm">{ref.name}</p>
                                             <p className="text-xs text-slate-500">{ref.company}</p>
                                         </div>
@@ -102,11 +102,11 @@ export default function OrigamiPaperTemplate({ data, theme, highlightedField }) 
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="bg-rose-500 text-white p-6 shadow-md -rotate-2 hover:rotate-0 transition-transform">
+                            <section className="bg-rose-500 text-white p-6 shadow-md -rotate-2 hover:rotate-0 transition-transform break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-bold uppercase tracking-widest text-rose-200 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-2 bg-white/20 text-sm">{skill}</div>
+                                        <div key={i} className="px-3 py-2 bg-white/20 text-sm break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -127,7 +127,7 @@ export default function OrigamiPaperTemplate({ data, theme, highlightedField }) 
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="bg-amber-100 p-6 shadow-md -rotate-1 hover:rotate-0 transition-transform">
+                            <section className="bg-amber-100 p-6 shadow-md -rotate-1 hover:rotate-0 transition-transform break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-bold uppercase tracking-widest text-amber-700 mb-3">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

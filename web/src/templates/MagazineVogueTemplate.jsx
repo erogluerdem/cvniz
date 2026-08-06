@@ -17,7 +17,7 @@ export default function MagazineVogueTemplate({ data, theme, highlightedField })
     }
 
     return (
-        <div className="min-h-full bg-[#fafafa] text-[#1a1a1a] p-0 overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fafafa] text-[#1a1a1a] p-0 overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.95rem' : theme?.fontSize === 'Büyük' ? '1.15rem' : '1.05rem'
@@ -65,7 +65,7 @@ export default function MagazineVogueTemplate({ data, theme, highlightedField })
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
                     <div className="lg:col-span-5">
                         {personal.summary && (
-                            <section className="relative">
+                            <section className="relative break-inside-avoid page-break-inside-avoid">
                                 <div className="text-[12rem] font-bold text-black/5 absolute -top-24 -left-12 pointer-events-none italic uppercase">Profile</div>
                                 <Quote className="w-12 h-12 text-black/10 mb-8" />
                                 <p className="text-3xl md:text-4xl leading-[1.1] font-light italic">
@@ -85,7 +85,7 @@ export default function MagazineVogueTemplate({ data, theme, highlightedField })
                                 </h2>
                                 <div className="grid grid-cols-2 gap-y-4 gap-x-12">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-baseline gap-4 group">
+                                        <div key={i} className="flex items-baseline gap-4 group break-inside-avoid page-break-inside-avoid">
                                             <span className="text-xs font-sans font-bold opacity-30 italic">0{i + 1}</span>
                                             <span className="text-xl font-bold italic group-hover:translate-x-2 transition-transform cursor-default">{skill}</span>
                                         </div>
@@ -108,9 +108,9 @@ export default function MagazineVogueTemplate({ data, theme, highlightedField })
 
                             <div className="space-y-16 max-w-5xl mx-auto">
                                 {experience.map((exp, idx) => (
-                                    <div key={exp.id} className="grid grid-cols-1 md:grid-cols-12 gap-12 group">
+                                    <div key={exp.id} className="grid grid-cols-1 md:grid-cols-12 gap-12 group break-inside-avoid page-break-inside-avoid">
                                         <div className="md:col-span-4">
-                                            <span className="text-sm font-sans font-black uppercase tracking-widest text-slate-400 italic mb-4 block">
+                                            <span className="text-sm font-sans font-black uppercase tracking-widest text-slate-500 italic mb-4 block">
                                                 {exp.startDate} – {exp.endDate}
                                             </span>
                                             <div className="h-0.5 w-12 bg-black/10 group-hover:w-full transition-all duration-700" />
@@ -136,10 +136,10 @@ export default function MagazineVogueTemplate({ data, theme, highlightedField })
                                 <h2 className="text-4xl font-bold italic mb-12 border-b-4 border-black inline-block">{t.education}</h2>
                                 <div className="space-y-12">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="relative pl-8 border-l border-black/5">
+                                        <div key={edu.id} className="relative pl-8 border-l border-black/5 break-inside-avoid page-break-inside-avoid">
                                             <h4 className="text-2xl font-bold mb-1 italic uppercase tracking-tight">{edu.degree}</h4>
                                             <p className="text-sm font-sans font-black uppercase tracking-widest opacity-60 mb-4">{edu.school}</p>
-                                            <p className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-slate-400">{edu.startDate} – {edu.endDate}</p>
+                                            <p className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-slate-500">{edu.startDate} – {edu.endDate}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -152,7 +152,7 @@ export default function MagazineVogueTemplate({ data, theme, highlightedField })
                                 <h2 className="text-4xl font-bold italic mb-12 border-b-4 border-black inline-block">{t.references}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 font-sans">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="border border-black/5 p-6 bg-white hover:bg-black hover:text-white transition-all group">
+                                        <div key={ref.id} className="border border-black/5 p-6 bg-white hover:bg-black hover:text-white transition-all group break-inside-avoid page-break-inside-avoid">
                                             <p className="text-lg font-black uppercase mb-1">{ref.name}</p>
                                             <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4 group-hover:opacity-60">{ref.company}</p>
                                             <div className="text-[10px] font-bold uppercase tracking-widest opacity-30 group-hover:opacity-100 flex flex-col gap-1">

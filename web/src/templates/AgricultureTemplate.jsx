@@ -4,7 +4,7 @@ export default function AgricultureTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-[#fdfcf8] p-12" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fdfcf8] p-12 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Quicksand', sans-serif" }}>
             <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-3xl overflow-hidden border border-emerald-100">
                 <header className="bg-gradient-to-r from-emerald-600 to-green-500 p-12 text-white relative">
                     <div className="absolute right-12 top-1/2 -translate-y-1/2 opacity-20">
@@ -43,7 +43,7 @@ export default function AgricultureTemplate({ data }) {
                             </h2>
                             <div className="space-y-10">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="group">
+                                    <div key={exp.id} className="group break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-start mb-2">
                                             <h3 className="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">{exp.position}</h3>
                                             <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full">{exp.startDate} - {exp.endDate}</span>

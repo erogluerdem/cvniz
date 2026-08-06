@@ -17,7 +17,7 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
     }
 
     return (
-        <div className="min-h-full bg-[#111111] text-white p-0 relative overflow-hidden selection:bg-pink-500 selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#111111] text-white p-0 relative overflow-hidden selection:bg-pink-500 selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -65,7 +65,7 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
                     <div className="lg:col-span-8 space-y-24">
                         {/* Summary */}
                         {personal.summary && (
-                            <section className="relative group max-w-2xl">
+                            <section className="relative group max-w-2xl break-inside-avoid page-break-inside-avoid">
                                 <Quote className="absolute -top-12 -left-12 w-24 h-24 text-white/[0.05]" />
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-10">{t.personal}</h2>
                                 <p className="text-xl md:text-2xl font-bold leading-tight uppercase tracking-tighter text-white/90">
@@ -94,7 +94,7 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
                                                     </span>
                                                 </div>
                                                 <p className="text-lg font-bold uppercase tracking-widest mb-8 text-white/60">@ {exp.company}</p>
-                                                <p className="text-xl leading-relaxed font-light text-slate-400 group-hover:text-white transition-colors">
+                                                <p className="text-xl leading-relaxed font-light text-slate-500 group-hover:text-white transition-colors">
                                                     {exp.description}
                                                 </p>
                                             </div>
@@ -110,7 +110,7 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-16">{t.references}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 font-black uppercase tracking-widest">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-10 bg-white shadow-[15px_15px_0px_#ec4899] hover:shadow-none hover:translate-x-3 hover:translate-y-3 transition-all text-black">
+                                        <div key={ref.id} className="p-10 bg-white shadow-[15px_15px_0px_#ec4899] hover:shadow-none hover:translate-x-3 hover:translate-y-3 transition-all text-black break-inside-avoid page-break-inside-avoid">
                                             <p className="text-2xl mb-2 italic tracking-tighter">{ref.name}</p>
                                             <p className="text-[10px] opacity-40 mb-8">{ref.company}</p>
                                             <div className="space-y-1 text-[10px] underline underline-offset-4 decoration-pink-500">
@@ -128,14 +128,14 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
                     <aside className="lg:col-span-4 space-y-20">
                         {/* Power (Skills) */}
                         {skills.length > 0 && (
-                            <section className="p-12 bg-white text-black shadow-[20px_20px_0px_rgba(255,255,255,0.1)] relative overflow-hidden group">
+                            <section className="p-12 bg-white text-black shadow-[20px_20px_0px_rgba(255,255,255,0.1)] relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                                 <Palette className="absolute -bottom-10 -left-10 w-40 h-40 text-black/[0.05] -rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-12 flex items-center gap-4">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500 mb-12 flex items-center gap-4">
                                     {t.skills} <Sparkles className="w-5 h-5 text-pink-500" />
                                 </h3>
                                 <div className="flex flex-col gap-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex justify-between items-center group/skill">
+                                        <div key={i} className="flex justify-between items-center group/skill break-inside-avoid page-break-inside-avoid">
                                             <span className="text-xl font-black uppercase tracking-tighter group-hover/skill:translate-x-4 transition-transform">{skill}</span>
                                             <div className="w-12 h-2 bg-pink-500 group-hover/skill:w-full transition-all duration-700" />
                                         </div>
@@ -150,7 +150,7 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-12">{t.education}</h3>
                                 <div className="space-y-12">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="relative pt-8 border-t-[4px] border-white/5 group overflow-hidden">
+                                        <div key={edu.id} className="relative pt-8 border-t-[4px] border-white/5 group overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute bottom-0 right-0 h-full w-full bg-indigo-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
                                             <div className="text-[10px] font-black text-pink-500 mb-2">{edu.startDate} :: {edu.endDate}</div>
                                             <h4 className="text-2xl font-black uppercase tracking-tight mb-2 italic relative z-10">{edu.degree}</h4>
@@ -167,7 +167,7 @@ export default function CreativeChaosTemplate({ data, theme, highlightedField })
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-12">{t.hobbies}</h3>
                                 <div className="grid grid-cols-1 gap-4">
                                     {hobbies.map((h) => (
-                                        <div key={h.id} className="p-4 border-2 border-white/5 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-emerald-500 hover:text-white transition-all cursor-default flex items-center gap-4 group">
+                                        <div key={h.id} className="p-4 border-2 border-white/5 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-emerald-500 hover:text-white transition-all cursor-default flex items-center gap-4 group break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 rounded-full bg-pink-500 group-hover:bg-white" />
                                             {h.name}
                                         </div>

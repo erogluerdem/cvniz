@@ -16,7 +16,7 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
     }
 
     return (
-        <div className="min-h-full bg-slate-950 text-slate-200 p-0 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-950 text-slate-200 p-0 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -68,7 +68,7 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                     <div className="lg:col-span-8 space-y-12">
                         {/* Aurora Summary */}
                         {personal.summary && (
-                            <section className="p-12 md:p-16 rounded-[60px] bg-gradient-to-br from-white/[0.05] to-transparent border border-white/5 backdrop-blur-md relative overflow-hidden group">
+                            <section className="p-12 md:p-16 rounded-[60px] bg-gradient-to-br from-white/[0.05] to-transparent border border-white/5 backdrop-blur-md relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                                 <Quote className="w-16 h-16 text-sky-500/10 absolute top-8 right-8" />
                                 <p className="text-2xl md:text-3xl leading-relaxed font-light text-slate-300 italic max-w-3xl relative z-10">
                                     "{personal.summary}"
@@ -84,7 +84,7 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                                 </h2>
                                 <div className="space-y-12">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-12 border-l border-white/5 group py-4">
+                                        <div key={exp.id} className="relative pl-12 border-l border-white/5 group py-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-1 top-0 w-2 h-full bg-gradient-to-b from-sky-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-full" />
                                             <div className="flex flex-col md:flex-row justify-between items-baseline mb-6 gap-6">
                                                 <h3 className="text-3xl font-black text-white group-hover:text-sky-400 transition-colors leading-tight italic">{exp.position}</h3>
@@ -93,7 +93,7 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                                                 </span>
                                             </div>
                                             <p className="text-lg font-bold text-pink-500/80 uppercase tracking-widest mb-8">{exp.company}</p>
-                                            <p className="text-lg text-slate-400 leading-relaxed max-w-3xl font-medium italic opacity-70 group-hover:opacity-100 transition-opacity">
+                                            <p className="text-lg text-slate-500 leading-relaxed max-w-3xl font-medium italic opacity-70 group-hover:opacity-100 transition-opacity">
                                                 {exp.description}
                                             </p>
                                         </div>
@@ -110,7 +110,7 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-10 rounded-[40px] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all backdrop-blur-3xl group">
+                                        <div key={ref.id} className="p-10 rounded-[40px] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all backdrop-blur-3xl group break-inside-avoid page-break-inside-avoid">
                                             <h4 className="text-2xl font-black text-white mb-2 group-hover:text-pink-400 transition-colors uppercase italic tracking-tighter">{ref.name}</h4>
                                             <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-8 border-b border-white/5 pb-4">{ref.company}</p>
                                             <div className="space-y-3 font-bold text-[10px] tracking-widest text-slate-600 group-hover:text-slate-200 transition-colors">
@@ -128,14 +128,14 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                     <aside className="lg:col-span-4 space-y-12">
                         {/* Skills - Floating Orbs Style */}
                         {skills.length > 0 && (
-                            <section className="p-12 rounded-[50px] bg-white/[0.03] border border-white/10 backdrop-blur-3xl shadow-2xl relative overflow-hidden">
+                            <section className="p-12 rounded-[50px] bg-white/[0.03] border border-white/10 backdrop-blur-3xl shadow-2xl relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-sky-500/10 blur-3xl" />
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-sky-400 mb-12 flex items-center gap-3">
                                     <Sparkles className="w-4 h-4" /> {t.skills}
                                 </h3>
                                 <div className="flex flex-wrap gap-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold tracking-[0.2em] text-slate-300 hover:text-white hover:border-pink-500/50 hover:bg-pink-500/5 transition-all cursor-default uppercase italic">
+                                        <div key={i} className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold tracking-[0.2em] text-slate-300 hover:text-white hover:border-pink-500/50 hover:bg-pink-500/5 transition-all cursor-default uppercase italic break-inside-avoid page-break-inside-avoid">
                                             {skill}
                                         </div>
                                     ))}
@@ -149,7 +149,7 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-12">{t.education}</h3>
                                 <div className="space-y-8">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="relative p-10 rounded-[40px] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 hover:border-sky-500/30 transition-all group">
+                                        <div key={edu.id} className="relative p-10 rounded-[40px] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 hover:border-sky-500/30 transition-all group break-inside-avoid page-break-inside-avoid">
                                             <span className="text-[9px] font-black text-slate-600 absolute top-8 right-8 uppercase tracking-widest">{edu.startDate} – {edu.endDate}</span>
                                             <h4 className="text-2xl font-black text-white mb-2 leading-tight uppercase italic tracking-tighter group-hover:text-sky-400 transition-colors">{edu.degree}</h4>
                                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{edu.school}</p>
@@ -165,11 +165,11 @@ export default function AuroraPremiumTemplate({ data, theme, highlightedField })
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-10">{t.hobbies}</h3>
                                 <div className="grid grid-cols-1 gap-4">
                                     {hobbies.map((h) => (
-                                        <div key={h.id} className="p-5 rounded-[30px] bg-white/[0.01] border border-white/5 flex items-center gap-5 group hover:bg-white/[0.05] transition-all">
+                                        <div key={h.id} className="p-5 rounded-[30px] bg-white/[0.01] border border-white/5 flex items-center gap-5 group hover:bg-white/[0.05] transition-all break-inside-avoid page-break-inside-avoid">
                                             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-400/10 to-pink-500/10 flex items-center justify-center text-pink-400 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(255,0,128,0.2)] transition-all">
                                                 <Heart className="w-6 h-6" />
                                             </div>
-                                            <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-white transition-colors italic">{h.name}</span>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors italic">{h.name}</span>
                                         </div>
                                     ))}
                                 </div>

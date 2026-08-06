@@ -32,7 +32,7 @@ export default function SurvivalSpecialistTemplate({ data, theme = {}, highlight
     }
 
     return (
-        <div className="min-h-full bg-[#0a0a0a] text-slate-400 p-0 selection:bg-[#f97316] selection:text-black uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0a0a] text-slate-500 p-0 selection:bg-[#f97316] selection:text-black uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -116,7 +116,7 @@ export default function SurvivalSpecialistTemplate({ data, theme = {}, highlight
                         
                         {/* SURVIVAL ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden">
+                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                                     <Wind className="w-6 h-6 text-[#f97316]" />
                                 </div>
@@ -130,13 +130,13 @@ export default function SurvivalSpecialistTemplate({ data, theme = {}, highlight
                         )}
 
                         {/* CAPABILITY MATRIX (SKILLS) */}
-                        <section className="space-y-12">
+                        <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-10 border-b border-slate-800 pb-4">
                                 <Layers className="w-5 h-5 text-[#f97316]" /> {t.expertise}
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[9px] font-bold tracking-[0.1em] text-slate-600 hover:text-[#f97316] hover:border-[#f97316]/30 transition-all cursor-default text-center group/item uppercase">
+                                    <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[9px] font-bold tracking-[0.1em] text-slate-600 hover:text-[#f97316] hover:border-[#f97316]/30 transition-all cursor-default text-center group/item uppercase break-inside-avoid page-break-inside-avoid">
                                         <div className="w-full h-[1px] bg-[#f97316]/10 mb-2 scale-x-0 group-hover/item:scale-x-100 transition-transform" />
                                         {skill}
                                     </div>
@@ -154,7 +154,7 @@ export default function SurvivalSpecialistTemplate({ data, theme = {}, highlight
                                     { icon: Cross, label: 'Trauma Kit' },
                                     { icon: Flame, label: 'Off-Grid Power' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-slate-800 group-hover:border-[#f97316]/30 transition-all">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-slate-800 group-hover:border-[#f97316]/30 transition-all break-inside-avoid page-break-inside-avoid">
                                         <item.icon className="w-6 h-6" />
                                         <span className="text-[8px] font-bold tracking-widest">{item.label}</span>
                                     </div>
@@ -164,10 +164,10 @@ export default function SurvivalSpecialistTemplate({ data, theme = {}, highlight
 
                         {/* FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-900 border border-slate-800 shadow-2xl skew-x-[-2deg]">
+                            <section className="space-y-16 p-10 bg-slate-900 border border-slate-800 shadow-2xl skew-x-[-2deg] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold tracking-[1em] text-white/10 text-center italic mb-10 leading-none pb-4 border-b border-white/5 skew-x-[2deg] uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu skew-x-[2deg]">
+                                    <div key={i} className="text-center group/edu skew-x-[2deg] break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-bold text-slate-700 group-hover:text-[#f97316] transition-colors mb-6 tracking-[0.5em] italic">TECH_TRAINING_0{i + 1}</p>
                                         <h4 className="text-3xl font-bold italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform text-white">{edu.degree}</h4>
                                         <p className="text-[11px] font-bold tracking-[0.3em] text-[#f97316]/40 mt-4">{edu.school}</p>
@@ -188,7 +188,7 @@ export default function SurvivalSpecialistTemplate({ data, theme = {}, highlight
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-[#f97316] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-[#f97316] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-1 h-32 bg-[#f97316] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_50px_#f97316]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">

@@ -14,7 +14,7 @@ export default function WaterColorTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-pink-50 via-blue-50 to-green-50 text-slate-700 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-pink-50 via-blue-50 to-green-50 text-slate-700 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Crimson Pro', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.95rem' : theme?.fontSize === 'Büyük' ? '1.15rem' : '1.05rem'
@@ -47,7 +47,7 @@ export default function WaterColorTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-10 p-8 bg-white/60 backdrop-blur-sm rounded-3xl text-center">
+                    <section className="mb-10 p-8 bg-white/60 backdrop-blur-sm rounded-3xl text-center break-inside-avoid page-break-inside-avoid">
                         <p className="text-xl leading-relaxed italic text-slate-600">{personal.summary}</p>
                     </section>
                 )}
@@ -60,10 +60,10 @@ export default function WaterColorTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm uppercase tracking-widest text-pink-500 mb-8 text-center">{t.experience}</h2>
                                 <div className="space-y-8">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="text-center">
+                                        <div key={exp.id} className="text-center break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-2xl font-bold text-slate-800">{exp.position}</h3>
                                             <p className="text-pink-500 italic">{exp.company}</p>
-                                            <p className="text-sm text-slate-400 mb-3">{exp.startDate} — {exp.endDate}</p>
+                                            <p className="text-sm text-slate-500 mb-3">{exp.startDate} — {exp.endDate}</p>
                                             <p className="text-slate-600 leading-relaxed">{exp.description}</p>
                                         </div>
                                     ))}
@@ -73,11 +73,11 @@ export default function WaterColorTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-8 bg-white/70 backdrop-blur-sm rounded-3xl">
+                            <section className="p-8 bg-white/70 backdrop-blur-sm rounded-3xl break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm uppercase tracking-widest text-pink-500 mb-6 text-center">{t.references}</h2>
                                 <div className="flex flex-wrap justify-center gap-6">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="text-center p-4 bg-pink-50 rounded-2xl">
+                                        <div key={ref.id} className="text-center p-4 bg-pink-50 rounded-2xl break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-slate-800">{ref.name}</p>
                                             <p className="text-sm text-slate-500 italic">{ref.company}</p>
                                         </div>
@@ -90,11 +90,11 @@ export default function WaterColorTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-br from-pink-100 to-blue-100 rounded-3xl">
+                            <section className="p-6 bg-gradient-to-br from-pink-100 to-blue-100 rounded-3xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-widest text-pink-600 mb-4 text-center">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-4 py-2 bg-white/80 rounded-full text-center text-sm font-medium">{skill}</div>
+                                        <div key={i} className="px-4 py-2 bg-white/80 rounded-full text-center text-sm font-medium break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -115,7 +115,7 @@ export default function WaterColorTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white/70 backdrop-blur-sm rounded-3xl">
+                            <section className="p-6 bg-white/70 backdrop-blur-sm rounded-3xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-widest text-pink-500 mb-4 text-center">{t.hobbies}</h3>
                                 <div className="flex flex-wrap justify-center gap-2">
                                     {hobbies.map((h) => (

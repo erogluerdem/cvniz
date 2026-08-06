@@ -20,7 +20,7 @@ export default function PsychologistTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-[297mm] bg-white text-slate-700"
+        <div id="cv-template-wrapper" className="min-h-[297mm] bg-white text-slate-700 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Lora', 'Inter', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.9rem'
@@ -69,11 +69,11 @@ export default function PsychologistTemplate({ data, theme, highlightedField }) 
                                 </h2>
                                 <div className="space-y-8">
                                     {experience.map((exp, idx) => (
-                                        <div key={exp.id || idx} className="group relative pl-6 border-l border-slate-100">
+                                        <div key={exp.id || idx} className="group relative pl-6 border-l border-slate-100 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-1 -left-[4.5px] w-2 h-2 rounded-full bg-slate-200" style={{ backgroundColor: idx === 0 ? accentColor : undefined }} />
                                             <div className="flex justify-between items-baseline mb-1">
                                                 <h3 className="text-[16px] font-medium text-slate-800">{exp.position}</h3>
-                                                <span className="text-[10px] italic text-slate-400 font-light whitespace-nowrap ml-4">{exp.startDate} — {exp.endDate}</span>
+                                                <span className="text-[10px] italic text-slate-500 font-light whitespace-nowrap ml-4">{exp.startDate} — {exp.endDate}</span>
                                             </div>
                                             <p className="text-[11px] font-bold uppercase tracking-widest mb-2 opacity-70" style={{ color: accentColor }}>{exp.company}</p>
                                             <p className="text-[13px] leading-relaxed text-slate-500 whitespace-pre-line">
@@ -93,7 +93,7 @@ export default function PsychologistTemplate({ data, theme, highlightedField }) 
                                 </h2>
                                 <div className="space-y-6">
                                     {projects.map((proj, i) => (
-                                        <div key={proj.id || i} className="p-4 bg-slate-50/50 rounded-sm border border-slate-100 flex flex-col gap-1">
+                                        <div key={proj.id || i} className="p-4 bg-slate-50/50 rounded-sm border border-slate-100 flex flex-col gap-1 break-inside-avoid page-break-inside-avoid">
                                             <h4 className="text-[15px] font-medium text-slate-800">{proj.name}</h4>
                                             <p className="text-[12px] italic leading-relaxed text-slate-500">{proj.description}</p>
                                         </div>
@@ -145,7 +145,7 @@ export default function PsychologistTemplate({ data, theme, highlightedField }) 
                                 </h2>
                                 <div className="space-y-3">
                                     {languages.map((lang, idx) => (
-                                        <div key={idx} className="flex justify-between items-center">
+                                        <div key={idx} className="flex justify-between items-center break-inside-avoid page-break-inside-avoid">
                                             <span className="text-[12px] font-medium">{lang.name}</span>
                                             <span className="text-[9px] font-black uppercase opacity-40 tracking-widest" style={{ color: accentColor }}>{lang.level}</span>
                                         </div>

@@ -15,7 +15,7 @@ export default function DiplomaStyleTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-full bg-emerald-50 text-slate-800 p-8 md:p-12"
+        <div id="cv-template-wrapper" className="min-h-full bg-emerald-50 text-slate-800 p-8 md:p-12 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Libre Baskerville', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -56,7 +56,7 @@ export default function DiplomaStyleTemplate({ data, theme, highlightedField }) 
 
                     {/* Summary */}
                     {personal.summary && (
-                        <section className="mb-8 p-6 bg-emerald-50 text-center">
+                        <section className="mb-8 p-6 bg-emerald-50 text-center break-inside-avoid page-break-inside-avoid">
                             <p className="text-lg leading-relaxed text-emerald-900 italic">{personal.summary}</p>
                         </section>
                     )}
@@ -70,10 +70,10 @@ export default function DiplomaStyleTemplate({ data, theme, highlightedField }) 
                                     <h2 className="text-sm font-sans font-bold uppercase tracking-[0.2em] text-emerald-700 mb-6 text-center border-b border-emerald-200 pb-2">{t.experience}</h2>
                                     <div className="space-y-6">
                                         {experience.map((exp) => (
-                                            <div key={exp.id} className="text-center">
+                                            <div key={exp.id} className="text-center break-inside-avoid page-break-inside-avoid">
                                                 <h3 className="text-xl font-bold text-emerald-800">{exp.position}</h3>
                                                 <p className="text-emerald-600 font-sans text-sm">{exp.company}</p>
-                                                <p className="text-xs text-slate-400 font-sans mb-2">{exp.startDate} — {exp.endDate}</p>
+                                                <p className="text-xs text-slate-500 font-sans mb-2">{exp.startDate} — {exp.endDate}</p>
                                                 <p className="text-slate-600 leading-relaxed max-w-lg mx-auto">{exp.description}</p>
                                             </div>
                                         ))}
@@ -87,7 +87,7 @@ export default function DiplomaStyleTemplate({ data, theme, highlightedField }) 
                                     <h2 className="text-sm font-sans font-bold uppercase tracking-[0.2em] text-emerald-700 mb-4 text-center">{t.references}</h2>
                                     <div className="flex flex-wrap justify-center gap-6 text-center">
                                         {references.map((ref) => (
-                                            <div key={ref.id} className="p-4 border border-emerald-200 rounded">
+                                            <div key={ref.id} className="p-4 border border-emerald-200 rounded break-inside-avoid page-break-inside-avoid">
                                                 <p className="font-bold">{ref.name}</p>
                                                 <p className="text-sm text-slate-500 font-sans">{ref.company}</p>
                                             </div>
@@ -105,7 +105,7 @@ export default function DiplomaStyleTemplate({ data, theme, highlightedField }) 
                                     <h3 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-emerald-700 mb-4">{t.skills}</h3>
                                     <div className="space-y-2">
                                         {skills.map((skill, i) => (
-                                            <div key={i} className="flex items-center gap-2 text-sm">
+                                            <div key={i} className="flex items-center gap-2 text-sm break-inside-avoid page-break-inside-avoid">
                                                 <Award className="w-4 h-4 text-emerald-600" />
                                                 {skill}
                                             </div>

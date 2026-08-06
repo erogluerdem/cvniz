@@ -4,7 +4,7 @@ export default function CreativeTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-rose-50 via-purple-50 to-cyan-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-rose-50 via-purple-50 to-cyan-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Creative Header with Diagonal Design */}
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 transform -skew-y-6 origin-top-left scale-110"></div>
@@ -79,7 +79,7 @@ export default function CreativeTemplate({ data }) {
                                     {experience.map((exp, index) => (
                                         <div
                                             key={exp.id}
-                                            className="relative bg-white rounded-xl shadow-lg p-5 hover:shadow-xl transition-shadow"
+                                            className="relative bg-white rounded-xl shadow-lg p-5 hover:shadow-xl transition-shadow break-inside-avoid page-break-inside-avoid"
                                             style={{
                                                 borderLeft: `4px solid ${index % 2 === 0 ? '#a855f7' : '#ec4899'}`
                                             }}
@@ -114,7 +114,7 @@ export default function CreativeTemplate({ data }) {
                                     {education.map((edu) => (
                                         <div
                                             key={edu.id}
-                                            className="bg-white rounded-xl shadow-lg p-5 border-l-4"
+                                            className="bg-white rounded-xl shadow-lg p-5 border-l-4 break-inside-avoid page-break-inside-avoid"
                                             style={{ borderLeftColor: '#06b6d4' }}
                                         >
                                             <div className="flex justify-between items-start">
@@ -165,7 +165,7 @@ export default function CreativeTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-3">
                                     {languages.map((lang, index) => (
-                                        <div key={index} className="flex justify-between items-center">
+                                        <div key={index} className="flex justify-between items-center break-inside-avoid page-break-inside-avoid">
                                             <span className="font-medium">{lang.name}</span>
                                             <span className="text-sm bg-white/20 px-2 py-0.5 rounded">{lang.level}</span>
                                         </div>

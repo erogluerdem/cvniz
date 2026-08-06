@@ -14,7 +14,7 @@ export default function MedicalProTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-b from-emerald-50 to-white text-slate-700 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-b from-emerald-50 to-white text-slate-700 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Source Sans Pro', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -53,7 +53,7 @@ export default function MedicalProTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl">
+                    <section className="mb-8 p-6 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl break-inside-avoid page-break-inside-avoid">
                         <p className="leading-relaxed text-slate-600">{personal.summary}</p>
                     </section>
                 )}
@@ -66,10 +66,10 @@ export default function MedicalProTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-600 mb-6">{t.experience}</h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-emerald-200 pl-4">
+                                        <div key={exp.id} className="border-l-2 border-emerald-200 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-lg font-bold text-slate-800">{exp.position}</h3>
                                             <p className="text-emerald-600 font-medium">{exp.company}</p>
-                                            <p className="text-xs text-slate-400 mb-2">{exp.startDate} - {exp.endDate}</p>
+                                            <p className="text-xs text-slate-500 mb-2">{exp.startDate} - {exp.endDate}</p>
                                             <p className="text-slate-600">{exp.description}</p>
                                         </div>
                                     ))}
@@ -79,11 +79,11 @@ export default function MedicalProTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-white rounded-2xl shadow-md">
+                            <section className="p-6 bg-white rounded-2xl shadow-md break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold uppercase tracking-widest text-emerald-600 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-emerald-50 rounded-xl">
+                                        <div key={ref.id} className="p-4 bg-emerald-50 rounded-xl break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-slate-800">{ref.name}</p>
                                             <p className="text-sm text-emerald-600">{ref.company}</p>
                                         </div>
@@ -96,11 +96,11 @@ export default function MedicalProTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-emerald-600 text-white rounded-2xl">
+                            <section className="p-6 bg-emerald-600 text-white rounded-2xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm font-bold uppercase tracking-widest text-emerald-200 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-4 py-2 bg-white/10 rounded-lg text-sm">{skill}</div>
+                                        <div key={i} className="px-4 py-2 bg-white/10 rounded-lg text-sm break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -121,7 +121,7 @@ export default function MedicalProTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white rounded-2xl shadow-md">
+                            <section className="p-6 bg-white rounded-2xl shadow-md break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm font-bold uppercase tracking-widest text-emerald-600 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

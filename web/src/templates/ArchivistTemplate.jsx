@@ -28,7 +28,7 @@ export default function ArchivistTemplate({ data, theme = {}, highlightedField =
     }
 
     return (
-        <div className="min-h-full bg-white text-[#1a1a1a] p-0 selection:bg-[#1a1a1a] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-[#1a1a1a] p-0 selection:bg-[#1a1a1a] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
@@ -102,7 +102,7 @@ export default function ArchivistTemplate({ data, theme = {}, highlightedField =
                         
                         {/* ARCHIVAL ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-8 group bg-white p-10 border border-stone-100 shadow-sm relative overflow-hidden">
+                            <section className="space-y-8 group bg-white p-10 border border-stone-100 shadow-sm relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
                                     <Book className="w-32 h-32" />
                                 </div>
@@ -117,13 +117,13 @@ export default function ArchivistTemplate({ data, theme = {}, highlightedField =
 
                         {/* METADATA STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.6em] text-stone-300 flex items-center gap-4 italic mb-10 border-b border-stone-200 pb-4">
                                     <Database className="w-5 h-5 text-[#1a1a1a]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item py-2">
+                                        <div key={i} className="group/item py-2 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-[11px] font-black uppercase tracking-widest group-hover/item:text-[#1a1a1a] text-stone-400 transition-colors italic whitespace-nowrap">{skill}</span>
                                                 <div className="flex-1 h-px bg-stone-100 mx-4" />
@@ -137,10 +137,10 @@ export default function ArchivistTemplate({ data, theme = {}, highlightedField =
 
                         {/* ACADEMIC RECORDS (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-10 bg-[#1a1a1a] text-white space-y-16 shadow-2xl skew-y-[-2deg]">
+                            <section className="p-10 bg-[#1a1a1a] text-white space-y-16 shadow-2xl skew-y-[-2deg] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[9px] font-black uppercase tracking-[0.8em] text-white/30 text-center italic mb-10 leading-none pb-4 border-b border-white/10 skew-y-[2deg]">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu skew-y-[2deg]">
+                                    <div key={i} className="text-center group/edu skew-y-[2deg] break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-white/20 group-hover:text-white transition-colors mb-4 uppercase italic tracking-widest">RECORD_FOUNDATION_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic text-white leading-tight uppercase" style={{ fontFamily: "'EB Garamond', serif" }}>{edu.degree}</h4>
                                         <p className="text-[11px] font-black uppercase tracking-widest text-[#d2b48c] mt-4">{edu.school}</p>
@@ -161,7 +161,7 @@ export default function ArchivistTemplate({ data, theme = {}, highlightedField =
                                 </h2>
                                 <div className="space-y-48">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-stone-50 hover:border-[#1a1a1a] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-stone-50 hover:border-[#1a1a1a] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2px] w-1 h-32 bg-[#1a1a1a] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">

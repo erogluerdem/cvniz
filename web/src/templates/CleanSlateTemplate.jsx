@@ -15,7 +15,7 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -47,7 +47,7 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
 
                 {/* Professional Summary */}
                 {personal.summary && (
-                    <section className="mb-10 p-6 bg-slate-50 rounded-lg border-l-4 border-emerald-500">
+                    <section className="mb-10 p-6 bg-slate-50 rounded-lg border-l-4 border-emerald-500 break-inside-avoid page-break-inside-avoid">
                         <p className="text-base leading-relaxed text-slate-700">{personal.summary}</p>
                     </section>
                 )}
@@ -58,20 +58,20 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
                         {/* Experience */}
                         {experience.length > 0 && (
                             <section className={highlightedField === 'experience' ? 'bg-emerald-50 p-6 -mx-6 rounded-lg' : ''}>
-                                <h2 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-3">
+                                <h2 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6 flex items-center gap-3">
                                     <Minus className="w-6 h-0.5 bg-emerald-500" style={{ backgroundColor: accentColor }} />
                                     {t.experience}
                                 </h2>
                                 <div className="space-y-8">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-6 border-l-2 border-slate-200">
+                                        <div key={exp.id} className="relative pl-6 border-l-2 border-slate-200 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[5px] top-0 w-2 h-2 bg-emerald-500 rounded-full" />
                                             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1 mb-2">
                                                 <div>
                                                     <h3 className="text-lg font-bold text-slate-900">{exp.position}</h3>
                                                     <p className="text-emerald-600 font-medium">{exp.company}</p>
                                                 </div>
-                                                <span className="text-sm text-slate-400">{exp.startDate} - {exp.endDate}</span>
+                                                <span className="text-sm text-slate-500">{exp.startDate} - {exp.endDate}</span>
                                             </div>
                                             <p className="text-slate-600 leading-relaxed">{exp.description}</p>
                                         </div>
@@ -83,13 +83,13 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
                         {/* References */}
                         {references?.length > 0 && (
                             <section>
-                                <h2 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-3">
+                                <h2 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6 flex items-center gap-3">
                                     <Minus className="w-6 h-0.5 bg-emerald-500" />
                                     {t.references}
                                 </h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 border border-slate-200 rounded-lg">
+                                        <div key={ref.id} className="p-4 border border-slate-200 rounded-lg break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-slate-900">{ref.name}</p>
                                             <p className="text-sm text-slate-500">{ref.company}</p>
                                             <p className="text-xs text-emerald-600 mt-2">{ref.email}</p>
@@ -104,11 +104,11 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
                     <aside className="space-y-8">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 bg-slate-900 text-white rounded-lg">
+                            <section className="p-6 bg-slate-900 text-white rounded-lg break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-sm">
+                                        <div key={i} className="flex items-center gap-2 text-sm break-inside-avoid page-break-inside-avoid">
                                             <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                                             {skill}
                                         </div>
@@ -120,13 +120,13 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
                         {/* Education */}
                         {education.length > 0 && (
                             <section className={highlightedField === 'education' ? 'bg-emerald-50 p-4 rounded-lg' : ''}>
-                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">{t.education}</h3>
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">{t.education}</h3>
                                 <div className="space-y-4">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="pb-3 border-b border-slate-100 last:border-0">
+                                        <div key={edu.id} className="pb-3 border-b border-slate-100 last:border-0 break-inside-avoid page-break-inside-avoid">
                                             <h4 className="font-bold text-sm text-slate-900">{edu.degree}</h4>
                                             <p className="text-slate-500 text-sm">{edu.school}</p>
-                                            <p className="text-slate-400 text-xs">{edu.startDate} - {edu.endDate}</p>
+                                            <p className="text-slate-500 text-xs">{edu.startDate} - {edu.endDate}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -136,7 +136,7 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
                             <section>
-                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">{t.hobbies}</h3>
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (
                                         <span key={h.id} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-medium">{h.name}</span>
@@ -147,7 +147,7 @@ export default function CleanSlateTemplate({ data, theme, highlightedField }) {
                     </aside>
                 </div>
 
-                <footer className="mt-10 pt-6 border-t border-slate-200 text-center text-xs text-slate-400">
+                <footer className="mt-10 pt-6 border-t border-slate-200 text-center text-xs text-slate-500">
                     CleanSlate Professional Template • CVniz
                 </footer>
             </div>

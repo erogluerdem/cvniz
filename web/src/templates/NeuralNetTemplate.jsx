@@ -15,7 +15,7 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-slate-950 text-purple-100 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-950 text-purple-100 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -24,7 +24,7 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
             {/* Neural network background nodes */}
             <div className="absolute inset-0">
                 {[...Array(12)].map((_, i) => (
-                    <div key={i} className="absolute w-2 h-2 bg-purple-500/20 rounded-full animate-pulse"
+                    <div key={i} className="absolute w-2 h-2 bg-purple-500/20 rounded-full animate-pulse break-inside-avoid page-break-inside-avoid"
                         style={{
                             top: `${10 + (i * 8)}%`,
                             left: `${5 + (i * 7)}%`,
@@ -70,7 +70,7 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-l-2 border-purple-400 rounded-r-xl">
+                    <section className="mb-8 p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-l-2 border-purple-400 rounded-r-xl break-inside-avoid page-break-inside-avoid">
                         <p className="text-base leading-relaxed text-purple-200">{personal.summary}</p>
                     </section>
                 )}
@@ -83,7 +83,7 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-xs uppercase tracking-widest text-purple-400 mb-6">{t.experience}</h2>
                                 <div className="space-y-6">
                                     {experience.map((exp, i) => (
-                                        <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-4 before:h-4 before:bg-purple-500 before:rounded-full before:shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+                                        <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-4 before:h-4 before:bg-purple-500 before:rounded-full before:shadow-[0_0_10px_rgba(168,85,247,0.5)] break-inside-avoid page-break-inside-avoid">
                                             <h3 className="font-bold text-lg">{exp.position}</h3>
                                             <p className="text-purple-400 text-sm">{exp.company}</p>
                                             <p className="text-xs text-purple-500/50 mb-2">{exp.startDate} → {exp.endDate}</p>
@@ -96,11 +96,11 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-slate-900/50 border border-purple-500/20 rounded-xl">
+                            <section className="p-6 bg-slate-900/50 border border-purple-500/20 rounded-xl break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs uppercase tracking-widest text-purple-400 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                                        <div key={ref.id} className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-xs text-purple-400">{ref.company}</p>
                                         </div>
@@ -113,11 +113,11 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-br from-purple-600/30 to-pink-600/30 border border-purple-500/30 rounded-xl">
+                            <section className="p-6 bg-gradient-to-br from-purple-600/30 to-pink-600/30 border border-purple-500/30 rounded-xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-widest text-purple-200 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-2 bg-slate-900/50 rounded-lg text-sm flex items-center gap-2">
+                                        <div key={i} className="px-3 py-2 bg-slate-900/50 rounded-lg text-sm flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
                                             {skill}
                                         </div>
@@ -141,7 +141,7 @@ export default function NeuralNetTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-slate-900/50 border border-purple-500/20 rounded-xl">
+                            <section className="p-6 bg-slate-900/50 border border-purple-500/20 rounded-xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-widest text-purple-400 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

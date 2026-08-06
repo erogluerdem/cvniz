@@ -19,7 +19,7 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-full bg-white text-black p-0 border-[6px] border-black selection:bg-black selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-black p-0 border-[6px] border-black selection:bg-black selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -125,7 +125,7 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
                                 <h2 className="text-4xl font-black uppercase mb-8 tracking-tighter">{t.education}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="border-[4px] border-black p-8 bg-white text-black hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[8px_8px_0px_#000] transition-all">
+                                        <div key={edu.id} className="border-[4px] border-black p-8 bg-white text-black hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[8px_8px_0px_#000] transition-all break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-xl font-black uppercase mb-2 leading-none">{edu.degree}</h3>
                                             <p className="font-bold text-sm mb-4 italic uppercase text-slate-500">{edu.school}</p>
                                             <div className="text-xs font-black bg-black text-white px-3 py-1 inline-block uppercase">
@@ -145,7 +145,7 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
                                     <h2 className="text-3xl font-black uppercase mb-8 border-b-8 border-black inline-block">{t.projects}</h2>
                                     <div className="space-y-6">
                                         {projects.map((p) => (
-                                            <div key={p.id} className="p-6 border-4 border-black bg-white hover:bg-black hover:text-white transition-all">
+                                            <div key={p.id} className="p-6 border-4 border-black bg-white hover:bg-black hover:text-white transition-all break-inside-avoid page-break-inside-avoid">
                                                 <h4 className="text-lg font-black uppercase mb-2">{p.name}</h4>
                                                 <p className="text-sm font-bold opacity-80">{p.description}</p>
                                             </div>
@@ -160,7 +160,7 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
                                     <h2 className="text-3xl font-black uppercase mb-8 border-b-8 border-black inline-block">{t.hobbies}</h2>
                                     <div className="flex flex-wrap gap-3">
                                         {hobbies.map((h) => (
-                                            <div key={h.id} className="bg-black text-white px-4 py-2 text-sm font-black uppercase flex items-center gap-2">
+                                            <div key={h.id} className="bg-black text-white px-4 py-2 text-sm font-black uppercase flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                                 <Star className="w-4 h-4 fill-white" /> {h.name}
                                             </div>
                                         ))}
@@ -175,7 +175,7 @@ export default function BrutalistProTemplate({ data, theme, highlightedField }) 
                                 <h2 className="text-4xl font-black uppercase mb-8 tracking-tighter">{t.references}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-8 border-[6px] border-black bg-white">
+                                        <div key={ref.id} className="p-8 border-[6px] border-black bg-white break-inside-avoid page-break-inside-avoid">
                                             <p className="text-2xl font-black uppercase italic mb-2">{ref.name}</p>
                                             <p className="font-bold text-sm uppercase text-slate-500 mb-4">{ref.company}</p>
                                             <div className="space-y-1 font-black text-xs uppercase underline underline-offset-2">

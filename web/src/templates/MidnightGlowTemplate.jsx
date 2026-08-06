@@ -10,7 +10,7 @@ export default function MidnightGlowTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-black p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Space Mono', monospace" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-black p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Space Mono', monospace" }}>
 
             {/* CYBERPUNK BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -125,7 +125,7 @@ export default function MidnightGlowTemplate({ data }) {
                                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                                         <Activity className="w-12 h-12 text-violet-500" />
                                     </div>
-                                    <p className="text-xl font-medium text-slate-400 leading-relaxed italic border-l-4 border-violet-500 pl-8">
+                                    <p className="text-xl font-medium text-slate-500 leading-relaxed italic border-l-4 border-violet-500 pl-8">
                                         "{personal.summary}"
                                     </p>
                                 </div>
@@ -156,7 +156,7 @@ export default function MidnightGlowTemplate({ data }) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p className="text-slate-400 text-sm leading-relaxed font-light">
+                                            <p className="text-slate-500 text-sm leading-relaxed font-light">
                                                 {exp.description}
                                             </p>
                                         </motion.div>
@@ -172,7 +172,7 @@ export default function MidnightGlowTemplate({ data }) {
                                 </h2>
                                 <div className="flex flex-col gap-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group overflow-hidden">
+                                        <div key={i} className="group overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="flex items-center justify-between mb-2">
                                                 <span className="text-[10px] font-black text-slate-500 group-hover:text-cyan-400 transition-colors uppercase tracking-widest leading-none">{skill}</span>
                                                 <span className="text-[8px] font-black text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity">LVL_{90 - i * 5}%</span>
@@ -196,7 +196,7 @@ export default function MidnightGlowTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-8">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group relative pl-8 border-l border-emerald-500/20 hover:border-emerald-500 transition-colors">
+                                        <div key={i} className="group relative pl-8 border-l border-emerald-500/20 hover:border-emerald-500 transition-colors break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-1 w-2 h-2 rounded-full border border-emerald-500 bg-black group-hover:bg-emerald-500 transition-colors" />
                                             <p className="text-[8px] font-black text-emerald-500 mb-1 uppercase tracking-widest">{edu.startDate} - {edu.endDate}</p>
                                             <h4 className="text-white font-black text-xs uppercase group-hover:text-cyan-400 transition-colors">{edu.school}</h4>

@@ -28,7 +28,7 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
     }
 
     return (
-        <div className="min-h-full bg-[#0a1e3a] text-slate-200 p-0 selection:bg-[#c5a059] selection:text-black"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a1e3a] text-slate-200 p-0 selection:bg-[#c5a059] selection:text-black print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -75,7 +75,7 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
                                      </p>
                                      <div className="flex gap-2">
                                         {['Master 3000GT', 'ECDIS', 'ISM'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 text-[9px] font-black text-slate-400 uppercase tracking-widest">{tag}</span>
+                                            <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 text-[9px] font-black text-slate-500 uppercase tracking-widest">{tag}</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -107,7 +107,7 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
                         
                         {/* COMMAND PHILOSOPHY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white/5 p-10 border-l-[10px] border-[#c5a059] shadow-2xl">
+                            <section className="space-y-10 group bg-white/5 p-10 border-l-[10px] border-[#c5a059] shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-6">
                                      <Wind className="w-5 h-5 text-[#c5a059]" /> {t.summary}
                                 </h3>
@@ -119,15 +119,15 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
 
                         {/* COMMAND MASTERY (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-10">
                                     <Navigation className="w-5 h-5 text-[#c5a059]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-6 border border-white/5 bg-white/5 hover:border-[#c5a059]/30 transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-6 border border-white/5 bg-white/5 hover:border-[#c5a059]/30 transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-[#c5a059] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                                            <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-white transition-colors">{skill}</span>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">{skill}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -136,13 +136,13 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
 
                         {/* MARITIME FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-black/20 border-y border-white/5">
+                            <section className="space-y-16 p-10 bg-black/20 border-y border-white/5 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-white/10 text-center italic mb-10">
                                      <GraduationCap className="w-10 h-10 mb-8 text-[#c5a059] mx-auto opacity-30" /> {t.education}
                                 </h3>
                                 <div className="space-y-16">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="text-center group/edu">
+                                        <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black text-white/20 mb-6 tracking-[0.5em] italic uppercase">NAV_STUDY_0{i + 1}</p>
                                             <h4 className="text-4xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform uppercase text-white" style={{ fontFamily: "'EB Garamond', serif" }}>{edu.degree}</h4>
                                             <p className="text-[12px] font-black uppercase tracking-[0.3em] text-[#c5a059]">{edu.school}</p>
@@ -155,9 +155,9 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
                         {/* COMPLIANCE NODES */}
                         <div className="p-16 border-2 border-[#c5a059]/20 text-center group bg-[#c5a059]/5">
                              <h4 className="text-[11px] font-black uppercase tracking-[1.5em] text-white/10 mb-12 italic leading-none">{isEn ? 'SAFETY & COMPLIANCE SEAL' : 'GÜVENLİK VE UYUMLULUK MÜHÜRÜ'}</h4>
-                             <div className="space-y-8 relative z-10 text-slate-400 group-hover:text-white transition-colors font-bold uppercase italic tracking-widest text-[9px]">
+                             <div className="space-y-8 relative z-10 text-slate-500 group-hover:text-white transition-colors font-bold uppercase italic tracking-widest text-[9px]">
                                 {[ 'GMDSS General Operator', 'Helideck Officer (HLO)', 'Advanced Fire Fighting', 'Medical First Aid @ Sea' ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-4 justify-center">
+                                    <div key={i} className="flex items-center gap-4 justify-center break-inside-avoid page-break-inside-avoid">
                                         <ShieldCheck className="w-4 h-4 text-[#c5a059]/50" />
                                         <span>{item}</span>
                                     </div>
@@ -180,7 +180,7 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
                                 </h2>
                                 <div className="space-y-40">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l border-white/5 hover:border-[#c5a059] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-24 border-l border-white/5 hover:border-[#c5a059] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-2 h-24 bg-[#c5a059] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-1000 shadow-[0_0_20px_#c5a059]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">
@@ -192,7 +192,7 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
                                                     {`${exp.startDate} > ${exp.endDate}`}
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-400 leading-relaxed font-light italic opacity-90 group-hover:opacity-100 transition-opacity border-l-[12px] border-white/5 pl-16 py-8 group-hover:text-white group-hover:border-[#c5a059] bg-white/[0.01]">
+                                            <p className="text-2xl text-slate-500 leading-relaxed font-light italic opacity-90 group-hover:opacity-100 transition-opacity border-l-[12px] border-white/5 pl-16 py-8 group-hover:text-white group-hover:border-[#c5a059] bg-white/[0.01]">
                                                 {exp.description}
                                             </p>
                                         </div>
@@ -202,7 +202,7 @@ export default function YachtCaptainTemplate({ data, theme = {}, highlightedFiel
                         )}
 
                         {/* FLEET REGISTRY GRID */}
-                        <section className="p-20 bg-gradient-to-br from-[#0c2445] to-black border border-white/5 text-center group relative overflow-hidden transition-all duration-1000">
+                        <section className="p-20 bg-gradient-to-br from-[#0c2445] to-black border border-white/5 text-center group relative overflow-hidden transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                              <motion.div animate={{ x: [0, 20, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="absolute -top-10 -right-10 w-64 h-64 text-white/5 group-hover:rotate-12 transition-transform duration-[4s]">
                                 <Anchor className="w-full h-full" />
                              </motion.div>

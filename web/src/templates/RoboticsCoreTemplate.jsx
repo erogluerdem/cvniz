@@ -14,7 +14,7 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-full bg-zinc-900 text-zinc-200 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-zinc-900 text-zinc-200 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Share Tech Mono', monospace",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -55,7 +55,7 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
                     </div>
 
                     {/* Contact Bar */}
-                    <div className="mt-6 pt-4 border-t border-zinc-700 flex flex-wrap justify-center md:justify-start gap-6 text-xs text-zinc-400">
+                    <div className="mt-6 pt-4 border-t border-zinc-700 flex flex-wrap justify-center md:justify-start gap-6 text-xs text-zinc-500">
                         {personal.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3 text-orange-500" /> {personal.email}</span>}
                         {personal.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3 text-orange-500" /> {personal.phone}</span>}
                         {personal.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-orange-500" /> {personal.location}</span>}
@@ -64,7 +64,7 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-zinc-800/50 border-l-4 border-orange-500">
+                    <section className="mb-8 p-6 bg-zinc-800/50 border-l-4 border-orange-500 break-inside-avoid page-break-inside-avoid">
                         <p className="text-sm text-zinc-300 font-mono leading-relaxed">&gt; {personal.summary}</p>
                     </section>
                 )}
@@ -79,12 +79,12 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
                                 </h2>
                                 <div className="space-y-6">
                                     {experience.map((exp, i) => (
-                                        <div key={exp.id} className="border-l-2 border-zinc-600 pl-4">
+                                        <div key={exp.id} className="border-l-2 border-zinc-600 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="text-xs text-orange-500 mb-1">[LOG_{String(i + 1).padStart(3, '0')}]</div>
                                             <h3 className="font-bold text-orange-100">{exp.position}</h3>
                                             <p className="text-orange-400 text-sm">{exp.company}</p>
                                             <p className="text-xs text-zinc-500 mb-2">{exp.startDate} → {exp.endDate}</p>
-                                            <p className="text-sm text-zinc-400">{exp.description}</p>
+                                            <p className="text-sm text-zinc-500">{exp.description}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -93,11 +93,11 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-zinc-800 border border-zinc-700">
+                            <section className="p-6 bg-zinc-800 border border-zinc-700 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs uppercase tracking-widest text-orange-500 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-zinc-900 border border-zinc-700">
+                                        <div key={ref.id} className="p-4 bg-zinc-900 border border-zinc-700 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-orange-100">{ref.name}</p>
                                             <p className="text-xs text-zinc-500">{ref.company}</p>
                                         </div>
@@ -110,11 +110,11 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-orange-500/10 border border-orange-500/40">
+                            <section className="p-6 bg-orange-500/10 border border-orange-500/40 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-widest text-orange-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-sm">
+                                        <div key={i} className="flex items-center gap-2 text-sm break-inside-avoid page-break-inside-avoid">
                                             <span className="text-orange-500">[{String(i + 1).padStart(2, '0')}]</span>
                                             <span className="text-zinc-300">{skill}</span>
                                         </div>
@@ -138,9 +138,9 @@ export default function RoboticsCoreTemplate({ data, theme, highlightedField }) 
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-zinc-800 border border-zinc-700">
+                            <section className="p-6 bg-zinc-800 border border-zinc-700 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-widest text-orange-500 mb-4">{t.hobbies}</h3>
-                                <div className="space-y-1 text-sm text-zinc-400">
+                                <div className="space-y-1 text-sm text-zinc-500">
                                     {hobbies.map((h, i) => (
                                         <p key={h.id}>├─ {h.name}</p>
                                     ))}

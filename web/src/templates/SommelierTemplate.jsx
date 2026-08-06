@@ -32,7 +32,7 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#4c0519] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#4c0519] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -75,7 +75,7 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
                                      </p>
                                      <div className="flex gap-2">
                                         {['WSET-4', 'MS', 'VINTAGE'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{tag}</span>
+                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-bold text-slate-500 uppercase tracking-widest">{tag}</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -109,14 +109,14 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
                         
                         {/* THE MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white p-10 border border-[#4c0519]/10 shadow-sm relative overflow-hidden">
+                            <section className="space-y-10 group bg-white p-10 border border-[#4c0519]/10 shadow-sm relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
                                     <Activity className="w-24 h-24" />
                                 </div>
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-4 italic mb-8 border-b border-slate-100 pb-4">
                                      <Eye className="w-6 h-6 text-[#4c0519]" /> {t.summary}
                                 </h3>
-                                <p className="text-3xl font-light italic leading-relaxed text-slate-400 group-hover:text-black transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
+                                <p className="text-3xl font-light italic leading-relaxed text-slate-500 group-hover:text-black transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
                                     "{personal.summary}"
                                 </p>
                             </section>
@@ -132,9 +132,9 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
                                     { label: 'Cellar Logic', val: 'Advanced' },
                                     { label: 'Rare Vintage', val: 'Spec.' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-[#4c0519]/5 bg-slate-50">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-[#4c0519]/5 bg-slate-50 break-inside-avoid page-break-inside-avoid">
                                         <p>{item.val}</p>
-                                        <span className="text-[8px] font-bold text-slate-400">{item.label}</span>
+                                        <span className="text-[8px] font-bold text-slate-500">{item.label}</span>
                                     </div>
                                 ))}
                              </div>
@@ -142,13 +142,13 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
 
                         {/* OENOLOGICAL STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-100 pb-4 uppercase">
                                     <Database className="w-5 h-5 text-[#4c0519]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center z-10 relative">
                                                 <span className="text-[18px] font-light uppercase tracking-widest text-[#4c0519]/40 group-hover/item:text-[#4c0519] transition-colors italic whitespace-nowrap" style={{ fontFamily: "'Playfair Display', serif" }}>{skill}</span>
                                                 <div className="h-px bg-slate-100 flex-1 mx-4" />
@@ -162,10 +162,10 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
 
                         {/* EDUCATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-50 border-y border-slate-100 uppercase italic">
+                            <section className="space-y-16 p-10 bg-slate-50 border-y border-slate-100 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-200 text-center mb-10 leading-none pb-4 border-b border-white uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#4c0519]/30 mb-6 tracking-[0.5em]">ACADEMIC_VINE_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.4em] text-[#4c0519]/40 mt-4 uppercase">{edu.school}</p>
@@ -186,7 +186,7 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-slate-100 hover:border-[#4c0519] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-slate-100 hover:border-[#4c0519] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1.5 h-32 bg-[#4c0519] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#4c0519]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -194,7 +194,7 @@ export default function SommelierTemplate({ data, theme = {}, highlightedField =
                                                     <h3 className="text-6xl text-[9.5rem] font-black text-slate-900 tracking-tighter italic group-hover:text-[#4c0519] transition-colors duration-[1.5s] leading-none uppercase" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '-0.06em' }}>{exp.position}</h3>
                                                     <div className="flex items-center gap-8">
                                                         <div className="h-px w-20 bg-slate-100 group-hover:w-40 group-hover:bg-[#4c0519] transition-all duration-1000 shadow-[0_0_15px_#4c0519]" />
-                                                        <p className="text-3xl font-light italic text-slate-200 tracking-[0.4em] group-hover:text-slate-400 transition-colors italic leading-none uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>TERROIR: {exp.company}</p>
+                                                        <p className="text-3xl font-light italic text-slate-200 tracking-[0.4em] group-hover:text-slate-500 transition-colors italic leading-none uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>TERROIR: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-black text-white bg-slate-900 px-10 py-4 group-hover:bg-[#4c0519] transition-all whitespace-nowrap italic tracking-[0.6em] shadow-3xl leading-none uppercase">

@@ -10,7 +10,7 @@ export default function ZenCodaTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#f4f7f4] p-0 md:p-8 flex justify-center py-6 relative" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f4f7f4] p-0 md:p-8 flex justify-center py-6 relative print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
 
             {/* ZEN CODA BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -66,7 +66,7 @@ export default function ZenCodaTemplate({ data }) {
                             { icon: Phone, value: personal.phone },
                             { icon: MapPin, value: personal.location }
                         ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-3 hover:text-[#5d7a5e] transition-colors group cursor-default">
+                            <div key={i} className="flex items-center gap-3 hover:text-[#5d7a5e] transition-colors group cursor-default break-inside-avoid page-break-inside-avoid">
                                 <item.icon className="w-3.5 h-3.5 opacity-30 group-hover:opacity-100 transition-opacity" />
                                 <span>{item.value}</span>
                             </div>
@@ -76,7 +76,7 @@ export default function ZenCodaTemplate({ data }) {
 
                 <main className="relative z-10 grid grid-cols-12 gap-12 md:gap-16 flex-1">
                     <div className="col-span-12 mb-20">
-                        <section className="max-w-4xl mx-auto text-center border-y border-stone-50 py-16 px-10 relative">
+                        <section className="max-w-4xl mx-auto text-center border-y border-stone-50 py-16 px-10 relative break-inside-avoid page-break-inside-avoid">
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 0.1 }}
@@ -129,7 +129,7 @@ export default function ZenCodaTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase tracking-[1em] text-stone-300 mb-12">The_Essence</h2>
                             <div className="flex flex-col gap-6">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center justify-between group">
+                                    <div key={i} className="flex items-center justify-between group break-inside-avoid page-break-inside-avoid">
                                         <span className="text-xs font-medium text-[#5d7a5e] group-hover:text-stone-900 group-hover:font-semibold transition-all uppercase tracking-widest">{skill}</span>
                                         <div className="h-px bg-stone-50 flex-1 mx-4 group-hover:bg-[#8ba68c]/20 transition-all" />
                                         <div className="w-1 h-1 rounded-full bg-stone-100 group-hover:bg-[#8ba68c] transition-colors" />
@@ -142,7 +142,7 @@ export default function ZenCodaTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase tracking-[1em] text-stone-300 mb-12">Academic_Base</h2>
                             <div className="space-y-12">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="p-8 bg-[#fbfcfb] rounded-2xl border border-stone-50 hover:border-[#8ba68c]/20 transition-all group overflow-hidden relative">
+                                    <div key={i} className="p-8 bg-[#fbfcfb] rounded-2xl border border-stone-50 hover:border-[#8ba68c]/20 transition-all group overflow-hidden relative break-inside-avoid page-break-inside-avoid">
                                         <motion.div initial={{ x: -10 }} whileHover={{ x: 5 }} className="relative z-10">
                                             <p className="text-[8px] font-bold text-stone-300 mb-3 uppercase tracking-widest">{edu.startDate} – {edu.endDate}</p>
                                             <h4 className="text-[#1a2e1b] font-medium text-lg leading-tight mb-2 tracking-tight italic group-hover:text-[#5d7a5e] transition-colors">{edu.school}</h4>

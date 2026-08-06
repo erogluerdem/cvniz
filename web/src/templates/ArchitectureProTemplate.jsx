@@ -4,7 +4,7 @@ export default function ArchitectureProTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-50 p-16" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 p-16 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div className="max-w-5xl mx-auto bg-white shadow-[0_45px_100px_-20px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-200">
                 <div className="grid grid-cols-12 min-h-[800px]">
                     <aside className="col-span-3 bg-slate-950 p-12 text-white flex flex-col justify-between">
@@ -25,7 +25,7 @@ export default function ArchitectureProTemplate({ data }) {
                                 <section>
                                     <h2 className="text-[10px] font-black uppercase text-slate-600 mb-8 tracking-[0.3em]">Toolbox</h2>
                                     <div className="flex flex-wrap gap-2">
-                                        {skills.map(s => <span key={s} className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[9px] uppercase font-bold text-slate-400">{s}</span>)}
+                                        {skills.map(s => <span key={s} className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[9px] uppercase font-bold text-slate-500">{s}</span>)}
                                     </div>
                                 </section>
                             </div>
@@ -36,7 +36,7 @@ export default function ArchitectureProTemplate({ data }) {
                         <header className="mb-24 flex justify-between items-start">
                             <div>
                                 <h1 className="text-6xl font-black text-slate-900 tracking-tighter mb-4 leading-none uppercase">{personal.fullName}</h1>
-                                <p className="text-slate-400 text-lg font-medium tracking-widest flex items-center gap-4">
+                                <p className="text-slate-500 text-lg font-medium tracking-widest flex items-center gap-4">
                                     <div className="w-12 h-px bg-slate-200" /> {personal.title}
                                 </p>
                             </div>
@@ -59,11 +59,11 @@ export default function ArchitectureProTemplate({ data }) {
                                 </h3>
                                 <div className="space-y-16">
                                     {experience.map(exp => (
-                                        <div key={exp.id} className="grid grid-cols-4 gap-8">
-                                            <div className="text-[10px] font-black text-slate-400 pt-1 tracking-widest">{exp.startDate?.toUpperCase()} / {exp.endDate?.toUpperCase()}</div>
+                                        <div key={exp.id} className="grid grid-cols-4 gap-8 break-inside-avoid page-break-inside-avoid">
+                                            <div className="text-[10px] font-black text-slate-500 pt-1 tracking-widest">{exp.startDate?.toUpperCase()} / {exp.endDate?.toUpperCase()}</div>
                                             <div className="col-span-3">
                                                 <h4 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{exp.position}</h4>
-                                                <p className="text-slate-400 text-xs font-bold mb-6 italic">{exp.company}</p>
+                                                <p className="text-slate-500 text-xs font-bold mb-6 italic">{exp.company}</p>
                                                 <p className="text-slate-500 text-sm leading-[1.8] font-light">{exp.description}</p>
                                             </div>
                                         </div>
@@ -77,10 +77,10 @@ export default function ArchitectureProTemplate({ data }) {
                                 </h3>
                                 <div className="grid grid-cols-2 gap-12">
                                     {education.map(edu => (
-                                        <div key={edu.id} className="p-10 bg-slate-50 border border-slate-100 italic">
+                                        <div key={edu.id} className="p-10 bg-slate-50 border border-slate-100 italic break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[10px] font-black text-slate-300 mb-2 uppercase tracking-widest">{edu.startDate} - {edu.endDate}</p>
                                             <h4 className="font-black text-slate-900 text-sm mb-1 uppercase leading-tight">{edu.school}</h4>
-                                            <p className="text-slate-400 text-[10px] font-bold uppercase">{edu.degree}</p>
+                                            <p className="text-slate-500 text-[10px] font-bold uppercase">{edu.degree}</p>
                                         </div>
                                     ))}
                                 </div>

@@ -5,7 +5,7 @@ export default function CorporateTemplate({ data, theme }) {
     const { personal, experience, education, skills, languages, customSections } = data
 
     return (
-        <div className="min-h-full bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Header */}
             <header className="bg-gradient-to-r from-indigo-900 to-purple-900 text-white px-8 py-6 md:py-8">
                 <div className="flex items-center gap-6 md:gap-8">
@@ -125,13 +125,13 @@ export default function CorporateTemplate({ data, theme }) {
                     <div className="space-y-8">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="bg-gray-50 rounded-lg p-5">
+                            <section className="bg-gray-50 rounded-lg p-5 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 mb-4">
                                     Uzmanlık Alanları
                                 </h2>
                                 <div className="space-y-2">
                                     {skills.map((skill, index) => (
-                                        <div key={index} className="flex items-center gap-2">
+                                        <div key={index} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
                                             <span className="text-gray-700 text-sm">{skill}</span>
                                         </div>
@@ -142,7 +142,7 @@ export default function CorporateTemplate({ data, theme }) {
 
                         {/* Languages */}
                         {languages?.length > 0 && (
-                            <section className="bg-gray-50 rounded-lg p-5">
+                            <section className="bg-gray-50 rounded-lg p-5 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 mb-4">
                                     Dil Becerileri
                                 </h2>
@@ -171,7 +171,7 @@ export default function CorporateTemplate({ data, theme }) {
 
                         {/* Links */}
                         {(personal.linkedin || personal.website) && (
-                            <section className="bg-gray-50 rounded-lg p-5">
+                            <section className="bg-gray-50 rounded-lg p-5 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 mb-4">
                                     Bağlantılar
                                 </h2>
@@ -206,7 +206,7 @@ export default function CorporateTemplate({ data, theme }) {
 
                         {/* QR Code */}
                         {theme?.showQrCode && (personal.website || personal.linkedin) && (
-                            <section className="bg-gray-50 rounded-lg p-5 flex justify-center">
+                            <section className="bg-gray-50 rounded-lg p-5 flex justify-center break-inside-avoid page-break-inside-avoid">
                                 <QRCodeDisplay
                                     url={personal.website || personal.linkedin}
                                     label={personal.website ? 'Web Sitesi' : 'LinkedIn Profili'}

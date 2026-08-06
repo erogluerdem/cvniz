@@ -4,7 +4,7 @@ export default function ElegantTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-stone-50" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-50 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {/* Elegant Header with Border Frame */}
             <div className="p-4 md:p-6">
                 <div className="border border-stone-300 p-6 relative">
@@ -84,7 +84,7 @@ export default function ElegantTemplate({ data }) {
 
                 {/* Experience */}
                 {experience.length > 0 && (
-                    <section className="mb-8">
+                    <section className="mb-8 break-inside-avoid page-break-inside-avoid">
                         <h2 className="text-xl text-center text-stone-800 mb-6 tracking-widest uppercase">
                             Deneyim
                         </h2>
@@ -114,7 +114,7 @@ export default function ElegantTemplate({ data }) {
 
                 {/* Education */}
                 {education.length > 0 && (
-                    <section className="mb-8">
+                    <section className="mb-8 break-inside-avoid page-break-inside-avoid">
                         <h2 className="text-xl text-center text-stone-800 mb-6 tracking-widest uppercase">
                             Eğitim
                         </h2>
@@ -158,7 +158,7 @@ export default function ElegantTemplate({ data }) {
                             <h2 className="text-xl text-stone-800 mb-6 tracking-widest uppercase">Diller</h2>
                             <div className="space-y-3">
                                 {languages.map((lang, index) => (
-                                    <div key={index} className="flex justify-center gap-4">
+                                    <div key={index} className="flex justify-center gap-4 break-inside-avoid page-break-inside-avoid">
                                         <span className="text-stone-800">{lang.name}</span>
                                         <span className="text-stone-500">—</span>
                                         <span className="text-stone-600 italic">{lang.level}</span>

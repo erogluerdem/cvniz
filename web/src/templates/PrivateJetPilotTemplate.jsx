@@ -29,7 +29,7 @@ export default function PrivateJetPilotTemplate({ data, theme = {}, highlightedF
     }
 
     return (
-        <div className="min-h-full bg-[#0a0f16] text-slate-400 p-0 selection:bg-[#ff6600] selection:text-black font-mono uppercase"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0f16] text-slate-500 p-0 selection:bg-[#ff6600] selection:text-black font-mono uppercase print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -106,21 +106,21 @@ export default function PrivateJetPilotTemplate({ data, theme = {}, highlightedF
                         
                         {/* AVIATOR SUMMARY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden">
+                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                                     <Wind className="w-6 h-6 text-[#ff6600]" />
                                 </div>
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-8">
                                      <Map className="w-5 h-5 text-[#ff6600]" /> {t.summary}
                                 </h3>
-                                <p className="text-xl font-bold leading-relaxed text-slate-400 group-hover:text-white transition-colors">
+                                <p className="text-xl font-bold leading-relaxed text-slate-500 group-hover:text-white transition-colors">
                                     "{personal.summary}"
                                 </p>
                             </section>
                         )}
 
                         {/* FLIGHT HOUR MATRIX */}
-                        <section className="bg-[#ff6600]/10 border border-[#ff6600]/30 p-10 space-y-12 relative overflow-hidden group">
+                        <section className="bg-[#ff6600]/10 border border-[#ff6600]/30 p-10 space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[11px] font-bold tracking-[0.6em] text-[#ff6600] mb-10 italic leading-none">{t.matrix}</h4>
                              <div className="grid grid-cols-2 gap-10">
                                 {[
@@ -129,7 +129,7 @@ export default function PrivateJetPilotTemplate({ data, theme = {}, highlightedF
                                     { label: 'Multi-Jet', val: '3,800' },
                                     { label: 'Night/Inst', val: '1,500' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="space-y-2">
+                                    <div key={i} className="space-y-2 break-inside-avoid page-break-inside-avoid">
                                         <p className="text-3xl font-bold text-white tracking-tighter italic">{stat.val}</p>
                                         <p className="text-[9px] font-bold tracking-widest text-[#ff6600]/50">{stat.label}</p>
                                     </div>
@@ -139,13 +139,13 @@ export default function PrivateJetPilotTemplate({ data, theme = {}, highlightedF
 
                         {/* DECK COMPETENCIES (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10">
+                            <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-8">
                                     <Target className="w-5 h-5 text-[#ff6600]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-500 hover:text-white hover:border-[#ff6600] transition-all cursor-default flex items-center gap-4">
+                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-500 hover:text-white hover:border-[#ff6600] transition-all cursor-default flex items-center gap-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-1.5 h-1.5 bg-[#ff6600] opacity-20" /> {skill}
                                         </div>
                                     ))}
@@ -178,7 +178,7 @@ export default function PrivateJetPilotTemplate({ data, theme = {}, highlightedF
                                 </h2>
                                 <div className="space-y-40">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l-2 border-slate-800 hover:border-[#ff6600] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-24 border-l-2 border-slate-800 hover:border-[#ff6600] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-2 h-24 bg-[#ff6600] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_20px_#ff6600]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-10 gap-12">
@@ -201,14 +201,14 @@ export default function PrivateJetPilotTemplate({ data, theme = {}, highlightedF
 
                         {/* FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-16 border-2 border-slate-800 bg-black text-center group hover:border-[#ff6600] transition-all duration-700 relative overflow-hidden">
+                            <section className="p-16 border-2 border-slate-800 bg-black text-center group hover:border-[#ff6600] transition-all duration-700 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute -bottom-10 -right-10 w-48 h-48 border-[4px] border-dashed border-white/5" />
                                  <h3 className="text-[11px] font-bold tracking-[1em] text-white/10 text-center italic mb-16 flex items-center justify-center gap-10 leading-none">
                                      <GraduationCap className="w-10 h-10 mb-8 text-[#ff6600] mx-auto opacity-30 group-hover:opacity-100 transition-all" /> {t.education}
                                 </h3>
                                 <div className="space-y-16 relative z-10">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-bold text-slate-500 mb-6 group-hover:text-[#ff6600] transition-colors tracking-[0.5em] italic">ACADEMIC_LOG_#0{i + 1}</p>
                                             <h4 className="text-4xl font-bold italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform text-white">{edu.degree}</h4>
                                             <p className="text-[12px] font-bold tracking-[0.3em] text-[#ff6600]/60">{edu.school}</p>

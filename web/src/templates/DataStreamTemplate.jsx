@@ -14,7 +14,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-slate-950 text-white p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-950 text-white p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -23,7 +23,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
             {/* Data stream lines */}
             <div className="absolute inset-0 overflow-hidden">
                 {[...Array(8)].map((_, i) => (
-                    <div key={i} className="absolute h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"
+                    <div key={i} className="absolute h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent break-inside-avoid page-break-inside-avoid"
                         style={{
                             top: `${15 + i * 12}%`,
                             left: '-100%',
@@ -61,7 +61,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
                             <h1 className="text-3xl font-bold mb-1 break-words">{personal.fullName || 'User'}</h1>
                             <p className="text-emerald-400 font-medium">{personal.title || 'Role'}</p>
                         </div>
-                        <div className="flex flex-col gap-2 text-xs text-slate-400">
+                        <div className="flex flex-col gap-2 text-xs text-slate-500">
                             {personal.email && <span className="flex items-center gap-2"><Mail className="w-3 h-3 text-emerald-400" /> {personal.email}</span>}
                             {personal.phone && <span className="flex items-center gap-2"><Phone className="w-3 h-3 text-emerald-400" /> {personal.phone}</span>}
                             {personal.location && <span className="flex items-center gap-2"><MapPin className="w-3 h-3 text-emerald-400" /> {personal.location}</span>}
@@ -76,7 +76,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-6 grid grid-cols-1 gap-4">
+                    <section className="mb-6 grid grid-cols-1 gap-4 break-inside-avoid page-break-inside-avoid">
                         <div className="p-6 bg-slate-900/60 border border-slate-700 rounded-xl">
                             <div className="text-xs text-slate-500 uppercase tracking-widest mb-2">Summary</div>
                             <p className="text-slate-300 leading-relaxed">{personal.summary}</p>
@@ -86,9 +86,9 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
 
                 {/* Stats Row */}
                 {skills.length > 0 && (
-                    <section className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <section className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 break-inside-avoid page-break-inside-avoid">
                         {skills.slice(0, 4).map((skill, i) => (
-                            <div key={i} className="p-4 bg-slate-900/60 border border-slate-700 rounded-xl text-center">
+                            <div key={i} className="p-4 bg-slate-900/60 border border-slate-700 rounded-xl text-center break-inside-avoid page-break-inside-avoid">
                                 <TrendingUp className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
                                 <p className="text-sm font-bold text-emerald-400">{skill}</p>
                             </div>
@@ -106,7 +106,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
                                 </h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="p-4 bg-slate-800/50 rounded-lg border-l-2 border-emerald-500">
+                                        <div key={exp.id} className="p-4 bg-slate-800/50 rounded-lg border-l-2 border-emerald-500 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
                                                     <h3 className="font-bold">{exp.position}</h3>
@@ -114,7 +114,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
                                                 </div>
                                                 <span className="text-xs text-slate-500 bg-slate-800 px-2 py-1 rounded">{exp.startDate} - {exp.endDate}</span>
                                             </div>
-                                            <p className="text-sm text-slate-400">{exp.description}</p>
+                                            <p className="text-sm text-slate-500">{exp.description}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -123,11 +123,11 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-slate-900/60 border border-slate-700 rounded-xl">
+                            <section className="p-6 bg-slate-900/60 border border-slate-700 rounded-xl break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs uppercase tracking-widest text-emerald-400 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-slate-800/50 rounded-lg">
+                                        <div key={ref.id} className="p-4 bg-slate-800/50 rounded-lg break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-xs text-slate-500">{ref.company}</p>
                                         </div>
@@ -140,11 +140,11 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 4 && (
-                            <section className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+                            <section className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-widest text-emerald-300 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.slice(4).map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-sm">
+                                        <div key={i} className="flex items-center gap-2 text-sm break-inside-avoid page-break-inside-avoid">
                                             <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                                             {skill}
                                         </div>
@@ -168,7 +168,7 @@ export default function DataStreamTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-slate-900/60 border border-slate-700 rounded-xl">
+                            <section className="p-6 bg-slate-900/60 border border-slate-700 rounded-xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-widest text-emerald-400 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

@@ -31,7 +31,7 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
     }
 
     return (
-        <div className="min-h-full bg-white text-black p-0 selection:bg-[#e10600] selection:text-white uppercase font-sans overflow-x-hidden italic font-bold"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-black p-0 selection:bg-[#e10600] selection:text-white uppercase font-sans overflow-x-hidden italic font-bold print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -113,7 +113,7 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
                     <aside className="col-span-4 p-12 space-y-40 bg-zinc-900 text-white italic">
                         
                         {/* PERFORMANCE METRICS */}
-                        <section className="bg-black border-l-[15px] border-[#e10600] p-12 space-y-16 relative overflow-hidden group shadow-2xl">
+                        <section className="bg-black border-l-[15px] border-[#e10600] p-12 space-y-16 relative overflow-hidden group shadow-2xl break-inside-avoid page-break-inside-avoid">
                              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-20 transition-opacity">
                                 <Trophy className="w-40 h-40" />
                              </div>
@@ -125,7 +125,7 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
                                     { label: 'Pole Positions', val: '54' },
                                     { label: 'Track Records', val: '12' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/stat">
+                                    <div key={i} className="flex justify-between items-baseline group/stat break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[11px] font-black uppercase tracking-widest text-[#e10600]/40 group-hover/stat:text-white transition-colors">{stat.label}</p>
                                         <p className="text-5xl font-black italic tracking-tighter text-white">{stat.val}</p>
                                     </div>
@@ -135,11 +135,11 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
 
                         {/* PILOT SUMMARY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-12 group bg-white/5 p-12 border border-white/5 relative overflow-hidden">
+                            <section className="space-y-12 group bg-white/5 p-12 border border-white/5 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[12px] font-black tracking-[0.8em] text-[#e10600] flex items-center gap-6 italic mb-10 border-b border-white/5 pb-6 uppercase">
                                      <Wind className="w-8 h-8" /> {t.summary}
                                 </h3>
-                                <p className="text-2xl font-black leading-relaxed text-zinc-400 group-hover:text-white transition-colors">
+                                <p className="text-2xl font-black leading-relaxed text-zinc-500 group-hover:text-white transition-colors">
                                     "{personal.summary}"
                                 </p>
                             </section>
@@ -147,13 +147,13 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
 
                         {/* TELEMETRY MASTERY (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[12px] font-black tracking-[0.8em] text-[#e10600] flex items-center gap-6 italic mb-12 border-b border-white/5 pb-8 uppercase">
                                     <Cpu className="w-8 h-8" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-5">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="p-6 bg-black border border-white/5 text-[11px] font-black tracking-[0.3em] text-zinc-500 hover:text-white hover:border-[#e10600] hover:translate-x-4 transition-all cursor-default flex items-center justify-between group/item">
+                                        <div key={i} className="p-6 bg-black border border-white/5 text-[11px] font-black tracking-[0.3em] text-zinc-500 hover:text-white hover:border-[#e10600] hover:translate-x-4 transition-all cursor-default flex items-center justify-between group/item break-inside-avoid page-break-inside-avoid">
                                             <span>{skill}</span>
                                             <Spark className="w-5 h-5 opacity-0 group-hover/item:opacity-100 text-[#e10600] transition-all" />
                                         </div>
@@ -172,7 +172,7 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
                                     { label: 'VO2 MAX', val: '72' },
                                     { label: 'STRENGTH', val: '100%' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4">
+                                    <div key={i} className="flex flex-col items-center gap-4 break-inside-avoid page-break-inside-avoid">
                                         <p className="text-3xl font-black italic">{item.val}</p>
                                         <span className="text-[9px] font-black tracking-widest text-zinc-600">{item.label}</span>
                                     </div>
@@ -192,7 +192,7 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-[10px] border-black hover:border-[#e10600] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-32 border-l-[10px] border-black hover:border-[#e10600] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             {/* SPEED LINE ANIMATION */}
                                             <div className="absolute top-0 -left-[10px] w-[10px] h-48 bg-[#e10600] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[20px_0_40px_rgba(225,6,0,0.2)]" />
                                             
@@ -219,14 +219,14 @@ export default function FormulaDriverTemplate({ data, theme = {}, highlightedFie
 
                         {/* FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-24 border-[15px] border-black bg-zinc-900 group hover:border-[#e10600] transition-all duration-1000 relative overflow-hidden shadow-2xl">
+                            <section className="p-24 border-[15px] border-black bg-zinc-900 group hover:border-[#e10600] transition-all duration-1000 relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                  <motion.div animate={{ skewX: [-15, 0, -15] }} transition={{ repeat: Infinity, duration: 2 }} className="absolute -top-10 -right-10 w-64 h-64 bg-[#e10600]/10" />
                                  <h3 className="text-[12px] font-black tracking-[1.5em] text-white/10 text-center italic mb-20 flex items-center justify-center gap-10 leading-none uppercase relative z-10">
                                      <GraduationCap className="w-16 h-16 mb-8 text-[#e10600] mx-auto opacity-30 group-hover:opacity-100 transition-all" /> {t.education}
                                 </h3>
                                 <div className="space-y-20 relative z-10">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center border-b border-white/5 pb-10 last:border-0 italic">
+                                        <div key={i} className="group/edu text-center border-b border-white/5 pb-10 last:border-0 italic break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[11px] font-black text-zinc-500 mb-8 tracking-[0.6em] group-hover:text-[#e10600] transition-colors">ACADEMIC_TRACK_LOG_0{i + 1}</p>
                                             <h4 className="text-5xl font-black italic leading-tight mb-6 group-hover/edu:scale-105 transition-transform text-white uppercase">{edu.degree}</h4>
                                             <p className="text-[15px] font-black tracking-[0.5em] text-[#e10600]/60 uppercase">{edu.school}</p>

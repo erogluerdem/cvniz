@@ -32,7 +32,7 @@ export default function MythologistTemplate({ data, theme = {}, highlightedField
     }
 
     return (
-        <div className="min-h-full bg-[#09090b] text-[#d4d4d8] p-0 selection:bg-[#7f1d1d] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#09090b] text-[#d4d4d8] p-0 selection:bg-[#7f1d1d] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -112,14 +112,14 @@ export default function MythologistTemplate({ data, theme = {}, highlightedField
                         
                         {/* THE MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-12 group p-12 border border-[#7f1d1d]/10 bg-black/80 relative overflow-hidden shadow-2xl">
+                            <section className="space-y-12 group p-12 border border-[#7f1d1d]/10 bg-black/80 relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-20 transition-opacity">
                                     <Moon className="w-48 h-48" />
                                 </div>
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-[#7f1d1d] flex items-center gap-6 italic mb-10 border-b border-[#7f1d1d]/10 pb-6">
                                      <MessageCircle className="w-8 h-8" /> {t.summary}
                                 </h3>
-                                <p className="text-4xl font-light italic leading-relaxed text-zinc-400 group-hover:text-white transition-colors" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                                <p className="text-4xl font-light italic leading-relaxed text-zinc-500 group-hover:text-white transition-colors" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                                     "{personal.summary}"
                                 </p>
                             </section>
@@ -127,13 +127,13 @@ export default function MythologistTemplate({ data, theme = {}, highlightedField
 
                         {/* SYMBOLIC SYSTEMS (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-16">
+                            <section className="space-y-16 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-[#7f1d1d] flex items-center gap-6 italic mb-12 border-b border-[#7f1d1d]/10 pb-8">
                                     <Anchor className="w-8 h-8" /> {t.expertise}
                                 </h3>
                                 <div className="grid grid-cols-1 gap-8">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center z-10 relative">
                                                 <span className="text-[18px] font-light uppercase tracking-widest text-[#f59e0b]/40 group-hover/item:text-[#f59e0b] transition-colors italic whitespace-nowrap" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{skill}</span>
                                                 <div className="h-px flex-1 bg-[#7f1d1d]/10 mx-6 opacity-0 group-hover/item:opacity-100 transition-opacity" />
@@ -155,7 +155,7 @@ export default function MythologistTemplate({ data, theme = {}, highlightedField
                                     { label: 'Archetypes', val: 'In-Depth' },
                                     { label: 'Cosmology', val: 'Global' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-6 border border-[#7f1d1d]/5 hover:bg-[#7f1d1d]/10 transition-all">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-6 border border-[#7f1d1d]/5 hover:bg-[#7f1d1d]/10 transition-all break-inside-avoid page-break-inside-avoid">
                                         <p>{item.val}</p>
                                         <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-700">{item.label}</span>
                                     </div>
@@ -165,11 +165,11 @@ export default function MythologistTemplate({ data, theme = {}, highlightedField
 
                         {/* SCHOLARLY FOUNDATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-16 border-t border-b border-[#7f1d1d]/10 bg-black/30 italic">
+                            <section className="p-16 border-t border-b border-[#7f1d1d]/10 bg-black/30 italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold uppercase tracking-[1.5em] text-[#7f1d1d] text-center mb-16 leading-none pb-4 border-b border-[#7f1d1d]/5 uppercase">{t.education}</h3>
                                 <div className="space-y-24">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="text-center group/edu">
+                                        <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[11px] font-bold text-[#f59e0b]/20 group-hover:text-[#f59e0b] transition-colors mb-6 tracking-[0.4em] uppercase">SYSTEM_FORMATION_0{i + 1}</p>
                                             <h4 className="text-4xl font-light italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform uppercase text-white" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{edu.degree}</h4>
                                             <p className="text-[14px] font-bold tracking-[0.3em] text-[#7f1d1d] underline underline-offset-8 decoration-white/5">{edu.school}</p>
@@ -191,7 +191,7 @@ export default function MythologistTemplate({ data, theme = {}, highlightedField
                                 </h2>
                                 <div className="space-y-80">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-[#ffffff]/5 hover:border-[#7f1d1d] transition-all duration-[1s]">
+                                        <div key={i} className="group relative pl-32 border-l border-[#ffffff]/5 hover:border-[#7f1d1d] transition-all duration-[1s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1.5 h-48 bg-[#f59e0b] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_40px_#f59e0b]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-20 gap-16">

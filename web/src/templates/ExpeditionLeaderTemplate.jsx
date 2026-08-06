@@ -32,7 +32,7 @@ export default function ExpeditionLeaderTemplate({ data, theme = {}, highlighted
     }
 
     return (
-        <div className="min-h-full bg-[#2f3e46] text-[#cad2c5] p-0 selection:bg-[#52796f] selection:text-white uppercase font-sans overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#2f3e46] text-[#cad2c5] p-0 selection:bg-[#52796f] selection:text-white uppercase font-sans overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -116,7 +116,7 @@ export default function ExpeditionLeaderTemplate({ data, theme = {}, highlighted
                         
                         {/* EXPEDITION ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-8 group bg-white/5 p-10 border border-white/5 relative overflow-hidden ring-1 ring-white/5 shadow-2xl">
+                            <section className="space-y-8 group bg-white/5 p-10 border border-white/5 relative overflow-hidden ring-1 ring-white/5 shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-8 border-b border-white/10 pb-4">
                                      <Target className="w-5 h-5 text-[#cad2c5]" /> {t.summary}
                                 </h3>
@@ -128,13 +128,13 @@ export default function ExpeditionLeaderTemplate({ data, theme = {}, highlighted
 
                         {/* FIELD MASTERY (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10">
+                            <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-10 border-b border-white/10 pb-4">
                                     <Layers className="w-5 h-5 text-[#cad2c5]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-6 border border-white/5 bg-black/10 hover:bg-[#52796f]/20 hover:border-[#cad2c5]/30 transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-6 border border-white/5 bg-black/10 hover:bg-[#52796f]/20 hover:border-[#cad2c5]/30 transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 right-0 p-2 opacity-5 scale-0 group-hover/item:scale-100 transition-transform">
                                                 <Compass className="w-4 h-4 text-white" />
                                             </div>
@@ -155,7 +155,7 @@ export default function ExpeditionLeaderTemplate({ data, theme = {}, highlighted
                                     { icon: CloudRain, label: 'Tropical' },
                                     { icon: Anchor, label: 'Maritime' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-white/5 bg-white/5 group-hover:border-[#52796f] transition-all">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-white/5 bg-white/5 group-hover:border-[#52796f] transition-all break-inside-avoid page-break-inside-avoid">
                                         <item.icon className="w-6 h-6 text-[#52796f]" />
                                         <span>{item.label}</span>
                                     </div>
@@ -165,10 +165,10 @@ export default function ExpeditionLeaderTemplate({ data, theme = {}, highlighted
 
                         {/* FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-black/10 border-y border-white/5 shadow-inner">
+                            <section className="space-y-16 p-10 bg-black/10 border-y border-white/5 shadow-inner break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-white/5 text-center italic mb-10 leading-none pb-4 border-b border-white/5 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#52796f] mb-6 tracking-[0.5em] italic">FORMATION_LOG_0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white">{edu.degree}</h4>
                                         <p className="text-[11px] font-black tracking-[0.3em] text-[#cad2c5]/30 mt-4">{edu.school}</p>
@@ -189,7 +189,7 @@ export default function ExpeditionLeaderTemplate({ data, theme = {}, highlighted
                                 </h2>
                                 <div className="space-y-56">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-white/5 hover:border-[#cad2c5] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-white/5 hover:border-[#cad2c5] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2px] w-1.5 h-32 bg-[#cad2c5] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#cad2c5]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">

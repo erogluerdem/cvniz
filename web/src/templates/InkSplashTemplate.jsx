@@ -14,7 +14,7 @@ export default function InkSplashTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-stone-100 text-stone-800 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-100 text-stone-800 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Noto Serif', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.95rem' : theme?.fontSize === 'Büyük' ? '1.15rem' : '1.05rem'
@@ -61,7 +61,7 @@ export default function InkSplashTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary with ink drop */}
                 {personal.summary && (
-                    <section className="mb-10 relative">
+                    <section className="mb-10 relative break-inside-avoid page-break-inside-avoid">
                         <div className="absolute -left-8 top-0 w-1 h-full bg-stone-900" />
                         <div className="absolute -left-10 top-0 w-5 h-5 bg-stone-900 rounded-full" />
                         <p className="text-xl leading-relaxed italic text-stone-600 pl-4">{personal.summary}</p>
@@ -76,7 +76,7 @@ export default function InkSplashTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm uppercase tracking-[0.4em] text-stone-400 mb-8">{t.experience}</h2>
                                 <div className="space-y-8">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-stone-900 before:rounded-full">
+                                        <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-stone-900 before:rounded-full break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-2xl font-bold">{exp.position}</h3>
                                             <p className="text-stone-500 italic">{exp.company}</p>
                                             <p className="text-sm text-stone-400 mb-3">{exp.startDate} — {exp.endDate}</p>
@@ -93,7 +93,7 @@ export default function InkSplashTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm uppercase tracking-[0.4em] text-stone-400 mb-6">{t.references}</h2>
                                 <div className="flex flex-wrap gap-6">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="relative p-4 bg-white border border-stone-200 shadow-sm">
+                                        <div key={ref.id} className="relative p-4 bg-white border border-stone-200 shadow-sm break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -top-2 -left-2 w-4 h-4 bg-stone-900 rounded-full opacity-20" />
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-stone-500 italic">{ref.company}</p>
@@ -107,11 +107,11 @@ export default function InkSplashTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-8">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-stone-900 text-stone-100">
+                            <section className="p-6 bg-stone-900 text-stone-100 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-[0.3em] text-stone-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="border-b border-stone-700 pb-2 text-lg">{skill}</div>
+                                        <div key={i} className="border-b border-stone-700 pb-2 text-lg break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>

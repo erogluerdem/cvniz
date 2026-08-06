@@ -4,7 +4,7 @@ export default function ScientistTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-slate-50 to-blue-50" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-slate-50 to-blue-50 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
             {/* Scientific Header with DNA-like accent */}
             <header className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-800" />
@@ -74,7 +74,7 @@ export default function ScientistTemplate({ data }) {
 
                     {/* Research Experience */}
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-blue-100/50">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-blue-100/50 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                                     <TestTube className="w-5 h-5 text-white" />
@@ -83,7 +83,7 @@ export default function ScientistTemplate({ data }) {
                             </div>
                             <div className="space-y-5 pl-[52px]">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="relative pl-6 border-l-2 border-cyan-500/30">
+                                    <div key={exp.id} className="relative pl-6 border-l-2 border-cyan-500/30 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 ring-4 ring-white" />
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
@@ -107,7 +107,7 @@ export default function ScientistTemplate({ data }) {
 
                     {/* Education */}
                     {education.length > 0 && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-blue-100/50">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-blue-100/50 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
                                     <BookOpen className="w-5 h-5 text-white" />
@@ -116,7 +116,7 @@ export default function ScientistTemplate({ data }) {
                             </div>
                             <div className="space-y-4 pl-[52px]">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="relative pl-6 border-l-2 border-emerald-500/30">
+                                    <div key={edu.id} className="relative pl-6 border-l-2 border-emerald-500/30 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 ring-4 ring-white" />
                                         <div className="flex justify-between items-start">
                                             <div>
@@ -148,7 +148,7 @@ export default function ScientistTemplate({ data }) {
                             </div>
                             <div className="space-y-3">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-3 text-sm">
+                                    <div key={i} className="flex items-center gap-3 text-sm break-inside-avoid page-break-inside-avoid">
                                         <div className="w-2 h-2 rounded-full bg-cyan-400" />
                                         <span className="text-indigo-100">{skill}</span>
                                     </div>

@@ -4,7 +4,7 @@ export default function LawyerProTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-white text-[#1a1a1a] relative" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-[#1a1a1a] relative print-exact mx-auto print:mx-0" style={{ fontFamily: "'Playfair Display', serif" }}>
             <div className="relative overflow-hidden min-h-full">
                 {/* Decorative border elements */}
                 <div className="absolute top-4 left-4 right-4 bottom-4 border border-[#e5e1da] pointer-events-none" />
@@ -66,7 +66,7 @@ export default function LawyerProTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-4">
                                     {skills.map(s => (
-                                        <div key={s} className="flex items-center justify-between group">
+                                        <div key={s} className="flex items-center justify-between group break-inside-avoid page-break-inside-avoid">
                                             <span className="text-[11px] font-sans font-bold text-[#1a1a1a] group-hover:text-[#c5a059] transition-colors">
                                                 {s}
                                             </span>
@@ -82,7 +82,7 @@ export default function LawyerProTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-10">
                                     {education.map(edu => (
-                                        <div key={edu.id} className="relative pl-6 border-l border-[#c5a059]/30">
+                                        <div key={edu.id} className="relative pl-6 border-l border-[#c5a059]/30 break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-sans font-black text-[#c5a059] mb-2">{edu.startDate} — {edu.endDate}</p>
                                             <h4 className="text-xs font-bold text-[#1a1a1a] leading-snug mb-1 italic">{edu.school}</h4>
                                             <p className="text-[10px] font-sans font-medium text-[#7a7a7a] uppercase tracking-wider">{edu.degree}</p>
@@ -108,7 +108,7 @@ export default function LawyerProTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-20">
                                     {experience.map(exp => (
-                                        <div key={exp.id} className="relative group">
+                                        <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-baseline mb-6 border-b border-[#f0ede9] pb-4">
                                                 <div>
                                                     <h3 className="text-2xl font-bold text-[#1a1a1a] tracking-tight group-hover:text-[#c5a059] transition-colors leading-none mb-3 uppercase">

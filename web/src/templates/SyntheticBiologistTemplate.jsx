@@ -32,7 +32,7 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
     }
 
     return (
-        <div className="min-h-full bg-[#f8faf9] text-slate-800 p-0 selection:bg-[#1a2e1a] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f8faf9] text-slate-800 p-0 selection:bg-[#1a2e1a] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -76,7 +76,7 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
                                      </p>
                                      <div className="flex gap-2 font-mono">
                                         {['BSL-3', 'CRISPR', 'NGS'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest">[{tag}]</span>
+                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-widest">[{tag}]</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -108,7 +108,7 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
                         
                         {/* BIOLOGY MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+                            <section className="space-y-10 group bg-white p-10 border border-slate-100 shadow-sm relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.05]">
                                     <FlaskConical className="w-24 h-24" />
                                 </div>
@@ -123,13 +123,13 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
 
                         {/* SYNTHETIC BIOLOGY STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-100 pb-4 uppercase">
                                     <Target className="w-5 h-5 text-[#1a2e1a]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-3">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-3 border-l-4 border-slate-100 hover:border-[#1a2e1a] hover:bg-[#1a2e1a]/5 transition-all cursor-default">
+                                        <div key={i} className="group/item p-3 border-l-4 border-slate-100 hover:border-[#1a2e1a] hover:bg-[#1a2e1a]/5 transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             <span className="text-[10px] font-bold tracking-widest text-[#1a2e1a]/40 group-hover/item:text-[#1a2e1a] transition-colors uppercase font-mono">{skill}</span>
                                         </div>
                                     ))}
@@ -141,7 +141,7 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
                         <div className="p-16 border-2 border-[#1a2e1a]/10 text-center group bg-[#1a2e1a]/5 relative overflow-hidden">
                              <ShieldAlert className="absolute -top-10 -right-10 w-48 h-48 opacity-[0.02] group-hover:scale-125 transition-transform duration-[4s]" />
                              <h4 className="text-[11px] font-black tracking-[1.5em] text-[#1a2e1a]/40 mb-12 italic leading-none uppercase">{t.safety}</h4>
-                             <div className="space-y-6 relative z-10 text-slate-400 group-hover:text-[#1a2e1a] transition-colors font-bold uppercase tracking-widest text-[9px]">
+                             <div className="space-y-6 relative z-10 text-slate-500 group-hover:text-[#1a2e1a] transition-colors font-bold uppercase tracking-widest text-[9px]">
                                 {[ 'Biosafety Level 3 Specialist', 'Ethical Review Board Lead', 'GCP / GLP Compliance Certified', 'Genetic Modification Permit #8822' ].map((item, i) => (
                                     <p key={i}>BIO_SAFE_#0{i + 1} :: {item}</p>
                                 ))}
@@ -153,10 +153,10 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
 
                         {/* MOLECULAR FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-200">
+                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-200 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-300 text-center italic mb-10 leading-none pb-4 border-b border-white uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#1a2e1a] mb-6 tracking-[0.5em] italic">ACADEMIC_RECORD_v0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.3em] text-[#1a2e1a]/60 mt-4">{edu.school}</p>
@@ -177,7 +177,7 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
                                 </h2>
                                 <div className="space-y-56">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-100 hover:border-[#1a2e1a] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-100 hover:border-[#1a2e1a] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-1.5 h-32 bg-[#1a2e1a] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#1a2e1a]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -192,7 +192,7 @@ export default function SyntheticBiologistTemplate({ data, theme = {}, highlight
                                                     [{exp.startDate} :: {exp.endDate}]
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-400 leading-relaxed font-light italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-16 group-hover:text-slate-800 group-hover:border-[#1a2e1a] bg-slate-50 transition-all duration-1000">
+                                            <p className="text-2xl text-slate-500 leading-relaxed font-light italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-16 group-hover:text-slate-800 group-hover:border-[#1a2e1a] bg-slate-50 transition-all duration-1000">
                                                 {exp.description}
                                             </p>
                                         </div>

@@ -4,7 +4,7 @@ export default function CivilEngineerTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-200 p-12" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-200 p-12 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
             <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-sm overflow-hidden border-t-[12px] border-orange-600 flex flex-col min-h-[1000px]">
                 <header className="bg-slate-900 p-20 text-white flex justify-between items-center relative overflow-hidden">
                     <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 -rotate-45 translate-x-32 -translate-y-32" />
@@ -18,7 +18,7 @@ export default function CivilEngineerTemplate({ data }) {
                         <div className="w-20 h-20 bg-orange-600 flex items-center justify-center rounded-lg shadow-[8px_8px_0px_#f9731633] mb-8 ml-auto">
                             <Building className="w-10 h-10 text-white" />
                         </div>
-                        <div className="space-y-1 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        <div className="space-y-1 text-xs font-bold text-slate-500 uppercase tracking-widest">
                             <div className="flex items-center justify-end gap-3">{personal.email} <Mail className="w-4 h-4 text-orange-500" /></div>
                             <div className="flex items-center justify-end gap-3">{personal.phone} <Phone className="w-4 h-4 text-orange-500" /></div>
                             <div className="flex items-center justify-end gap-3">{personal.location} <MapPin className="w-4 h-4 text-orange-500" /></div>
@@ -43,14 +43,14 @@ export default function CivilEngineerTemplate({ data }) {
                             </h2>
                             <div className="space-y-16">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative group">
+                                    <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[32px] top-0 text-[40px] font-black text-slate-100 select-none group-hover:text-orange-50 transition-colors italic">/0{experience.indexOf(exp) + 1}</div>
                                         <div className="flex justify-between items-start mb-6 border-b border-slate-100 pb-4">
                                             <div>
                                                 <h3 className="text-2xl font-black text-slate-900 leading-none mb-2 uppercase">{exp.position}</h3>
                                                 <p className="text-orange-600 font-bold text-[10px] uppercase tracking-widest">{exp.company}</p>
                                             </div>
-                                            <span className="text-[10px] font-black text-slate-400 uppercase italic">
+                                            <span className="text-[10px] font-black text-slate-500 uppercase italic">
                                                 {exp.startDate} - {exp.endDate}
                                             </span>
                                         </div>
@@ -65,10 +65,10 @@ export default function CivilEngineerTemplate({ data }) {
 
                     <aside className="col-span-4 p-12 bg-slate-50/50 space-y-20 flex flex-col justify-between">
                         <section>
-                            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-12 italic border-b-2 border-slate-200 pb-2">Technical Core</h2>
+                            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-12 italic border-b-2 border-slate-200 pb-2">Technical Core</h2>
                             <div className="space-y-3">
                                 {skills.map(s => (
-                                    <div key={s} className="flex items-center justify-between text-[10px] font-black uppercase text-slate-800 italic">
+                                    <div key={s} className="flex items-center justify-between text-[10px] font-black uppercase text-slate-800 italic break-inside-avoid page-break-inside-avoid">
                                         <span>{s}</span>
                                         <span className="text-orange-500">ENG_CERT</span>
                                     </div>
@@ -77,11 +77,11 @@ export default function CivilEngineerTemplate({ data }) {
                         </section>
 
                         <section>
-                            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-12 italic border-b-2 border-slate-200 pb-2">Academic Formation</h2>
+                            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-12 italic border-b-2 border-slate-200 pb-2">Academic Formation</h2>
                             <div className="space-y-10">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="relative pl-6 border-l-2 border-orange-600">
-                                        <p className="text-[9px] font-black text-slate-400 mb-2 uppercase italic">{edu.startDate} - {edu.endDate}</p>
+                                    <div key={edu.id} className="relative pl-6 border-l-2 border-orange-600 break-inside-avoid page-break-inside-avoid">
+                                        <p className="text-[9px] font-black text-slate-500 mb-2 uppercase italic">{edu.startDate} - {edu.endDate}</p>
                                         <h4 className="text-xs font-black text-slate-900 leading-snug uppercase tracking-tight mb-1">{edu.school}</h4>
                                         <p className="text-orange-600 text-[10px] font-bold uppercase">{edu.degree}</p>
                                     </div>

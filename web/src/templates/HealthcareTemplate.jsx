@@ -4,7 +4,7 @@ export default function HealthcareTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-teal-50 to-cyan-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-teal-50 to-cyan-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Header with Medical Theme */}
             <header className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-10 py-8">
                 <div className="flex items-center gap-6">
@@ -27,7 +27,7 @@ export default function HealthcareTemplate({ data }) {
                 {/* Main Content */}
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-teal-500">
+                        <section className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-teal-500 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-teal-700 mb-3 flex items-center gap-2">
                                 <Heart className="w-5 h-5" /> Profesyonel Özet
                             </h2>
@@ -36,13 +36,13 @@ export default function HealthcareTemplate({ data }) {
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm">
+                        <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-teal-700 mb-4 flex items-center gap-2">
                                 <Award className="w-5 h-5" /> Klinik Deneyim
                             </h2>
                             <div className="space-y-4">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-2 border-teal-200 pl-4">
+                                    <div key={exp.id} className="border-l-2 border-teal-200 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between">
                                             <div>
                                                 <h3 className="font-semibold text-gray-800">{exp.position}</h3>
@@ -60,11 +60,11 @@ export default function HealthcareTemplate({ data }) {
                     )}
 
                     {education.length > 0 && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm">
+                        <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-teal-700 mb-4">Eğitim & Uzmanlık</h2>
                             <div className="space-y-3">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="flex justify-between items-start">
+                                    <div key={edu.id} className="flex justify-between items-start break-inside-avoid page-break-inside-avoid">
                                         <div>
                                             <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                             <p className="text-teal-600">{edu.degree}</p>
@@ -84,7 +84,7 @@ export default function HealthcareTemplate({ data }) {
                             <h2 className="font-bold mb-4">Uzmanlık Alanları</h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2">
+                                    <div key={i} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                         <div className="w-2 h-2 rounded-full bg-white"></div>
                                         <span className="text-sm">{skill}</span>
                                     </div>
@@ -98,7 +98,7 @@ export default function HealthcareTemplate({ data }) {
                             <h2 className="font-bold text-teal-700 mb-4">Diller</h2>
                             <div className="space-y-2">
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex justify-between text-sm">
+                                    <div key={i} className="flex justify-between text-sm break-inside-avoid page-break-inside-avoid">
                                         <span className="text-gray-700">{lang.name}</span>
                                         <span className="text-teal-600">{lang.level}</span>
                                     </div>

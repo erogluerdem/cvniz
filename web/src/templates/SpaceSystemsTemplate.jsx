@@ -31,7 +31,7 @@ export default function SpaceSystemsTemplate({ data, theme = {}, highlightedFiel
     }
 
     return (
-        <div className="min-h-full bg-[#050505] text-slate-400 p-0 selection:bg-[#3b82f6] selection:text-white uppercase font-mono"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#050505] text-slate-500 p-0 selection:bg-[#3b82f6] selection:text-white uppercase font-mono print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -117,7 +117,7 @@ export default function SpaceSystemsTemplate({ data, theme = {}, highlightedFiel
                         
                         {/* MISSION PHILOSOPHY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900/50 border border-slate-800 p-10 relative overflow-hidden">
+                            <section className="space-y-10 group bg-slate-900/50 border border-slate-800 p-10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute -top-10 -right-10 p-4 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
                                     <Globe className="w-48 h-48" />
                                 </div>
@@ -132,13 +132,13 @@ export default function SpaceSystemsTemplate({ data, theme = {}, highlightedFiel
 
                         {/* SYSTEMS CORE (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10">
+                            <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-10 border-b border-slate-800 pb-4">
                                     <Cpu className="w-5 h-5 text-blue-500" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item py-2 border-b border-white/5">
+                                        <div key={i} className="group/item py-2 border-b border-white/5 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center text-[10px] font-black tracking-widest text-slate-600 group-hover/item:text-blue-400 transition-colors">
                                                 <span>{skill}</span>
                                                 <div className="flex gap-1">
@@ -153,10 +153,10 @@ export default function SpaceSystemsTemplate({ data, theme = {}, highlightedFiel
 
                         {/* FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-10 bg-slate-900 border border-slate-800 space-y-16">
+                            <section className="p-10 bg-slate-900 border border-slate-800 space-y-16 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-white/10 text-center italic mb-10 leading-none pb-4 border-b border-white/5 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-slate-700 group-hover:text-blue-500 transition-colors mb-4 tracking-[0.5em] italic">ACADEMIC_RECORD_#0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic text-white leading-tight uppercase">{edu.degree}</h4>
                                         <p className="text-[11px] font-black tracking-[0.3em] text-blue-500/50 mt-4">{edu.school}</p>
@@ -177,7 +177,7 @@ export default function SpaceSystemsTemplate({ data, theme = {}, highlightedFiel
                                 </h2>
                                 <div className="space-y-48">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-blue-500 transition-all duration-1000">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-blue-500 transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2px] w-1 h-32 bg-blue-500 scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_20px_#3b82f6]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">
@@ -207,7 +207,7 @@ export default function SpaceSystemsTemplate({ data, theme = {}, highlightedFiel
                              <h4 className="text-[12px] font-black tracking-[2em] text-white/10 mb-12 italic leading-none z-10 relative uppercase">{t.stack}</h4>
                              <div className="grid grid-cols-2 gap-10 mt-16 relative z-10 text-slate-500 group-hover:text-white transition-colors">
                                 {[ 'Orbital Mechanics (HEO/GEO)', 'Satellite Telemetry / GNSS', 'Propulsion Systems (Chemical/Ionic)', 'Space Radiation Hardening' ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-4 bg-slate-900 p-6 border border-slate-800 hover:border-blue-500 transition-all cursor-default group/item">
+                                    <div key={i} className="flex items-center gap-4 bg-slate-900 p-6 border border-slate-800 hover:border-blue-500 transition-all cursor-default group/item break-inside-avoid page-break-inside-avoid">
                                         <Spark className="w-4 h-4 text-blue-500 opacity-20 group-hover/item:opacity-100 transition-opacity" />
                                         <span className="text-[10px] uppercase font-black text-blue-400 group-hover:text-white transition-all tracking-tighter">{item}</span>
                                     </div>

@@ -20,7 +20,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-[#050505] text-white p-0 relative"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#050505] text-white p-0 relative print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -54,7 +54,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 {personal.title || 'System_Architect'}
                             </p>
 
-                            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
                                 {personal.email && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><Mail className="w-3 h-3 text-cyan-500" /> {personal.email}</span>}
                                 {personal.phone && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><Phone className="w-3 h-3 text-cyan-500" /> {personal.phone}</span>}
                                 {personal.location && <span className="flex items-center gap-2 hover:text-cyan-400 transition-colors"><MapPin className="w-3 h-3 text-cyan-500" /> {personal.location}</span>}
@@ -77,7 +77,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                     <div className="lg:col-span-8 space-y-10">
                         {/* Summary */}
                         {personal.summary && (
-                            <section className="relative">
+                            <section className="relative break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-purple-500" />
                                 <h2 className="text-xs font-black uppercase tracking-[0.4em] text-cyan-400 mb-6 flex items-center gap-3">
                                     <Zap className="w-4 h-4" /> {isEn ? 'CORE_OBJECTIVE' : 'TEMEL_VİZYON'}
@@ -96,7 +96,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 </h2>
                                 <div className="space-y-10">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="group relative">
+                                        <div key={exp.id} className="group relative break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-8 top-1.5 w-4 h-4 border border-cyan-500 bg-[#050505] group-hover:bg-cyan-500 transition-colors" />
                                             <div className="flex justify-between items-start mb-2">
                                                 <div>
@@ -107,7 +107,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                                     {exp.startDate} - {exp.endDate}
                                                 </span>
                                             </div>
-                                            <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                                            <p className="text-sm text-slate-500 leading-relaxed font-medium">
                                                 {exp.description}
                                             </p>
                                         </div>
@@ -124,7 +124,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {projects.map((project) => (
-                                        <div key={project.id} className="p-6 bg-white/[0.03] border border-white/5 hover:border-cyan-500/50 transition-all group">
+                                        <div key={project.id} className="p-6 bg-white/[0.03] border border-white/5 hover:border-cyan-500/50 transition-all group break-inside-avoid page-break-inside-avoid">
                                             <div className="flex items-center gap-3 mb-4">
                                                 <Hash className="w-4 h-4 text-cyan-400" />
                                                 <h3 className="font-black text-white italic group-hover:text-cyan-400 transition-colors">{project.name}</h3>
@@ -149,7 +149,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="border-l border-white/10 pl-4 py-2 hover:border-cyan-500 transition-colors group">
+                                        <div key={ref.id} className="border-l border-white/10 pl-4 py-2 hover:border-cyan-500 transition-colors group break-inside-avoid page-break-inside-avoid">
                                             <p className="font-black text-white text-sm mb-1 group-hover:text-cyan-400 transition-colors italic">{ref.name}</p>
                                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">{ref.company}</p>
                                             <div className="space-y-1">
@@ -176,7 +176,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 </h3>
                                 <div className="flex flex-wrap gap-2 text-cyan-400">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-1.5 bg-cyan-500/5 border border-cyan-500/20 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all cursor-default">
+                                        <div key={i} className="px-3 py-1.5 bg-cyan-500/5 border border-cyan-500/20 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             {skill}
                                         </div>
                                     ))}
@@ -216,8 +216,8 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                 </h3>
                                 <div className="flex flex-wrap gap-3">
                                     {hobbies.map((hobby) => (
-                                        <div key={hobby.id} className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-rose-500/30 transition-all">
-                                            <span className="text-xs font-bold text-slate-400">{hobby.name}</span>
+                                        <div key={hobby.id} className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/5 rounded-xl hover:border-rose-500/30 transition-all break-inside-avoid page-break-inside-avoid">
+                                            <span className="text-xs font-bold text-slate-500">{hobby.name}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -233,7 +233,7 @@ export default function CyberpunkV2Template({ data, theme, highlightedField }) {
                                     </div>
                                     {section.title}
                                 </h3>
-                                <div className="text-xs text-slate-400 leading-relaxed font-medium whitespace-pre-line">
+                                <div className="text-xs text-slate-500 leading-relaxed font-medium whitespace-pre-line">
                                     {section.content}
                                 </div>
                             </section>

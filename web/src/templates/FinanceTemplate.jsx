@@ -4,7 +4,7 @@ export default function FinanceTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Professional Finance Header */}
             <header className="bg-gradient-to-r from-emerald-800 to-emerald-900 text-white px-10 py-8">
                 <div className="flex justify-between items-start">
@@ -22,7 +22,7 @@ export default function FinanceTemplate({ data }) {
 
             <div className="p-8">
                 {personal.summary && (
-                    <section className="mb-8 bg-white rounded-lg p-6 shadow-sm border-t-4 border-emerald-600">
+                    <section className="mb-8 bg-white rounded-lg p-6 shadow-sm border-t-4 border-emerald-600 break-inside-avoid page-break-inside-avoid">
                         <h2 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-3">Profesyonel Profil</h2>
                         <p className="text-gray-600 leading-relaxed whitespace-pre-line">{personal.summary}</p>
                     </section>
@@ -31,13 +31,13 @@ export default function FinanceTemplate({ data }) {
                 <div className="grid grid-cols-3 gap-6">
                     <div className="col-span-2 space-y-6">
                         {experience.length > 0 && (
-                            <section className="bg-white rounded-lg p-6 shadow-sm">
+                            <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 flex items-center gap-2">
                                     <TrendingUp className="w-4 h-4" /> Kariyer Geçmişi
                                 </h2>
                                 <div className="space-y-5">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-4 border-l-2 border-emerald-200">
+                                        <div key={exp.id} className="relative pl-4 border-l-2 border-emerald-200 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-emerald-600"></div>
                                             <div className="flex justify-between mb-1">
                                                 <h3 className="font-bold text-gray-800">{exp.position}</h3>
@@ -52,11 +52,11 @@ export default function FinanceTemplate({ data }) {
                         )}
 
                         {education.length > 0 && (
-                            <section className="bg-white rounded-lg p-6 shadow-sm">
+                            <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4">Eğitim</h2>
                                 <div className="space-y-3">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="flex justify-between">
+                                        <div key={edu.id} className="flex justify-between break-inside-avoid page-break-inside-avoid">
                                             <div>
                                                 <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                                 <p className="text-emerald-700">{edu.degree}</p>
@@ -77,7 +77,7 @@ export default function FinanceTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="text-sm text-emerald-100">• {skill}</div>
+                                        <div key={i} className="text-sm text-emerald-100 break-inside-avoid page-break-inside-avoid">• {skill}</div>
                                     ))}
                                 </div>
                             </div>
@@ -88,7 +88,7 @@ export default function FinanceTemplate({ data }) {
                                 <h2 className="font-bold text-emerald-800 mb-4">Diller</h2>
                                 <div className="space-y-2">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="flex justify-between text-sm">
+                                        <div key={i} className="flex justify-between text-sm break-inside-avoid page-break-inside-avoid">
                                             <span>{lang.name}</span>
                                             <span className="text-emerald-600">{lang.level}</span>
                                         </div>

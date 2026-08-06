@@ -4,7 +4,7 @@ export default function ChefTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-stone-50" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-50 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             {/* Elegant Culinary Header */}
             <header className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-red-900 via-red-800 to-amber-900" />
@@ -78,7 +78,7 @@ export default function ChefTemplate({ data }) {
                 <div className="col-span-2 space-y-6">
                     {/* Culinary Philosophy */}
                     {personal.summary && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50 border-l-4 border-red-800">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50 border-l-4 border-red-800 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-700 to-red-900 flex items-center justify-center">
                                     <Flame className="w-5 h-5 text-amber-300" />
@@ -93,7 +93,7 @@ export default function ChefTemplate({ data }) {
 
                     {/* Professional Experience */}
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-700 to-red-900 flex items-center justify-center">
                                     <Utensils className="w-5 h-5 text-white" />
@@ -102,7 +102,7 @@ export default function ChefTemplate({ data }) {
                             </div>
                             <div className="space-y-5 pl-[52px]">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="relative pl-6 border-l-2 border-red-300">
+                                    <div key={exp.id} className="relative pl-6 border-l-2 border-red-300 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gradient-to-br from-red-700 to-red-900 ring-4 ring-white" />
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
@@ -126,7 +126,7 @@ export default function ChefTemplate({ data }) {
 
                     {/* Education & Certifications */}
                     {education.length > 0 && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-red-100/50 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
                                     <BookOpen className="w-5 h-5 text-white" />
@@ -135,7 +135,7 @@ export default function ChefTemplate({ data }) {
                             </div>
                             <div className="grid grid-cols-2 gap-4 pl-[52px]">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="p-4 bg-gradient-to-br from-red-50 to-amber-50 rounded-xl border border-red-100">
+                                    <div key={edu.id} className="p-4 bg-gradient-to-br from-red-50 to-amber-50 rounded-xl border border-red-100 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-bold text-gray-800">{edu.school || 'Okul'}</h3>
                                         <p className="text-red-700 text-sm italic">{edu.degree || 'Program'}</p>
                                         <p className="text-gray-500 text-xs mt-1">{edu.startDate} - {edu.endDate}</p>
@@ -157,7 +157,7 @@ export default function ChefTemplate({ data }) {
                             </div>
                             <div className="space-y-3">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-3 text-sm">
+                                    <div key={i} className="flex items-center gap-3 text-sm break-inside-avoid page-break-inside-avoid">
                                         <Star className="w-4 h-4 text-amber-300" />
                                         <span className="text-red-100">{skill}</span>
                                     </div>

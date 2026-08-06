@@ -4,7 +4,7 @@ export default function VeterinaryTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-emerald-50 p-12" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-emerald-50 p-12 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Quicksand', sans-serif" }}>
             <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-[48px] overflow-hidden border-2 border-white flex flex-col min-h-[900px]">
                 <header className="bg-emerald-600 p-16 text-white relative">
                     <div className="absolute right-12 top-1/2 -translate-y-1/2 opacity-10">
@@ -42,7 +42,7 @@ export default function VeterinaryTemplate({ data }) {
                             </h2>
                             <div className="space-y-12">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative pl-12">
+                                    <div key={exp.id} className="relative pl-12 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute left-0 top-0 w-8 h-8 bg-emerald-100 flex items-center justify-center rounded-full">
                                             <div className="w-2 h-2 rounded-full bg-emerald-600" />
                                         </div>
@@ -76,7 +76,7 @@ export default function VeterinaryTemplate({ data }) {
                             <h2 className="text-xs font-black uppercase tracking-widest text-emerald-800 mb-8 border-b-2 border-emerald-100 pb-2">Hekimlik Eğitimi</h2>
                             <div className="space-y-8">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="group">
+                                    <div key={edu.id} className="group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-bold text-emerald-400 mb-2 uppercase tracking-tighter">{edu.startDate} - {edu.endDate}</p>
                                         <h4 className="text-sm font-bold text-slate-900 leading-snug group-hover:text-emerald-600 transition-colors">{edu.school}</h4>
                                         <p className="text-slate-500 text-[10px] font-bold mt-1 italic">{edu.degree}</p>

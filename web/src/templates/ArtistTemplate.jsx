@@ -4,7 +4,7 @@ export default function ArtistTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-neutral-950" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-neutral-950 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
             {/* Artistic Header with Gradient Mesh */}
             <header className="relative overflow-hidden">
                 {/* Animated Gradient Background */}
@@ -57,7 +57,7 @@ export default function ArtistTemplate({ data }) {
 
             {/* Artist Statement */}
             {personal.summary && (
-                <section className="px-10 py-10 border-t border-white/10">
+                <section className="px-10 py-10 border-t border-white/10 break-inside-avoid page-break-inside-avoid">
                     <div className="max-w-3xl mx-auto text-center">
                         <Sparkles className="w-8 h-8 text-fuchsia-400 mx-auto mb-4" />
                         <p className="text-xl text-neutral-300 leading-relaxed italic font-light">
@@ -84,7 +84,7 @@ export default function ArtistTemplate({ data }) {
                                     {experience.map((exp, index) => (
                                         <div
                                             key={exp.id}
-                                            className="group relative bg-gradient-to-br from-white/5 to-white/0 rounded-2xl p-5 border border-white/10 hover:border-fuchsia-500/50 transition-all"
+                                            className="group relative bg-gradient-to-br from-white/5 to-white/0 rounded-2xl p-5 border border-white/10 hover:border-fuchsia-500/50 transition-all break-inside-avoid page-break-inside-avoid"
                                         >
                                             {/* Color accent bar */}
                                             <div
@@ -129,7 +129,7 @@ export default function ArtistTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-4">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="flex gap-4 bg-white/5 rounded-xl p-4 border border-white/10">
+                                        <div key={edu.id} className="flex gap-4 bg-white/5 rounded-xl p-4 border border-white/10 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0">
                                                 <span className="text-cyan-400 font-bold">{edu.startDate?.slice(-2) || '??'}</span>
                                             </div>
@@ -190,7 +190,7 @@ export default function ArtistTemplate({ data }) {
                                 <h2 className="font-bold text-white mb-4">Diller</h2>
                                 <div className="space-y-3">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="flex justify-between items-center">
+                                        <div key={i} className="flex justify-between items-center break-inside-avoid page-break-inside-avoid">
                                             <span className="text-neutral-300">{lang.name}</span>
                                             <span className="text-sm px-3 py-1 bg-gradient-to-r from-fuchsia-500/20 to-purple-500/20 rounded-full text-fuchsia-300">
                                                 {lang.level}

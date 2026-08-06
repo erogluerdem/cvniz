@@ -33,7 +33,7 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
     }
 
     return (
-        <div className="min-h-full bg-black text-slate-400 p-0 selection:bg-[#7c3aed] selection:text-white uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-slate-500 p-0 selection:bg-[#7c3aed] selection:text-white uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -113,7 +113,7 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
                         
                         {/* QUANTUM SUMMARY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden">
+                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.05]">
                                     <Spark className="w-24 h-24 text-[#7c3aed]" />
                                 </div>
@@ -127,7 +127,7 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
                         )}
 
                         {/* QUBIT PERFORMANCE METRICS */}
-                        <section className="bg-[#7c3aed]/5 border border-[#7c3aed]/20 p-10 space-y-12 relative overflow-hidden group">
+                        <section className="bg-[#7c3aed]/5 border border-[#7c3aed]/20 p-10 space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-30 transition-opacity">
                                 <Cpu className="w-32 h-32" />
                              </div>
@@ -139,7 +139,7 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
                                     { label: 'Gate Error Rate', val: '<0.01%' },
                                     { label: 'Entanglement Density', val: '94%' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/stat">
+                                    <div key={i} className="flex justify-between items-baseline group/stat break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 group-hover/stat:text-white transition-colors">{stat.label}</p>
                                         <p className="text-3xl font-black italic tracking-tighter text-[#7c3aed]">{stat.val}</p>
                                     </div>
@@ -149,13 +149,13 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
 
                         {/* QUANTUM STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/10 flex items-center gap-4 italic mb-10 border-b border-slate-800 pb-4 uppercase">
                                     <Terminal className="w-5 h-5 text-[#7c3aed]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-4 border border-slate-900 bg-black/40 hover:border-[#7c3aed]/30 transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-4 border border-slate-900 bg-black/40 hover:border-[#7c3aed]/30 transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-[#7c3aed] scale-y-0 group-hover:scale-y-100 transition-transform duration-500" />
                                             <span className="text-[10px] font-bold tracking-widest text-slate-600 group-hover:text-white transition-colors uppercase">{skill}</span>
                                         </div>
@@ -166,10 +166,10 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
 
                         {/* ACADEMIC THEORY (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-900/50 border-y border-slate-800">
+                            <section className="space-y-16 p-10 bg-slate-900/50 border-y border-slate-800 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold tracking-[1em] text-white/5 text-center italic mb-10 leading-none pb-4 border-b border-white/5 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-bold text-slate-700 group-hover:text-[#7c3aed] transition-colors mb-6 tracking-[0.5em] italic">QUANTUM_FORMATION_0{i + 1}</p>
                                         <h4 className="text-3xl font-bold italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white">{edu.degree}</h4>
                                         <p className="text-[11px] font-bold tracking-[0.3em] text-[#7c3aed]/40 mt-4">{edu.school}</p>
@@ -190,7 +190,7 @@ export default function QuantumComputingTemplate({ data, theme = {}, highlighted
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-[#7c3aed] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-900 hover:border-[#7c3aed] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2.5px] w-1.5 h-32 bg-[#7c3aed] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#7c3aed]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">

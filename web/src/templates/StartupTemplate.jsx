@@ -4,7 +4,7 @@ export default function StartupTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-violet-950 to-indigo-950 text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-violet-950 to-indigo-950 text-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Startup Header */}
             <header className="px-10 py-10 text-center relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20">
@@ -42,7 +42,7 @@ export default function StartupTemplate({ data }) {
             <div className="px-8 pb-8 grid grid-cols-3 gap-6">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                        <section className="bg-white/10 backdrop-blur-sm rounded-xl p-6 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-violet-300 mb-3 flex items-center gap-2">
                                 <Lightbulb className="w-5 h-5" /> Vizyon
                             </h2>
@@ -51,13 +51,13 @@ export default function StartupTemplate({ data }) {
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                        <section className="bg-white/10 backdrop-blur-sm rounded-xl p-6 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-violet-300 mb-4 flex items-center gap-2">
                                 <TrendingUp className="w-5 h-5" /> Girişimlerim
                             </h2>
                             <div className="space-y-5">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-2 border-violet-500 pl-4">
+                                    <div key={exp.id} className="border-l-2 border-violet-500 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between">
                                             <h3 className="font-bold text-white">{exp.position}</h3>
                                             <span className="text-sm text-violet-400">{exp.startDate} - {exp.endDate}</span>
@@ -89,7 +89,7 @@ export default function StartupTemplate({ data }) {
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
                             <h2 className="font-bold text-violet-300 mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3">
+                                <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold text-white">{edu.school}</h3>
                                     <p className="text-violet-400 text-sm">{edu.degree}</p>
                                 </div>
@@ -101,7 +101,7 @@ export default function StartupTemplate({ data }) {
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
                             <h2 className="font-bold text-violet-300 mb-4">Diller</h2>
                             {languages.map((lang, i) => (
-                                <div key={i} className="flex justify-between text-sm mb-2">
+                                <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                     <span className="text-white">{lang.name}</span>
                                     <span className="text-violet-400">{lang.level}</span>
                                 </div>

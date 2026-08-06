@@ -10,7 +10,7 @@ export default function IndustrialRawTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-zinc-900 p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-zinc-900 p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
 
             {/* INDUSTRIAL CONCRETE BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -57,7 +57,7 @@ export default function IndustrialRawTemplate({ data }) {
                             </h1>
                             <div className="flex items-center gap-6">
                                 <div className="h-0.5 w-12 bg-[#ff6b00]" />
-                                <p className="text-2xl font-black uppercase tracking-[0.3em] text-zinc-400">{personal.title}</p>
+                                <p className="text-2xl font-black uppercase tracking-[0.3em] text-zinc-500">{personal.title}</p>
                             </div>
                         </div>
                     </div>
@@ -79,10 +79,10 @@ export default function IndustrialRawTemplate({ data }) {
                                 { icon: Phone, value: personal.phone, label: 'Voice_Link' },
                                 { icon: MapPin, value: personal.location, label: 'Base_Loc' }
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-4 bg-zinc-100 p-3 border-2 border-zinc-950 hover:bg-[#ff6b00] hover:text-white transition-all cursor-default group">
+                                <div key={i} className="flex items-center gap-4 bg-zinc-100 p-3 border-2 border-zinc-950 hover:bg-[#ff6b00] hover:text-white transition-all cursor-default group break-inside-avoid page-break-inside-avoid">
                                     <item.icon className="w-4 h-4 shrink-0" />
                                     <div className="flex flex-col">
-                                        <span className="text-[6px] text-zinc-400 group-hover:text-white/50">{item.label}</span>
+                                        <span className="text-[6px] text-zinc-500 group-hover:text-white/50">{item.label}</span>
                                         <span className="truncate max-w-[180px]">{item.value}</span>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@ export default function IndustrialRawTemplate({ data }) {
                 <main className="relative z-10 grid grid-cols-12 flex-1 bg-white">
                     {/* Main Content Area */}
                     <div className="col-span-8 p-16 flex flex-col gap-20 border-r-[4px] border-zinc-950">
-                        <section className="relative">
+                        <section className="relative break-inside-avoid page-break-inside-avoid">
                             <div className="absolute -top-10 -left-6 text-[10px] font-black uppercase tracking-[0.8em] text-zinc-200 pointer-events-none select-none">Foundational_Directive</div>
                             <div className="bg-zinc-100 border-4 border-zinc-950 p-10 shadow-[8px_8px_0px_#ff6b00] relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-900/5 -rotate-12 translate-x-1/2 -translate-y-1/2" />
@@ -104,7 +104,7 @@ export default function IndustrialRawTemplate({ data }) {
                             </div>
                         </section>
 
-                        <section className="flex-1">
+                        <section className="flex-1 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-xl font-black uppercase tracking-[0.4em] mb-12 flex items-center gap-4">
                                 <span className="bg-[#ff6b00] text-white p-2 border-2 border-zinc-950 shadow-[4px_4px_0px_black]"><Briefcase className="w-6 h-6" /></span>
                                 Career_Logistics
@@ -145,7 +145,7 @@ export default function IndustrialRawTemplate({ data }) {
                         {/* Vertical Hazard Stripes */}
                         <div className="absolute top-0 right-0 w-2 h-full bg-zinc-900" style={{ backgroundImage: 'repeating-linear-gradient(0deg, #ff6b00, #ff6b00 10px, #18181b 10px, #18181b 20px)' }} />
 
-                        <section className="p-12 border-b-[6px] border-zinc-950 relative z-10">
+                        <section className="p-12 border-b-[6px] border-zinc-950 relative z-10 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#ff6b00] mb-10 flex items-center gap-3">
                                 <Wrench className="w-4 h-4" /> Skill_Module
                             </h2>
@@ -163,11 +163,11 @@ export default function IndustrialRawTemplate({ data }) {
                             </div>
                         </section>
 
-                        <section className="p-12 relative z-10">
-                            <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400 mb-10">Structural_Matrix</h2>
+                        <section className="p-12 relative z-10 break-inside-avoid page-break-inside-avoid">
+                            <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-500 mb-10">Structural_Matrix</h2>
                             <div className="space-y-12">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="bg-white p-6 border-4 border-zinc-950 shadow-[8px_8px_0px_zinc-200] group hover:shadow-[8px_8px_0px_#ff6b00] transition-all">
+                                    <div key={i} className="bg-white p-6 border-4 border-zinc-950 shadow-[8px_8px_0px_zinc-200] group hover:shadow-[8px_8px_0px_#ff6b00] transition-all break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-zinc-300 mb-3 uppercase tracking-widest group-hover:text-[#ff6b00]">{edu.startDate} <span className="text-zinc-100">—</span> {edu.endDate}</p>
                                         <h4 className="text-xl font-black uppercase leading-[1.1] mb-2 tracking-tighter underline group-hover:no-underline transition-all">{edu.school}</h4>
                                         <p className="text-xs font-bold italic tracking-tight text-zinc-500 uppercase">{edu.degree}</p>

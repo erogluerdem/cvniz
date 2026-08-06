@@ -19,7 +19,7 @@ export default function SwissGridTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-white text-black p-0 border-[10px] border-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-black p-0 border-[10px] border-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem'
@@ -66,7 +66,7 @@ export default function SwissGridTemplate({ data, theme, highlightedField }) {
                             <h2 className="text-sm font-black uppercase mb-8 border-b-2 border-black inline-block tracking-[0.2em]">{t.skills}</h2>
                             <div className="space-y-3">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex justify-between items-center group">
+                                    <div key={i} className="flex justify-between items-center group break-inside-avoid page-break-inside-avoid">
                                         <span className="text-[10px] font-black uppercase tracking-widest">{skill}</span>
                                         <div className="w-12 h-1 bg-black/5 group-hover:bg-black transition-colors" />
                                     </div>
@@ -111,7 +111,7 @@ export default function SwissGridTemplate({ data, theme, highlightedField }) {
                             </div>
                             <div className="space-y-12">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="grid grid-cols-1 md:grid-cols-4 gap-8 group">
+                                    <div key={exp.id} className="grid grid-cols-1 md:grid-cols-4 gap-8 group break-inside-avoid page-break-inside-avoid">
                                         <div className="md:col-span-1">
                                             <span className="text-xs font-black uppercase tracking-widest bg-black text-white px-2 py-1">
                                                 {exp.startDate} – {exp.endDate}
@@ -136,8 +136,8 @@ export default function SwissGridTemplate({ data, theme, highlightedField }) {
                             <h2 className="text-3xl font-black uppercase mb-12 border-b-8 border-black inline-block tracking-tighter">{t.education}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="relative pt-6 border-t-[1px] border-black/10">
-                                        <span className="text-[10px] font-black text-slate-400 absolute top-0 left-0 uppercase">{edu.startDate} – {edu.endDate}</span>
+                                    <div key={edu.id} className="relative pt-6 border-t-[1px] border-black/10 break-inside-avoid page-break-inside-avoid">
+                                        <span className="text-[10px] font-black text-slate-500 absolute top-0 left-0 uppercase">{edu.startDate} – {edu.endDate}</span>
                                         <h4 className="text-lg font-black uppercase mb-1">{edu.degree}</h4>
                                         <p className="text-xs font-black uppercase tracking-widest opacity-60 mb-3">{edu.school}</p>
                                     </div>
@@ -152,7 +152,7 @@ export default function SwissGridTemplate({ data, theme, highlightedField }) {
                             <h2 className="text-3xl font-black uppercase mb-12 tracking-tighter opacity-10">{t.references}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 {references.map((ref) => (
-                                    <div key={ref.id} className="bg-black text-white p-6 shadow-[10px_10px_0px_#f0f0f0] hover:shadow-none transition-all">
+                                    <div key={ref.id} className="bg-black text-white p-6 shadow-[10px_10px_0px_#f0f0f0] hover:shadow-none transition-all break-inside-avoid page-break-inside-avoid">
                                         <p className="text-lg font-black uppercase tracking-tight mb-2">{ref.name}</p>
                                         <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 opacity-60 italic">{ref.company}</p>
                                         <div className="text-[10px] font-black uppercase tracking-widest flex flex-col gap-1">

@@ -4,7 +4,7 @@ export default function CustomerSuccessTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-cyan-50 p-12" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-cyan-50 p-12 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden border border-cyan-100 flex flex-col min-h-[900px]">
                 <header className="bg-gradient-to-r from-cyan-600 to-blue-600 p-16 text-white">
                     <div className="flex justify-between items-start">
@@ -25,10 +25,10 @@ export default function CustomerSuccessTemplate({ data }) {
 
                 <div className="flex-1 grid grid-cols-12 gap-0">
                     <div className="col-span-8 p-16 border-r border-slate-100">
-                        <section className="mb-16">
+                        <section className="mb-16 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <Smile className="w-5 h-5 text-cyan-500" />
-                                <h2 className="text-xs font-black uppercase tracking-widest text-slate-400">Empathy & Strategy</h2>
+                                <h2 className="text-xs font-black uppercase tracking-widest text-slate-500">Empathy & Strategy</h2>
                             </div>
                             <p className="text-lg text-slate-600 border-l-4 border-cyan-500 pl-8 leading-relaxed font-medium">
                                 {personal.summary}
@@ -38,11 +38,11 @@ export default function CustomerSuccessTemplate({ data }) {
                         <section>
                             <div className="flex items-center gap-3 mb-10">
                                 <Briefcase className="w-5 h-5 text-cyan-500" />
-                                <h2 className="text-xs font-black uppercase tracking-widest text-slate-400">Success Milestones</h2>
+                                <h2 className="text-xs font-black uppercase tracking-widest text-slate-500">Success Milestones</h2>
                             </div>
                             <div className="space-y-12">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative pl-12">
+                                    <div key={exp.id} className="relative pl-12 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute left-0 top-0 w-8 h-8 bg-cyan-50 flex items-center justify-center rounded-lg">
                                             <div className="w-2 h-2 rounded-full bg-cyan-500" />
                                         </div>
@@ -51,7 +51,7 @@ export default function CustomerSuccessTemplate({ data }) {
                                                 <h3 className="text-xl font-bold text-slate-900 leading-none mb-2">{exp.position}</h3>
                                                 <p className="text-cyan-600 font-bold text-xs uppercase tracking-wide">{exp.company}</p>
                                             </div>
-                                            <span className="text-[10px] font-black text-slate-400 bg-slate-50 px-3 py-1 rounded-full uppercase italic">
+                                            <span className="text-[10px] font-black text-slate-500 bg-slate-50 px-3 py-1 rounded-full uppercase italic">
                                                 {exp.startDate} - {exp.endDate}
                                             </span>
                                         </div>
@@ -65,18 +65,18 @@ export default function CustomerSuccessTemplate({ data }) {
                     </div>
 
                     <aside className="col-span-4 p-12 bg-slate-50/30">
-                        <section className="mb-16">
-                            <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-8">Client Toolkit</h2>
+                        <section className="mb-16 break-inside-avoid page-break-inside-avoid">
+                            <h2 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-8">Client Toolkit</h2>
                             <div className="flex flex-wrap gap-2">
                                 {skills.map(s => <span key={s} className="px-3 py-1.5 bg-white text-cyan-700 rounded-xl text-[10px] font-black border border-cyan-100 shadow-sm">{s}</span>)}
                             </div>
                         </section>
 
-                        <section className="mb-16">
-                            <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-8">Academic Path</h2>
+                        <section className="mb-16 break-inside-avoid page-break-inside-avoid">
+                            <h2 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-8">Academic Path</h2>
                             <div className="space-y-8">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="group">
+                                    <div key={edu.id} className="group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-black text-cyan-400 mb-2 uppercase italic">{edu.startDate} - {edu.endDate}</p>
                                         <h4 className="text-sm font-black text-slate-900 leading-snug group-hover:text-cyan-600 transition-colors uppercase">{edu.school}</h4>
                                         <p className="text-slate-500 text-[10px] font-bold mt-1 tracking-wide">{edu.degree}</p>

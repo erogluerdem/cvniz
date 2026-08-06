@@ -15,7 +15,7 @@ export default function NeoGradientTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -49,7 +49,7 @@ export default function NeoGradientTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
+                    <section className="mb-8 p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed text-white/90 italic">"{personal.summary}"</p>
                     </section>
                 )}
@@ -63,7 +63,7 @@ export default function NeoGradientTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm font-black uppercase tracking-widest text-white/50 mb-6">{t.experience}</h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-white/30 pl-4">
+                                        <div key={exp.id} className="border-l-2 border-white/30 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-lg font-bold">{exp.position}</h3>
                                             <p className="text-white/60 text-sm mb-2">{exp.company} • {exp.startDate} - {exp.endDate}</p>
                                             <p className="text-white/80 text-sm">{exp.description}</p>
@@ -75,11 +75,11 @@ export default function NeoGradientTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
+                            <section className="p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-black uppercase tracking-widest text-white/50 mb-6">{t.references}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-white/5 rounded-xl">
+                                        <div key={ref.id} className="p-4 bg-white/5 rounded-xl break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-white/60 text-sm">{ref.company}</p>
                                             <p className="text-white/50 text-xs mt-2">{ref.email}</p>
@@ -94,7 +94,7 @@ export default function NeoGradientTemplate({ data, theme, highlightedField }) {
                     <aside className="space-y-6">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                            <section className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm font-black uppercase tracking-widest text-white/50 mb-4">{t.skills}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {skills.map((skill, i) => (
@@ -122,7 +122,7 @@ export default function NeoGradientTemplate({ data, theme, highlightedField }) {
 
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
-                            <section className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                            <section className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm font-black uppercase tracking-widest text-white/50 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

@@ -32,7 +32,7 @@ export default function EthicsAdvisorTemplate({ data, theme = {}, highlightedFie
     }
 
     return (
-        <div className="min-h-full bg-stone-50 text-stone-800 p-0 selection:bg-[#312e81] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-50 text-stone-800 p-0 selection:bg-[#312e81] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -107,7 +107,7 @@ export default function EthicsAdvisorTemplate({ data, theme = {}, highlightedFie
                         
                         {/* MORAL PHILOSOPHY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white p-12 border border-stone-100 shadow-sm relative overflow-hidden">
+                            <section className="space-y-10 group bg-white p-12 border border-stone-100 shadow-sm relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-6 opacity-[0.03]">
                                     <Lightbulb className="w-24 h-24" />
                                 </div>
@@ -122,13 +122,13 @@ export default function EthicsAdvisorTemplate({ data, theme = {}, highlightedFie
 
                         {/* GOVERNANCE FRAMEWORKS (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-stone-200 flex items-center gap-4 italic mb-10 border-b border-stone-100 pb-4">
                                     <Award className="w-6 h-6 text-[#312e81]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-8">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-6">
+                                        <div key={i} className="group/item relative pb-6 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center mb-4">
                                                 <span className="text-[14px] font-bold uppercase tracking-widest text-stone-400 group-hover/item:text-[#312e81] transition-colors italic whitespace-nowrap">{skill}</span>
                                                 <div className="h-px flex-1 bg-stone-100 mx-6 opacity-0 group-hover/item:opacity-100 transition-opacity" />
@@ -142,11 +142,11 @@ export default function EthicsAdvisorTemplate({ data, theme = {}, highlightedFie
 
                         {/* ACADEMIC THEORY (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-16 border-l-[30px] border-[#312e81] bg-white shadow-2xl skew-y-[-1deg]">
+                            <section className="p-16 border-l-[30px] border-[#312e81] bg-white shadow-2xl skew-y-[-1deg] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold uppercase tracking-[1em] text-stone-200 text-center italic mb-16 leading-none pb-4 border-b border-stone-50 skew-y-[1deg] uppercase">{t.education}</h3>
                                 <div className="space-y-24 skew-y-[1deg]">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="text-center group/edu">
+                                        <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[10px] font-bold text-stone-200 group-hover:text-[#312e81] transition-colors mb-6 tracking-[0.4em] italic uppercase">THESIS_ADVISORY_0{i + 1}</p>
                                             <h4 className="text-4xl font-light italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform uppercase text-stone-800" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{edu.degree}</h4>
                                             <p className="text-[13px] font-bold uppercase tracking-[0.3em] text-[#312e81]/60 underline underline-offset-8 decoration-stone-200">{edu.school}</p>
@@ -168,7 +168,7 @@ export default function EthicsAdvisorTemplate({ data, theme = {}, highlightedFie
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-stone-100 hover:border-[#312e81] transition-all duration-[1s]">
+                                        <div key={i} className="group relative pl-32 border-l border-stone-100 hover:border-[#312e81] transition-all duration-[1s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1.5 h-32 bg-[#312e81] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-16">
@@ -198,7 +198,7 @@ export default function EthicsAdvisorTemplate({ data, theme = {}, highlightedFie
                              <h4 className="text-[12px] font-black tracking-[2em] text-stone-200 mb-16 italic leading-none relative z-10 uppercase">{t.frameworks}</h4>
                              <div className="grid grid-cols-2 gap-10 relative z-10 text-stone-500 group-hover:text-[#312e81] transition-colors">
                                 {[ 'IEEE Ethically Aligned Design', 'UN Bioethics Declaration (2005)', 'EU AI Act Governance Model', 'Corporate Philanthropy Ethical Pass' ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-6 p-6 bg-white border border-stone-100 italic font-light text-xl shadow-sm hover:shadow-xl transition-all" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                                    <div key={i} className="flex items-center gap-6 p-6 bg-white border border-stone-100 italic font-light text-xl shadow-sm hover:shadow-xl transition-all break-inside-avoid page-break-inside-avoid" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                                         <div className="w-2 h-2 bg-[#312e81]" />
                                         <span>{item}</span>
                                     </div>

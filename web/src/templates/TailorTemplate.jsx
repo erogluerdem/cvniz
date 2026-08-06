@@ -28,7 +28,7 @@ export default function TailorTemplate({ data, theme = {}, highlightedField = nu
     }
 
     return (
-        <div className="min-h-full bg-[#fdfdfc] text-[#1c1c1c] p-0 selection:bg-[#1c1c1c] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fdfdfc] text-[#1c1c1c] p-0 selection:bg-[#1c1c1c] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -104,7 +104,7 @@ export default function TailorTemplate({ data, theme = {}, highlightedField = nu
                         
                         {/* THE TAILOR'S MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-8">
+                            <section className="space-y-8 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.6em] text-stone-300 flex items-center gap-4 italic mb-8 border-b border-stone-200 pb-4">
                                     <PenTool className="w-5 h-5 text-[#1c1c1c]" /> {t.manifesto}
                                 </h3>
@@ -116,13 +116,13 @@ export default function TailorTemplate({ data, theme = {}, highlightedField = nu
 
                         {/* FABRIC MASTERY (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.6em] text-stone-300 flex items-center gap-4 italic mb-8 border-b border-stone-200 pb-4">
                                     <Layers className="w-5 h-5 text-[#1c1c1c]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item">
+                                        <div key={i} className="group/item break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="text-[15px] font-black uppercase tracking-widest group-hover/item:text-black text-[#1c1c1c]/60 transition-colors italic">{skill}</span>
                                             </div>
@@ -137,10 +137,10 @@ export default function TailorTemplate({ data, theme = {}, highlightedField = nu
 
                         {/* APPRENTICESHIP (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-8 bg-white border border-[#1c1c1c]/5 shadow-sm space-y-12">
+                            <section className="p-8 bg-white border border-[#1c1c1c]/5 shadow-sm space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.6em] text-stone-200 text-center italic mb-10 leading-none pb-4 border-b border-stone-50">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-stone-300 group-hover:text-[#1c1c1c] transition-colors mb-2 uppercase italic tracking-widest">MASTER_STUDY_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic text-black leading-tight uppercase" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{edu.degree}</h4>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 mt-2">{edu.school}</p>
@@ -161,7 +161,7 @@ export default function TailorTemplate({ data, theme = {}, highlightedField = nu
                                 </h2>
                                 <div className="space-y-40">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-stone-100 hover:border-[#1c1c1c] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-32 border-l border-stone-100 hover:border-[#1c1c1c] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             {/* STITCH DECORATION */}
                                             <div className="absolute top-0 -left-[1.5px] w-1 h-32 bg-[#1c1c1c] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700" />
                                             
@@ -187,7 +187,7 @@ export default function TailorTemplate({ data, theme = {}, highlightedField = nu
                         )}
 
                         {/* SIGNATURE SECTION */}
-                        <section className="p-16 border-2 border-dashed border-[#1c1c1c]/10 bg-stone-50/50 text-center group hover:border-[#1c1c1c] transition-all duration-1000">
+                        <section className="p-16 border-2 border-dashed border-[#1c1c1c]/10 bg-stone-50/50 text-center group hover:border-[#1c1c1c] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                              <div className="inline-block p-10 bg-white border border-[#1c1c1c]/10 mb-10 shadow-xl group-hover:scale-110 transition-transform">
                                 <Award className="w-16 h-16 text-[#1c1c1c]/20 group-hover:text-[#1c1c1c]" />
                              </div>

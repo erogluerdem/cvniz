@@ -15,7 +15,7 @@ export default function DuoToneTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full flex"
+        <div id="cv-template-wrapper" className="min-h-full flex print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -45,7 +45,7 @@ export default function DuoToneTemplate({ data, theme, highlightedField }) {
                         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">{t.skills}</h3>
                         <div className="space-y-2">
                             {skills.map((skill, i) => (
-                                <div key={i} className="flex items-center gap-2">
+                                <div key={i} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                     <div className="w-2 h-2 bg-sky-400 rounded-full" />
                                     <span className="text-sm">{skill}</span>
                                 </div>
@@ -62,7 +62,7 @@ export default function DuoToneTemplate({ data, theme, highlightedField }) {
                             {education.map((edu) => (
                                 <div key={edu.id}>
                                     <h4 className="font-bold text-sm">{edu.degree}</h4>
-                                    <p className="text-slate-400 text-xs">{edu.school}</p>
+                                    <p className="text-slate-500 text-xs">{edu.school}</p>
                                 </div>
                             ))}
                         </div>
@@ -92,7 +92,7 @@ export default function DuoToneTemplate({ data, theme, highlightedField }) {
             <div className="w-2/3 bg-white text-slate-800 p-8 md:p-10">
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-10 pb-8 border-b border-slate-100">
+                    <section className="mb-10 pb-8 border-b border-slate-100 break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed text-slate-600 italic">"{personal.summary}"</p>
                     </section>
                 )}
@@ -109,7 +109,7 @@ export default function DuoToneTemplate({ data, theme, highlightedField }) {
                                             <h3 className="text-xl font-bold">{exp.position}</h3>
                                             <p className="text-sky-600 font-medium">{exp.company}</p>
                                         </div>
-                                        <span className="text-sm text-slate-400 bg-slate-100 px-3 py-1 rounded-full">{exp.startDate} - {exp.endDate}</span>
+                                        <span className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{exp.startDate} - {exp.endDate}</span>
                                     </div>
                                     <p className="text-slate-600 leading-relaxed">{exp.description}</p>
                                 </div>
@@ -124,7 +124,7 @@ export default function DuoToneTemplate({ data, theme, highlightedField }) {
                         <h2 className="text-xs font-bold uppercase tracking-widest text-sky-600 mb-6">{t.references}</h2>
                         <div className="grid grid-cols-2 gap-6">
                             {references.map((ref) => (
-                                <div key={ref.id} className="p-4 border border-slate-200 rounded-xl">
+                                <div key={ref.id} className="p-4 border border-slate-200 rounded-xl break-inside-avoid page-break-inside-avoid">
                                     <p className="font-bold">{ref.name}</p>
                                     <p className="text-sm text-slate-500">{ref.company}</p>
                                     <p className="text-xs text-sky-600 mt-2">{ref.email}</p>

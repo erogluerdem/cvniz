@@ -28,7 +28,7 @@ export default function MuseumCuratorTemplate({ data, theme = {}, highlightedFie
     }
 
     return (
-        <div className="min-h-full bg-white text-[#1a1a1a] p-0 selection:bg-[#c5a059] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-[#1a1a1a] p-0 selection:bg-[#c5a059] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -110,13 +110,13 @@ export default function MuseumCuratorTemplate({ data, theme = {}, highlightedFie
 
                         {/* STRATEGIC CURATION (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-16">
+                            <section className="space-y-16 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-stone-200 flex items-center gap-8 italic mb-12">
                                     <Maximize2 className="w-8 h-8 text-[#c5a059]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-10">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center mb-6">
                                                 <span className="text-2xl font-light italic tracking-[0.1em] text-[#1a1a1a] group-hover/item:text-[#c5a059] group-hover/item:translate-x-4 transition-all uppercase leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>{skill}</span>
                                                 <PenTool className="w-5 h-5 text-[#c5a059] opacity-0 group-hover/item:opacity-100 transition-all group-hover/item:-translate-y-2" />
@@ -136,7 +136,7 @@ export default function MuseumCuratorTemplate({ data, theme = {}, highlightedFie
                                 </h3>
                                 <div className="space-y-20">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black opacity-30 mb-8 tracking-[0.6em] italic uppercase font-mono">CUR_ACAD_HIST_0{i + 1}</p>
                                             <h4 className="text-4xl font-light italic leading-tight mb-6 group-hover/edu:scale-105 transition-transform uppercase leading-none text-[#1a1a1a]" style={{ fontFamily: "'Playfair Display', serif" }}>{edu.degree}</h4>
                                             <p className="text-[12px] font-black uppercase tracking-[0.4em] text-[#c5a059] underline underline-offset-8 decoration-[#c5a059]/30">{edu.school}</p>
@@ -158,7 +158,7 @@ export default function MuseumCuratorTemplate({ data, theme = {}, highlightedFie
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative items-start gap-12">
+                                        <div key={i} className="group relative items-start gap-12 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 right-0 p-24 bg-stone-50 border border-stone-200 rotate-[4deg] opacity-0 group-hover:opacity-100 group-hover:rotate-0 transition-all duration-1000 z-0">
                                                 <Maximize2 className="w-64 h-64 text-stone-100" />
                                             </div>
@@ -187,7 +187,7 @@ export default function MuseumCuratorTemplate({ data, theme = {}, highlightedFie
                         )}
 
                         {/* GLOBAL RECOGNITION */}
-                        <section className="p-32 bg-[#1a1a1a] text-white space-y-24 group relative overflow-hidden transition-all duration-[2s] hover:p-40">
+                        <section className="p-32 bg-[#1a1a1a] text-white space-y-24 group relative overflow-hidden transition-all duration-[2s] hover:p-40 break-inside-avoid page-break-inside-avoid">
                              <div className="absolute inset-0 bg-gradient-to-br from-[#c5a059]/20 to-transparent pointer-events-none" />
                              <Award className="absolute -top-10 -right-10 w-[500px] h-[500px] text-white/5 group-hover:rotate-12 group-hover:scale-150 transition-all duration-[8s]" />
                              

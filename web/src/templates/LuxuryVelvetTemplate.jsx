@@ -10,7 +10,7 @@ export default function LuxuryVelvetTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#0f0f0f] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0f0f0f] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
 
             {/* LUXURY BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -138,7 +138,7 @@ export default function LuxuryVelvetTemplate({ data }) {
                             </h2>
                             <div className="space-y-6">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-6 text-white text-lg font-light italic border-b border-white/5 pb-3 group hover:border-[#d4af37]/30 transition-all">
+                                    <div key={i} className="flex items-center gap-6 text-white text-lg font-light italic border-b border-white/5 pb-3 group hover:border-[#d4af37]/30 transition-all break-inside-avoid page-break-inside-avoid">
                                         <div className="w-1.5 h-1.5 bg-[#d4af37]/40 group-hover:bg-[#d4af37] rounded-full transition-colors" />
                                         <span>{skill}</span>
                                     </div>
@@ -152,7 +152,7 @@ export default function LuxuryVelvetTemplate({ data }) {
                             </h2>
                             <div className="space-y-12">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="relative group">
+                                    <div key={i} className="relative group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em] mb-2">{edu.startDate} – {edu.endDate}</p>
                                         <h4 className="text-white font-bold text-xl leading-tight uppercase tracking-tighter mb-2 group-hover:text-[#d4af37] transition-colors">{edu.school}</h4>
                                         <p className="text-[#d4af37]/80 text-[11px] italic font-medium tracking-widest border-t border-white/5 pt-2 uppercase">{edu.degree}</p>

@@ -4,7 +4,7 @@ export default function FreelancerTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-lime-50 to-green-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-lime-50 to-green-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Freelancer Header */}
             <header className="bg-gradient-to-r from-lime-600 to-green-600 text-white px-10 py-8">
                 <div className="flex items-center justify-between">
@@ -57,7 +57,7 @@ export default function FreelancerTemplate({ data }) {
             <div className="p-8 grid grid-cols-3 gap-6">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm">
+                        <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-lime-700 mb-3 flex items-center gap-2">
                                 <Briefcase className="w-5 h-5" /> Hakkımda
                             </h2>
@@ -66,13 +66,13 @@ export default function FreelancerTemplate({ data }) {
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm">
+                        <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-lime-700 mb-4 flex items-center gap-2">
                                 <Clock className="w-5 h-5" /> Proje Deneyimi
                             </h2>
                             <div className="space-y-4">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-4 border-lime-400 pl-4">
+                                    <div key={exp.id} className="border-l-4 border-lime-400 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between">
                                             <h3 className="font-bold text-gray-800">{exp.position}</h3>
                                             <span className="text-sm text-lime-600">{exp.startDate} - {exp.endDate}</span>
@@ -92,7 +92,7 @@ export default function FreelancerTemplate({ data }) {
                             <h2 className="font-bold mb-4">Hizmetlerim</h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-sm">
+                                    <div key={i} className="flex items-center gap-2 text-sm break-inside-avoid page-break-inside-avoid">
                                         <CheckCircle className="w-4 h-4" />
                                         <span>{skill}</span>
                                     </div>
@@ -105,7 +105,7 @@ export default function FreelancerTemplate({ data }) {
                         <div className="bg-white rounded-xl p-6 shadow-sm">
                             <h2 className="font-bold text-lime-700 mb-4">Eğitim & Sertifika</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3">
+                                <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                     <p className="text-green-600 text-sm">{edu.degree}</p>
                                 </div>
@@ -117,7 +117,7 @@ export default function FreelancerTemplate({ data }) {
                         <div className="bg-white rounded-xl p-6 shadow-sm">
                             <h2 className="font-bold text-lime-700 mb-4">Diller</h2>
                             {languages.map((lang, i) => (
-                                <div key={i} className="flex justify-between text-sm mb-2">
+                                <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                     <span>{lang.name}</span>
                                     <span className="text-green-600">{lang.level}</span>
                                 </div>

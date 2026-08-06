@@ -15,7 +15,7 @@ export default function WhiteSpaceTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -51,7 +51,7 @@ export default function WhiteSpaceTemplate({ data, theme, highlightedField }) {
                                         <h3 className="text-xl font-bold">{exp.position}</h3>
                                         <p className="text-indigo-600 font-medium text-sm">{exp.company}</p>
                                     </div>
-                                    <p className="text-slate-400 text-[11px] font-bold mb-3 uppercase tracking-tighter">{exp.startDate} – {exp.endDate}</p>
+                                    <p className="text-slate-500 text-[11px] font-bold mb-3 uppercase tracking-tighter">{exp.startDate} – {exp.endDate}</p>
                                     <p className="text-slate-600 text-[15px] leading-relaxed font-light">{exp.description}</p>
                                 </div>
                             ))}
@@ -103,7 +103,7 @@ export default function WhiteSpaceTemplate({ data, theme, highlightedField }) {
 
                 {/* References - Minimal inline */}
                 {references?.length > 0 && (
-                    <section className="mb-16">
+                    <section className="mb-16 break-inside-avoid page-break-inside-avoid">
                         <h3 className="text-xs font-bold uppercase tracking-[0.5em] text-indigo-500 mb-8">{t.references}</h3>
                         <div className="flex flex-wrap gap-12">
                             {references.map((ref) => (
@@ -118,7 +118,7 @@ export default function WhiteSpaceTemplate({ data, theme, highlightedField }) {
 
                 {/* Footer */}
                 {theme?.showQrCode && (
-                    <footer className="flex justify-center items-center text-xs text-slate-400 pt-8 border-t border-slate-100">
+                    <footer className="flex justify-center items-center text-xs text-slate-500 pt-8 border-t border-slate-100">
                         <QRCodeDisplay value={personal.website || personal.linkedin || 'https://CVniz.pro'} size={50} color={accentColor} />
                     </footer>
                 )}

@@ -4,7 +4,7 @@ export default function MusicianTemplate({ data }) {
     const { personal, experience, education, skills } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-purple-950 via-purple-900 to-black text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-purple-950 via-purple-900 to-black text-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             <header className="px-10 py-10 text-center">
                 <Music className="w-16 h-16 mx-auto mb-4 text-purple-400" />
                 <h1 className="text-4xl font-bold mb-2">{personal.fullName || 'Ad Soyad'}</h1>
@@ -16,7 +16,7 @@ export default function MusicianTemplate({ data }) {
             </header>
 
             {personal.summary && (
-                <section className="px-10 py-6 text-center">
+                <section className="px-10 py-6 text-center break-inside-avoid page-break-inside-avoid">
                     <p className="text-purple-200 max-w-2xl mx-auto">{personal.summary}</p>
                 </section>
             )}
@@ -30,7 +30,7 @@ export default function MusicianTemplate({ data }) {
                             </h2>
                             <div className="space-y-4">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="bg-white/5 rounded-xl p-4 border border-purple-500/20">
+                                    <div key={exp.id} className="bg-white/5 rounded-xl p-4 border border-purple-500/20 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-bold">{exp.position}</h3>
                                         <p className="text-purple-400 text-sm">{exp.company}</p>
                                         <p className="text-purple-300 text-xs mt-1">{exp.startDate} - {exp.endDate}</p>
@@ -57,7 +57,7 @@ export default function MusicianTemplate({ data }) {
                         <section>
                             <h2 className="text-sm font-bold uppercase tracking-wider text-purple-400 mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3">
+                                <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold">{edu.school}</h3>
                                     <p className="text-purple-300 text-sm">{edu.degree}</p>
                                 </div>

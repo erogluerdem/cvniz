@@ -15,7 +15,7 @@ export default function HologramUITemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-slate-950 text-cyan-100 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-950 text-cyan-100 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Orbitron', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem'
@@ -71,7 +71,7 @@ export default function HologramUITemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-cyan-500/5 border-l-2 border-cyan-400 backdrop-blur-sm">
+                    <section className="mb-8 p-6 bg-cyan-500/5 border-l-2 border-cyan-400 backdrop-blur-sm break-inside-avoid page-break-inside-avoid">
                         <p className="text-sm leading-relaxed text-cyan-200">&gt; {personal.summary}</p>
                     </section>
                 )}
@@ -87,7 +87,7 @@ export default function HologramUITemplate({ data, theme, highlightedField }) {
                                 </h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l border-cyan-500/30 pl-4">
+                                        <div key={exp.id} className="border-l border-cyan-500/30 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="font-bold text-cyan-100">{exp.position}</h3>
                                             <p className="text-cyan-400 text-sm">{exp.company}</p>
                                             <p className="text-xs text-cyan-500/50 mb-2">{exp.startDate} → {exp.endDate}</p>
@@ -100,11 +100,11 @@ export default function HologramUITemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-slate-900/50 border border-cyan-500/20 rounded-lg backdrop-blur-sm">
+                            <section className="p-6 bg-slate-900/50 border border-cyan-500/20 rounded-lg backdrop-blur-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs uppercase tracking-[0.3em] text-cyan-400 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 border border-cyan-500/20 rounded bg-cyan-500/5">
+                                        <div key={ref.id} className="p-4 border border-cyan-500/20 rounded bg-cyan-500/5 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-cyan-100">{ref.name}</p>
                                             <p className="text-xs text-cyan-400">{ref.company}</p>
                                         </div>
@@ -118,11 +118,11 @@ export default function HologramUITemplate({ data, theme, highlightedField }) {
                     <aside className="space-y-6">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-lg">
+                            <section className="p-6 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-lg break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-[0.3em] text-cyan-300 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-2">
+                                        <div key={i} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 bg-cyan-400 rotate-45" />
                                             <span className="text-sm">{skill}</span>
                                         </div>
@@ -148,7 +148,7 @@ export default function HologramUITemplate({ data, theme, highlightedField }) {
 
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-slate-900/50 border border-cyan-500/20 rounded-lg">
+                            <section className="p-6 bg-slate-900/50 border border-cyan-500/20 rounded-lg break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs uppercase tracking-[0.3em] text-cyan-400 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

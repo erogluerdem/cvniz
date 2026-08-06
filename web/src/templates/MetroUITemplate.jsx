@@ -19,7 +19,7 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-[#f3f3f3] text-slate-800 p-8 md:p-12"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f3f3f3] text-slate-800 p-8 md:p-12 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Segoe UI', 'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -41,7 +41,7 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
                         <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-4 break-words">
                             {personal.fullName || 'User_Name'}
                         </h1>
-                        <p className="text-2xl font-light text-slate-400 italic">
+                        <p className="text-2xl font-light text-slate-500 italic">
                             {personal.title || 'System Architect'}
                         </p>
                     </div>
@@ -121,7 +121,7 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
 
                 {/* Skills & Education & Languages */}
                 <div className="sm:col-span-2 lg:col-span-4 p-8 bg-white shadow-lg">
-                    <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 flex items-center gap-3">
+                    <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8 flex items-center gap-3">
                         <LayoutGrid className="w-4 h-4" /> {t.skills}
                     </h2>
                     <div className="flex flex-wrap gap-2 mb-12">
@@ -135,7 +135,7 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         {education.length > 0 && (
                             <div>
-                                <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 mb-6 flex items-center gap-3">
+                                <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-6 flex items-center gap-3">
                                     <GraduationCap className="w-4 h-4" /> {t.education}
                                 </h2>
                                 <div className="space-y-6">
@@ -151,12 +151,12 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
                         )}
                         {languages.length > 0 && (
                             <div>
-                                <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 mb-6 flex items-center gap-3">
+                                <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-6 flex items-center gap-3">
                                     <Languages className="w-4 h-4" /> {t.languages}
                                 </h2>
                                 <div className="space-y-4">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="flex flex-col gap-1">
+                                        <div key={i} className="flex flex-col gap-1 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center text-[10px] font-black uppercase">
                                                 <span>{lang.name}</span>
                                                 <span opacity-40>{lang.level}</span>
@@ -194,12 +194,12 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
                 {/* Certifications & Hobbies */}
                 {certifications?.length > 0 && (
                     <div className="sm:col-span-2 lg:col-span-3 p-8 bg-white shadow-lg border-r-[8px]" style={{ borderColor: accentColor }}>
-                        <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 flex items-center gap-3">
+                        <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8 flex items-center gap-3">
                             <Award className="w-4 h-4" /> {t.certifications}
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {certifications.map((cert, i) => (
-                                <div key={cert.id || i} className="flex gap-4">
+                                <div key={cert.id || i} className="flex gap-4 break-inside-avoid page-break-inside-avoid">
                                     <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                                         <Award className="w-4 h-4 text-emerald-600" />
                                     </div>
@@ -228,7 +228,7 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
 
                 {/* Custom Sections */}
                 {customSections?.length > 0 && customSections.map((section, idx) => (
-                    <div key={idx} className="sm:col-span-2 lg:col-span-6 p-10 bg-white shadow-lg">
+                    <div key={idx} className="sm:col-span-2 lg:col-span-6 p-10 bg-white shadow-lg break-inside-avoid page-break-inside-avoid">
                         <h2 className="text-xl font-black uppercase tracking-tighter mb-8 border-b-4 inline-block" style={{ borderColor: accentColor }}>{section.title}</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {section.items.map((item, i) => (
@@ -246,7 +246,7 @@ export default function MetroUITemplate({ data, theme, highlightedField }) {
                 <div className="sm:col-span-2 lg:col-span-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {references?.length > 0 && (
                         <div className="lg:col-span-3 p-8 bg-white shadow-lg border-l-[8px] border-emerald-500">
-                            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8">{t.references}</h2>
+                            <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8">{t.references}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {references.map((ref, i) => (
                                     <div key={ref.id || i}>

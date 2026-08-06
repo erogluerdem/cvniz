@@ -33,7 +33,7 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
     }
 
     return (
-        <div className="min-h-full bg-[#f8fafc] text-slate-700 p-0 selection:bg-[#0d9488] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f8fafc] text-slate-700 p-0 selection:bg-[#0d9488] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -111,14 +111,14 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
                         
                         {/* THE OLFACTORY MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-12 group bg-white p-12 border border-slate-100 relative overflow-hidden shadow-sm">
+                            <section className="space-y-12 group bg-white p-12 border border-slate-100 relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
                                     <Atom className="w-24 h-24" />
                                 </div>
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-4 italic mb-8 border-b border-slate-50 pb-4">
                                      <Beaker className="w-6 h-6 text-[#0d9488]" /> {t.summary}
                                 </h3>
-                                <p className="text-3xl font-light italic leading-relaxed text-slate-400 group-hover:text-black transition-colors uppercase">
+                                <p className="text-3xl font-light italic leading-relaxed text-slate-500 group-hover:text-black transition-colors uppercase">
                                     "{personal.summary}"
                                 </p>
                             </section>
@@ -143,13 +143,13 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
 
                         {/* FORMULATION STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-50 pb-4 uppercase">
                                     <Layers className="w-5 h-5 text-[#0d9488]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center z-10 relative">
                                                 <span className="text-[18px] font-light uppercase tracking-widest text-slate-300 group-hover/item:text-black transition-colors italic">{skill}</span>
                                                 <div className="h-px bg-slate-50 flex-1 mx-4" />
@@ -163,10 +163,10 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
 
                         {/* CHEMISTRY EDUCATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-white border-y border-slate-100 uppercase italic">
+                            <section className="space-y-16 p-10 bg-white border-y border-slate-100 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-200 text-center mb-10 leading-none pb-4 border-b border-slate-50 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#0d9488]/30 mb-6 tracking-[0.5em]">ACADEMIC_MOLECULE_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.4em] text-slate-200 mt-4 uppercase">{edu.school}</p>
@@ -187,7 +187,7 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-slate-50 hover:border-[#0d9488] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-slate-50 hover:border-[#0d9488] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1.5 h-32 bg-[#0d9488] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#0d9488]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -195,7 +195,7 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
                                                     <h3 className="text-6xl text-[9.5rem] font-light text-slate-900 tracking-tighter italic group-hover:text-[#0d9488] transition-colors duration-[1.5s] leading-none uppercase" style={{ letterSpacing: '-0.06em' }}>{exp.position}</h3>
                                                     <div className="flex items-center gap-8">
                                                         <div className="h-px w-20 bg-slate-100 group-hover:w-40 group-hover:bg-[#0d9488] transition-all duration-1000 shadow-[0_0:15px_#0d9488]" />
-                                                        <p className="text-3xl font-light italic text-slate-200 tracking-[0.4em] group-hover:text-slate-400 transition-colors italic leading-none uppercase">VOICE: {exp.company}</p>
+                                                        <p className="text-3xl font-light italic text-slate-200 tracking-[0.4em] group-hover:text-slate-500 transition-colors italic leading-none uppercase">VOICE: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-black text-[#0d9488] border border-[#0d9488]/20 px-10 py-4 group-hover:bg-[#0d9488] group-hover:text-white transition-all whitespace-nowrap italic tracking-[0.4em] shadow-3xl leading-none uppercase">
@@ -219,7 +219,7 @@ export default function PerfumerTemplate({ data, theme = {}, highlightedField = 
                              <h4 className="text-[14px] font-black tracking-[4em] text-slate-100 mb-20 italic leading-none z-10 relative uppercase">{t.notes}</h4>
                              <div className="space-y-12 relative z-10 italic">
                                 <p className="text-5xl text-6xl font-black italic tracking-tighter leading-none italic uppercase">Elite Essence Architect // Master of Molecular Synthesis</p>
-                                <p className="text-2xl font-black italic tracking-[1em] opacity-30 group-hover:opacity-100 transition-opacity uppercase text-slate-400">Capturing the Ethereal @ Infinite Scale // Zero Deviation</p>
+                                <p className="text-2xl font-black italic tracking-[1em] opacity-30 group-hover:opacity-100 transition-opacity uppercase text-slate-500">Capturing the Ethereal @ Infinite Scale // Zero Deviation</p>
                              </div>
                              
                              <div className="flex justify-start gap-24 mt-24 text-slate-50 group-hover:text-[#0d9488] transition-all duration-[1s]">

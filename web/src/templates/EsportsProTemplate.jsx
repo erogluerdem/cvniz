@@ -32,7 +32,7 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
     }
 
     return (
-        <div className="min-h-full bg-[#050505] text-slate-400 p-0 selection:bg-[#00f7ff] selection:text-black uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#050505] text-slate-500 p-0 selection:bg-[#00f7ff] selection:text-black uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -111,7 +111,7 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
                     <aside className="col-span-4 p-10 space-y-32 bg-[#080808] border-r border-[#00f7ff]/10">
                         
                         {/* PERFORMANCE METRICS */}
-                        <section className="bg-[#00f7ff]/5 border border-[#00f7ff]/20 p-10 space-y-12 relative overflow-hidden group">
+                        <section className="bg-[#00f7ff]/5 border border-[#00f7ff]/20 p-10 space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-30 transition-opacity">
                                 <Activity className="w-32 h-32" />
                              </div>
@@ -123,7 +123,7 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
                                     { label: 'Avg HS%', val: '32%' },
                                     { label: 'Map Control', val: '92%' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/stat">
+                                    <div key={i} className="flex justify-between items-baseline group/stat break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-bold uppercase tracking-widest text-[#00f7ff]/40 group-hover/stat:text-white transition-colors">{stat.label}</p>
                                         <p className="text-3xl font-black italic tracking-tighter text-[#00f7ff]">{stat.val}</p>
                                     </div>
@@ -133,13 +133,13 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
 
                         {/* SKILL MATRIX (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10 group">
+                            <section className="space-y-10 group break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/10 flex items-center gap-4 italic mb-10 border-b border-white/5 pb-4 uppercase">
                                     <Target className="w-5 h-5 text-[#00f7ff]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-500 hover:text-white hover:border-[#00f7ff] transition-all cursor-default flex items-center justify-between group/item">
+                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-500 hover:text-white hover:border-[#00f7ff] transition-all cursor-default flex items-center justify-between group/item break-inside-avoid page-break-inside-avoid">
                                             <span>{skill}</span>
                                             <Spark className="w-4 h-4 opacity-0 group-hover/item:opacity-100 text-[#00f7ff] transition-all" />
                                         </div>
@@ -158,7 +158,7 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
                                     { icon: Cpu, label: 'RTX_4090' },
                                     { icon: Terminal, label: 'Wooting_60HE' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-[#00f7ff]/5 group-hover:border-[#00f7ff]/20 transition-all">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-[#00f7ff]/5 group-hover:border-[#00f7ff]/20 transition-all break-inside-avoid page-break-inside-avoid">
                                         <item.icon className="w-6 h-6" />
                                         <span className="text-[8px] font-bold tracking-widest">{item.label}</span>
                                     </div>
@@ -168,10 +168,10 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
 
                         {/* FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-[#00f7ff]/5 border-y border-[#00f7ff]/10 shadow-inner">
+                            <section className="space-y-16 p-10 bg-[#00f7ff]/5 border-y border-[#00f7ff]/10 shadow-inner break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-bold tracking-[1em] text-white/5 text-center italic mb-10 leading-none pb-4 border-b border-white/5 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-bold text-slate-700 group-hover:text-[#00f7ff] transition-colors mb-6 tracking-[0.5em] italic">ACADEMIC_RECORD_#0{i + 1}</p>
                                         <h4 className="text-3xl font-bold italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white">{edu.degree}</h4>
                                         <p className="text-[11px] font-bold tracking-[0.3em] text-[#00f7ff]/30 mt-4">{edu.school}</p>
@@ -192,7 +192,7 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-[#00f7ff]/10 hover:border-[#00f7ff] transition-all duration-[1s]">
+                                        <div key={i} className="group relative pl-32 border-l border-[#00f7ff]/10 hover:border-[#00f7ff] transition-all duration-[1s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[2px] w-[3px] h-32 bg-[#00f7ff] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_25px_#00f7ff]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -200,7 +200,7 @@ export default function EsportsProTemplate({ data, theme = {}, highlightedField 
                                                     <h3 className="text-4xl text-[6.5rem] font-bold text-white tracking-widest italic group-hover:translate-x-12 transition-transform duration-[1.5s] leading-none uppercase">{exp.position}</h3>
                                                     <div className="flex items-center gap-8">
                                                         <div className="h-[2px] w-20 bg-[#ff00ff]/20 group-hover:w-40 group-hover:bg-[#ff00ff] transition-all duration-1000 shadow-[0_0_10px_#ff00ff]" />
-                                                        <p className="text-3xl font-black text-slate-800 tracking-[1em] group-hover:text-slate-400 transition-colors italic leading-none uppercase">TEAM_REF: {exp.company}</p>
+                                                        <p className="text-3xl font-black text-slate-800 tracking-[1em] group-hover:text-slate-500 transition-colors italic leading-none uppercase">TEAM_REF: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-bold text-black bg-[#00f7ff] px-12 py-5 shadow-2xl skew-x-[-15deg] group-hover:skew-x-0 transition-all whitespace-nowrap italic tracking-[0.5em] leading-none">

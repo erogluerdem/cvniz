@@ -4,7 +4,7 @@ export default function EngineerTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-zinc-100" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-zinc-100 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Technical Header */}
             <header className="bg-gradient-to-r from-zinc-800 to-zinc-900 text-white px-10 py-8">
                 <div className="flex items-center gap-8">
@@ -19,8 +19,8 @@ export default function EngineerTemplate({ data }) {
                     )}
                     <div>
                         <h1 className="text-3xl font-bold">{personal.fullName || 'Ad Soyad'}</h1>
-                        <p className="text-zinc-400 text-lg">{personal.title || 'Mühendis'}</p>
-                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-zinc-400">
+                        <p className="text-zinc-500 text-lg">{personal.title || 'Mühendis'}</p>
+                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-zinc-500">
                             {personal.email && <span className="flex items-center gap-1"><Mail className="w-4 h-4" /> {personal.email}</span>}
                             {personal.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {personal.phone}</span>}
                             {personal.location && <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {personal.location}</span>}
@@ -32,20 +32,20 @@ export default function EngineerTemplate({ data }) {
             <div className="p-8 grid grid-cols-3 gap-6">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-orange-500">
+                        <section className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-orange-500 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-sm font-bold text-zinc-800 uppercase tracking-wider mb-3">Profesyonel Özet</h2>
                             <p className="text-gray-600 leading-relaxed whitespace-pre-line">{personal.summary}</p>
                         </section>
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm">
+                        <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-sm font-bold text-zinc-800 uppercase tracking-wider mb-4 flex items-center gap-2">
                                 <Building2 className="w-4 h-4 text-orange-500" /> Mühendislik Deneyimi
                             </h2>
                             <div className="space-y-5">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="relative pl-6 border-l-2 border-zinc-200">
+                                    <div key={exp.id} className="relative pl-6 border-l-2 border-zinc-200 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-2 top-1 w-4 h-4 rounded-full bg-orange-500"></div>
                                         <div className="flex justify-between mb-1">
                                             <h3 className="font-bold text-zinc-800">{exp.position}</h3>
@@ -60,10 +60,10 @@ export default function EngineerTemplate({ data }) {
                     )}
 
                     {education.length > 0 && (
-                        <section className="bg-white rounded-lg p-6 shadow-sm">
+                        <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-sm font-bold text-zinc-800 uppercase tracking-wider mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3 flex justify-between">
+                                <div key={edu.id} className="mb-3 flex justify-between break-inside-avoid page-break-inside-avoid">
                                     <div>
                                         <h3 className="font-semibold text-zinc-800">{edu.school}</h3>
                                         <p className="text-orange-600">{edu.degree}</p>
@@ -83,7 +83,7 @@ export default function EngineerTemplate({ data }) {
                             </h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2">
+                                    <div key={i} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                         <Cpu className="w-3 h-3 text-orange-400" />
                                         <span className="text-sm text-zinc-300">{skill}</span>
                                     </div>
@@ -96,7 +96,7 @@ export default function EngineerTemplate({ data }) {
                         <div className="bg-white rounded-lg p-6 shadow-sm">
                             <h2 className="font-bold text-zinc-800 mb-4">Diller</h2>
                             {languages.map((lang, i) => (
-                                <div key={i} className="flex justify-between text-sm mb-2">
+                                <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                     <span>{lang.name}</span>
                                     <span className="text-orange-600">{lang.level}</span>
                                 </div>

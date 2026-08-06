@@ -29,7 +29,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
     }
 
     return (
-        <div className="min-h-full bg-[#0a0a0a] text-slate-400 p-0 selection:bg-[#9b6bff] selection:text-black uppercase font-mono overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0a0a] text-slate-500 p-0 selection:bg-[#9b6bff] selection:text-black uppercase font-mono overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -112,7 +112,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                         
                         {/* INVESTIGATIVE ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden">
+                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                                     <Search className="w-6 h-6 text-[#9b6bff]" />
                                 </div>
@@ -126,7 +126,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                         )}
 
                         {/* DIGITAL INVESTIGATION STACK (SKILLS) */}
-                        <section className="bg-slate-900 border border-slate-800 p-10 space-y-12 relative overflow-hidden group">
+                        <section className="bg-slate-900 border border-slate-800 p-10 space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[11px] font-bold tracking-[0.6em] text-white/20 mb-10 italic leading-none">{t.stack}</h4>
                              <div className="space-y-6">
                                 {[
@@ -135,7 +135,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                                     { tool: 'Wireshark / Network Minor', lvl: 85 },
                                     { tool: 'Volatility Memory Suite', lvl: 80 }
                                 ].map((node, i) => (
-                                    <div key={i} className="space-y-2">
+                                    <div key={i} className="space-y-2 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-center text-[9px] font-bold tracking-widest text-[#9b6bff] uppercase">
                                             <span>{node.tool}</span>
                                             <span>{node.lvl}%_OP</span>
@@ -155,13 +155,13 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
 
                         {/* CORE COMPETENCIES (SKILLS - ADDITIONAL) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10">
+                            <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-8 border-b border-slate-800 pb-4">
                                     <Target className="w-5 h-5 text-[#9b6bff]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-600 hover:text-white hover:border-[#9b6bff] transition-all cursor-default flex items-center justify-between group/item">
+                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-600 hover:text-white hover:border-[#9b6bff] transition-all cursor-default flex items-center justify-between group/item break-inside-avoid page-break-inside-avoid">
                                             <span>{skill}</span>
                                             <Trash2 className="w-4 h-4 opacity-0 group-hover/item:opacity-100 text-[#9b6bff] transition-all" />
                                         </div>
@@ -193,7 +193,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                                 </h2>
                                 <div className="space-y-48">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-slate-800 hover:border-[#9b6bff] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-32 border-l border-slate-800 hover:border-[#9b6bff] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             {/* BIT STREAM ANIMATION */}
                                             <div className="absolute top-0 -left-[1.5px] w-px h-full bg-gradient-to-b from-[#9b6bff] via-[#9b6bff] to-transparent scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-1000" />
                                             
@@ -202,7 +202,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                                                     <h3 className="text-4xl text-[6.5rem] font-bold text-white tracking-widest italic group-hover:translate-x-12 transition-transform duration-[1.5s] leading-none">{exp.position}</h3>
                                                     <div className="flex items-center gap-6">
                                                         <div className="w-16 h-[2px] bg-slate-800 group-hover:w-32 group-hover:bg-[#9b6bff] transition-all duration-1000" />
-                                                        <p className="text-2xl font-bold text-slate-800 tracking-[0.8em] group-hover:text-slate-400 transition-colors italic leading-none">CASE_REF: {exp.company}</p>
+                                                        <p className="text-2xl font-bold text-slate-800 tracking-[0.8em] group-hover:text-slate-500 transition-colors italic leading-none">CASE_REF: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-bold text-black bg-[#9b6bff] px-10 py-4 shadow-2xl skew-x-[-15deg] group-hover:skew-x-0 transition-all whitespace-nowrap italic tracking-[0.4em]">
@@ -221,13 +221,13 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                         {/* TECHNICAL LABS & FORMATION */}
                         <div className="grid grid-cols-2 gap-10">
                             {education.length > 0 && (
-                                <section className="p-16 border border-slate-800 bg-[#0d0d0d] group hover:border-[#9b6bff] transition-all duration-700">
+                                <section className="p-16 border border-slate-800 bg-[#0d0d0d] group hover:border-[#9b6bff] transition-all duration-700 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="text-[11px] font-bold tracking-[1em] text-white/10 text-center italic mb-16 flex items-center justify-center gap-10 leading-none">
                                          <GraduationCap className="w-10 h-10 mb-8 text-[#9b6bff] mx-auto opacity-30 group-hover:opacity-100 animate-pulse" /> {t.education}
                                     </h3>
                                     <div className="space-y-16">
                                         {education.map((edu, i) => (
-                                            <div key={i} className="group/edu text-center">
+                                            <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                                 <p className="text-[9px] font-bold text-slate-500 mb-6 group-hover:text-[#9b6bff] transition-colors tracking-[0.5em] italic">LAB_FORMATION_#0{i + 1}</p>
                                                 <h4 className="text-3xl font-bold italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform text-white">{edu.degree}</h4>
                                                 <p className="text-[12px] font-bold tracking-[0.3em] text-[#9b6bff]/50 group-hover:text-[#9b6bff]">{edu.school}</p>
@@ -242,7 +242,7 @@ export default function CyberForensicsTemplate({ data, theme = {}, highlightedFi
                                  <h4 className="text-[11px] font-bold tracking-[1.5em] text-[#9b6bff] mb-12 italic leading-none uppercase">{t.contact}</h4>
                                  <div className="flex flex-col items-center gap-10 mt-10">
                                     {[Terminal, ShieldCheck, Activity, Search].map((Icon, i) => (
-                                        <div key={i} className="flex items-center gap-8 w-full group/row">
+                                        <div key={i} className="flex items-center gap-8 w-full group/row break-inside-avoid page-break-inside-avoid">
                                             <Icon className="w-10 h-10 text-slate-800 group-hover/row:text-[#9b6bff] transition-all" />
                                             <div className="flex-1 h-2 bg-slate-900 overflow-hidden">
                                                 <motion.div animate={{ x: ['100%', '-100%'] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }} className="h-full w-20 bg-[#9b6bff]" />

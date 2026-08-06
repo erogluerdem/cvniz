@@ -4,7 +4,7 @@ export default function GovernmentTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Formal Government Header */}
             <header className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-10 py-8">
                 <div className="flex items-center gap-6">
@@ -25,7 +25,7 @@ export default function GovernmentTemplate({ data }) {
 
             <div className="p-8">
                 {personal.summary && (
-                    <section className="mb-6 bg-white rounded-lg p-6 shadow-sm border-l-4 border-blue-800">
+                    <section className="mb-6 bg-white rounded-lg p-6 shadow-sm border-l-4 border-blue-800 break-inside-avoid page-break-inside-avoid">
                         <h2 className="text-sm font-bold text-blue-900 uppercase tracking-wider mb-3 flex items-center gap-2">
                             <Shield className="w-4 h-4" /> Görev Tanımı
                         </h2>
@@ -36,13 +36,13 @@ export default function GovernmentTemplate({ data }) {
                 <div className="grid grid-cols-3 gap-6">
                     <div className="col-span-2 space-y-6">
                         {experience.length > 0 && (
-                            <section className="bg-white rounded-lg p-6 shadow-sm">
+                            <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold text-blue-900 uppercase tracking-wider mb-4 flex items-center gap-2">
                                     <FileCheck className="w-4 h-4" /> Kamu Hizmeti Deneyimi
                                 </h2>
                                 <div className="space-y-4">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-blue-200 pl-4">
+                                        <div key={exp.id} className="border-l-2 border-blue-200 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between">
                                                 <h3 className="font-bold text-gray-800">{exp.position}</h3>
                                                 <span className="text-sm text-blue-700 bg-blue-50 px-2 py-1 rounded">{exp.startDate} - {exp.endDate}</span>
@@ -56,10 +56,10 @@ export default function GovernmentTemplate({ data }) {
                         )}
 
                         {education.length > 0 && (
-                            <section className="bg-white rounded-lg p-6 shadow-sm">
+                            <section className="bg-white rounded-lg p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-bold text-blue-900 uppercase tracking-wider mb-4">Eğitim</h2>
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="mb-3 flex justify-between">
+                                    <div key={edu.id} className="mb-3 flex justify-between break-inside-avoid page-break-inside-avoid">
                                         <div>
                                             <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                             <p className="text-blue-700">{edu.degree}</p>
@@ -79,7 +79,7 @@ export default function GovernmentTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="text-sm text-blue-100">• {skill}</div>
+                                        <div key={i} className="text-sm text-blue-100 break-inside-avoid page-break-inside-avoid">• {skill}</div>
                                     ))}
                                 </div>
                             </div>
@@ -89,7 +89,7 @@ export default function GovernmentTemplate({ data }) {
                             <div className="bg-white rounded-lg p-6 shadow-sm">
                                 <h2 className="font-bold text-blue-900 mb-4">Diller</h2>
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex justify-between text-sm mb-2">
+                                    <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                         <span>{lang.name}</span>
                                         <span className="text-blue-700">{lang.level}</span>
                                     </div>

@@ -4,7 +4,7 @@ export default function LogisticProTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-50 p-12" style={{ fontFamily: "'Roboto', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 p-12 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Roboto', sans-serif" }}>
             <div className="bg-white shadow-2xl rounded-sm overflow-hidden border-t-8 border-blue-600 flex">
                 <div className="w-[30%] bg-slate-900 p-10 text-white">
                     <div className="mb-12">
@@ -26,7 +26,7 @@ export default function LogisticProTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase text-slate-500 mb-4 tracking-widest">Uzmanlıklar</h2>
                             <div className="space-y-2">
                                 {skills.map(s => (
-                                    <div key={s} className="flex items-center justify-between text-[10px]">
+                                    <div key={s} className="flex items-center justify-between text-[10px] break-inside-avoid page-break-inside-avoid">
                                         <span>{s}</span>
                                         <div className="w-12 h-1 bg-slate-800 rounded-full overflow-hidden">
                                             <div className="w-3/4 h-full bg-blue-500"></div>
@@ -54,13 +54,13 @@ export default function LogisticProTemplate({ data }) {
                             </div>
                             <div className="space-y-8">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative pl-6 border-l-2 border-slate-100">
+                                    <div key={exp.id} className="relative pl-6 border-l-2 border-slate-100 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
                                                 <h4 className="font-black text-slate-800 text-sm">{exp.position}</h4>
                                                 <p className="text-blue-600 text-[10px] font-bold uppercase">{exp.company}</p>
                                             </div>
-                                            <span className="text-[10px] text-slate-400 font-bold">{exp.startDate} - {exp.endDate}</span>
+                                            <span className="text-[10px] text-slate-500 font-bold">{exp.startDate} - {exp.endDate}</span>
                                         </div>
                                         <p className="text-slate-500 text-xs leading-relaxed">{exp.description}</p>
                                     </div>

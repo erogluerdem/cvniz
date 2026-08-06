@@ -4,7 +4,7 @@ export default function MarketingTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-fuchsia-50 to-violet-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-fuchsia-50 to-violet-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Vibrant Marketing Header */}
             <header className="bg-gradient-to-r from-fuchsia-600 via-violet-600 to-indigo-600 text-white px-10 py-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
@@ -43,7 +43,7 @@ export default function MarketingTemplate({ data }) {
                 </div>
 
                 {personal.summary && (
-                    <section className="mb-8 bg-white rounded-xl p-6 shadow-sm">
+                    <section className="mb-8 bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                         <h2 className="text-lg font-bold text-fuchsia-700 mb-3 flex items-center gap-2">
                             <Lightbulb className="w-5 h-5" /> Hakkımda
                         </h2>
@@ -54,13 +54,13 @@ export default function MarketingTemplate({ data }) {
                 <div className="grid grid-cols-3 gap-6">
                     <div className="col-span-2 space-y-6">
                         {experience.length > 0 && (
-                            <section className="bg-white rounded-xl p-6 shadow-sm">
+                            <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-lg font-bold text-fuchsia-700 mb-4 flex items-center gap-2">
                                     <TrendingUp className="w-5 h-5" /> Deneyim
                                 </h2>
                                 <div className="space-y-5">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-4 border-fuchsia-400 pl-4">
+                                        <div key={exp.id} className="border-l-4 border-fuchsia-400 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between">
                                                 <h3 className="font-bold text-gray-800">{exp.position}</h3>
                                                 <span className="text-sm text-fuchsia-600">{exp.startDate} - {exp.endDate}</span>
@@ -74,10 +74,10 @@ export default function MarketingTemplate({ data }) {
                         )}
 
                         {education.length > 0 && (
-                            <section className="bg-white rounded-xl p-6 shadow-sm">
+                            <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-lg font-bold text-fuchsia-700 mb-4">Eğitim</h2>
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="mb-3">
+                                    <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                         <p className="text-violet-600">{edu.degree}</p>
                                     </div>
@@ -104,7 +104,7 @@ export default function MarketingTemplate({ data }) {
                             <div className="bg-white rounded-xl p-6 shadow-sm">
                                 <h2 className="font-bold text-fuchsia-700 mb-4">Diller</h2>
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex justify-between text-sm mb-2">
+                                    <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                         <span>{lang.name}</span>
                                         <span className="text-violet-600">{lang.level}</span>
                                     </div>

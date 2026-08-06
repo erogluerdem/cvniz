@@ -4,7 +4,7 @@ export default function PhotographerTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-black text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             <header className="px-10 py-12 text-center">
                 <Camera className="w-16 h-16 mx-auto mb-4 text-white/80" />
                 <h1 className="text-4xl font-light tracking-widest mb-2">{personal.fullName?.toUpperCase() || 'AD SOYAD'}</h1>
@@ -17,15 +17,15 @@ export default function PhotographerTemplate({ data }) {
             </header>
 
             {personal.summary && (
-                <section className="px-10 py-8 text-center border-t border-white/10">
+                <section className="px-10 py-8 text-center border-t border-white/10 break-inside-avoid page-break-inside-avoid">
                     <p className="text-white/70 leading-relaxed max-w-2xl mx-auto">{personal.summary}</p>
                 </section>
             )}
 
-            <section className="px-10 py-8 border-t border-white/10">
+            <section className="px-10 py-8 border-t border-white/10 break-inside-avoid page-break-inside-avoid">
                 <div className="grid grid-cols-4 gap-3 mb-8">
                     {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                        <div key={i} className="aspect-square bg-white/10 rounded"></div>
+                        <div key={i} className="aspect-square bg-white/10 rounded break-inside-avoid page-break-inside-avoid"></div>
                     ))}
                 </div>
             </section>
@@ -63,7 +63,7 @@ export default function PhotographerTemplate({ data }) {
                         <section>
                             <h2 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-2">
+                                <div key={edu.id} className="mb-2 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-medium">{edu.school}</h3>
                                     <p className="text-white/60 text-sm">{edu.degree}</p>
                                 </div>

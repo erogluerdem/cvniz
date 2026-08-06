@@ -32,7 +32,7 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#60a5fa] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#60a5fa] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -76,7 +76,7 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
                                      </p>
                                      <div className="flex gap-2 font-mono">
                                         {['MEDIATION', 'CONFLICT', 'NEUTRAL'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-bold text-slate-400 uppercase tracking-widest">{tag}</span>
+                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-bold text-slate-500 uppercase tracking-widest">{tag}</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -110,7 +110,7 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
                         
                         {/* THE PHILOSOPHY (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+                            <section className="space-y-10 group bg-white p-10 border border-slate-100 shadow-sm relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.05]">
                                     <MessageCircle className="w-24 h-24" />
                                 </div>
@@ -125,13 +125,13 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
 
                         {/* RESOLUTION STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-100 pb-4 uppercase">
                                     <Target className="w-5 h-5 text-[#60a5fa]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-4 border border-white bg-slate-50 hover:border-[#60a5fa]/30 transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-4 border border-white bg-slate-50 hover:border-[#60a5fa]/30 transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-[#60a5fa] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                                             <span className="text-xs font-black uppercase tracking-widest text-[#60a5fa]/40 group-hover:text-[#60a5fa] transition-colors">{skill}</span>
                                         </div>
@@ -142,11 +142,11 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
 
                         {/* ACADEMIC FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-10 border-l-[30px] border-[#60a5fa] bg-white text-center italic shadow-2xl relative overflow-hidden group">
+                            <section className="p-10 border-l-[30px] border-[#60a5fa] bg-white text-center italic shadow-2xl relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute inset-0 bg-[#60a5fa]/[0.02] -z-10 group-hover:bg-[#60a5fa]/5 transition-colors" />
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-200 text-center mb-10 leading-none pb-4 border-b border-slate-50 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu mb-12 last:mb-0">
+                                    <div key={i} className="text-center group/edu mb-12 last:mb-0 break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#60a5fa]/30 mb-6 tracking-[0.5em]">ACADEMIC_DOC_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.3em] text-[#60a5fa]/60 mt-4 uppercase">{edu.school}</p>
@@ -167,7 +167,7 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-slate-50 hover:border-[#60a5fa] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-slate-50 hover:border-[#60a5fa] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1.5 h-32 bg-[#60a5fa] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#60a5fa]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -199,7 +199,7 @@ export default function PeaceNegotiatorTemplate({ data, theme = {}, highlightedF
                              <h4 className="text-[12px] font-black tracking-[3em] text-[#60a5fa]/20 mb-16 italic leading-none z-10 relative uppercase">{t.mediation}</h4>
                              <div className="space-y-8 relative z-10">
                                 <p className="text-5xl text-7xl font-light italic tracking-tighter leading-none italic uppercase">Global Peace Negotiator // Elite Resolution Specialist</p>
-                                <p className="text-2xl font-black italic tracking-[0.8em] opacity-30 group-hover:opacity-100 transition-opacity uppercase text-slate-400">Neutralizing Conflict @ Global Scale // Uncompromising Integrity</p>
+                                <p className="text-2xl font-black italic tracking-[0.8em] opacity-30 group-hover:opacity-100 transition-opacity uppercase text-slate-500">Neutralizing Conflict @ Global Scale // Uncompromising Integrity</p>
                              </div>
                              
                              <div className="flex justify-start gap-24 mt-24 text-slate-100 group-hover:text-[#60a5fa] transition-all duration-[1s]">

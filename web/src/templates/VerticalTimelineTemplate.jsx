@@ -16,7 +16,7 @@ export default function VerticalTimelineTemplate({ data, theme, highlightedField
     }
 
     return (
-        <div className="min-h-full bg-stone-100 p-0 sm:p-8 flex justify-center py-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-100 p-0 sm:p-8 flex justify-center py-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -56,7 +56,7 @@ export default function VerticalTimelineTemplate({ data, theme, highlightedField
                 <div className="p-4 md:p-8">
                     {/* Intro Summary */}
                     {personal.summary && (
-                        <section className="mb-16 max-w-4xl mx-auto text-center">
+                        <section className="mb-16 max-w-4xl mx-auto text-center break-inside-avoid page-break-inside-avoid">
                             <Quote className="w-12 h-12 mx-auto mb-6 opacity-10" style={{ color: accentColor }} />
                             <p className="text-lg md:text-xl leading-relaxed italic text-stone-600 font-light">
                                 "{personal.summary}"
@@ -127,7 +127,7 @@ export default function VerticalTimelineTemplate({ data, theme, highlightedField
                                     <h3 className="text-xl font-black uppercase tracking-widest border-b-4 border-stone-200 mb-12 inline-block italic">{t.education}</h3>
                                     <div className="space-y-12">
                                         {education.map((edu) => (
-                                            <div key={edu.id} className="group relative pl-10 border-l-2 border-stone-200">
+                                            <div key={edu.id} className="group relative pl-10 border-l-2 border-stone-200 break-inside-avoid page-break-inside-avoid">
                                                 <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-stone-300 group-hover:bg-amber-500 transition-colors" />
                                                 <h4 className="text-xl font-black tracking-tight mb-2 italic">{edu.degree}</h4>
                                                 <p className="text-xs font-bold uppercase tracking-widest text-stone-400 mb-4">{edu.school}</p>
@@ -145,7 +145,7 @@ export default function VerticalTimelineTemplate({ data, theme, highlightedField
                                     <h3 className="text-xl font-black uppercase tracking-widest border-b-4 border-stone-200 mb-12 inline-block italic">{t.skills}</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         {skills.map((skill, i) => (
-                                            <div key={i} className="flex items-center gap-4 bg-white p-4 border border-stone-100 shadow-sm hover:shadow-md transition-all">
+                                            <div key={i} className="flex items-center gap-4 bg-white p-4 border border-stone-100 shadow-sm hover:shadow-md transition-all break-inside-avoid page-break-inside-avoid">
                                                 <div className="w-1.5 h-10" style={{ backgroundColor: accentColor }} />
                                                 <span className="text-xs font-black uppercase tracking-widest">{skill}</span>
                                             </div>

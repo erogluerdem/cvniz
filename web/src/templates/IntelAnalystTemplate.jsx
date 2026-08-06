@@ -29,7 +29,7 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
     }
 
     return (
-        <div className="min-h-full bg-[#0a0a0a] text-slate-400 p-0 selection:bg-[#00ffcc] selection:text-black uppercase overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0a0a] text-slate-500 p-0 selection:bg-[#00ffcc] selection:text-black uppercase overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'IBM Plex Mono', monospace",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
@@ -105,21 +105,21 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
                         
                         {/* MISSION PROFILE (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden">
+                            <section className="space-y-10 group bg-slate-900 border border-slate-800 p-10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
                                     <Eye className="w-6 h-6 text-[#00ffcc]" />
                                 </div>
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-8">
                                      <Terminal className="w-5 h-5 text-[#00ffcc]" /> {t.summary}
                                 </h3>
-                                <p className="text-lg font-bold leading-relaxed text-slate-400 group-hover:text-white transition-colors">
+                                <p className="text-lg font-bold leading-relaxed text-slate-500 group-hover:text-white transition-colors">
                                     "{personal.summary}"
                                 </p>
                             </section>
                         )}
 
                         {/* GEOPOLITICAL RISK MATRIX */}
-                        <section className="bg-slate-900 border border-slate-800 p-10 space-y-12 relative overflow-hidden group">
+                        <section className="bg-slate-900 border border-slate-800 p-10 space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[11px] font-bold tracking-[0.6em] text-white/20 mb-10 italic leading-none">{t.matrix}</h4>
                              <div className="space-y-8">
                                 {[
@@ -128,7 +128,7 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
                                     { region: 'Eastern Europe', risk: 'High', color: 'bg-red-500' },
                                     { region: 'Latin America', risk: 'Low', color: 'bg-emerald-500' }
                                 ].map((node, i) => (
-                                    <div key={i} className="space-y-2">
+                                    <div key={i} className="space-y-2 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-center text-[9px] font-bold tracking-widest text-slate-500 uppercase">
                                             <span>{node.region}</span>
                                             <span className={node.risk === 'High' ? 'text-red-500' : node.risk === 'Med' ? 'text-orange-500' : 'text-emerald-500'}>{node.risk}_RISK</span>
@@ -147,13 +147,13 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
 
                         {/* INTEL METHODOLOGIES (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10 group">
+                            <section className="space-y-10 group break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-bold tracking-[0.8em] text-white/20 flex items-center gap-4 italic mb-8">
                                     <ShieldCheck className="w-5 h-5 text-[#00ffcc]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-500 hover:text-[#00ffcc] hover:border-[#00ffcc] transition-all cursor-default flex items-center gap-4">
+                                        <div key={i} className="p-4 bg-slate-900 border border-slate-800 text-[10px] font-bold tracking-[0.2em] text-slate-500 hover:text-[#00ffcc] hover:border-[#00ffcc] transition-all cursor-default flex items-center gap-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 bg-[#00ffcc] opacity-20 group-hover:opacity-100 animate-pulse" /> {skill}
                                         </div>
                                     ))}
@@ -173,7 +173,7 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
                                 </h2>
                                 <div className="space-y-40">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l-2 border-slate-800 hover:border-[#00ffcc] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-24 border-l-2 border-slate-800 hover:border-[#00ffcc] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-2 h-24 bg-[#00ffcc] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_20px_#00ffcc]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">
@@ -197,13 +197,13 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
                         {/* TECHNICAL STACK & CREDENTIALS */}
                         <div className="grid grid-cols-2 gap-10">
                             {education.length > 0 && (
-                                <section className="p-16 border border-slate-800 bg-[#0d0d0d] group hover:border-[#00ffcc] transition-all duration-700">
+                                <section className="p-16 border border-slate-800 bg-[#0d0d0d] group hover:border-[#00ffcc] transition-all duration-700 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="text-[11px] font-bold tracking-[1em] text-white/10 text-center italic mb-16 flex items-center justify-center gap-10 leading-none">
                                          <GraduationCap className="w-10 h-10 mb-8 text-[#00ffcc] mx-auto opacity-30 group-hover:opacity-100 animate-pulse" /> {t.education}
                                     </h3>
                                     <div className="space-y-16">
                                         {education.map((edu, i) => (
-                                            <div key={i} className="group/edu text-center">
+                                            <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                                 <p className="text-[9px] font-bold text-slate-500 mb-6 group-hover:text-[#00ffcc] transition-colors tracking-[0.5em] italic">ACADEMIC_RECORD_#0{i + 1}</p>
                                                 <h4 className="text-3xl font-bold italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform text-white">{edu.degree}</h4>
                                                 <p className="text-[12px] font-bold tracking-[0.3em] text-[#00ffcc]/50 group-hover:text-[#00ffcc]">{edu.school}</p>
@@ -218,7 +218,7 @@ export default function IntelAnalystTemplate({ data, theme = {}, highlightedFiel
                                  <h4 className="text-[11px] font-bold tracking-[1.5em] text-[#00ffcc] mb-12 italic leading-none">{t.stack}</h4>
                                  <div className="space-y-4 text-slate-500 font-bold tracking-widest text-[9px] text-center uppercase">
                                     {[ 'Palantir Foundry / Gotham', 'Maltego Graphical Link', 'Python / OSINT Framework', 'CyberThreat Intelligence' ].map((item, i) => (
-                                        <div key={i} className="flex items-center gap-4 justify-center group-hover:text-white transition-colors">
+                                        <div key={i} className="flex items-center gap-4 justify-center group-hover:text-white transition-colors break-inside-avoid page-break-inside-avoid">
                                             <Layers className="w-4 h-4 text-[#00ffcc]/30" />
                                             <span>{item}</span>
                                         </div>

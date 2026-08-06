@@ -14,7 +14,7 @@ export default function RetroWaveTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full text-white p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full text-white p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Audiowide', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
@@ -67,7 +67,7 @@ export default function RetroWaveTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-black/30 backdrop-blur-sm border-l-4 border-cyan-400">
+                    <section className="mb-8 p-6 bg-black/30 backdrop-blur-sm border-l-4 border-cyan-400 break-inside-avoid page-break-inside-avoid">
                         <p className="text-base font-mono text-cyan-100 leading-relaxed">{personal.summary}</p>
                     </section>
                 )}
@@ -80,7 +80,7 @@ export default function RetroWaveTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-2xl tracking-[0.3em] text-purple-400 mb-6">{t.experience}</h2>
                                 <div className="space-y-6 font-mono">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-pink-500 pl-4">
+                                        <div key={exp.id} className="border-l-2 border-pink-500 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-lg font-bold text-pink-400">{exp.position}</h3>
                                             <p className="text-cyan-400 text-sm">{exp.company}</p>
                                             <p className="text-xs text-purple-300 mb-2">{exp.startDate} — {exp.endDate}</p>
@@ -93,11 +93,11 @@ export default function RetroWaveTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-black/40 backdrop-blur-sm border border-cyan-500/50">
+                            <section className="p-6 bg-black/40 backdrop-blur-sm border border-cyan-500/50 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-2xl tracking-[0.3em] text-cyan-400 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4 font-mono">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-purple-900/30 border border-purple-500/30">
+                                        <div key={ref.id} className="p-4 bg-purple-900/30 border border-purple-500/30 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-pink-400">{ref.name}</p>
                                             <p className="text-xs text-cyan-300">{ref.company}</p>
                                         </div>
@@ -110,11 +110,11 @@ export default function RetroWaveTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-b from-pink-900/40 to-purple-900/40 border border-pink-500/50">
+                            <section className="p-6 bg-gradient-to-b from-pink-900/40 to-purple-900/40 border border-pink-500/50 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xl tracking-[0.2em] text-pink-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-2 font-mono">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-2 bg-black/30 border border-cyan-500/30 text-cyan-300 text-sm">{skill}</div>
+                                        <div key={i} className="px-3 py-2 bg-black/30 border border-cyan-500/30 text-cyan-300 text-sm break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -135,7 +135,7 @@ export default function RetroWaveTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-black/40 backdrop-blur-sm border border-cyan-500/50">
+                            <section className="p-6 bg-black/40 backdrop-blur-sm border border-cyan-500/50 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xl tracking-[0.2em] text-cyan-400 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2 font-mono">
                                     {hobbies.map((h) => (

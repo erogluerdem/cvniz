@@ -29,7 +29,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
     }
 
     return (
-        <div className="min-h-full bg-[#f8fafc] text-slate-700 p-0 selection:bg-[#10b981] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f8fafc] text-slate-700 p-0 selection:bg-[#10b981] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -70,7 +70,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                                      </p>
                                      <div className="flex gap-2">
                                         {['Global Impact', 'Ethics', 'Sustainability'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-white border border-slate-200 text-[9px] font-black text-slate-400 uppercase tracking-widest rounded-full shadow-sm">{tag}</span>
+                                            <span key={tag} className="px-3 py-1 bg-white border border-slate-200 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-full shadow-sm">{tag}</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -90,7 +90,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                         </motion.div>
                     </div>
 
-                    <motion.div variants={impactVariants} className="flex flex-wrap justify-start items-center gap-10 mt-16 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">
+                    <motion.div variants={impactVariants} className="flex flex-wrap justify-start items-center gap-10 mt-16 text-[11px] font-black uppercase tracking-[0.4em] text-slate-500">
                         {personal.email && <div className="flex items-center gap-3 hover:text-[#10b981] transition-colors cursor-pointer"><Mail className="w-5 h-5 text-[#10b981]" /> {personal.email}</div>}
                         {personal.phone && <div className="flex items-center gap-3 hover:text-[#10b981] transition-colors cursor-pointer"><Phone className="w-5 h-5 text-[#10b981]" /> {personal.phone}</div>}
                         {personal.location && <div className="flex items-center gap-3"><MapPin className="w-5 h-5 text-[#10b981]" /> {personal.location}</div>}
@@ -104,7 +104,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                         
                         {/* HUMANITARIAN MISSION (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-8 group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/50">
+                            <section className="space-y-8 group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/50 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-300 flex items-center gap-4 italic mb-6">
                                      <Sparkles className="w-5 h-5 text-[#10b981]" /> {t.summary}
                                 </h3>
@@ -115,7 +115,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                         )}
 
                         {/* IMPACT METRICS DASHBOARD */}
-                        <section className="p-10 bg-white rounded-[3rem] border border-slate-100 shadow-xl space-y-12 relative overflow-hidden group">
+                        <section className="p-10 bg-white rounded-[3rem] border border-slate-100 shadow-xl space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-150 transition-transform duration-[4s]">
                                 <TrendingUp className="w-32 h-32 text-[#10b981]" />
                              </div>
@@ -127,9 +127,9 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                                     { label: 'Grants Issued', val: '450+' },
                                     { label: 'Countries', val: '32' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="space-y-2">
+                                    <div key={i} className="space-y-2 break-inside-avoid page-break-inside-avoid">
                                         <p className="text-3xl font-black text-slate-900 tracking-tighter italic">{stat.val}</p>
-                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{stat.label}</p>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{stat.label}</p>
                                     </div>
                                 ))}
                              </div>
@@ -137,13 +137,13 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
 
                         {/* CORE COMPETENCIES (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10">
+                            <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-300 flex items-center gap-4 italic mb-8">
                                     <Target className="w-5 h-5 text-[#10b981]" /> {t.expertise}
                                 </h3>
                                 <div className="flex flex-wrap gap-3">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-5 py-2 bg-white border border-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#10b981] hover:border-[#10b981] transition-all cursor-default shadow-sm">
+                                        <div key={i} className="px-5 py-2 bg-white border border-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-[#10b981] hover:border-[#10b981] transition-all cursor-default shadow-sm break-inside-avoid page-break-inside-avoid">
                                             {skill}
                                         </div>
                                     ))}
@@ -176,7 +176,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                                 </h2>
                                 <div className="space-y-40">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l-2 border-slate-100 hover:border-[#10b981] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-24 border-l-2 border-slate-100 hover:border-[#10b981] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-2 h-24 bg-[#10b981] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_20px_#10b981]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-8 gap-10">
@@ -188,7 +188,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                                                     {exp.startDate} – {exp.endDate}
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-400 leading-relaxed font-light italic opacity-90 group-hover:opacity-100 transition-opacity border-l-4 border-slate-50 pl-16 py-6 group-hover:text-slate-600 group-hover:border-[#10b981]">
+                                            <p className="text-2xl text-slate-500 leading-relaxed font-light italic opacity-90 group-hover:opacity-100 transition-opacity border-l-4 border-slate-50 pl-16 py-6 group-hover:text-slate-600 group-hover:border-[#10b981]">
                                                 {exp.description}
                                             </p>
                                         </div>
@@ -199,16 +199,16 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
 
                         {/* FOUNDATIONS (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-16 border-2 border-dashed border-slate-100 rounded-[4rem] group hover:border-[#10b981] transition-all duration-700">
+                            <section className="p-16 border-2 border-dashed border-slate-100 rounded-[4rem] group hover:border-[#10b981] transition-all duration-700 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 text-center italic mb-16 flex items-center justify-center gap-10 leading-none">
                                      <GraduationCap className="w-10 h-10 mb-8 text-[#10b981] mx-auto opacity-30 group-hover:text-[#10b981] group-hover:opacity-100 transition-all" /> {t.education}
                                 </h3>
                                 <div className="grid grid-cols-2 gap-16">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black text-slate-300 mb-6 group-hover:text-[#10b981] transition-colors tracking-[0.5em] italic uppercase">ACAD_LOG_0{i + 1}</p>
                                             <h4 className="text-4xl font-black italic leading-tight mb-4 group-hover/edu:scale-105 transition-transform uppercase leading-none text-slate-900">{edu.degree}</h4>
-                                            <p className="text-[12px] font-black uppercase tracking-[0.3em] text-[#10b981] group-hover:text-slate-400">{edu.school}</p>
+                                            <p className="text-[12px] font-black uppercase tracking-[0.3em] text-[#10b981] group-hover:text-slate-500">{edu.school}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -218,7 +218,7 @@ export default function PhilanthropistTemplate({ data, theme = {}, highlightedFi
                 </div>
 
                 {/* THE IMPACT FOOTER */}
-                <footer className="w-full mt-40 py-32 px-10 px-20 border-t border-slate-100 bg-[#f8fafc] text-slate-400 flex flex-row justify-between items-center gap-24 group overflow-hidden relative">
+                <footer className="w-full mt-40 py-32 px-10 px-20 border-t border-slate-100 bg-[#f8fafc] text-slate-500 flex flex-row justify-between items-center gap-24 group overflow-hidden relative">
                     <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#10b981] to-transparent shadow-[0_0_20px_#10b981]" />
                     <div className="flex flex-col items-start gap-12 relative z-10">
                          <div className="flex gap-4">

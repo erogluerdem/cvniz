@@ -15,7 +15,7 @@ export default function TerminalHackerTemplate({ data, theme, highlightedField }
     }
 
     return (
-        <div className="min-h-full bg-black text-green-400 p-6 md:p-8 font-mono"
+        <div id="cv-template-wrapper" className="min-h-full bg-black text-green-400 p-6 md:p-8 font-mono print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem'
@@ -58,7 +58,7 @@ export default function TerminalHackerTemplate({ data, theme, highlightedField }
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-6 p-4 bg-gray-900/50 border-l-2 border-green-500">
+                    <section className="mb-6 p-4 bg-gray-900/50 border-l-2 border-green-500 break-inside-avoid page-break-inside-avoid">
                         <p className="text-sm text-green-300"><span className="text-green-500">&gt;</span> {personal.summary}</p>
                     </section>
                 )}
@@ -74,7 +74,7 @@ export default function TerminalHackerTemplate({ data, theme, highlightedField }
                                 </h2>
                                 <div className="space-y-4">
                                     {experience.map((exp, idx) => (
-                                        <div key={exp.id} className="border-l border-green-500/30 pl-4">
+                                        <div key={exp.id} className="border-l border-green-500/30 pl-4 break-inside-avoid page-break-inside-avoid">
                                             <p className="text-yellow-400 text-sm"><ChevronRight className="w-3 h-3 inline" /> {exp.position}</p>
                                             <p className="text-cyan-400 text-xs">@ {exp.company}</p>
                                             <p className="text-green-500/50 text-xs"># {exp.startDate} - {exp.endDate}</p>
@@ -87,11 +87,11 @@ export default function TerminalHackerTemplate({ data, theme, highlightedField }
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-4 bg-gray-900/50 border border-green-500/20 rounded">
+                            <section className="p-4 bg-gray-900/50 border border-green-500/20 rounded break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs text-green-500 mb-4">$ cat {t.references}.txt</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-3 border border-green-500/20 bg-black/50">
+                                        <div key={ref.id} className="p-3 border border-green-500/20 bg-black/50 break-inside-avoid page-break-inside-avoid">
                                             <p className="text-yellow-400 text-sm">{ref.name}</p>
                                             <p className="text-xs text-green-500/50">{ref.company}</p>
                                         </div>
@@ -105,7 +105,7 @@ export default function TerminalHackerTemplate({ data, theme, highlightedField }
                     <aside className="space-y-4">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-4 bg-green-500/10 border border-green-500/30 rounded">
+                            <section className="p-4 bg-green-500/10 border border-green-500/30 rounded break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs text-green-500 mb-3">$ echo ${t.skills}</h3>
                                 <div className="space-y-1">
                                     {skills.map((skill, i) => (
@@ -132,7 +132,7 @@ export default function TerminalHackerTemplate({ data, theme, highlightedField }
 
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
-                            <section className="p-4 bg-gray-900/50 border border-green-500/20 rounded">
+                            <section className="p-4 bg-gray-900/50 border border-green-500/20 rounded break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs text-green-500 mb-3">$ npm list {t.hobbies}</h3>
                                 <div className="space-y-1 text-xs text-green-300">
                                     {hobbies.map((h) => (

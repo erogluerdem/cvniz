@@ -4,7 +4,7 @@ export default function InternationalTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* International Header with Flag Colors */}
             <header className="relative">
                 <div className="h-2 bg-gradient-to-r from-red-500 via-white to-blue-500"></div>
@@ -29,7 +29,7 @@ export default function InternationalTemplate({ data }) {
             <div className="p-8 grid grid-cols-3 gap-8">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-sky-50 rounded-xl p-6 border-l-4 border-sky-600">
+                        <section className="bg-sky-50 rounded-xl p-6 border-l-4 border-sky-600 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-sky-800 mb-3">Professional Summary</h2>
                             <p className="text-gray-600 leading-relaxed whitespace-pre-line">{personal.summary}</p>
                         </section>
@@ -42,7 +42,7 @@ export default function InternationalTemplate({ data }) {
                             </h2>
                             <div className="space-y-5">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="bg-gray-50 rounded-xl p-5">
+                                    <div key={exp.id} className="bg-gray-50 rounded-xl p-5 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between mb-2">
                                             <div>
                                                 <h3 className="font-bold text-gray-800">{exp.position}</h3>
@@ -63,7 +63,7 @@ export default function InternationalTemplate({ data }) {
                         <section>
                             <h2 className="text-lg font-bold text-sky-800 mb-4">Education</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="bg-gray-50 rounded-xl p-4 mb-3">
+                                <div key={edu.id} className="bg-gray-50 rounded-xl p-4 mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                     <p className="text-sky-600">{edu.degree}</p>
                                     <p className="text-gray-500 text-sm">{edu.startDate} - {edu.endDate}</p>
@@ -108,7 +108,7 @@ export default function InternationalTemplate({ data }) {
                             <h2 className="font-bold text-sky-800 mb-4">Core Competencies</h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                                    <div key={i} className="flex items-center gap-2 text-sm text-gray-700 break-inside-avoid page-break-inside-avoid">
                                         <div className="w-2 h-2 rounded-full bg-sky-500"></div>
                                         {skill}
                                     </div>

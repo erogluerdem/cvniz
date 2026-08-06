@@ -10,7 +10,7 @@ export default function PopArtPulseTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#fdeb30] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Bungee', cursive" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fdeb30] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Bungee', cursive" }}>
 
             {/* POP ART BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -91,7 +91,7 @@ export default function PopArtPulseTemplate({ data }) {
                 <main className="flex-1 grid grid-cols-12 relative z-10 bg-white">
                     {/* Sidebar */}
                     <aside className="col-span-4 border-r-[8px] border-black bg-white flex flex-col">
-                        <section className="p-10 border-b-[8px] border-black bg-[#fdeb30] relative overflow-hidden">
+                        <section className="p-10 border-b-[8px] border-black bg-[#fdeb30] relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                             <div className="absolute top-[-20px] left-[-20px] w-20 h-20 bg-white border-[5px] border-black rounded-full opacity-20" />
                             <h2 className="text-3xl font-black uppercase mb-6 drop-shadow-[3px_3px_0px_white] flex items-center gap-3">
                                 <MessageSquare className="w-6 h-6 fill-black" /> PROFILE!
@@ -101,7 +101,7 @@ export default function PopArtPulseTemplate({ data }) {
                             </p>
                         </section>
 
-                        <section className="p-10 flex-1 relative bg-white">
+                        <section className="p-10 flex-1 relative bg-white break-inside-avoid page-break-inside-avoid">
                             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(black 3px, transparent 3px)', backgroundSize: '15px 15px' }} />
                             <h2 className="text-3xl font-black uppercase mb-8 border-b-[6px] border-black pb-2 bg-[#ec008c] text-white px-4 shadow-[6px_6px_0px_#00aeef] inline-block -rotate-2">
                                 Skills!
@@ -123,7 +123,7 @@ export default function PopArtPulseTemplate({ data }) {
                             </h2>
                             <div className="space-y-4 relative z-10">
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex justify-between items-center bg-black text-white p-3 border-r-[10px] border-[#ec008c] shadow-[4px_4px_0px_#00aeef]">
+                                    <div key={i} className="flex justify-between items-center bg-black text-white p-3 border-r-[10px] border-[#ec008c] shadow-[4px_4px_0px_#00aeef] break-inside-avoid page-break-inside-avoid">
                                         <span className="text-xs font-black uppercase">{lang.name}</span>
                                         <div className="flex gap-1">
                                             {[1, 2, 3, 4, 5].map(dot => (
@@ -149,7 +149,7 @@ export default function PopArtPulseTemplate({ data }) {
                             <Rocket className="w-64 h-64 text-black" />
                         </div>
 
-                        <section className="mb-20 relative z-10">
+                        <section className="mb-20 relative z-10 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-6xl font-black uppercase mb-16 flex items-center justify-between group">
                                 <div className="flex items-center gap-8">
                                     <div className="bg-[#fdeb30] border-[6px] border-black p-4 shadow-[10px_10px_0px_black] -rotate-3 group-hover:rotate-0 transition-transform">
@@ -185,7 +185,7 @@ export default function PopArtPulseTemplate({ data }) {
                             </div>
                         </section>
 
-                        <section className="relative z-10">
+                        <section className="relative z-10 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-5xl font-black uppercase mb-12 flex items-center gap-8 group">
                                 <span className="drop-shadow-[4px_4px_0px_#ec008c]">EDUCATION!</span>
                                 <div className="bg-[#ec008c] border-[6px] border-black p-4 shadow-[10px_10px_0px_black] rotate-3 group-hover:rotate-0 transition-transform">
@@ -194,7 +194,7 @@ export default function PopArtPulseTemplate({ data }) {
                             </h2>
                             <div className="grid grid-cols-2 gap-10">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="border-[6px] border-black bg-[#e2f5fc] p-8 shadow-[10px_10px_0px_#ec008c] relative overflow-hidden">
+                                    <div key={i} className="border-[6px] border-black bg-[#e2f5fc] p-8 shadow-[10px_10px_0px_#ec008c] relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute top-0 right-0 w-16 h-16 bg-[#fdeb30] border-b-[6px] border-l-[6px] border-black -translate-y-8 translate-x-8 rotate-45" />
                                         <h4 className="font-black text-2xl uppercase leading-tight mb-4 ">{edu.school}</h4>
                                         <div className="bg-white border-[3px] border-black px-4 py-1 inline-block mb-4 shadow-[4px_4px_0px_black]">

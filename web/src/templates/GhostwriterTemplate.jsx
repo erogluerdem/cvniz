@@ -31,7 +31,7 @@ export default function GhostwriterTemplate({ data, theme = {}, highlightedField
     }
 
     return (
-        <div className="min-h-full bg-[#fafaf9] text-[#1c1917] p-0 selection:bg-[#1c1917] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fafaf9] text-[#1c1917] p-0 selection:bg-[#1c1917] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'EB Garamond', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -113,7 +113,7 @@ export default function GhostwriterTemplate({ data, theme = {}, highlightedField
                         
                         {/* THE INVISIBLE ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-12 group bg-white p-10 border border-stone-100 relative overflow-hidden shadow-sm">
+                            <section className="space-y-12 group bg-white p-10 border border-stone-100 relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-6 opacity-[0.03]">
                                     <Type className="w-24 h-24" />
                                 </div>
@@ -128,13 +128,13 @@ export default function GhostwriterTemplate({ data, theme = {}, highlightedField
 
                         {/* NARRATIVE STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-stone-200 flex items-center gap-4 italic mb-10 border-b border-stone-50 pb-4 uppercase">
                                     <Layers className="w-5 h-5 text-[#1c1917]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item relative pb-4">
+                                        <div key={i} className="group/item relative pb-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center z-10 relative">
                                                 <span className="text-[18px] font-light uppercase tracking-widest text-stone-300 group-hover/item:text-black transition-colors italic">{skill}</span>
                                                 <div className="h-px bg-stone-50 flex-1 mx-4" />
@@ -162,10 +162,10 @@ export default function GhostwriterTemplate({ data, theme = {}, highlightedField
 
                         {/* LITERARY FOUNDATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-white border-y border-stone-100 uppercase italic">
+                            <section className="space-y-16 p-10 bg-white border-y border-stone-100 uppercase italic break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-stone-300 text-center mb-10 leading-none pb-4 border-b border-stone-50 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-stone-200 mb-6 tracking-[0.5em] italic">ACADEMIC_FORM_0{i + 1}</p>
                                         <h4 className="text-3xl font-light italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-stone-800 uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.4em] text-stone-300 mt-4 uppercase">{edu.school}</p>
@@ -186,7 +186,7 @@ export default function GhostwriterTemplate({ data, theme = {}, highlightedField
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-stone-100 hover:border-[#1c1917] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-stone-100 hover:border-[#1c1917] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1px] w-px h-32 bg-[#1c1917] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#1c1917]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">

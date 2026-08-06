@@ -16,7 +16,7 @@ export default function DarkZenTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-[#0a0a0a] text-stone-400 p-0 selection:bg-stone-800 selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#0a0a0a] text-stone-400 p-0 selection:bg-stone-800 selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -58,7 +58,7 @@ export default function DarkZenTemplate({ data, theme, highlightedField }) {
                 <div className="space-y-20">
                     {/* Intro Summary */}
                     {personal.summary && (
-                        <section className="text-center max-w-3xl mx-auto">
+                        <section className="text-center max-w-3xl mx-auto break-inside-avoid page-break-inside-avoid">
                             <Quote className="w-12 h-12 mx-auto mb-10 text-stone-800" />
                             <p className="text-xl md:text-2xl leading-relaxed font-light text-stone-200 italic">
                                 "{personal.summary}"
@@ -72,7 +72,7 @@ export default function DarkZenTemplate({ data, theme, highlightedField }) {
                             <h2 className="text-xs font-black uppercase tracking-[0.6em] text-stone-600 mb-16 text-center">{t.experience}</h2>
                             <div className="space-y-16">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="relative group">
+                                    <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                         <div className="flex flex-col md:flex-row justify-between items-baseline mb-6 gap-6">
                                             <h3 className="text-3xl font-light tracking-tight text-stone-200 group-hover:text-white transition-colors uppercase">{exp.position}</h3>
                                             <span className="text-[10px] font-black tracking-widest text-stone-600 uppercase">
@@ -100,7 +100,7 @@ export default function DarkZenTemplate({ data, theme, highlightedField }) {
                                 </h3>
                                 <div className="space-y-6">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex justify-between items-center group">
+                                        <div key={i} className="flex justify-between items-center group break-inside-avoid page-break-inside-avoid">
                                             <span className="text-sm font-light tracking-widest text-stone-400 group-hover:text-white transition-colors uppercase">{skill}</span>
                                             <div className="w-24 h-[1px] bg-stone-800 group-hover:bg-stone-500 transition-colors" />
                                         </div>
@@ -115,7 +115,7 @@ export default function DarkZenTemplate({ data, theme, highlightedField }) {
                                 <h3 className="text-xs font-black uppercase tracking-[0.6em] text-stone-600 mb-12">{t.education}</h3>
                                 <div className="space-y-12">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="group overflow-hidden">
+                                        <div key={edu.id} className="group overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <h4 className="text-xl font-light text-stone-200 mb-2 uppercase tracking-tight group-hover:translate-x-4 transition-transform">{edu.degree}</h4>
                                             <p className="text-[10px] font-black text-stone-600 uppercase tracking-widest mb-4 italic">{edu.school}</p>
                                             <p className="text-[9px] font-black text-stone-800 uppercase tracking-widest">{edu.startDate} – {edu.endDate}</p>
@@ -132,7 +132,7 @@ export default function DarkZenTemplate({ data, theme, highlightedField }) {
                             <h2 className="text-xs font-black uppercase tracking-[0.6em] text-stone-600 mb-12 text-center">{t.references}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                                 {references.map((ref) => (
-                                    <div key={ref.id} className="text-center group">
+                                    <div key={ref.id} className="text-center group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-xl font-light text-stone-200 mb-4 uppercase tracking-[0.1em] group-hover:scale-110 transition-transform">{ref.name}</p>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-stone-700 mb-8 italic">{ref.company}</p>
                                         <div className="flex flex-col gap-2 font-black text-[9px] tracking-widest text-stone-800 group-hover:text-stone-500 transition-colors">

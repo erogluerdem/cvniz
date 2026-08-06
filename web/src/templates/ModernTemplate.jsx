@@ -20,8 +20,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div
-            className="flex min-h-full bg-white text-slate-900"
+        <div id="cv-template-wrapper" className="flex min-h-full bg-white text-slate-900 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: theme.fontFamily ? `'${theme.fontFamily}', sans-serif` : "'Inter', sans-serif",
                 fontSize: fontSize
@@ -50,7 +49,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
 
                 <div className="space-y-6 flex-1">
                     <section className="break-inside-avoid">
-                        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+                        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center gap-2">
                             {t.contact} <div className="flex-1 h-px bg-slate-200" />
                         </h2>
                         <div className="space-y-3 text-[10px] font-medium text-slate-600">
@@ -82,7 +81,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                     </section>
 
                     <section className="break-inside-avoid">
-                        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+                        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center gap-2">
                             {t.expertise} <div className="flex-1 h-px bg-slate-200" />
                         </h2>
                         <div className="flex flex-wrap gap-1.5">
@@ -99,14 +98,14 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                     </section>
 
                     <section className="break-inside-avoid">
-                        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+                        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center gap-2">
                             {t.languages} <div className="flex-1 h-px bg-slate-200" />
                         </h2>
                         <div className="space-y-2">
                             {languages.map(lang => (
-                                <div key={lang.name} className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest">
+                                <div key={lang.name} className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest break-inside-avoid page-break-inside-avoid">
                                     <span className="text-slate-800">{lang.name}</span>
-                                    <span className="text-slate-400 italic">{lang.level}</span>
+                                    <span className="text-slate-500 italic">{lang.level}</span>
                                 </div>
                             ))}
                         </div>
@@ -114,12 +113,12 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                     {/* Hobbies Section - In Sidebar for Modern */}
                     {hobbies && hobbies.length > 0 && (
                         <section className="break-inside-avoid">
-                            <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
+                            <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center gap-2">
                                 {t.interests} <div className="flex-1 h-px bg-slate-200" />
                             </h2>
                             <div className="flex flex-wrap gap-1.5">
                                 {hobbies.map(hobby => (
-                                    <div key={hobby.id} className="px-2 py-1 bg-white border border-slate-100 rounded text-[9px] font-bold text-slate-600 flex items-center gap-1.5">
+                                    <div key={hobby.id} className="px-2 py-1 bg-white border border-slate-100 rounded text-[9px] font-bold text-slate-600 flex items-center gap-1.5 break-inside-avoid page-break-inside-avoid">
                                         <Heart className="w-2.5 h-2.5 text-pink-500" />
                                         {hobby.name}
                                     </div>
@@ -167,7 +166,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                             {experience.map(exp => (
                                 <div key={exp.id} className="grid grid-cols-1 md:grid-cols-4 gap-4 group break-inside-avoid">
                                     <div className="md:col-span-1">
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest pt-1 italic">
+                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest pt-1 italic">
                                             {exp.startDate} — {exp.endDate}
                                         </p>
                                     </div>
@@ -176,7 +175,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                                             <h3 className="text-base font-bold text-slate-900 tracking-tight group-hover:text-slate-600 transition-colors">
                                                 {exp.position}
                                             </h3>
-                                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
+                                            <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest mt-0.5">
                                                 {exp.company}
                                             </p>
                                         </div>
@@ -199,7 +198,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                         <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 ${highlightedField === 'education' ? 'scale-[1.01] ring-4 ring-cyan-500/20 rounded-xl p-2 bg-cyan-500/5' : ''}`}>
                             {education.map(edu => (
                                 <div key={edu.id} className="p-4 bg-[#f8f9fa] border border-slate-100 rounded hover:border-slate-300 transition-all group break-inside-avoid">
-                                    <p className="text-[8px] font-black text-slate-400 mb-1.5 uppercase tracking-widest italic">
+                                    <p className="text-[8px] font-black text-slate-500 mb-1.5 uppercase tracking-widest italic">
                                         {edu.startDate} - {edu.endDate}
                                     </p>
                                     <h4 className="font-black text-slate-900 text-[11px] mb-0.5 uppercase tracking-tighter">
@@ -248,7 +247,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                                             <h5 className="text-[11px] font-bold text-slate-800">{c.name}</h5>
                                             <p className="text-[9px] text-slate-500 uppercase tracking-widest">{c.issuer}</p>
                                         </div>
-                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-2.5 py-0.5 bg-slate-50 rounded-full" style={{ borderLeft: `2px solid ${accentColor}` }}>
+                                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest px-2.5 py-0.5 bg-slate-50 rounded-full" style={{ borderLeft: `2px solid ${accentColor}` }}>
                                             {c.date}
                                         </span>
                                     </div>
@@ -267,7 +266,7 @@ export default function ModernTemplate({ data, theme, highlightedField }) {
                                 {references.map(ref => (
                                     <div key={ref.id} className="p-4 border-l-2 break-inside-avoid" style={{ borderColor: accentColor + '40' }}>
                                         <h4 className="font-bold text-slate-900 text-[11px] mb-0.5">{ref.name}</h4>
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">{ref.company}</p>
+                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2">{ref.company}</p>
                                         <div className="space-y-0.5 text-[10px] text-slate-500 font-medium">
                                             {ref.phone && <p>{ref.phone}</p>}
                                             {ref.email && <p>{ref.email}</p>}

@@ -4,7 +4,7 @@ export default function TeacherTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-amber-50 to-orange-50" style={{ fontFamily: "'Inter', Georgia, serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-amber-50 to-orange-50 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', Georgia, serif" }}>
             {/* Warm Header with Book Design */}
             <header className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-700 via-orange-700 to-amber-800" />
@@ -80,7 +80,7 @@ export default function TeacherTemplate({ data }) {
                 <div className="col-span-2 space-y-6">
                     {/* Teaching Philosophy */}
                     {personal.summary && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-amber-100/50 border-l-4 border-amber-500">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-amber-100/50 border-l-4 border-amber-500 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
                                     <Heart className="w-5 h-5 text-white" />
@@ -95,7 +95,7 @@ export default function TeacherTemplate({ data }) {
 
                     {/* Teaching Experience */}
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-amber-100/50">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-amber-100/50 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
                                     <BookOpen className="w-5 h-5 text-white" />
@@ -104,7 +104,7 @@ export default function TeacherTemplate({ data }) {
                             </div>
                             <div className="space-y-5 pl-[52px]">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="relative pl-6 border-l-2 border-amber-500/30">
+                                    <div key={exp.id} className="relative pl-6 border-l-2 border-amber-500/30 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 ring-4 ring-white" />
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
@@ -128,7 +128,7 @@ export default function TeacherTemplate({ data }) {
 
                     {/* Education */}
                     {education.length > 0 && (
-                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-amber-100/50">
+                        <section className="bg-white rounded-2xl p-6 shadow-lg shadow-amber-100/50 break-inside-avoid page-break-inside-avoid">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
                                     <GraduationCap className="w-5 h-5 text-white" />
@@ -137,7 +137,7 @@ export default function TeacherTemplate({ data }) {
                             </div>
                             <div className="space-y-4 pl-[52px]">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="relative pl-6 border-l-2 border-emerald-500/30">
+                                    <div key={edu.id} className="relative pl-6 border-l-2 border-emerald-500/30 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 ring-4 ring-white" />
                                         <div className="flex justify-between items-start">
                                             <div>
@@ -169,7 +169,7 @@ export default function TeacherTemplate({ data }) {
                             </div>
                             <div className="space-y-3">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-3 text-sm">
+                                    <div key={i} className="flex items-center gap-3 text-sm break-inside-avoid page-break-inside-avoid">
                                         <Star className="w-4 h-4 text-amber-300" />
                                         <span className="text-amber-100">{skill}</span>
                                     </div>

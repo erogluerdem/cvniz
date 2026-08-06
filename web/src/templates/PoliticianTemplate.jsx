@@ -35,7 +35,7 @@ export default function PoliticianTemplate({ data, theme = {}, highlightedField 
     }
 
     return (
-        <div className="min-h-full bg-[#fcfcf9] text-[#0f172a] p-0 selection:bg-[#7f1d1d] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fcfcf9] text-[#0f172a] p-0 selection:bg-[#7f1d1d] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Playfair Display', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '1rem' : theme?.fontSize === 'Büyük' ? '1.25rem' : '1.1rem',
@@ -130,7 +130,7 @@ export default function PoliticianTemplate({ data, theme = {}, highlightedField 
                                 </h2>
                                 <div className="space-y-48">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-28 border-l-2 border-[#a47e3c10] hover:border-[#a47e3c] transition-all duration-1000">
+                                        <div key={i} className="group relative pl-28 border-l-2 border-[#a47e3c10] hover:border-[#a47e3c] transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-2 border-[#a47e3c] group-hover:bg-[#a47e3c] transition-all shadow-lg" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-10">
@@ -159,14 +159,14 @@ export default function PoliticianTemplate({ data, theme = {}, highlightedField 
                         
                         {/* STRATEGIC PILLARS (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="bg-white p-12 border border-[#0f172a05] shadow-2xl group relative overflow-hidden">
+                            <section className="bg-white p-12 border border-[#0f172a05] shadow-2xl group relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <Vote className="absolute -top-10 -left-10 w-48 h-48 text-[#a47e3c]/05 group-hover:rotate-12 transition-transform duration-1000" />
                                 <h3 className="text-[11px] font-bold uppercase tracking-[1em] text-[#0f172a]/20 mb-20 flex items-center gap-6 italic z-10 relative">
                                     <Target className="w-7 h-7 text-[#0f172a]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-12 relative z-10">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item flex flex-col gap-4">
+                                        <div key={i} className="group/item flex flex-col gap-4 break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center text-3xl font-black italic text-[#0f172a] group-hover/item:text-[#a47e3c] transition-colors leading-none">
                                                 <span>{skill}</span>
                                             </div>
@@ -192,7 +192,7 @@ export default function PoliticianTemplate({ data, theme = {}, highlightedField 
                                 </h3>
                                 <div className="space-y-20">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[10px] font-bold text-[#a47e3c] mb-6 group-hover:opacity-100 transition-opacity tracking-[0.4em] italic uppercase">ALMA_MATER_0{i + 1}</p>
                                             <h4 className="text-4xl font-black tracking-tight mb-4 group-hover/edu:scale-105 transition-transform uppercase leading-none italic">{edu.degree}</h4>
                                             <p className="text-[12px] font-bold uppercase tracking-[0.4em] text-[#0f172a]/40 italic group-hover:text-[#0f172a] transition-colors leading-none">{edu.school}</p>

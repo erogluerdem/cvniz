@@ -4,7 +4,7 @@ export default function PortfolioTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-neutral-900 text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-neutral-900 text-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Portfolio Header */}
             <header className="px-10 py-12 text-center border-b border-neutral-800">
                 <div className="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 p-1 mx-auto mb-6">
@@ -27,7 +27,7 @@ export default function PortfolioTemplate({ data }) {
 
             {/* Bio */}
             {personal.summary && (
-                <section className="px-10 py-8 text-center border-b border-neutral-800">
+                <section className="px-10 py-8 text-center border-b border-neutral-800 break-inside-avoid page-break-inside-avoid">
                     <p className="text-neutral-300 leading-relaxed max-w-2xl mx-auto whitespace-pre-line">
                         {personal.summary}
                     </p>
@@ -35,13 +35,13 @@ export default function PortfolioTemplate({ data }) {
             )}
 
             {/* Portfolio Grid - Simulated */}
-            <section className="px-10 py-8 border-b border-neutral-800">
+            <section className="px-10 py-8 border-b border-neutral-800 break-inside-avoid page-break-inside-avoid">
                 <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-6 flex items-center gap-2">
                     <Camera className="w-4 h-4" /> Seçili Çalışmalar
                 </h2>
                 <div className="grid grid-cols-3 gap-4">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="aspect-square bg-gradient-to-br from-neutral-800 to-neutral-700 rounded-xl flex items-center justify-center">
+                        <div key={i} className="aspect-square bg-gradient-to-br from-neutral-800 to-neutral-700 rounded-xl flex items-center justify-center break-inside-avoid page-break-inside-avoid">
                             <Image className="w-12 h-12 text-neutral-600" />
                         </div>
                     ))}
@@ -58,7 +58,7 @@ export default function PortfolioTemplate({ data }) {
                             </h2>
                             <div className="space-y-4">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="bg-neutral-800 rounded-xl p-4">
+                                    <div key={exp.id} className="bg-neutral-800 rounded-xl p-4 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between mb-1">
                                             <h3 className="font-bold">{exp.position}</h3>
                                             <span className="text-xs text-neutral-500">{exp.startDate} - {exp.endDate}</span>
@@ -91,7 +91,7 @@ export default function PortfolioTemplate({ data }) {
                         <section>
                             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="bg-neutral-800 rounded-xl p-4 mb-2">
+                                <div key={edu.id} className="bg-neutral-800 rounded-xl p-4 mb-2 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-bold">{edu.school}</h3>
                                     <p className="text-neutral-400 text-sm">{edu.degree}</p>
                                 </div>
@@ -104,7 +104,7 @@ export default function PortfolioTemplate({ data }) {
                             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-4">Diller</h2>
                             <div className="bg-neutral-800 rounded-xl p-4">
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex justify-between text-sm mb-2">
+                                    <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                         <span>{lang.name}</span>
                                         <span className="text-pink-400">{lang.level}</span>
                                     </div>

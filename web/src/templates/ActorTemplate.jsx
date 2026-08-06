@@ -44,7 +44,7 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
     const otherExp = experience.filter(exp => !filmTv.includes(exp) && !theater.includes(exp))
 
     return (
-        <div className="min-h-full bg-[#fafaf9] text-[#1c1917] p-0 selection:bg-[#e11d48] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#fafaf9] text-[#1c1917] p-0 selection:bg-[#e11d48] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -120,7 +120,7 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
                     <aside className="col-span-4 p-10 space-y-24 bg-stone-50 border-r border-stone-200">
                         
                         {/* PHYSICAL CHARACTERISTICS */}
-                        <section className="space-y-8">
+                        <section className="space-y-8 break-inside-avoid page-break-inside-avoid">
                             <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-stone-300 mb-10 flex items-center gap-4 italic border-b border-stone-200 pb-4">
                                 <Target className="w-5 h-5 text-[#e11d48]" /> {t.stats}
                             </h3>
@@ -131,7 +131,7 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
                                     { label: isEn ? 'Hair' : 'Saç', val: 'Dark Brown' },
                                     { label: isEn ? 'Voice' : 'Ses', val: 'Baritone' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="p-4 bg-white border border-stone-200 text-center group hover:border-[#e11d48] transition-all">
+                                    <div key={i} className="p-4 bg-white border border-stone-200 text-center group hover:border-[#e11d48] transition-all break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1">{stat.label}</p>
                                         <p className="text-lg font-black text-black italic leading-none">{stat.val}</p>
                                     </div>
@@ -141,13 +141,13 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
 
                         {/* SPECIAL SKILLS */}
                         {skills.length > 0 && (
-                            <section className="space-y-10 group">
+                            <section className="space-y-10 group break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-stone-300 flex items-center gap-4 italic mb-8">
                                     <Zap className="w-5 h-5 text-[#e11d48]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-4 group/item">
+                                        <div key={i} className="flex items-center gap-4 group/item break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 rounded-full bg-[#e11d48] scale-0 group-hover/item:scale-100 transition-transform" />
                                             <p className="text-sm font-black text-black/80 tracking-widest uppercase italic group-hover/item:text-[#e11d48] transition-colors">{skill}</p>
                                         </div>
@@ -164,7 +164,7 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
                                 </h3>
                                 <div className="space-y-4">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="p-4 bg-black text-white italic tracking-tighter hover:bg-[#e11d48] transition-all cursor-default">
+                                        <div key={i} className="p-4 bg-black text-white italic tracking-tighter hover:bg-[#e11d48] transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             <p className="text-xl font-black uppercase">{lang.name}</p>
                                             <p className="text-[9px] font-black opacity-40 uppercase tracking-[0.3em]">{lang.level}</p>
                                         </div>
@@ -180,13 +180,13 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
                         {/* PERFORMANCE CATEGORIES */}
                         
                         {/* 1. FILM & TV */}
-                        <section className="space-y-16">
+                        <section className="space-y-16 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-[11px] font-black uppercase tracking-[1.5em] text-stone-200 mb-12 flex items-center gap-8 italic leading-none border-b border-stone-100 pb-6">
                                 <Film className="w-7 h-7 text-[#e11d48]" /> {t.film}
                             </h2>
                             <div className="space-y-12">
                                 {(filmTv.length > 0 ? filmTv : experience.slice(0, 3)).map((exp, i) => (
-                                    <div key={i} className="group flex justify-between items-start gap-10">
+                                    <div key={i} className="group flex justify-between items-start gap-10 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex-1">
                                             <h3 className="text-3xl font-black text-black tracking-tight leading-none uppercase italic group-hover:text-[#e11d48] transition-colors">
                                                 {exp.position}
@@ -203,13 +203,13 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
                         </section>
 
                         {/* 2. THEATRE */}
-                        <section className="space-y-16">
+                        <section className="space-y-16 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-[11px] font-black uppercase tracking-[1.5em] text-stone-200 mb-12 flex items-center gap-8 italic leading-none border-b border-stone-100 pb-6">
                                 <Film className="w-7 h-7 text-[#e11d48]" /> {t.theater}
                             </h2>
                             <div className="space-y-12">
                                 {(theater.length > 0 ? theater : experience.slice(3, 5)).map((exp, i) => (
-                                    <div key={i} className="group flex justify-between items-start gap-10">
+                                    <div key={i} className="group flex justify-between items-start gap-10 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex-1">
                                             <h3 className="text-3xl font-black text-black tracking-tight leading-none uppercase italic group-hover:text-[#e11d48] transition-colors">
                                                 {exp.position}
@@ -227,13 +227,13 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
 
                         {/* EDUCATION & TRAINING */}
                         {education.length > 0 && (
-                            <section className="space-y-16">
+                            <section className="space-y-16 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-[11px] font-black uppercase tracking-[1.5em] text-stone-200 mb-12 flex items-center gap-8 italic leading-none border-b border-stone-100 pb-6">
                                     <GraduationCap className="w-7 h-7 text-[#e11d48]" /> {t.education}
                                 </h2>
                                 <div className="grid grid-cols-2 gap-12">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="space-y-3">
+                                        <div key={i} className="space-y-3 break-inside-avoid page-break-inside-avoid">
                                             <h4 className="text-2xl font-black italic text-black leading-tight uppercase">{edu.degree}</h4>
                                             <p className="text-xs font-black text-[#e11d48] uppercase tracking-[0.3em]">{edu.school}</p>
                                             <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Focus: Performance Art</p>
@@ -244,7 +244,7 @@ export default function ActorTemplate({ data, theme = {}, highlightedField = nul
                         )}
 
                         {/* AWARDS */}
-                        <section className="p-12 border-2 border-black bg-stone-50 group hover:bg-[#e11d48] hover:border-[#e11d48] transition-all duration-700">
+                        <section className="p-12 border-2 border-black bg-stone-50 group hover:bg-[#e11d48] hover:border-[#e11d48] transition-all duration-700 break-inside-avoid page-break-inside-avoid">
                              <div className="flex items-center gap-6 mb-8 group-hover:text-white transition-colors">
                                 <Award className="w-8 h-8 text-[#e11d48] group-hover:text-white" />
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] italic leading-none">HONORS & RECOGNITION</h3>

@@ -32,7 +32,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
     }
 
     return (
-        <div className="min-h-full bg-slate-50 text-slate-800 p-0 selection:bg-[#60a5fa] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 text-slate-800 p-0 selection:bg-[#60a5fa] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -76,7 +76,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                                      </p>
                                      <div className="flex gap-2">
                                         {['PhD', 'Elite Performance', 'CBT'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-black text-slate-400 uppercase tracking-widest">{tag}</span>
+                                            <span key={tag} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-widest">{tag}</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -108,7 +108,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                         
                         {/* MINDSET MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-white p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+                            <section className="space-y-10 group bg-white p-10 border border-slate-100 shadow-sm relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-[0.05]">
                                     <Lightbulb className="w-24 h-24" />
                                 </div>
@@ -122,7 +122,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                         )}
 
                         {/* ATHLETE MINDSET METRICS */}
-                        <section className="bg-slate-900 p-10 text-white space-y-12 relative overflow-hidden group shadow-2xl skew-x-[-2deg]">
+                        <section className="bg-slate-900 p-10 text-white space-y-12 relative overflow-hidden group shadow-2xl skew-x-[-2deg] break-inside-avoid page-break-inside-avoid">
                              <h4 className="text-[11px] font-black uppercase tracking-[0.6em] text-[#60a5fa] mb-full border-b border-white/10 pb-4 mb-20 italic leading-none skew-x-[2deg] uppercase">{t.metrics}</h4>
                              <div className="space-y-10 relative z-10 skew-x-[2deg]">
                                 {[
@@ -131,7 +131,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                                     { label: 'Stress Buffer', val: '95%' },
                                     { label: 'Cohesion Rate', val: '+40%' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/stat">
+                                    <div key={i} className="flex justify-between items-baseline group/stat break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover/stat:text-[#60a5fa] transition-colors">{stat.label}</p>
                                         <p className="text-3xl font-black italic tracking-tighter text-white">{stat.val}</p>
                                     </div>
@@ -141,15 +141,15 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
 
                         {/* COGNITIVE STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-100 pb-4 uppercase">
                                     <Target className="w-5 h-5 text-[#60a5fa]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-6 border border-slate-100 bg-white shadow-sm hover:border-[#60a5fa]/30 transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-6 border border-slate-100 bg-white shadow-sm hover:border-[#60a5fa]/30 transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-[#60a5fa] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                                            <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-[#60a5fa] transition-colors">{skill}</span>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-500 group-hover:text-[#60a5fa] transition-colors">{skill}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -158,10 +158,10 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
 
                         {/* ACADEMIC FOUNDATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-10 bg-white border border-slate-100 shadow-2xl text-center space-y-16">
+                            <section className="p-10 bg-white border border-slate-100 shadow-2xl text-center space-y-16 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-200 text-center italic mb-10 leading-none pb-4 border-b border-slate-50 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-slate-300 group-hover:text-[#60a5fa] transition-colors mb-4 tracking-[0.5em] italic">NEURAL_RECORD_v0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black uppercase tracking-[0.3em] text-[#60a5fa]">{edu.school}</p>
@@ -182,7 +182,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                                 </h2>
                                 <div className="space-y-56">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-50 hover:border-[#60a5fa] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-2 border-slate-50 hover:border-[#60a5fa] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1 h-32 bg-[#60a5fa] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#60a5fa]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">
@@ -197,7 +197,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                                                     [{exp.startDate} :: {exp.endDate}]
                                                 </div>
                                             </div>
-                                            <p className="text-2xl text-slate-400 leading-relaxed font-light italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-12 group-hover:text-slate-800 group-hover:border-[#60a5fa] bg-slate-50 transition-all duration-1000">
+                                            <p className="text-2xl text-slate-500 leading-relaxed font-light italic opacity-95 group-hover:opacity-100 transition-opacity border-l-[40px] border-slate-50 pl-24 py-12 group-hover:text-slate-800 group-hover:border-[#60a5fa] bg-slate-50 transition-all duration-1000">
                                                 {exp.description}
                                             </p>
                                         </div>
@@ -212,7 +212,7 @@ export default function PerformancePsychologistTemplate({ data, theme = {}, high
                              <h4 className="text-[12px] font-black tracking-[2em] text-[#60a5fa] mb-12 italic leading-none z-10 relative uppercase">{t.research}</h4>
                              <div className="space-y-10 relative z-10">
                                 <p className="text-5xl text-6xl font-black italic tracking-tighter leading-none">Elite Cognitive Performance Advisor // Behavioral Systems Lead</p>
-                                <p className="text-2xl font-black italic tracking-widest opacity-20 group-hover:opacity-100 transition-opacity uppercase text-slate-400">Accredited Peak Performance Bureau // Evidence-Based Practice</p>
+                                <p className="text-2xl font-black italic tracking-widest opacity-20 group-hover:opacity-100 transition-opacity uppercase text-slate-500">Accredited Peak Performance Bureau // Evidence-Based Practice</p>
                              </div>
                              
                              <div className="flex justify-start gap-24 mt-20 text-slate-800 group-hover:text-[#60a5fa] transition-all duration-[1s]">

@@ -4,7 +4,7 @@ export default function RealEstateTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="flex min-h-full bg-white" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <div id="cv-template-wrapper" className="flex min-h-full bg-white print-exact mx-auto print:mx-0" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             <div className="w-[35%] bg-blue-900 text-white p-10">
                 <div className="text-center mb-12">
                     <div className="w-28 h-28 rounded-2xl bg-white text-blue-900 mx-auto mb-6 flex items-center justify-center text-4xl font-black shadow-2xl rotate-3">
@@ -52,7 +52,7 @@ export default function RealEstateTemplate({ data }) {
                         </h3>
                         <div className="space-y-10">
                             {experience.map(exp => (
-                                <div key={exp.id} className="relative pl-8 border-l border-slate-200">
+                                <div key={exp.id} className="relative pl-8 border-l border-slate-200 break-inside-avoid page-break-inside-avoid">
                                     <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-orange-500" />
                                     <div className="flex justify-between items-center mb-2">
                                         <h4 className="font-bold text-slate-800">{exp.position}</h4>
@@ -71,7 +71,7 @@ export default function RealEstateTemplate({ data }) {
                         </h3>
                         <div className="grid grid-cols-2 gap-8">
                             {education.map(edu => (
-                                <div key={edu.id} className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                <div key={edu.id} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 break-inside-avoid page-break-inside-avoid">
                                     <p className="text-[10px] font-black text-orange-500 mb-2">{edu.startDate} - {edu.endDate}</p>
                                     <h4 className="font-bold text-slate-800 text-sm mb-1">{edu.school}</h4>
                                     <p className="text-slate-50 text-xs font-medium text-slate-500">{edu.degree}</p>

@@ -4,7 +4,7 @@ export default function FashionTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-white text-black py-20 px-16" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-black py-20 px-16 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             <div className="flex flex-col min-h-full theme-fashion-content">
                 {/* Visual Header - High Contrast & Minimal */}
                 <header className="mb-32 flex flex-col items-center border-b border-black pb-20">
@@ -56,7 +56,7 @@ export default function FashionTemplate({ data }) {
                             </h2>
                             <div className="space-y-6">
                                 {skills.map(s => (
-                                    <div key={s} className="group overflow-hidden">
+                                    <div key={s} className="group overflow-hidden break-inside-avoid page-break-inside-avoid">
                                         <p className="text-xl font-light italic mb-2 group-hover:pl-4 transition-all duration-500">{s}</p>
                                         <div className="w-full h-[1px] bg-black/5" />
                                     </div>
@@ -70,7 +70,7 @@ export default function FashionTemplate({ data }) {
                             </h2>
                             <div className="space-y-12">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="text-center group">
+                                    <div key={edu.id} className="text-center group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] uppercase tracking-widest opacity-30 mb-3 italic">{edu.startDate} — {edu.endDate}</p>
                                         <h4 className="text-lg font-bold uppercase leading-tight mb-2 group-hover:tracking-wider transition-all duration-700">{edu.school}</h4>
                                         <p className="text-xs font-light italic opacity-60 underline underline-offset-4 decoration-black/10">{edu.degree}</p>
@@ -104,7 +104,7 @@ export default function FashionTemplate({ data }) {
                             </h2>
                             <div className="space-y-24">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative group">
+                                    <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-end mb-8 border-b border-black pb-4">
                                             <div>
                                                 <h3 className="text-3xl font-light uppercase tracking-tighter group-hover:italic transition-all duration-500">

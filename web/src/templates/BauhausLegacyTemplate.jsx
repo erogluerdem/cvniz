@@ -10,7 +10,7 @@ export default function BauhausLegacyTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#d1d1d1] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#d1d1d1] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
 
             {/* BACKGROUND FON - BAUHAUS GRID & SHAPES */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
@@ -71,7 +71,7 @@ export default function BauhausLegacyTemplate({ data }) {
                 <main className="flex-1 grid grid-cols-12">
                     {/* Left Sidebar - Summary & Skills */}
                     <div className="col-span-4 border-r-[8px] border-black flex flex-col">
-                        <section className="p-8 border-b-[8px] border-black bg-[#faf8f5]">
+                        <section className="p-8 border-b-[8px] border-black bg-[#faf8f5] break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-2xl font-black uppercase mb-6 flex items-center gap-3">
                                 <div className="w-6 h-6 bg-[#e63946] flex-shrink-0" /> Profile
                             </h2>
@@ -80,11 +80,11 @@ export default function BauhausLegacyTemplate({ data }) {
                             </p>
                         </section>
 
-                        <section className="p-8 flex-1 bg-[#0077b6]/5">
+                        <section className="p-8 flex-1 bg-[#0077b6]/5 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-2xl font-black uppercase mb-8 border-b-4 border-black pb-2">Skills</h2>
                             <div className="grid grid-cols-1 gap-4">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-3 group">
+                                    <div key={i} className="flex items-center gap-3 group break-inside-avoid page-break-inside-avoid">
                                         <div className={`w-4 h-4 border-2 border-black ${i % 3 === 0 ? 'bg-[#ffb703]' : i % 3 === 1 ? 'bg-[#e63946]' : 'bg-black'}`} />
                                         <span className="text-xs font-black uppercase tracking-wider">{skill}</span>
                                     </div>
@@ -94,7 +94,7 @@ export default function BauhausLegacyTemplate({ data }) {
                             <h2 className="text-2xl font-black uppercase mt-12 mb-8 border-b-4 border-black pb-2">Linguistic</h2>
                             <div className="space-y-4">
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex flex-col gap-1">
+                                    <div key={i} className="flex flex-col gap-1 break-inside-avoid page-break-inside-avoid">
                                         <span className="text-xs font-black uppercase">{lang.name}</span>
                                         <div className="h-4 w-full bg-stone-200 border-2 border-black relative overflow-hidden">
                                             <div
@@ -117,14 +117,14 @@ export default function BauhausLegacyTemplate({ data }) {
                     <div className="col-span-8 bg-white p-12 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-stone-50 -z-10 -translate-y-1/2 translate-x-1/2 rotate-12" />
 
-                        <section className="mb-16">
+                        <section className="mb-16 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-5xl font-black uppercase mb-12 flex items-center gap-4 relative">
                                 <span className="z-10">Experience</span>
                                 <div className="absolute -left-16 right-0 h-4 bg-[#ffb703]/20 -rotate-1" />
                             </h2>
                             <div className="space-y-16">
                                 {experience.map((exp, i) => (
-                                    <div key={i} className="relative pl-10 border-l-[6px] border-black">
+                                    <div key={i} className="relative pl-10 border-l-[6px] border-black break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-4 top-0 w-6 h-6 bg-black" />
                                         <div className="flex flex-col mb-4">
                                             <div className="flex justify-between items-start">
@@ -148,7 +148,7 @@ export default function BauhausLegacyTemplate({ data }) {
                             </h2>
                             <div className="grid grid-cols-1 gap-8">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="p-8 border-[6px] border-black bg-[#faf8f5] flex items-start gap-6 relative group overflow-hidden">
+                                    <div key={i} className="p-8 border-[6px] border-black bg-[#faf8f5] flex items-start gap-6 relative group overflow-hidden break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute top-0 right-0 w-12 h-12 bg-[#ffb703] translate-x-6 -translate-y-6 rotate-45" />
                                         <div className="w-16 h-16 bg-black flex-shrink-0 flex items-center justify-center">
                                             <GraduationCap className="w-10 h-10 text-white" />

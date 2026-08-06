@@ -14,7 +14,7 @@ export default function StartupPitchTemplate({ data, theme, highlightedField }) 
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -57,7 +57,7 @@ export default function StartupPitchTemplate({ data, theme, highlightedField }) 
 
                 {/* Summary - The Pitch */}
                 {personal.summary && (
-                    <section className="mb-8 p-8 bg-white text-slate-800 rounded-3xl shadow-2xl transform hover:scale-[1.01] transition-transform">
+                    <section className="mb-8 p-8 bg-white text-slate-800 rounded-3xl shadow-2xl transform hover:scale-[1.01] transition-transform break-inside-avoid page-break-inside-avoid">
                         <div className="flex items-center gap-2 mb-4">
                             <TrendingUp className="w-5 h-5 text-violet-600" />
                             <span className="text-xs uppercase tracking-widest text-violet-600 font-bold">The Vision</span>
@@ -74,7 +74,7 @@ export default function StartupPitchTemplate({ data, theme, highlightedField }) 
                                 <h2 className="text-sm uppercase tracking-widest text-pink-300 font-bold mb-8">{t.experience}</h2>
                                 <div className="space-y-8">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-pink-400 before:rounded-full">
+                                        <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-pink-400 before:rounded-full break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-2xl font-bold">{exp.position}</h3>
                                             <p className="text-pink-300 font-medium">{exp.company}</p>
                                             <p className="text-xs text-purple-200 mb-3">{exp.startDate} → {exp.endDate}</p>
@@ -87,11 +87,11 @@ export default function StartupPitchTemplate({ data, theme, highlightedField }) 
 
                         {/* References - Network */}
                         {references?.length > 0 && (
-                            <section className="p-8 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20">
+                            <section className="p-8 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm uppercase tracking-widest text-pink-300 font-bold mb-6">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-white/10 rounded-xl">
+                                        <div key={ref.id} className="p-4 bg-white/10 rounded-xl break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-purple-200">{ref.company}</p>
                                         </div>
@@ -104,11 +104,11 @@ export default function StartupPitchTemplate({ data, theme, highlightedField }) 
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-3xl shadow-xl">
+                            <section className="p-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-3xl shadow-xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-widest text-pink-100 font-bold mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-4 py-2 bg-white/20 rounded-xl text-sm font-medium">{skill}</div>
+                                        <div key={i} className="px-4 py-2 bg-white/20 rounded-xl text-sm font-medium break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -129,7 +129,7 @@ export default function StartupPitchTemplate({ data, theme, highlightedField }) 
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20">
+                            <section className="p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-sm uppercase tracking-widest text-pink-300 font-bold mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

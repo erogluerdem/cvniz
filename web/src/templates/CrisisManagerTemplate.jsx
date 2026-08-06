@@ -29,7 +29,7 @@ export default function CrisisManagerTemplate({ data, theme = {}, highlightedFie
     }
 
     return (
-        <div className="min-h-full bg-[#f8fafc] text-[#1e293b] p-0 selection:bg-[#991b1b] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f8fafc] text-[#1e293b] p-0 selection:bg-[#991b1b] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -114,7 +114,7 @@ export default function CrisisManagerTemplate({ data, theme = {}, highlightedFie
                         )}
 
                         {/* RESOLUTION METRICS */}
-                        <section className="bg-[#0f172a] p-10 text-white space-y-12 relative overflow-hidden group">
+                        <section className="bg-[#0f172a] p-10 text-white space-y-12 relative overflow-hidden group break-inside-avoid page-break-inside-avoid">
                              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-30 transition-opacity">
                                 <TrendingUp className="w-32 h-32" />
                              </div>
@@ -126,7 +126,7 @@ export default function CrisisManagerTemplate({ data, theme = {}, highlightedFie
                                     { label: 'High-Stake Wins', val: '120+' },
                                     { label: 'Stakeholder Trust', val: '98%' }
                                 ].map((stat, i) => (
-                                    <div key={i} className="flex justify-between items-baseline group/stat">
+                                    <div key={i} className="flex justify-between items-baseline group/stat break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover/stat:text-[#991b1b] transition-colors">{stat.label}</p>
                                         <p className="text-3xl font-black italic tracking-tighter text-white">{stat.val}</p>
                                     </div>
@@ -136,13 +136,13 @@ export default function CrisisManagerTemplate({ data, theme = {}, highlightedFie
 
                         {/* RESOLUTION METHODOLOGY (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-[#0f172a]/20 flex items-center gap-4 italic mb-10">
                                     <Target className="w-5 h-5 text-[#991b1b]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-6 border border-[#0f172a]/10 bg-white hover:border-[#991b1b] transition-all cursor-default relative overflow-hidden">
+                                        <div key={i} className="group/item p-6 border border-[#0f172a]/10 bg-white hover:border-[#991b1b] transition-all cursor-default relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-[#991b1b] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                                             <span className="text-xs font-black uppercase tracking-widest text-[#475569] group-hover:text-[#0f172a] transition-colors">{skill}</span>
                                         </div>
@@ -153,13 +153,13 @@ export default function CrisisManagerTemplate({ data, theme = {}, highlightedFie
 
                         {/* ACADEMIC STRATEGY (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-[#0f172a]/5 border-y border-[#0f172a]/10">
+                            <section className="space-y-16 p-10 bg-[#0f172a]/5 border-y border-[#0f172a]/10 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-[#0f172a]/10 text-center italic mb-10">
                                      <GraduationCap className="w-10 h-10 mb-8 text-[#991b1b] mx-auto opacity-30" /> {t.education}
                                 </h3>
                                 <div className="space-y-16">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="text-center group/edu">
+                                        <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black text-[#475569] mb-6 tracking-[0.5em] italic uppercase">STRATEGY_FOUNDATION_0{i + 1}</p>
                                             <h4 className="text-4xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform uppercase text-[#0f172a]" style={{ fontFamily: "'EB Garamond', serif" }}>{edu.degree}</h4>
                                             <p className="text-[12px] font-black uppercase tracking-[0.3em] text-[#991b1b]">{edu.school}</p>
@@ -181,7 +181,7 @@ export default function CrisisManagerTemplate({ data, theme = {}, highlightedFie
                                 </h2>
                                 <div className="space-y-48">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l border-[#0f172a]/5 hover:border-[#991b1b] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l border-[#0f172a]/5 hover:border-[#991b1b] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-2 h-24 bg-[#0f172a] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-1000 shadow-[0_0_20px_rgba(15,23,42,0.1)]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">

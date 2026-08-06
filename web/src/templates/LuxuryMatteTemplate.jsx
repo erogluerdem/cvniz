@@ -15,7 +15,7 @@ export default function LuxuryMatteTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-stone-100 text-stone-800 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-100 text-stone-800 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.95rem' : theme?.fontSize === 'Büyük' ? '1.15rem' : '1.05rem'
@@ -55,7 +55,7 @@ export default function LuxuryMatteTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-10 p-8 bg-white">
+                    <section className="mb-10 p-8 bg-white break-inside-avoid page-break-inside-avoid">
                         <p className="text-xl leading-relaxed text-stone-600 italic text-center">"{personal.summary}"</p>
                     </section>
                 )}
@@ -69,7 +69,7 @@ export default function LuxuryMatteTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-stone-400 mb-8">{t.experience}</h2>
                                 <div className="space-y-8">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-stone-300 pl-6">
+                                        <div key={exp.id} className="border-l-2 border-stone-300 pl-6 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-2xl font-bold">{exp.position}</h3>
                                             <p className="text-stone-500 font-sans text-sm mb-1">{exp.company}</p>
                                             <p className="text-xs text-stone-400 font-sans mb-3">{exp.startDate} - {exp.endDate}</p>
@@ -82,11 +82,11 @@ export default function LuxuryMatteTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-8 bg-white">
+                            <section className="p-8 bg-white break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-stone-400 mb-6">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-6">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-stone-50">
+                                        <div key={ref.id} className="p-4 bg-stone-50 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-lg">{ref.name}</p>
                                             <p className="text-sm text-stone-500 font-sans">{ref.company}</p>
                                         </div>
@@ -100,11 +100,11 @@ export default function LuxuryMatteTemplate({ data, theme, highlightedField }) {
                     <aside className="space-y-6">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 bg-stone-800 text-stone-100">
+                            <section className="p-6 bg-stone-800 text-stone-100 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-stone-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-3">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="text-lg border-b border-stone-700 pb-2">{skill}</div>
+                                        <div key={i} className="text-lg border-b border-stone-700 pb-2 break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -127,7 +127,7 @@ export default function LuxuryMatteTemplate({ data, theme, highlightedField }) {
 
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white">
+                            <section className="p-6 bg-white break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-stone-400 mb-4">{t.hobbies}</h3>
                                 <div className="space-y-2 italic">
                                     {hobbies.map((h) => (

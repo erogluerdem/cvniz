@@ -15,7 +15,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-white text-black p-0 border-[12px] border-black"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-black p-0 border-[12px] border-black print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem'
@@ -49,7 +49,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
                     <div className="lg:col-span-8 space-y-16">
                         {/* Summary */}
                         {personal.summary && (
-                            <section className="relative group">
+                            <section className="relative group break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute -left-10 top-0 bottom-0 w-2 bg-black group-hover:w-full group-hover:bg-black/5 transition-all duration-500" />
                                 <p className="text-xl font-black uppercase tracking-tighter leading-snug pl-6 group-hover:text-black">
                                     "{personal.summary}"
@@ -63,7 +63,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-3xl font-black uppercase tracking-tighter border-b-[8px] border-current mb-12 inline-block">{t.experience}</h2>
                                 <div className="space-y-16">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="group relative">
+                                        <div key={exp.id} className="group relative break-inside-avoid page-break-inside-avoid">
                                             <div className="flex flex-col md:flex-row justify-between items-baseline mb-6 gap-6">
                                                 <h3 className="text-2xl font-black uppercase tracking-tighter group-hover:italic transition-all">{exp.position}</h3>
                                                 <span className="text-xs font-black uppercase tracking-widest border-2 border-current px-3 py-1">
@@ -86,7 +86,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-3xl font-black uppercase tracking-tighter border-b-[8px] border-black mb-10 inline-block">{t.references}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 font-black uppercase tracking-widest text-[10px]">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-8 border-[4px] border-black hover:bg-black hover:text-white transition-all">
+                                        <div key={ref.id} className="p-8 border-[4px] border-black hover:bg-black hover:text-white transition-all break-inside-avoid page-break-inside-avoid">
                                             <p className="text-xl mb-1 italic">{ref.name}</p>
                                             <p className="mb-6 opacity-40">{ref.company}</p>
                                             <div className="space-y-1">
@@ -110,7 +110,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
                                 </h3>
                                 <div className="flex flex-col gap-4">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-4 group">
+                                        <div key={i} className="flex items-center gap-4 group break-inside-avoid page-break-inside-avoid">
                                             <div className="w-2 h-2 bg-black group-hover:scale-[3] transition-transform" />
                                             <span className="text-xs font-black uppercase tracking-widest group-hover:translate-x-4 transition-transform">{skill}</span>
                                         </div>
@@ -125,7 +125,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
                                 <h3 className="text-sm font-black uppercase tracking-[0.4em] mb-12">{t.education}</h3>
                                 <div className="space-y-12 font-black uppercase tracking-widest">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="relative pt-6 border-t-[3px] border-current">
+                                        <div key={edu.id} className="relative pt-6 border-t-[3px] border-current break-inside-avoid page-break-inside-avoid">
                                             <div className="text-[9px] mb-2 opacity-40">{edu.startDate} – {edu.endDate}</div>
                                             <h4 className="text-sm mb-1">{edu.degree}</h4>
                                             <p className="text-[9px] opacity-60">{edu.school}</p>
@@ -141,7 +141,7 @@ export default function MinimalMonoTemplate({ data, theme, highlightedField }) {
                                 <h3 className="text-sm font-black uppercase tracking-[0.4em] mb-8">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-3">
                                     {hobbies.map((h) => (
-                                        <div key={h.id} className="px-4 py-2 border-2 border-black text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all cursor-default">
+                                        <div key={h.id} className="px-4 py-2 border-2 border-black text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all cursor-default break-inside-avoid page-break-inside-avoid">
                                             {h.name}
                                         </div>
                                     ))}

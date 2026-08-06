@@ -4,7 +4,7 @@ export default function RetailTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-rose-50" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-rose-50 print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Retail Header */}
             <header className="bg-gradient-to-r from-rose-600 to-pink-600 text-white px-10 py-8">
                 <div className="flex items-center gap-6">
@@ -45,18 +45,18 @@ export default function RetailTemplate({ data }) {
             <div className="p-8 grid grid-cols-3 gap-6">
                 <div className="col-span-2 space-y-6">
                     {personal.summary && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm">
+                        <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-rose-700 mb-3">Hakkımda</h2>
                             <p className="text-gray-600 leading-relaxed whitespace-pre-line">{personal.summary}</p>
                         </section>
                     )}
 
                     {experience.length > 0 && (
-                        <section className="bg-white rounded-xl p-6 shadow-sm">
+                        <section className="bg-white rounded-xl p-6 shadow-sm break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-lg font-bold text-rose-700 mb-4">İş Deneyimi</h2>
                             <div className="space-y-5">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-4 border-rose-400 pl-4">
+                                    <div key={exp.id} className="border-l-4 border-rose-400 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between">
                                             <h3 className="font-bold text-gray-800">{exp.position}</h3>
                                             <span className="text-sm text-rose-600">{exp.startDate} - {exp.endDate}</span>
@@ -76,7 +76,7 @@ export default function RetailTemplate({ data }) {
                             <h2 className="font-bold mb-4">Satış Becerileri</h2>
                             <div className="space-y-2">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2">
+                                    <div key={i} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                         <Star className="w-3 h-3" />
                                         <span className="text-sm">{skill}</span>
                                     </div>
@@ -89,7 +89,7 @@ export default function RetailTemplate({ data }) {
                         <div className="bg-white rounded-xl p-6 shadow-sm">
                             <h2 className="font-bold text-rose-700 mb-4">Eğitim</h2>
                             {education.map((edu) => (
-                                <div key={edu.id} className="mb-3">
+                                <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                     <h3 className="font-semibold text-gray-800">{edu.school}</h3>
                                     <p className="text-rose-600 text-sm">{edu.degree}</p>
                                 </div>
@@ -101,7 +101,7 @@ export default function RetailTemplate({ data }) {
                         <div className="bg-white rounded-xl p-6 shadow-sm">
                             <h2 className="font-bold text-rose-700 mb-4">Diller</h2>
                             {languages.map((lang, i) => (
-                                <div key={i} className="flex justify-between text-sm mb-2">
+                                <div key={i} className="flex justify-between text-sm mb-2 break-inside-avoid page-break-inside-avoid">
                                     <span>{lang.name}</span>
                                     <span className="text-rose-600">{lang.level}</span>
                                 </div>

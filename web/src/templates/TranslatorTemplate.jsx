@@ -4,7 +4,7 @@ export default function TranslatorTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-100 p-0 sm:p-8 flex justify-center py-10">
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-100 p-0 sm:p-8 flex justify-center py-10 print-exact mx-auto print:mx-0">
             <div className="w-[210mm] min-h-[297mm] mx-auto bg-white shadow-2xl p-[15mm] flex flex-col border border-stone-100 ring-1 ring-stone-200">
                 <header className="mb-24 flex justify-between items-end border-b-2 border-amber-900 pb-12">
                     <div>
@@ -35,7 +35,7 @@ export default function TranslatorTemplate({ data }) {
                             </h2>
                             <div className="space-y-16">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="group">
+                                    <div key={exp.id} className="group break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-end mb-4 border-b border-amber-100 pb-2">
                                             <h3 className="text-2xl font-light text-amber-950">{exp.position}</h3>
                                             <span className="text-xs italic text-amber-600">{exp.startDate} - {exp.endDate}</span>

@@ -15,7 +15,7 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-gradient-to-br from-blue-600 to-blue-800 text-white p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-gradient-to-br from-blue-600 to-blue-800 text-white p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Segoe UI', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -47,7 +47,7 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary Slide */}
                 {personal.summary && (
-                    <section className="mb-6 p-8 bg-white/10 backdrop-blur-sm rounded-lg">
+                    <section className="mb-6 p-8 bg-white/10 backdrop-blur-sm rounded-lg break-inside-avoid page-break-inside-avoid">
                         <p className="text-xl leading-relaxed text-center">"{personal.summary}"</p>
                     </section>
                 )}
@@ -62,10 +62,10 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
                             </h2>
                             <div className="space-y-6">
                                 {experience.map((exp) => (
-                                    <div key={exp.id} className="border-l-4 border-blue-600 pl-4">
+                                    <div key={exp.id} className="border-l-4 border-blue-600 pl-4 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-bold text-lg">{exp.position}</h3>
                                         <p className="text-blue-600 text-sm">{exp.company}</p>
-                                        <p className="text-xs text-slate-400 mb-2">{exp.startDate} - {exp.endDate}</p>
+                                        <p className="text-xs text-slate-500 mb-2">{exp.startDate} - {exp.endDate}</p>
                                         <p className="text-sm text-slate-600">{exp.description}</p>
                                     </div>
                                 ))}
@@ -75,11 +75,11 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
 
                     {/* Skills Slide */}
                     {skills.length > 0 && (
-                        <section className="p-8 bg-yellow-400 text-slate-900 rounded-lg shadow-xl">
+                        <section className="p-8 bg-yellow-400 text-slate-900 rounded-lg shadow-xl break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-xs font-bold uppercase tracking-widest text-slate-700 mb-6">{t.skills}</h2>
                             <div className="grid grid-cols-2 gap-3">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="flex items-center gap-2 bg-white/50 px-3 py-2 rounded-lg text-sm font-medium">
+                                    <div key={i} className="flex items-center gap-2 bg-white/50 px-3 py-2 rounded-lg text-sm font-medium break-inside-avoid page-break-inside-avoid">
                                         <div className="w-2 h-2 bg-blue-600 rounded-full" />
                                         {skill}
                                     </div>
@@ -94,10 +94,10 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
                             <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-6">{t.education}</h2>
                             <div className="space-y-4">
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="p-4 bg-blue-50 rounded-lg">
+                                    <div key={edu.id} className="p-4 bg-blue-50 rounded-lg break-inside-avoid page-break-inside-avoid">
                                         <h4 className="font-bold">{edu.degree}</h4>
                                         <p className="text-sm text-blue-600">{edu.school}</p>
-                                        <p className="text-xs text-slate-400">{edu.startDate} - {edu.endDate}</p>
+                                        <p className="text-xs text-slate-500">{edu.startDate} - {edu.endDate}</p>
                                     </div>
                                 ))}
                             </div>
@@ -106,13 +106,13 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
 
                     {/* References Slide */}
                     {references?.length > 0 && (
-                        <section className="p-8 bg-slate-800 text-white rounded-lg shadow-xl">
+                        <section className="p-8 bg-slate-800 text-white rounded-lg shadow-xl break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-6">{t.references}</h2>
                             <div className="space-y-4">
                                 {references.map((ref) => (
-                                    <div key={ref.id} className="p-4 bg-white/10 rounded-lg">
+                                    <div key={ref.id} className="p-4 bg-white/10 rounded-lg break-inside-avoid page-break-inside-avoid">
                                         <p className="font-bold">{ref.name}</p>
-                                        <p className="text-sm text-slate-400">{ref.company}</p>
+                                        <p className="text-sm text-slate-500">{ref.company}</p>
                                     </div>
                                 ))}
                             </div>
@@ -122,7 +122,7 @@ export default function PowerPointTemplate({ data, theme, highlightedField }) {
 
                 {/* Hobbies & Footer */}
                 {hobbies?.length > 0 && (
-                    <section className="mt-6 p-6 bg-white/10 backdrop-blur-sm rounded-lg">
+                    <section className="mt-6 p-6 bg-white/10 backdrop-blur-sm rounded-lg break-inside-avoid page-break-inside-avoid">
                         <div className="flex flex-wrap justify-center gap-4">
                             {hobbies.map((h) => (
                                 <span key={h.id} className="px-4 py-2 bg-white/20 rounded-full text-sm font-medium">{h.name}</span>

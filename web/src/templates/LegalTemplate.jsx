@@ -4,7 +4,7 @@ export default function LegalTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-stone-100" style={{ fontFamily: "'Libre Baskerville', Georgia, serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-stone-100 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Libre Baskerville', Georgia, serif" }}>
             {/* Formal Legal Header */}
             <header className="bg-stone-900 text-white px-10 py-10">
                 <div className="text-center border-b border-stone-700 pb-6 mb-6">
@@ -21,7 +21,7 @@ export default function LegalTemplate({ data }) {
 
             <div className="p-10 max-w-4xl mx-auto">
                 {personal.summary && (
-                    <section className="mb-10 text-center">
+                    <section className="mb-10 text-center break-inside-avoid page-break-inside-avoid">
                         <p className="text-gray-700 leading-relaxed italic text-lg whitespace-pre-line">"{personal.summary}"</p>
                     </section>
                 )}
@@ -83,7 +83,7 @@ export default function LegalTemplate({ data }) {
                                 <h2 className="font-bold text-stone-800 mb-4">Diller</h2>
                                 <div className="space-y-2">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="flex justify-between text-sm">
+                                        <div key={i} className="flex justify-between text-sm break-inside-avoid page-break-inside-avoid">
                                             <span className="text-stone-700">{lang.name}</span>
                                             <span className="text-amber-700">{lang.level}</span>
                                         </div>

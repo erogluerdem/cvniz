@@ -29,7 +29,7 @@ export default function DirectorTemplate({ data, theme = {}, highlightedField = 
     }
 
     return (
-        <div className="min-h-full bg-[#050505] text-[#d4d4d8] p-0 selection:bg-[#0ea5e9] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#050505] text-[#d4d4d8] p-0 selection:bg-[#0ea5e9] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.05rem' : '0.95rem',
@@ -124,7 +124,7 @@ export default function DirectorTemplate({ data, theme = {}, highlightedField = 
                                 </h2>
                                 <div className="space-y-32">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-24 border-l border-white/5 hover:border-[#0ea5e9] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-24 border-l border-white/5 hover:border-[#0ea5e9] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute -left-[1.5px] top-0 w-1 h-32 bg-[#0ea5e9] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-1000 shadow-[0_0_20px_#0ea5e9]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-10 gap-12">
@@ -151,14 +151,14 @@ export default function DirectorTemplate({ data, theme = {}, highlightedField = 
                         
                         {/* TECHNICAL MASTERY (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="bg-white/5 backdrop-blur-3xl p-16 border-r-[20px] border-[#0ea5e9] group relative overflow-hidden transition-all duration-700 hover:bg-white/10">
+                            <section className="bg-white/5 backdrop-blur-3xl p-16 border-r-[20px] border-[#0ea5e9] group relative overflow-hidden transition-all duration-700 hover:bg-white/10 break-inside-avoid page-break-inside-avoid">
                                 <Maximize className="absolute -bottom-10 -right-10 w-64 h-64 text-white/5 group-hover:scale-125 transition-transform duration-[4s]" />
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/20 mb-24 flex items-center gap-6 italic z-10 relative leading-none">
                                     <Target className="w-8 h-8 text-[#0ea5e9]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-14 relative z-10">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item">
+                                        <div key={i} className="group/item break-inside-avoid page-break-inside-avoid">
                                             <div className="flex justify-between items-center mb-6">
                                                 <span className="text-2xl font-black italic tracking-[0.1em] text-white group-hover/item:text-[#0ea5e9] transition-colors uppercase leading-none">{skill}</span>
                                                 <Zap className="w-4 h-4 text-[#0ea5e9] opacity-0 group-hover/item:opacity-100 transition-all group-hover/item:translate-x-2" />
@@ -185,7 +185,7 @@ export default function DirectorTemplate({ data, theme = {}, highlightedField = 
                                 </h3>
                                 <div className="space-y-20">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="group/edu text-center">
+                                        <div key={i} className="group/edu text-center break-inside-avoid page-break-inside-avoid">
                                             <p className="text-[9px] font-black opacity-40 mb-6 group-hover:opacity-100 transition-opacity tracking-[0.4em] italic uppercase">CINEMA_THESIS_0{i + 1}</p>
                                             <h4 className="text-4xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform uppercase leading-none">{edu.degree}</h4>
                                             <p className="text-[12px] font-black uppercase tracking-[0.3em] text-[#0ea5e9] group-hover:text-white transition-colors">{edu.school}</p>

@@ -2101,14 +2101,51 @@
 }
 
 /* ==========================================================================
-   PRINT READY OPTIMIZATION
+   PRINT READY OPTIMIZATION FOR A4 (PDF EXPORT FIXES)
    ========================================================================== */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
   body {
     background: white !important;
     color: black !important;
     padding: 0 !important;
     margin: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Universal wrapper force A4 */
+  .cv-preview,
+  .cv-template,
+  #cv-preview,
+  [id^="cv-template-"] {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: white !important;
+    transform: none !important;
+    overflow: visible !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Prevent sections from cutting exactly in the middle */
+  .cv-section, .cv-item, .break-inside-avoid, section, article {
+     page-break-inside: avoid !important;
+     break-inside: avoid !important;
+     break-inside: avoid-page !important;
+  }
+  
+  /* Never break headers */
+  h1, h2, h3, h4, h5, h6 {
+     page-break-after: avoid !important;
+     break-after: avoid !important;
   }
 
   .no-print,
@@ -2125,27 +2162,9 @@
     display: none !important;
   }
 
-  .cv-preview,
-  .cv-template,
-  #cv-preview {
-    width: 100% !important;
-    height: auto !important;
-    position: static !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    background: white !important;
-    color: black !important;
-  }
-
   #root,
   .relative {
     position: static !important;
-  }
-
-  @page {
-    size: A4;
-    margin: 1cm;
   }
 
   * {

@@ -10,7 +10,7 @@ export default function BlueprintPrecisionTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#002b5c] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Space Mono', monospace" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#002b5c] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Space Mono', monospace" }}>
 
             {/* BLUEPRINT BACKGROUND FON */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -74,7 +74,7 @@ export default function BlueprintPrecisionTemplate({ data }) {
                 <main className="relative z-10 grid grid-cols-12 gap-12 flex-1">
                     <div className="col-span-8 flex flex-col gap-12">
                         {/* Abstract Section */}
-                        <section className="relative p-10 bg-white/5 border-2 border-dashed border-white/20">
+                        <section className="relative p-10 bg-white/5 border-2 border-dashed border-white/20 break-inside-avoid page-break-inside-avoid">
                             <div className="absolute -top-3 left-6 px-3 bg-[#0047ab] text-[10px] font-black uppercase tracking-[0.3em] border-2 border-white">Abstract</div>
                             <p className="text-xl font-bold leading-relaxed italic text-white group">
                                 {personal.summary}
@@ -85,7 +85,7 @@ export default function BlueprintPrecisionTemplate({ data }) {
                             </div>
                         </section>
 
-                        <section className="flex-1">
+                        <section className="flex-1 break-inside-avoid page-break-inside-avoid">
                             <h2 className="text-2xl font-black uppercase tracking-[0.2em] mb-12 flex items-center gap-6">
                                 <Briefcase className="w-6 h-6" /> Component_History
                                 <div className="flex-1 h-px bg-white/30 border-b border-white/10" />
@@ -126,7 +126,7 @@ export default function BlueprintPrecisionTemplate({ data }) {
                             </h2>
                             <div className="grid grid-cols-1 gap-4">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="group cursor-default">
+                                    <div key={i} className="group cursor-default break-inside-avoid page-break-inside-avoid">
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="text-[10px] font-black uppercase tracking-widest group-hover:text-cyan-300 transition-colors">{skill}</span>
                                             <span className="text-[8px] font-black opacity-30 italic">Validated</span>
@@ -146,7 +146,7 @@ export default function BlueprintPrecisionTemplate({ data }) {
                             </h2>
                             <div className="space-y-8">
                                 {education.map((edu, i) => (
-                                    <div key={i} className="relative pl-6 border-l-4 border-white group">
+                                    <div key={i} className="relative pl-6 border-l-4 border-white group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-blue-200 mb-2 uppercase tracking-tight">{edu.startDate} – {edu.endDate}</p>
                                         <h4 className="font-black text-base uppercase leading-tight mb-2 group-hover:underline">{edu.school}</h4>
                                         <div className="flex items-center gap-2 text-blue-200 text-[10px] font-bold italic uppercase tracking-tighter">

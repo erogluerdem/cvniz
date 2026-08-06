@@ -15,7 +15,7 @@ export default function BoardRoomTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-slate-50 text-slate-800 p-8 md:p-10"
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-50 text-slate-800 p-8 md:p-10 print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Libre Baskerville', serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -55,7 +55,7 @@ export default function BoardRoomTemplate({ data, theme, highlightedField }) {
 
                 {/* Executive Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-white border border-slate-200">
+                    <section className="mb-8 p-6 bg-white border border-slate-200 break-inside-avoid page-break-inside-avoid">
                         <p className="text-lg leading-relaxed text-slate-700 italic">"{personal.summary}"</p>
                     </section>
                 )}
@@ -69,10 +69,10 @@ export default function BoardRoomTemplate({ data, theme, highlightedField }) {
                                 <h2 className="text-sm font-sans font-bold uppercase tracking-[0.2em] text-[#1e3a5f] mb-6 border-b border-slate-200 pb-2">{t.experience}</h2>
                                 <div className="space-y-6">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="border-l-2 border-[#1e3a5f] pl-4">
+                                        <div key={exp.id} className="border-l-2 border-[#1e3a5f] pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="text-lg font-bold">{exp.position}</h3>
                                             <p className="text-[#1e3a5f] font-sans text-sm font-medium">{exp.company}</p>
-                                            <p className="text-xs text-slate-400 font-sans mb-2">{exp.startDate} - {exp.endDate}</p>
+                                            <p className="text-xs text-slate-500 font-sans mb-2">{exp.startDate} - {exp.endDate}</p>
                                             <p className="text-slate-600 text-sm leading-relaxed">{exp.description}</p>
                                         </div>
                                     ))}
@@ -82,11 +82,11 @@ export default function BoardRoomTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-white border border-slate-200">
+                            <section className="p-6 bg-white border border-slate-200 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-sm font-sans font-bold uppercase tracking-[0.2em] text-[#1e3a5f] mb-4 border-b border-slate-200 pb-2">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-slate-50">
+                                        <div key={ref.id} className="p-4 bg-slate-50 break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold">{ref.name}</p>
                                             <p className="text-sm text-slate-500 font-sans">{ref.company}</p>
                                         </div>
@@ -100,11 +100,11 @@ export default function BoardRoomTemplate({ data, theme, highlightedField }) {
                     <aside className="space-y-6">
                         {/* Skills */}
                         {skills.length > 0 && (
-                            <section className="p-6 bg-[#1e3a5f] text-white">
+                            <section className="p-6 bg-[#1e3a5f] text-white break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-amber-400 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="text-sm font-sans border-b border-white/10 pb-2">{skill}</div>
+                                        <div key={i} className="text-sm font-sans border-b border-white/10 pb-2 break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -127,7 +127,7 @@ export default function BoardRoomTemplate({ data, theme, highlightedField }) {
 
                         {/* Hobbies */}
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-amber-50 border border-amber-200">
+                            <section className="p-6 bg-amber-50 border border-amber-200 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-amber-800 mb-3">{t.hobbies}</h3>
                                 <div className="space-y-1 text-sm text-amber-900">
                                     {hobbies.map((h) => (

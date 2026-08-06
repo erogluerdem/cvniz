@@ -4,7 +4,7 @@ export default function DataAnalystTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-slate-950 p-12 text-slate-300" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-slate-950 p-12 text-slate-300 print-exact mx-auto print:mx-0" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             <div className="max-w-4xl mx-auto border-2 border-slate-800 rounded-3xl overflow-hidden bg-[#0A0C10] shadow-[0_0_80px_rgba(0,0,0,0.5)]">
                 <header className="p-16 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
                     <div className="flex-1">
@@ -28,8 +28,8 @@ export default function DataAnalystTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase text-slate-600 mb-8 tracking-[0.3em]">Skillset Matrix</h2>
                             <div className="space-y-4">
                                 {skills.map(s => (
-                                    <div key={s} className="space-y-2">
-                                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                    <div key={s} className="space-y-2 break-inside-avoid page-break-inside-avoid">
+                                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                             <span>{s}</span>
                                             <span className="text-blue-500">OPTIMIZED</span>
                                         </div>
@@ -45,7 +45,7 @@ export default function DataAnalystTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase text-slate-600 mb-8 tracking-[0.3em]">Training Log</h2>
                             <div className="space-y-12">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="relative pl-6 border-l border-white/5">
+                                    <div key={edu.id} className="relative pl-6 border-l border-white/5 break-inside-avoid page-break-inside-avoid">
                                         <div className="absolute -left-[1px] top-0 w-px h-6 bg-blue-500" />
                                         <p className="text-[9px] font-black text-slate-600 mb-2 uppercase">{edu.startDate} - {edu.endDate}</p>
                                         <h4 className="text-xs font-black text-white uppercase leading-tight mb-1">{edu.school}</h4>
@@ -61,7 +61,7 @@ export default function DataAnalystTemplate({ data }) {
                             <h2 className="text-[10px] font-black uppercase text-slate-600 mb-8 tracking-[0.3em] flex items-center gap-4">
                                 <Database className="w-5 h-5 text-blue-500" /> Executive Description
                             </h2>
-                            <p className="text-md text-slate-400 border-l-2 border-blue-500 pl-10 leading-[1.8] italic">
+                            <p className="text-md text-slate-500 border-l-2 border-blue-500 pl-10 leading-[1.8] italic">
                                 {personal.summary}
                             </p>
                         </section>
@@ -72,7 +72,7 @@ export default function DataAnalystTemplate({ data }) {
                             </h2>
                             <div className="space-y-20">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="relative group">
+                                    <div key={exp.id} className="relative group break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-baseline mb-6">
                                             <h3 className="text-2xl font-black text-white uppercase tracking-tighter">{exp.position}</h3>
                                             <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{exp.startDate} :: {exp.endDate}</span>

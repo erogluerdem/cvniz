@@ -15,7 +15,7 @@ export default function PaperCutTemplate({ data, theme, highlightedField }) {
     }
 
     return (
-        <div className="min-h-full bg-rose-50 text-slate-800 p-8 md:p-10 relative overflow-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-rose-50 text-slate-800 p-8 md:p-10 relative overflow-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.9rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem'
@@ -53,7 +53,7 @@ export default function PaperCutTemplate({ data, theme, highlightedField }) {
 
                 {/* Summary */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-white rounded-2xl shadow-md relative">
+                    <section className="mb-8 p-6 bg-white rounded-2xl shadow-md relative break-inside-avoid page-break-inside-avoid">
                         <div className="absolute -top-3 left-8 w-6 h-6 bg-rose-500 rounded-lg rotate-45" />
                         <p className="text-base leading-relaxed text-slate-600">{personal.summary}</p>
                     </section>
@@ -70,10 +70,10 @@ export default function PaperCutTemplate({ data, theme, highlightedField }) {
                                 </h2>
                                 <div className="space-y-5">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-rose-100 before:rounded-full before:border-2 before:border-rose-400">
+                                        <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-rose-100 before:rounded-full before:border-2 before:border-rose-400 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="font-bold text-slate-800">{exp.position}</h3>
                                             <p className="text-rose-600 text-sm font-medium">{exp.company}</p>
-                                            <p className="text-xs text-slate-400 mb-2">{exp.startDate} - {exp.endDate}</p>
+                                            <p className="text-xs text-slate-500 mb-2">{exp.startDate} - {exp.endDate}</p>
                                             <p className="text-sm text-slate-600 leading-relaxed">{exp.description}</p>
                                         </div>
                                     ))}
@@ -83,11 +83,11 @@ export default function PaperCutTemplate({ data, theme, highlightedField }) {
 
                         {/* References */}
                         {references?.length > 0 && (
-                            <section className="p-6 bg-white rounded-2xl shadow-md">
+                            <section className="p-6 bg-white rounded-2xl shadow-md break-inside-avoid page-break-inside-avoid">
                                 <h2 className="text-xs font-bold uppercase tracking-widest text-rose-500 mb-4">{t.references}</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     {references.map((ref) => (
-                                        <div key={ref.id} className="p-4 bg-rose-50 rounded-xl">
+                                        <div key={ref.id} className="p-4 bg-rose-50 rounded-xl break-inside-avoid page-break-inside-avoid">
                                             <p className="font-bold text-sm">{ref.name}</p>
                                             <p className="text-xs text-slate-500">{ref.company}</p>
                                         </div>
@@ -100,11 +100,11 @@ export default function PaperCutTemplate({ data, theme, highlightedField }) {
                     {/* Sidebar */}
                     <aside className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="p-6 bg-gradient-to-br from-rose-500 to-orange-400 text-white rounded-2xl shadow-lg">
+                            <section className="p-6 bg-gradient-to-br from-rose-500 to-orange-400 text-white rounded-2xl shadow-lg break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-bold uppercase tracking-widest text-white/80 mb-4">{t.skills}</h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="px-3 py-2 bg-white/20 rounded-lg text-sm font-medium">{skill}</div>
+                                        <div key={i} className="px-3 py-2 bg-white/20 rounded-lg text-sm font-medium break-inside-avoid page-break-inside-avoid">{skill}</div>
                                     ))}
                                 </div>
                             </section>
@@ -125,7 +125,7 @@ export default function PaperCutTemplate({ data, theme, highlightedField }) {
                         )}
 
                         {hobbies?.length > 0 && (
-                            <section className="p-6 bg-white rounded-2xl shadow-md">
+                            <section className="p-6 bg-white rounded-2xl shadow-md break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-xs font-bold uppercase tracking-widest text-rose-500 mb-4">{t.hobbies}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {hobbies.map((h) => (

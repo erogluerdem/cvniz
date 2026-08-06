@@ -9,7 +9,7 @@ export default function NewspaperClassTemplate({ data }) {
     const languages = data?.languages || [];
 
     return (
-        <div className="min-h-full bg-[#d7d2cb] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-[#d7d2cb] p-0 sm:p-8 flex justify-center py-10 relative overflow-hidden print-exact mx-auto print:mx-0" style={{ fontFamily: "'Playfair Display', serif" }}>
 
             {/* AGED PAPER TEXTURE FON */}
             <div className="absolute inset-0 z-0">
@@ -52,7 +52,7 @@ export default function NewspaperClassTemplate({ data }) {
 
                 <main className="flex-1 flex flex-col gap-10">
                     {/* Hero Section - Breaking News Style */}
-                    <section className="grid grid-cols-12 gap-10 pb-10 border-b-2 border-dashed border-[#ccc]">
+                    <section className="grid grid-cols-12 gap-10 pb-10 border-b-2 border-dashed border-[#ccc] break-inside-avoid page-break-inside-avoid">
                         <div className="col-span-12">
                             <h2 className="text-6xl font-black uppercase tracking-tighter leading-[0.85] mb-8 text-center balance-text">
                                 {personal.fullName}: Exceptional {personal.title} Redefines Industry Standards
@@ -86,7 +86,7 @@ export default function NewspaperClassTemplate({ data }) {
                             </h3>
                             <div className="space-y-12">
                                 {experience.map((exp, i) => (
-                                    <div key={i} className="group">
+                                    <div key={i} className="group break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">{exp.startDate} // {exp.endDate}</p>
                                         <h4 className="text-2xl font-black leading-none mb-2 group-hover:underline cursor-pointer">{exp.position}</h4>
                                         <p className="text-sm font-black text-[#e63946] uppercase mb-4 tracking-tighter">{exp.company}</p>
@@ -106,7 +106,7 @@ export default function NewspaperClassTemplate({ data }) {
                                 </h3>
                                 <div className="grid grid-cols-2 gap-x-6 gap-y-3">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-3 border-b border-stone-100 pb-1">
+                                        <div key={i} className="flex items-center gap-3 border-b border-stone-100 pb-1 break-inside-avoid page-break-inside-avoid">
                                             <div className="w-1.5 h-1.5 bg-black" />
                                             <span className="text-xs font-black uppercase tracking-tighter">{skill}</span>
                                         </div>
@@ -120,7 +120,7 @@ export default function NewspaperClassTemplate({ data }) {
                                 </h3>
                                 <div className="space-y-8">
                                     {education.map((edu, i) => (
-                                        <div key={i} className="border-l-2 border-black pl-4">
+                                        <div key={i} className="border-l-2 border-black pl-4 break-inside-avoid page-break-inside-avoid">
                                             <h4 className="font-black text-base leading-tight mb-1">{edu.school}</h4>
                                             <p className="text-xs italic text-stone-600 mb-1">{edu.degree}</p>
                                             <p className="text-[10px] font-black uppercase tracking-widest text-stone-400">{edu.startDate} – {edu.endDate}</p>

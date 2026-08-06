@@ -4,7 +4,7 @@ export default function AthletTemplate({ data }) {
     const { personal, experience, education, skills } = data
 
     return (
-        <div className="min-h-full bg-zinc-900 text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-zinc-900 text-white print-exact mx-auto print:mx-0" style={{ fontFamily: 'Inter, sans-serif' }}>
             <header className="bg-gradient-to-r from-orange-600 to-red-600 px-10 py-8">
                 <div className="flex items-center gap-6">
                     <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
@@ -23,7 +23,7 @@ export default function AthletTemplate({ data }) {
 
             <div className="p-8">
                 {personal.summary && (
-                    <section className="mb-8 bg-white/5 rounded-xl p-6 border-l-4 border-orange-500">
+                    <section className="mb-8 bg-white/5 rounded-xl p-6 border-l-4 border-orange-500 break-inside-avoid page-break-inside-avoid">
                         <p className="text-gray-300">{personal.summary}</p>
                     </section>
                 )}
@@ -37,11 +37,11 @@ export default function AthletTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-4">
                                     {experience.map((exp) => (
-                                        <div key={exp.id} className="bg-white/5 rounded-lg p-4">
+                                        <div key={exp.id} className="bg-white/5 rounded-lg p-4 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="font-bold">{exp.position}</h3>
                                             <p className="text-orange-400 text-sm">{exp.company}</p>
-                                            <p className="text-gray-400 text-xs">{exp.startDate} - {exp.endDate}</p>
-                                            {exp.description && <p className="text-gray-400 text-sm mt-2">{exp.description}</p>}
+                                            <p className="text-gray-500 text-xs">{exp.startDate} - {exp.endDate}</p>
+                                            {exp.description && <p className="text-gray-500 text-sm mt-2">{exp.description}</p>}
                                         </div>
                                     ))}
                                 </div>
@@ -51,11 +51,11 @@ export default function AthletTemplate({ data }) {
 
                     <div className="space-y-6">
                         {skills.length > 0 && (
-                            <section className="bg-gradient-to-br from-orange-600 to-red-600 rounded-xl p-6">
+                            <section className="bg-gradient-to-br from-orange-600 to-red-600 rounded-xl p-6 break-inside-avoid page-break-inside-avoid">
                                 <h2 className="font-bold mb-4">Yetenekler</h2>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="flex items-center gap-2">
+                                        <div key={i} className="flex items-center gap-2 break-inside-avoid page-break-inside-avoid">
                                             <span className="w-2 h-2 bg-white rounded-full"></span>
                                             <span>{skill}</span>
                                         </div>
@@ -68,9 +68,9 @@ export default function AthletTemplate({ data }) {
                             <section>
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-orange-400 mb-4">Eğitim</h2>
                                 {education.map((edu) => (
-                                    <div key={edu.id} className="mb-3">
+                                    <div key={edu.id} className="mb-3 break-inside-avoid page-break-inside-avoid">
                                         <h3 className="font-semibold">{edu.school}</h3>
-                                        <p className="text-gray-400 text-sm">{edu.degree}</p>
+                                        <p className="text-gray-500 text-sm">{edu.degree}</p>
                                     </div>
                                 ))}
                             </section>

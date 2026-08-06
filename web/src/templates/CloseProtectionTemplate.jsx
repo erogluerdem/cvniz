@@ -28,7 +28,7 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
     }
 
     return (
-        <div className="min-h-full bg-[#1a1a1a] text-slate-400 p-0 selection:bg-[#333333] selection:text-white uppercase font-sans"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#1a1a1a] text-slate-500 p-0 selection:bg-[#333333] selection:text-white uppercase font-sans print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
@@ -69,7 +69,7 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
                                 </motion.h1>
                                 <motion.div variants={shieldVariants} className="flex flex-wrap items-center gap-8 justify-start">
                                      <div className="h-[2px] w-20 bg-red-600 shadow-[0_0_10px_#ef4444]" />
-                                     <p className="text-2xl font-black tracking-[0.4em] text-slate-400">
+                                     <p className="text-2xl font-black tracking-[0.4em] text-slate-500">
                                         {personal.title}
                                      </p>
                                      <div className="flex gap-2">
@@ -106,7 +106,7 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
                         
                         {/* TACTICAL ETHOS (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-8 group bg-black p-8 border border-white/5 relative overflow-hidden ring-1 ring-white/5">
+                            <section className="space-y-8 group bg-black p-8 border border-white/5 relative overflow-hidden ring-1 ring-white/5 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[0.6em] text-white/20 flex items-center gap-4 italic mb-8 border-b border-white/5 pb-4">
                                      <ShieldAlert className="w-5 h-5 text-red-600" /> {t.summary}
                                 </h3>
@@ -118,13 +118,13 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
 
                         {/* THREAT MITIGATION STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-10 group">
+                            <section className="space-y-10 group break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[0.6em] text-white/20 flex items-center gap-4 italic mb-10 border-b border-white/5 pb-4">
                                     <Target className="w-5 h-5 text-red-600" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-2">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="p-4 bg-[#1a1a1a] border border-white/5 text-[10px] font-black tracking-[0.1em] text-slate-500 hover:bg-[#333] hover:text-white transition-all cursor-default flex items-center justify-between group/item">
+                                        <div key={i} className="p-4 bg-[#1a1a1a] border border-white/5 text-[10px] font-black tracking-[0.1em] text-slate-500 hover:bg-[#333] hover:text-white transition-all cursor-default flex items-center justify-between group/item break-inside-avoid page-break-inside-avoid">
                                             <span>{skill}</span>
                                             <div className="w-10 h-[1px] bg-red-600 scale-x-0 group-hover/item:scale-x-100 transition-transform origin-right" />
                                         </div>
@@ -135,10 +135,10 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
 
                         {/* TRAINING LOG (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="p-10 bg-black text-white space-y-16 border border-white/5 shadow-2xl skew-x-[-2deg]">
+                            <section className="p-10 bg-black text-white space-y-16 border border-white/5 shadow-2xl skew-x-[-2deg] break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[9px] font-black tracking-[1em] text-red-600 text-center italic mb-10 leading-none pb-4 border-b border-white/5 skew-x-[2deg]">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu skew-x-[2deg]">
+                                    <div key={i} className="text-center group/edu skew-x-[2deg] break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-white/10 group-hover:text-red-600 transition-colors mb-4 italic tracking-[0.5em]">OPERATIONAL_CERT_0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic text-white leading-tight">{edu.degree}</h4>
                                         <p className="text-[11px] font-bold tracking-[0.2em] text-slate-500 mt-4">{edu.school}</p>
@@ -153,7 +153,7 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
                              <h4 className="text-[11px] font-black tracking-[1.5em] text-white/10 mb-10 italic leading-none group-hover:text-red-600 transition-colors">SECURITY_CLEARANCE</h4>
                              <div className="space-y-6 text-slate-500 font-bold tracking-widest text-[9px]">
                                 {[ 'Government Level Clearance', 'Advanced Tactical Driving', 'TCCC Medical Certified', 'SIA Close Protection' ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-4 justify-center">
+                                    <div key={i} className="flex items-center gap-4 justify-center break-inside-avoid page-break-inside-avoid">
                                         <ShieldCheck className="w-3 h-3 text-red-600/50" />
                                         <span>{item}</span>
                                     </div>
@@ -173,7 +173,7 @@ export default function CloseProtectionTemplate({ data, theme = {}, highlightedF
                                 </h2>
                                 <div className="space-y-48">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-28 border-l border-white/5 hover:border-red-600 transition-all duration-1000">
+                                        <div key={i} className="group relative pl-28 border-l border-white/5 hover:border-red-600 transition-all duration-1000 break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[1.5px] w-1 h-32 bg-red-600 scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_20px_#ef4444]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-12 gap-12">

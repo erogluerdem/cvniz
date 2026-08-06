@@ -31,7 +31,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
     }
 
     return (
-        <div className="min-h-full bg-[#f4f4f5] text-slate-700 p-0 selection:bg-[#1e3a8a] selection:text-white uppercase font-sans overflow-x-hidden"
+        <div id="cv-template-wrapper" className="min-h-full bg-[#f4f4f5] text-slate-700 p-0 selection:bg-[#1e3a8a] selection:text-white uppercase font-sans overflow-x-hidden print-exact mx-auto print:mx-0"
             style={{
                 fontSize: theme?.fontSize === 'Küçük' ? '0.8rem' : theme?.fontSize === 'Büyük' ? '1rem' : '0.9rem',
                 lineHeight: '1.6'
@@ -78,7 +78,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                                      </p>
                                      <div className="flex gap-2">
                                         {['LAPIDARY', 'CORPUS', 'D-EPIG'].map(tag => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-800 text-slate-400 text-[9px] font-bold tracking-widest leading-none">[{tag}]</span>
+                                            <span key={tag} className="px-3 py-1 bg-slate-800 text-slate-500 text-[9px] font-bold tracking-widest leading-none">[{tag}]</span>
                                         ))}
                                      </div>
                                 </motion.div>
@@ -94,7 +94,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                                     </div>
                                 </div>
                              )}
-                             <p className="text-[10px] font-black tracking-[0.4em] text-slate-400 italic rotate-90 origin-right">SITE_LOG: {personal.fullName?.split(' ')[0].toUpperCase()}_8823</p>
+                             <p className="text-[10px] font-black tracking-[0.4em] text-slate-500 italic rotate-90 origin-right">SITE_LOG: {personal.fullName?.split(' ')[0].toUpperCase()}_8823</p>
                         </motion.div>
                     </div>
 
@@ -112,11 +112,11 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                         
                         {/* EPIGRAPHIC VISION (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-[#e4e4e7] border border-slate-300 p-10 relative overflow-hidden shadow-2xl skew-y-[-2deg]">
+                            <section className="space-y-10 group bg-[#e4e4e7] border border-slate-300 p-10 relative overflow-hidden shadow-2xl skew-y-[-2deg] break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                                     <Compass className="w-24 h-24" />
                                 </div>
-                                <h3 className="text-[11px] font-black tracking-[0.8em] text-slate-400 flex items-center gap-4 italic mb-8 border-b border-slate-300 pb-4 skew-y-[2deg] uppercase">
+                                <h3 className="text-[11px] font-black tracking-[0.8em] text-slate-500 flex items-center gap-4 italic mb-8 border-b border-slate-300 pb-4 skew-y-[2deg] uppercase">
                                      <History className="w-5 h-5 text-[#1e3a8a]" /> {t.summary}
                                 </h3>
                                 <p className="text-xl font-bold italic leading-relaxed text-slate-600 group-hover:text-black transition-colors skew-y-[2deg]">
@@ -126,15 +126,15 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                         )}
 
                         {/* LAPIDARY STACK (SKILLS) */}
-                        <section className="space-y-10">
-                            <h3 className="text-[11px] font-black tracking-[0.8em] text-slate-400 flex items-center gap-4 italic mb-10 border-b border-slate-300 pb-4 uppercase">
+                        <section className="space-y-10 break-inside-avoid page-break-inside-avoid">
+                            <h3 className="text-[11px] font-black tracking-[0.8em] text-slate-500 flex items-center gap-4 italic mb-10 border-b border-slate-300 pb-4 uppercase">
                                 <Languages className="w-5 h-5 text-[#1e3a8a]" /> {t.expertise}
                             </h3>
                             <div className="space-y-4">
                                 {skills.map((skill, i) => (
-                                    <div key={i} className="group/item p-6 border-l-8 border-slate-300 bg-[#e4e4e7] hover:border-[#1e3a8a] transition-all cursor-default relative overflow-hidden shadow-sm">
+                                    <div key={i} className="group/item p-6 border-l-8 border-slate-300 bg-[#e4e4e7] hover:border-[#1e3a8a] transition-all cursor-default relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                         <div className="flex justify-between items-center z-10 relative">
-                                            <span className="text-[10px] font-black tracking-widest text-slate-400 group-hover:text-[#1e3a8a] transition-colors">{skill}</span>
+                                            <span className="text-[10px] font-black tracking-widest text-slate-500 group-hover:text-[#1e3a8a] transition-colors">{skill}</span>
                                             <Spark className="w-4 h-4 opacity-0 group-hover:opacity-100 text-[#1e3a8a] transition-all" />
                                         </div>
                                     </div>
@@ -152,9 +152,9 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                                     { label: 'LIDAR', val: 'Field_Op' },
                                     { label: 'GIS Mapping', val: 'Lead' }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-slate-400/20 bg-[#e4e4e7] group-hover:border-[#1e3a8a] transition-all">
+                                    <div key={i} className="flex flex-col items-center gap-4 p-4 border border-slate-400/20 bg-[#e4e4e7] group-hover:border-[#1e3a8a] transition-all break-inside-avoid page-break-inside-avoid">
                                         <p>{item.val}</p>
-                                        <span className="text-[8px] font-normal text-slate-400">{item.label}</span>
+                                        <span className="text-[8px] font-normal text-slate-500">{item.label}</span>
                                     </div>
                                 ))}
                              </div>
@@ -162,13 +162,13 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
 
                         {/* ACADEMICS (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-300 italic shadow-inner">
+                            <section className="space-y-16 p-10 bg-slate-100 border-y border-slate-300 italic shadow-inner break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[10px] font-black tracking-[1em] text-slate-300 text-center mb-10 leading-none pb-4 border-b border-white uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-[#1e3a8a] mb-6 tracking-[0.5em]">CLASSICAL_THREAD_0{i + 1}</p>
                                         <h4 className="text-3xl font-black leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-slate-800 uppercase">{edu.degree}</h4>
-                                        <p className="text-[11px] font-black tracking-[0.3em] text-slate-400 mt-4 uppercase">{edu.school}</p>
+                                        <p className="text-[11px] font-black tracking-[0.3em] text-slate-500 mt-4 uppercase">{edu.school}</p>
                                     </div>
                                 ))}
                             </section>
@@ -186,7 +186,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-4 border-slate-300 hover:border-[#1e3a8a] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-4 border-slate-300 hover:border-[#1e3a8a] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[4px] w-2 h-32 bg-[#1e3a8a] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#1e3a8a]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -194,7 +194,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                                                     <h3 className="text-5xl text-[8rem] font-black text-slate-900 tracking-tighter group-hover:translate-x-12 transition-transform duration-[1.5s] leading-none uppercase">{exp.position}</h3>
                                                     <div className="flex items-center gap-10">
                                                         <div className="h-[2px] w-20 bg-slate-400 group-hover:w-40 group-hover:bg-[#1e3a8a] transition-all duration-1000" />
-                                                        <p className="text-3xl font-black text-slate-400 tracking-[0.8em] group-hover:text-slate-800 transition-colors italic leading-none uppercase">SITE_REF: {exp.company}</p>
+                                                        <p className="text-3xl font-black text-slate-500 tracking-[0.8em] group-hover:text-slate-800 transition-colors italic leading-none uppercase">SITE_REF: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-black text-white bg-slate-800 px-12 py-5 shadow-2xl skew-x-[-20deg] group-hover:skew-x-0 transition-all whitespace-nowrap italic tracking-[0.5em] leading-none">
@@ -240,7 +240,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
                              <p className="text-[12px] tracking-[0.5em] italic opacity-40 uppercase italic">Reading Stone // Deciphering Silence // Preserving Time</p>
                         </div>
                     </div>
-                    <div className="flex gap-24 text-slate-400 group-hover:text-[#1e3a8a] transition-colors relative z-10 p-16 bg-[#e4e4e7] rounded-0 border border-slate-300 shadow-xl">
+                    <div className="flex gap-24 text-slate-500 group-hover:text-[#1e3a8a] transition-colors relative z-10 p-16 bg-[#e4e4e7] rounded-0 border border-slate-300 shadow-xl">
                          {[Share2, Globe, Archive, Compass].map((Icon, i) => (
                              <motion.div key={i} whileHover={{ y: -50, scale: 2.5, rotate: 10, color: '#1e3a8a' }}>
                                  <Icon className="w-16 h-16 cursor-pointer transition-all duration-700 shadow-3xl shadow-[#1e3a8a]/10" />

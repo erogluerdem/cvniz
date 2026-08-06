@@ -4,7 +4,7 @@ export default function GamerTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-gray-950" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-gray-950 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Inter', sans-serif" }}>
             {/* Gaming HUD Header */}
             <header className="relative overflow-hidden">
                 {/* Neon gradient background */}
@@ -71,11 +71,11 @@ export default function GamerTemplate({ data }) {
                         <div className="grid grid-cols-2 gap-3">
                             <div className="px-5 py-3 bg-gradient-to-r from-pink-500/10 to-pink-500/5 border border-pink-500/30 rounded-lg text-center">
                                 <div className="text-2xl font-black text-pink-400">500+</div>
-                                <div className="text-xs text-gray-400">Turnuva</div>
+                                <div className="text-xs text-gray-500">Turnuva</div>
                             </div>
                             <div className="px-5 py-3 bg-gradient-to-r from-cyan-500/10 to-cyan-500/5 border border-cyan-500/30 rounded-lg text-center">
                                 <div className="text-2xl font-black text-cyan-400">Top 1%</div>
-                                <div className="text-xs text-gray-400">Global</div>
+                                <div className="text-xs text-gray-500">Global</div>
                             </div>
                         </div>
                     </div>
@@ -86,13 +86,13 @@ export default function GamerTemplate({ data }) {
             <div className="px-10 py-8">
                 {/* Bio Section */}
                 {personal.summary && (
-                    <section className="mb-8 p-6 bg-gradient-to-r from-white/5 to-transparent rounded-2xl border border-white/10 relative overflow-hidden">
+                    <section className="mb-8 p-6 bg-gradient-to-r from-white/5 to-transparent rounded-2xl border border-white/10 relative overflow-hidden break-inside-avoid page-break-inside-avoid">
                         <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-pink-500 via-purple-500 to-cyan-500" />
                         <div className="flex items-start gap-4">
                             <Shield className="w-8 h-8 text-pink-400 flex-shrink-0 mt-1" />
                             <div>
                                 <h2 className="text-lg font-bold text-white mb-2">Player Bio</h2>
-                                <p className="text-gray-400 leading-relaxed">{personal.summary}</p>
+                                <p className="text-gray-500 leading-relaxed">{personal.summary}</p>
                             </div>
                         </div>
                     </section>
@@ -114,7 +114,7 @@ export default function GamerTemplate({ data }) {
                                     {experience.map((exp, index) => (
                                         <div
                                             key={exp.id}
-                                            className="group relative bg-white/5 rounded-xl p-5 border border-white/10 hover:border-pink-500/50 transition-all overflow-hidden"
+                                            className="group relative bg-white/5 rounded-xl p-5 border border-white/10 hover:border-pink-500/50 transition-all overflow-hidden break-inside-avoid page-break-inside-avoid"
                                         >
                                             {/* Accent bar */}
                                             <div
@@ -139,7 +139,7 @@ export default function GamerTemplate({ data }) {
                                                 </span>
                                             </div>
                                             {exp.description && (
-                                                <p className="text-gray-400 text-sm mt-3 pl-4 leading-relaxed">
+                                                <p className="text-gray-500 text-sm mt-3 pl-4 leading-relaxed">
                                                     {exp.description}
                                                 </p>
                                             )}
@@ -160,7 +160,7 @@ export default function GamerTemplate({ data }) {
                                 </h2>
                                 <div className="space-y-3">
                                     {education.map((edu) => (
-                                        <div key={edu.id} className="bg-white/5 rounded-xl p-4 border border-white/10">
+                                        <div key={edu.id} className="bg-white/5 rounded-xl p-4 border border-white/10 break-inside-avoid page-break-inside-avoid">
                                             <h3 className="font-bold text-white">{edu.school || 'Okul'}</h3>
                                             <p className="text-cyan-400 text-sm">{edu.degree || 'Bölüm'}</p>
                                             <p className="text-gray-500 text-xs mt-1">{edu.startDate} - {edu.endDate}</p>
@@ -223,7 +223,7 @@ export default function GamerTemplate({ data }) {
                                 <h2 className="font-bold text-white mb-4">Diller</h2>
                                 <div className="space-y-3">
                                     {languages.map((lang, i) => (
-                                        <div key={i} className="flex justify-between items-center">
+                                        <div key={i} className="flex justify-between items-center break-inside-avoid page-break-inside-avoid">
                                             <span className="text-gray-300">{lang.name}</span>
                                             <span className="text-sm px-3 py-1 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full text-pink-300">
                                                 {lang.level}

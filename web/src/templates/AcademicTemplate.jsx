@@ -4,7 +4,7 @@ export default function AcademicTemplate({ data }) {
     const { personal, experience, education, skills, languages } = data
 
     return (
-        <div className="min-h-full bg-amber-50" style={{ fontFamily: "'Times New Roman', Georgia, serif" }}>
+        <div id="cv-template-wrapper" className="min-h-full bg-amber-50 print-exact mx-auto print:mx-0" style={{ fontFamily: "'Times New Roman', Georgia, serif" }}>
             {/* Classic Academic Header */}
             <header className="bg-amber-900 text-white px-10 py-8 text-center">
                 {personal.photo && (
@@ -94,7 +94,7 @@ export default function AcademicTemplate({ data }) {
                             </h2>
                             <div className="space-y-1">
                                 {languages.map((lang, i) => (
-                                    <div key={i} className="flex justify-between text-sm">
+                                    <div key={i} className="flex justify-between text-sm break-inside-avoid page-break-inside-avoid">
                                         <span className="text-gray-700">{lang.name}</span>
                                         <span className="text-amber-700">{lang.level}</span>
                                     </div>

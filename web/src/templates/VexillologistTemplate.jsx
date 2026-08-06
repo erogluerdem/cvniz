@@ -32,7 +32,7 @@ export default function VexillologistTemplate({ data, theme = {}, highlightedFie
     }
 
     return (
-        <div className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#1e3a8a] selection:text-white"
+        <div id="cv-template-wrapper" className="min-h-full bg-white text-slate-800 p-0 selection:bg-[#1e3a8a] selection:text-white print-exact mx-auto print:mx-0"
             style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: theme?.fontSize === 'Küçük' ? '0.85rem' : theme?.fontSize === 'Büyük' ? '1.1rem' : '1rem',
@@ -114,7 +114,7 @@ export default function VexillologistTemplate({ data, theme = {}, highlightedFie
                         
                         {/* THE MANIFESTO (SUMMARY) */}
                         {personal.summary && (
-                            <section className="space-y-10 group bg-[#1e3a8a] text-white p-10 border border-[#1e3a8a] relative overflow-hidden shadow-2xl">
+                            <section className="space-y-10 group bg-[#1e3a8a] text-white p-10 border border-[#1e3a8a] relative overflow-hidden shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
                                     <Wind className="w-24 h-24" />
                                 </div>
@@ -142,15 +142,15 @@ export default function VexillologistTemplate({ data, theme = {}, highlightedFie
 
                         {/* SYMBOLIC STACK (SKILLS) */}
                         {skills.length > 0 && (
-                            <section className="space-y-12">
+                            <section className="space-y-12 break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black uppercase tracking-[1em] text-slate-200 flex items-center gap-4 italic mb-10 border-b border-slate-100 pb-4 uppercase">
                                     <Palette className="w-5 h-5 text-[#1e3a8a]" /> {t.expertise}
                                 </h3>
                                 <div className="space-y-3">
                                     {skills.map((skill, i) => (
-                                        <div key={i} className="group/item p-4 bg-white border border-slate-50 hover:border-[#1e3a8a] transition-all cursor-default relative overflow-hidden shadow-sm">
+                                        <div key={i} className="group/item p-4 bg-white border border-slate-50 hover:border-[#1e3a8a] transition-all cursor-default relative overflow-hidden shadow-sm break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 left-0 w-2 h-full bg-[#1e3a8a] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-500" />
-                                            <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-[#1e3a8a] transition-colors">{skill}</span>
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-500 group-hover:text-[#1e3a8a] transition-colors">{skill}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -159,10 +159,10 @@ export default function VexillologistTemplate({ data, theme = {}, highlightedFie
 
                         {/* HERALDIC FORMATION (EDUCATION) */}
                         {education.length > 0 && (
-                            <section className="space-y-16 p-10 bg-[#dc2626] text-white border-y border-red-700 uppercase italic shadow-2xl">
+                            <section className="space-y-16 p-10 bg-[#dc2626] text-white border-y border-red-700 uppercase italic shadow-2xl break-inside-avoid page-break-inside-avoid">
                                 <h3 className="text-[11px] font-black tracking-[1em] text-white/20 text-center mb-10 leading-none pb-4 border-b border-white/10 uppercase">{t.education}</h3>
                                 {education.map((edu, i) => (
-                                    <div key={i} className="text-center group/edu">
+                                    <div key={i} className="text-center group/edu break-inside-avoid page-break-inside-avoid">
                                         <p className="text-[9px] font-black text-white/40 mb-6 tracking-[0.5em] italic">HERALDIC_ARC_0{i + 1}</p>
                                         <h4 className="text-3xl font-black italic leading-tight mb-4 group-hover/edu:scale-110 transition-transform text-white uppercase">{edu.degree}</h4>
                                         <p className="text-[12px] font-black tracking-[0.6em] text-red-100/60 mt-4 uppercase">{edu.school}</p>
@@ -183,7 +183,7 @@ export default function VexillologistTemplate({ data, theme = {}, highlightedFie
                                 </h2>
                                 <div className="space-y-64">
                                     {experience.map((exp, i) => (
-                                        <div key={i} className="group relative pl-32 border-l-4 border-slate-50 hover:border-[#dc2626] transition-all duration-[1.5s]">
+                                        <div key={i} className="group relative pl-32 border-l-4 border-slate-50 hover:border-[#dc2626] transition-all duration-[1.5s] break-inside-avoid page-break-inside-avoid">
                                             <div className="absolute top-0 -left-[4px] w-4 h-32 bg-[#dc2626] scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-700 shadow-[0_0_30px_#dc2626]" />
                                             
                                             <div className="flex flex-row justify-between items-baseline mb-16 gap-12">
@@ -191,7 +191,7 @@ export default function VexillologistTemplate({ data, theme = {}, highlightedFie
                                                     <h3 className="text-6xl text-[8.5rem] font-black text-slate-800 tracking-tighter italic group-hover:text-[#1e3a8a] transition-all duration-[1.5s] leading-none uppercase">{exp.position}</h3>
                                                     <div className="flex items-center gap-8">
                                                         <div className="h-px w-24 bg-slate-100 group-hover:w-48 group-hover:bg-[#dc2626] transition-all duration-1000 shadow-[0_0_15px_#dc2626]" />
-                                                        <p className="text-3xl font-black text-slate-200 tracking-[0.4em] group-hover:text-slate-400 transition-colors italic leading-none uppercase">ENTITY: {exp.company}</p>
+                                                        <p className="text-3xl font-black text-slate-200 tracking-[0.4em] group-hover:text-slate-500 transition-colors italic leading-none uppercase">ENTITY: {exp.company}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-[11px] font-black text-white bg-[#1e3a8a] px-12 py-5 shadow-3xl skew-x-[-15deg] group-hover:skew-x-0 transition-all whitespace-nowrap italic tracking-[0.6em] leading-none uppercase">

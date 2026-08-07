@@ -361,7 +361,7 @@ export default function EnterprisePage() {
  <div className="text-center py-20">
  <Building2 className="w-12 h-12 text-gray-600 mx-auto mb-4" />
  <h4 className="text-lg font-semibold text-white uppercase mb-1">KURUMSAL HESAP BULUNAMADI</h4>
- <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Kriterlere uyan hesap yok.</p>
+ <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Arama kriterlerine uygun hesap bulunamadı.</p>
  </div>
  )}
  </div>

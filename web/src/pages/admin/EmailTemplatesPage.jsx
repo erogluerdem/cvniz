@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     MailOpen, Plus, Search, Filter, Edit3, Trash2,
     Eye, LayoutTemplate
@@ -6,23 +6,101 @@ import {
 import { useOutletContext } from 'react-router-dom'
 import { useToast } from '../../context/ToastContext'
 
-const dummyTemplates = [
-    { id: 1, name: "Hoşgeldin E-postası", subject: "CVniz'e Hoşgeldiniz!", type: "Onboarding", status: "active", sent: 15420 },
-    { id: 2, name: "Şifre Sıfırlama", subject: "Şifre Sıfırlama Talebiniz", type: "Sistem", status: "active", sent: 3200 },
-    { id: 3, name: "Abonelik Yenileme", subject: "Premium Aboneliğiniz Yenileniyor", type: "Ödeme", status: "active", sent: 4100 },
-    { id: 4, name: "Yeni Özellik Duyurusu", subject: "Yapay Zeka Destekli CV Hazırlama Geldi!", type: "Pazarlama", status: "draft", sent: 0 },
-]
+import { adminAPI } from '../../services/api'
+import Modal from '../../components/admin/Modal'
 
 export default function EmailTemplatesPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
     const { toast } = useToast()
     const [searchQuery, setSearchQuery] = useState('')
-    const [templates, setTemplates] = useState(dummyTemplates)
+    const [templates, setTemplates] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [editingTemplate, setEditingTemplate] = useState(null)
+    const [formData, setFormData] = useState({
+        name: '',
+        subject: '',
+        body: '',
+        type: 'General',
+        status: 'active'
+    })
+    const [isSaving, setIsSaving] = useState(false)
 
-    const handleDelete = (id) => {
+    useEffect(() => {
+        const fetchTemplates = async () => {
+            try {
+                const response = await adminAPI.getEmailTemplates()
+                if (response.success) {
+                    setTemplates(response.templates)
+                }
+            } catch (error) {
+                toast.error("E-posta şablonları getirilemedi.")
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        fetchTemplates()
+    }, [toast])
+
+    const handleDelete = async (id) => {
         if (window.confirm("Bu e-posta şablonunu silmek istediğinize emin misiniz?")) {
-            setTemplates(templates.filter(t => t.id !== id))
-            toast.success("E-posta şablonu başarıyla silindi.")
+            try {
+                const res = await adminAPI.deleteEmailTemplate(id)
+                if (res.success) {
+                    setTemplates(templates.filter(t => t._id !== id))
+                    toast.success("E-posta şablonu başarıyla silindi.")
+                }
+            } catch (error) {
+                toast.error("Silme işlemi başarısız oldu.")
+            }
+        }
+    }
+
+    const openModal = (template = null) => {
+        if (template) {
+            setEditingTemplate(template)
+            setFormData({
+                name: template.name || '',
+                subject: template.subject || '',
+                body: template.body || '',
+                type: template.type || 'General',
+                status: template.status || 'active'
+            })
+        } else {
+            setEditingTemplate(null)
+            setFormData({
+                name: '',
+                subject: '',
+                body: '',
+                type: 'General',
+                status: 'active'
+            })
+        }
+        setIsModalOpen(true)
+    }
+
+    const handleSave = async (e) => {
+        e.preventDefault()
+        setIsSaving(true)
+        try {
+            if (editingTemplate) {
+                const res = await adminAPI.updateEmailTemplate(editingTemplate._id, formData)
+                if (res.success) {
+                    setTemplates(templates.map(t => t._id === editingTemplate._id ? res.template : t))
+                    toast.success("E-posta şablonu güncellendi.")
+                }
+            } else {
+                const res = await adminAPI.createEmailTemplate(formData)
+                if (res.success) {
+                    setTemplates([res.template, ...templates])
+                    toast.success("Yeni e-posta şablonu eklendi.")
+                }
+            }
+            setIsModalOpen(false)
+        } catch (error) {
+            toast.error("İşlem başarısız oldu.")
+        } finally {
+            setIsSaving(false)
         }
     }
 
@@ -42,7 +120,9 @@ export default function EmailTemplatesPage() {
                     </div>
                 </div>
 
-                <button className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 hover:scale-105 shadow-lg ${
+                <button 
+                    onClick={() => openModal()}
+                    className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 hover:scale-105 shadow-lg ${
                     isDayMode ? 'bg-slate-900 text-white shadow-slate-900/20' : 'bg-white text-slate-900 shadow-white/10'
                 }`}>
                     <Plus className="w-4 h-4" />
@@ -86,8 +166,12 @@ export default function EmailTemplatesPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {templates.map((template) => (
-                                <tr key={template.id} className={`border-b last:border-0 transition-colors ${
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan="5" className="py-12 text-center text-sm font-semibold text-gray-500">Yükleniyor...</td>
+                                </tr>
+                            ) : templates.filter(t => (t.name || '').toLowerCase().includes(searchQuery.toLowerCase())).map((template) => (
+                                <tr key={template._id} className={`border-b last:border-0 transition-colors ${
                                     isDayMode ? 'border-slate-100 hover:bg-slate-50' : 'border-white/5 hover:bg-white/[0.02]'
                                 }`}>
                                     <td className="py-4 px-6">
@@ -120,26 +204,134 @@ export default function EmailTemplatesPage() {
                                     </td>
                                     <td className="py-4 px-6">
                                         <div className={`text-xs font-bold ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
-                                            {template.sent.toLocaleString()} Gönderim
+                                            {(template.sent || template.usageCount || 0).toLocaleString()} Gönderim
                                         </div>
                                     </td>
                                     <td className="py-4 px-6 text-right flex items-center justify-end">
                                         <button className={`p-2 rounded-xl transition-all mr-1 ${isDayMode ? 'hover:bg-blue-50 text-slate-400 hover:text-blue-600' : 'hover:bg-blue-500/20 text-gray-500 hover:text-blue-400'}`} title="Önizle">
                                             <Eye className="w-4 h-4" />
                                         </button>
-                                        <button className={`p-2 rounded-xl transition-all mr-1 ${isDayMode ? 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600' : 'hover:bg-indigo-500/20 text-gray-500 hover:text-indigo-400'}`} title="Düzenle">
+                                        <button 
+                                            onClick={() => openModal(template)}
+                                            className={`p-2 rounded-xl transition-all mr-1 ${isDayMode ? 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600' : 'hover:bg-indigo-500/20 text-gray-500 hover:text-indigo-400'}`} title="Düzenle">
                                             <Edit3 className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(template.id)} className={`p-2 rounded-xl transition-all ${isDayMode ? 'hover:bg-red-50 text-slate-400 hover:text-red-600' : 'hover:bg-red-500/20 text-gray-500 hover:text-red-400'}`} title="Sil">
+                                        <button onClick={() => handleDelete(template._id)} className={`p-2 rounded-xl transition-all ${isDayMode ? 'hover:bg-red-50 text-slate-400 hover:text-red-600' : 'hover:bg-red-500/20 text-gray-500 hover:text-red-400'}`} title="Sil">
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </td>
                                 </tr>
                             ))}
+                            {!isLoading && templates.filter(t => (t.name || '').toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                                <tr>
+                                    <td colSpan="5" className="py-12 text-center text-sm font-semibold text-gray-500">Kayıt bulunamadı.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)}
+                title={editingTemplate ? 'Şablon Düzenle' : 'Yeni Şablon Ekle'}
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSave} className="space-y-4">
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Şablon Adı</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={e => setFormData({...formData, name: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Kategori</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.type}
+                            onChange={e => setFormData({...formData, type: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>E-posta Konusu</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.subject}
+                            onChange={e => setFormData({...formData, subject: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Durum</label>
+                        <select
+                            value={formData.status}
+                            onChange={e => setFormData({...formData, status: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900' 
+                                    : 'bg-white/5 border border-white/10 text-white'
+                            }`}
+                        >
+                            <option value="active">Aktif</option>
+                            <option value="draft">Taslak</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>İçerik (HTML veya Metin)</label>
+                        <textarea
+                            required
+                            rows="6"
+                            value={formData.body}
+                            onChange={e => setFormData({...formData, body: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all font-mono ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10'
+                            }`}
+                        ></textarea>
+                    </div>
+                    <div className="pt-4 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
+                                isDayMode ? 'hover:bg-slate-100 text-slate-600' : 'hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSaving}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg ${
+                                isDayMode ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20' : 'bg-blue-500 hover:bg-blue-600 shadow-blue-500/20'
+                            }`}
+                        >
+                            {isSaving ? 'Kaydediliyor...' : 'Kaydet'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
         </div>
     )
 }

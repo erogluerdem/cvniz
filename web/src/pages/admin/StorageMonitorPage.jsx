@@ -1,14 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HardDrive, Cloud, Trash2, ImageIcon, FileText, Database, AlertTriangle } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
 
 export default function StorageMonitorPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const { toast } = useToast()
+    const [stats, setStats] = useState({ totalStorage: 500, usedStorage: 0 })
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        fetchStats()
+    }, [])
+
+    const fetchStats = async () => {
+        try {
+            const res = await adminAPI.getStorageStats()
+            if (res.success) {
+                setStats({ totalStorage: res.totalStorage, usedStorage: res.usedStorage })
+            }
+        } catch(e) {
+            toast.error("İstatistikler alınamadı")
+        } finally {
+            setLoading(false)
+        }
+    }
     
-    // Mock Data
-    const totalStorage = 500 // GB
-    const usedStorage = 342 // GB
-    const percentage = Math.round((usedStorage / totalStorage) * 100)
+    const percentage = Math.round((stats.usedStorage / stats.totalStorage) * 100)
 
     return (
         <div className="space-y-8 font-primary">
@@ -30,8 +49,8 @@ export default function StorageMonitorPage() {
                     <div>
                         <h3 className={`text-sm font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Toplam S3 Kullanımı (AWS)</h3>
                         <div className="flex items-baseline gap-2">
-                            <span className={`text-4xl font-black ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{usedStorage} GB</span>
-                            <span className={`text-lg font-medium ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>/ {totalStorage} GB Limit</span>
+                            <span className={`text-4xl font-black ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{stats.usedStorage} GB</span>
+                            <span className={`text-lg font-medium ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>/ {stats.totalStorage} GB Limit</span>
                         </div>
                     </div>
                     <div className={`text-2xl font-bold ${percentage > 80 ? 'text-rose-500' : 'text-emerald-500'}`}>

@@ -4,8 +4,10 @@ import {
  RefreshCw, Search, Zap, DollarSign, Clock, CheckCircle2, AlertCircle,
  BarChart3, MousePointerClick, Tag, Rocket, PauseCircle, FileText
 } from 'lucide-react'
-import { adminAPI} from '../../services/api'
-import { useToast} from '../../context/ToastContext'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
+import Modal from '../../components/admin/Modal'
+import { useOutletContext } from 'react-router-dom'
 
 const typeConfig = {
  discount: { label: 'İndirim', color: 'bg-green-500/20 text-green-400', icon: Tag},
@@ -32,8 +34,9 @@ const audienceConfig = {
 }
 
 export default function CampaignsPage() {
- const { toast, confirm} = useToast()
- const [campaigns, setCampaigns] = useState([])
+    const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const { toast, confirm } = useToast()
+    const [campaigns, setCampaigns] = useState([])
  const [stats, setStats] = useState({ total: 0, active: 0, paused: 0, draft: 0, totalViews: 0, totalClicks: 0, totalConversions: 0, totalRevenue: 0})
  const [loading, setLoading] = useState(true)
  const [showModal, setShowModal] = useState(false)
@@ -181,10 +184,11 @@ export default function CampaignsPage() {
  )
 }
 
- return (
- <div className="space-y-6">
- {/* Header */}
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    return (
+        <>
+        <div className="space-y-6 font-primary">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <h2 className="text-2xl font-semibold text-white mb-1 uppercase flex items-center gap-3">
  <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/20">
@@ -361,167 +365,197 @@ export default function CampaignsPage() {
  )}
  </div>
 
- {/* Modal */}
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
- <div className="glass-card rounded-2xl p-8 max-w-2xl w-full border border-white/10 relative overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto">
- <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-3xl -z-10"></div>
+    </div>
 
- <div className="flex items-center justify-between mb-8">
- <div>
- <h3 className="text-2xl font-semibold text-white uppercase">
- {editingCampaign ? 'KAMPANYA DÜZENLE' : 'YENİ KAMPANYA'}
- </h3>
- <p className="text-sm text-gray-400 font-medium">Kampanya detaylarını girin.</p>
- </div>
- <button onClick={() => { setShowModal(false); setEditingCampaign(null)}} className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-white transition-all">
- <X className="w-6 h-6" />
- </button>
- </div>
+            <Modal 
+                isOpen={showModal} 
+                onClose={() => { setShowModal(false); setEditingCampaign(null) }}
+                title={editingCampaign ? 'Kampanya Düzenle' : 'Yeni Kampanya Oluştur'}
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Name & Description */}
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>KAMPANYA ADI</label>
+                        <input
+                            type="text"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Yeni Yıl Kampanyası"
+                            className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-orange-500/30'
+                            }`}
+                            required
+                        />
+                    </div>
 
- <form onSubmit={handleSubmit} className="space-y-5">
- {/* Name & Description */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KAMPANYA ADI</label>
- <input
- type="text"
- value={formData.name}
- onChange={(e) => setFormData({ ...formData, name: e.target.value})}
- placeholder="Yeni Yıl Kampanyası"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- required
- />
- </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>AÇIKLAMA</label>
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            placeholder="Kampanya detayları..."
+                            className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all resize-none ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-orange-500/30'
+                            }`}
+                            rows={2}
+                        />
+                    </div>
 
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">AÇIKLAMA</label>
- <textarea
- value={formData.description}
- onChange={(e) => setFormData({ ...formData, description: e.target.value})}
- placeholder="Kampanya detayları..."
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-orange-500/30 resize-none"
- rows={2}
- />
- </div>
+                    {/* Type & Audience */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>KAMPANYA TÜRÜ</label>
+                            <select
+                                value={formData.type}
+                                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-orange-500/30'
+                                }`}
+                            >
+                                <option value="discount">İndirim</option>
+                                <option value="trial">Deneme Süresi</option>
+                                <option value="bonus">Bonus</option>
+                                <option value="flash_sale">Flash Sale</option>
+                                <option value="seasonal">Sezonluk</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>HEDEF KİTLE</label>
+                            <select
+                                value={formData.targetAudience}
+                                onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-orange-500/30'
+                                }`}
+                            >
+                                <option value="all">Tüm Kullanıcılar</option>
+                                <option value="new_users">Yeni Kullanıcılar</option>
+                                <option value="premium">Premium Üyeler</option>
+                                <option value="expired_premium">Premium Süresi Bitenler</option>
+                                <option value="inactive">Pasif Kullanıcılar</option>
+                            </select>
+                        </div>
+                    </div>
 
- {/* Type & Audience */}
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KAMPANYA TÜRÜ</label>
- <select
- value={formData.type}
- onChange={(e) => setFormData({ ...formData, type: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- >
- <option value="discount">İndirim</option>
- <option value="trial">Deneme Süresi</option>
- <option value="bonus">Bonus</option>
- <option value="flash_sale">Flash Sale</option>
- <option value="seasonal">Sezonluk</option>
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">HEDEF KİTLE</label>
- <select
- value={formData.targetAudience}
- onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- >
- <option value="all">Tüm Kullanıcılar</option>
- <option value="new_users">Yeni Kullanıcılar</option>
- <option value="premium">Premium Üyeler</option>
- <option value="expired_premium">Premium Süresi Bitenler</option>
- <option value="inactive">Pasif Kullanıcılar</option>
- </select>
- </div>
- </div>
+                    {/* Discount */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>İNDİRİM TÜRÜ</label>
+                            <select
+                                value={formData.discountType}
+                                onChange={(e) => setFormData({ ...formData, discountType: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-orange-500/30'
+                                }`}
+                            >
+                                <option value="percent">Yüzde (%)</option>
+                                <option value="fixed">Sabit (₺)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>MİKTAR</label>
+                            <input
+                                type="number"
+                                value={formData.discount}
+                                onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-orange-500/30'
+                                }`}
+                                min="0"
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>KUPON KODU</label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={formData.couponCode}
+                                    onChange={(e) => setFormData({ ...formData, couponCode: e.target.value.toUpperCase() })}
+                                    placeholder="YENIYIL"
+                                    className={`flex-1 px-4 py-3.5 rounded-2xl text-sm font-semibold uppercase focus:outline-none transition-all ${
+                                        isDayMode 
+                                            ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                            : 'bg-white/5 border border-white/10 text-white focus:border-orange-500/30'
+                                    }`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={generateCouponCode}
+                                    className={`px-3 py-3.5 rounded-2xl transition-all ${
+                                        isDayMode ? 'bg-orange-100 text-orange-600 hover:bg-orange-200' : 'bg-orange-500/10 text-orange-400 hover:bg-orange-500/20'
+                                    }`}
+                                >
+                                    <Zap className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
- {/* Discount */}
- <div className="grid grid-cols-3 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">İNDİRİM TÜRÜ</label>
- <select
- value={formData.discountType}
- onChange={(e) => setFormData({ ...formData, discountType: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- >
- <option value="percent">Yüzde (%)</option>
- <option value="fixed">Sabit (₺)</option>
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">MİKTAR</label>
- <input
- type="number"
- value={formData.discount}
- onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value)})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- min="0"
- />
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KUPON KODU</label>
- <div className="flex gap-2">
- <input
- type="text"
- value={formData.couponCode}
- onChange={(e) => setFormData({ ...formData, couponCode: e.target.value.toUpperCase()})}
- placeholder="YENIYIL"
- className="flex-1 px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-semibold uppercase focus:outline-none focus:border-orange-500/30"
- />
- <button
- type="button"
- onClick={generateCouponCode}
- className="px-3 py-3.5 rounded-2xl bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-all"
- >
- <Zap className="w-4 h-4" />
- </button>
- </div>
- </div>
- </div>
+                    {/* Dates */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>BAŞLANGIÇ TARİHİ</label>
+                            <input
+                                type="date"
+                                value={formData.startDate}
+                                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-orange-500/30'
+                                }`}
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>BİTİŞ TARİHİ</label>
+                            <input
+                                type="date"
+                                value={formData.endDate}
+                                onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-orange-500/30'
+                                }`}
+                            />
+                        </div>
+                    </div>
 
- {/* Dates */}
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">BAŞLANGIÇ TARİHİ</label>
- <input
- type="date"
- value={formData.startDate}
- onChange={(e) => setFormData({ ...formData, startDate: e.target.value})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- />
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">BİTİŞ TARİHİ</label>
- <input
- type="date"
- value={formData.endDate}
- onChange={(e) => setFormData({ ...formData, endDate: e.target.value})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-orange-500/30"
- />
- </div>
- </div>
-
- {/* Buttons */}
- <div className="flex gap-4 pt-4">
- <button
- type="button"
- onClick={() => { setShowModal(false); setEditingCampaign(null)}}
- className="flex-1 py-4 rounded-2xl bg-white/5 text-gray-500 font-semibold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
- >
- İPTAL
- </button>
- <button
- type="submit"
- className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all"
- >
- {editingCampaign ? 'GÜNCELLE' : 'KAMPANYA OLUŞTUR'}
- </button>
- </div>
- </form>
- </div>
- </div>
- )}
- </div>
- )
+                    {/* Buttons */}
+                    <div className="pt-4 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => { setShowModal(false); setEditingCampaign(null) }}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
+                                isDayMode ? 'hover:bg-slate-100 text-slate-600' : 'hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg ${
+                                isDayMode ? 'bg-orange-600 hover:bg-orange-700 shadow-orange-600/20' : 'bg-gradient-to-br from-orange-500 to-red-600 hover:scale-[1.02] shadow-orange-500/20'
+                            }`}
+                        >
+                            {editingCampaign ? 'GÜNCELLE' : 'OLUŞTUR'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+        </>
+    )
 }

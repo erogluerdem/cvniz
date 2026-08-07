@@ -188,18 +188,18 @@ function PageTransition({ children }) {
         <AnimatePresence mode="wait">
             <motion.div
                 key={location.pathname}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: '100%' }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: '-30%' }}
                 transition={{ 
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                    duration: 0.3
+                    type: "tween",
+                    ease: "anticipate",
+                    duration: 0.35
                 }}
                 style={{ 
                     width: '100%',
-                    minHeight: '100%'
+                    minHeight: '100%',
+                    position: 'relative'
                 }}
             >
                 {children}
@@ -218,10 +218,10 @@ function AnimatedRoutes() {
                 <Route element={<Layout />}>
                     <Route path="/" element={
                         <motion.div
-                            initial={{ opacity: 0, x: 20 }}
+                            initial={{ opacity: 0, x: '100%' }}
                             animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            exit={{ opacity: 0, x: '-30%' }}
+                            transition={{ type: "tween", ease: "anticipate", duration: 0.35 }}
                         >
                             <HomePage />
                         </motion.div>
@@ -238,10 +238,10 @@ function AnimatedRoutes() {
                     } />
                     <Route path="/templates" element={
                         <motion.div
-                            initial={{ opacity: 0, x: 20 }}
+                            initial={{ opacity: 0, x: '100%' }}
                             animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            exit={{ opacity: 0, x: '-30%' }}
+                            transition={{ type: "tween", ease: "anticipate", duration: 0.35 }}
                         >
                             <TemplatesPage />
                         </motion.div>

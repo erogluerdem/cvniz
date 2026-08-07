@@ -4,8 +4,10 @@ import {
  RefreshCw, Search, CheckCircle2, Clock, PauseCircle, AlertCircle, Crown,
  Link2, Globe, Phone, Building2, Award, Percent, Copy, Check, Star
 } from 'lucide-react'
-import { adminAPI} from '../../services/api'
-import { useToast} from '../../context/ToastContext'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
+import Modal from '../../components/admin/Modal'
+import { useOutletContext } from 'react-router-dom'
 
 const typeConfig = {
  integration: { label: 'Entegrasyon', color: 'bg-cyan-500/20 text-cyan-400', icon: Link2},
@@ -33,8 +35,9 @@ const tierConfig = {
 }
 
 export default function PartnersPage() {
- const { toast, confirm} = useToast()
- const [partners, setPartners] = useState([])
+    const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const { toast, confirm } = useToast()
+    const [partners, setPartners] = useState([])
  const [stats, setStats] = useState({ total: 0, active: 0, totalReferrals: 0, totalEarnings: 0})
  const [loading, setLoading] = useState(true)
  const [showModal, setShowModal] = useState(false)
@@ -184,10 +187,11 @@ export default function PartnersPage() {
  )
 }
 
- return (
- <div className="space-y-6">
- {/* Header */}
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    return (
+        <>
+        <div className="space-y-6 font-primary">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <h2 className="text-2xl font-semibold text-white mb-1 uppercase flex items-center gap-3">
  <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20">
@@ -372,166 +376,198 @@ export default function PartnersPage() {
  )}
  </div>
 
- {/* Modal */}
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
- <div className="glass-card rounded-2xl p-8 max-w-2xl w-full border border-white/10 relative overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto">
- <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-3xl -z-10"></div>
+    </div>
 
- <div className="flex items-center justify-between mb-8">
- <div>
- <h3 className="text-2xl font-semibold text-white uppercase">
- {editingPartner ? 'PARTNER DÜZENLE' : 'YENİ PARTNER'}
- </h3>
- <p className="text-sm text-gray-400 font-medium">Partner bilgilerini girin.</p>
- </div>
- <button onClick={() => { setShowModal(false); setEditingPartner(null)}} className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-white transition-all">
- <X className="w-6 h-6" />
- </button>
- </div>
+            <Modal 
+                isOpen={showModal} 
+                onClose={() => { setShowModal(false); setEditingPartner(null) }}
+                title={editingPartner ? 'Partner Düzenle' : 'Yeni Partner Ekle'}
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Name & Logo */}
+                    <div className="grid grid-cols-4 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>LOGO</label>
+                            <input
+                                type="text"
+                                value={formData.logo}
+                                onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-2xl text-center focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                            />
+                        </div>
+                        <div className="col-span-3">
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>PARTNER ADI</label>
+                            <input
+                                type="text"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                placeholder="LinkedIn, Kariyer.net vb."
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                                required
+                            />
+                        </div>
+                    </div>
 
- <form onSubmit={handleSubmit} className="space-y-5">
- {/* Name & Logo */}
- <div className="grid grid-cols-4 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">LOGO</label>
- <input
- type="text"
- value={formData.logo}
- onChange={(e) => setFormData({ ...formData, logo: e.target.value})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-2xl text-center focus:outline-none focus:border-purple-500/30"
- />
- </div>
- <div className="col-span-3">
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">PARTNER ADI</label>
- <input
- type="text"
- value={formData.name}
- onChange={(e) => setFormData({ ...formData, name: e.target.value})}
- placeholder="LinkedIn, Kariyer.net vb."
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-purple-500/30"
- required
- />
- </div>
- </div>
+                    {/* Type, Tier & Commission */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>PARTNER TÜRÜ</label>
+                            <select
+                                value={formData.type}
+                                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                            >
+                                {Object.entries(typeConfig).map(([key, val]) => (
+                                    <option key={key} value={key}>{val.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>SEVİYE</label>
+                            <select
+                                value={formData.tier}
+                                onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                            >
+                                {Object.entries(tierConfig).map(([key, val]) => (
+                                    <option key={key} value={key}>{val.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>KOMİSYON %</label>
+                            <input
+                                type="number"
+                                value={formData.commission}
+                                onChange={(e) => setFormData({ ...formData, commission: parseInt(e.target.value) })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                                min="0"
+                                max="100"
+                            />
+                        </div>
+                    </div>
 
- {/* Type, Tier & Commission */}
- <div className="grid grid-cols-3 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">PARTNER TÜRÜ</label>
- <select
- value={formData.type}
- onChange={(e) => setFormData({ ...formData, type: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-purple-500/30"
- >
- {Object.entries(typeConfig).map(([key, val]) => (
- <option key={key} value={key}>{val.label}</option>
- ))}
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">SEVİYE</label>
- <select
- value={formData.tier}
- onChange={(e) => setFormData({ ...formData, tier: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-purple-500/30"
- >
- {Object.entries(tierConfig).map(([key, val]) => (
- <option key={key} value={key}>{val.label}</option>
- ))}
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KOMİSYON %</label>
- <input
- type="number"
- value={formData.commission}
- onChange={(e) => setFormData({ ...formData, commission: parseInt(e.target.value)})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-purple-500/30"
- min="0"
- max="100"
- />
- </div>
- </div>
+                    {/* Website */}
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>WEB SİTESİ</label>
+                        <input
+                            type="text"
+                            value={formData.website}
+                            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                            placeholder="example.com"
+                            className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                            }`}
+                        />
+                    </div>
 
- {/* Website */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">WEB SİTESİ</label>
- <input
- type="text"
- value={formData.website}
- onChange={(e) => setFormData({ ...formData, website: e.target.value})}
- placeholder="example.com"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-purple-500/30"
- />
- </div>
+                    {/* Contact Info */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>İLETİŞİM ADI</label>
+                            <input
+                                type="text"
+                                value={formData.contactName}
+                                onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                                placeholder="Ahmet Yılmaz"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>E-POSTA</label>
+                            <input
+                                type="email"
+                                value={formData.contactEmail}
+                                onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                                placeholder="partner@example.com"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>TELEFON</label>
+                            <input
+                                type="text"
+                                value={formData.contactPhone}
+                                onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                                placeholder="+90 5xx xxx xx xx"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                                }`}
+                            />
+                        </div>
+                    </div>
 
- {/* Contact Info */}
- <div className="grid grid-cols-3 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">İLETİŞİM ADI</label>
- <input
- type="text"
- value={formData.contactName}
- onChange={(e) => setFormData({ ...formData, contactName: e.target.value})}
- placeholder="Ahmet Yılmaz"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-purple-500/30"
- />
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">E-POSTA</label>
- <input
- type="email"
- value={formData.contactEmail}
- onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value})}
- placeholder="partner@example.com"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-purple-500/30"
- />
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">TELEFON</label>
- <input
- type="text"
- value={formData.contactPhone}
- onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value})}
- placeholder="+90 5xx xxx xx xx"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-purple-500/30"
- />
- </div>
- </div>
+                    {/* Notes */}
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>NOTLAR</label>
+                        <textarea
+                            value={formData.notes}
+                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                            placeholder="Partner hakkında notlar..."
+                            className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all resize-none ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-purple-500/30'
+                            }`}
+                            rows={2}
+                        />
+                    </div>
 
- {/* Notes */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">NOTLAR</label>
- <textarea
- value={formData.notes}
- onChange={(e) => setFormData({ ...formData, notes: e.target.value})}
- placeholder="Partner hakkında notlar..."
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-purple-500/30 resize-none"
- rows={2}
- />
- </div>
-
- {/* Buttons */}
- <div className="flex gap-4 pt-4">
- <button
- type="button"
- onClick={() => { setShowModal(false); setEditingPartner(null)}}
- className="flex-1 py-4 rounded-2xl bg-white/5 text-gray-500 font-semibold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
- >
- İPTAL
- </button>
- <button
- type="submit"
- className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all"
- >
- {editingPartner ? 'GÜNCELLE' : 'PARTNER EKLE'}
- </button>
- </div>
- </form>
- </div>
- </div>
- )}
- </div>
- )
+                    {/* Buttons */}
+                    <div className="pt-4 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => { setShowModal(false); setEditingPartner(null) }}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
+                                isDayMode ? 'hover:bg-slate-100 text-slate-600' : 'hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg ${
+                                isDayMode ? 'bg-purple-600 hover:bg-purple-700 shadow-purple-600/20' : 'bg-gradient-to-br from-purple-500 to-pink-600 hover:scale-[1.02] shadow-purple-500/20'
+                            }`}
+                        >
+                            {editingPartner ? 'GÜNCELLE' : 'EKLE'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+        </>
+    )
 }

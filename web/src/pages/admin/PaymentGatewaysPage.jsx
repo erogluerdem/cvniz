@@ -1,6 +1,9 @@
-import { useState } from 'react'
-import { Settings, CheckCircle2, XCircle, CreditCard, ShieldCheck, Activity, Key, Globe, EyeOff, Eye, Save, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Settings, CheckCircle2, XCircle, CreditCard, ShieldCheck, Activity, Key, Globe, EyeOff, Eye, Save, X, Loader2 } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
+import Modal from '../../components/admin/Modal'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
 
 const GATEWAYS = [
     { id: 'iyzico', name: 'Iyzico', type: 'Aggregator', color: 'blue' },
@@ -24,20 +27,81 @@ const GATEWAYS = [
 
 export default function PaymentGatewaysPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const { toast } = useToast()
     
-    // Mock state for configured gateways
-    const [configs, setConfigs] = useState({
-        'iyzico': { active: true, mode: 'live' },
-        'paytr': { active: true, mode: 'sandbox' },
-        'garanti': { active: false, mode: 'live' }
-    })
-
+    const [configs, setConfigs] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
     const [selectedGateway, setSelectedGateway] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
+    
+    // Form state for editing
+    const [formConfig, setFormConfig] = useState(null)
+
+    useEffect(() => {
+        fetchGateways()
+    }, [])
+
+    const fetchGateways = async () => {
+        try {
+            const res = await adminAPI.getPaymentGateways()
+            if (res.success) {
+                const configMap = {}
+                res.gateways.forEach(g => {
+                    configMap[g.id] = {
+                        active: g.active,
+                        mode: g.testMode ? 'sandbox' : 'live',
+                        apiKey: g.credentials?.apiKey || '',
+                        secretKey: g.credentials?.secretKey || ''
+                    }
+                })
+                setConfigs(configMap)
+            }
+        } catch (error) {
+            toast.error("Ödeme yöntemleri getirilemedi")
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleConfigure = (gateway) => {
+        const conf = configs[gateway.id] || { active: false, mode: 'live', apiKey: '', secretKey: '' }
+        setFormConfig({ ...conf })
         setSelectedGateway(gateway)
         setShowPassword(false)
+    }
+
+    const handleSave = async () => {
+        setSaving(true)
+        try {
+            const updatePayload = [{
+                id: selectedGateway.id,
+                name: selectedGateway.name,
+                provider: selectedGateway.id,
+                active: formConfig.active,
+                testMode: formConfig.mode === 'sandbox',
+                credentials: {
+                    apiKey: formConfig.apiKey,
+                    secretKey: formConfig.secretKey
+                }
+            }]
+            const res = await adminAPI.updatePaymentGateways(updatePayload)
+            if (res.success) {
+                const newMap = { ...configs }
+                res.gateways.forEach(g => {
+                    newMap[g.id] = {
+                        active: g.active,
+                        mode: g.testMode ? 'sandbox' : 'live',
+                        apiKey: g.credentials?.apiKey || '',
+                        secretKey: g.credentials?.secretKey || ''
+                    }
+                })
+                setConfigs(newMap)
+                toast.success("Ayarlar kaydedildi")
+                setSelectedGateway(null)
+            }
+        } catch(e) { toast.error("Kaydedilirken hata oluştu") }
+        finally { setSaving(false) }
     }
 
     return (
@@ -70,6 +134,7 @@ export default function PaymentGatewaysPage() {
             </div>
 
             {/* Grid of POS Providers */}
+            {loading ? <div className="text-center p-8 text-slate-500">Yükleniyor...</div> : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {GATEWAYS.map((gateway) => {
                     const conf = configs[gateway.id] || { active: false, mode: 'live' }
@@ -145,117 +210,122 @@ export default function PaymentGatewaysPage() {
                     )
                 })}
             </div>
+            )}
 
             {/* Configuration Modal */}
-            {selectedGateway && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    <div className={`w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden ${isDayMode ? 'bg-white' : 'bg-[#12151D] border border-white/10'}`}>
-                        {/* Modal Header */}
-                        <div className={`p-6 border-b flex items-center justify-between ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'}`}>
-                            <div className="flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold ${isDayMode ? `bg-${selectedGateway.color}-100 text-${selectedGateway.color}-600` : `bg-${selectedGateway.color}-500/20 text-${selectedGateway.color}-400`}`}>
-                                    {selectedGateway.name.charAt(0)}
-                                </div>
+            <Modal 
+                isOpen={!!selectedGateway} 
+                onClose={() => setSelectedGateway(null)}
+                title={selectedGateway ? `${selectedGateway.name} Entegrasyonu` : ""}
+                isDayMode={isDayMode}
+                icon={selectedGateway ? (
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold ${isDayMode ? `bg-${selectedGateway.color}-100 text-${selectedGateway.color}-600` : `bg-${selectedGateway.color}-500/20 text-${selectedGateway.color}-400`}`}>
+                        {selectedGateway.name.charAt(0)}
+                    </div>
+                ) : null}
+            >
+                {selectedGateway && (
+                    <div className="space-y-6 mt-4">
+                        <p className={`text-sm mb-4 ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>API ve güvenlik anahtarlarını yapılandırın.</p>
+                        {/* Toggle Switches */}
+                        <div className={`flex flex-col sm:flex-row gap-6 p-6 rounded-2xl border ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'}`}>
+                            <div className="flex-1 flex items-center justify-between">
                                 <div>
-                                    <h2 className={`text-xl font-bold ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{selectedGateway.name} Entegrasyonu</h2>
-                                    <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>API ve güvenlik anahtarlarını yapılandırın.</p>
+                                    <div className={`font-semibold mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Entegrasyon Durumu</div>
+                                    <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Ödeme adımında göster/gizle</div>
                                 </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only peer" 
+                                        checked={formConfig?.active || false} 
+                                        onChange={(e) => setFormConfig({...formConfig, active: e.target.checked})}
+                                    />
+                                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
                             </div>
-                            <button onClick={() => setSelectedGateway(null)} className={`p-2 rounded-xl transition-colors ${isDayMode ? 'hover:bg-slate-200 text-slate-500' : 'hover:bg-white/10 text-gray-400'}`}>
-                                <X className="w-5 h-5" />
-                            </button>
+                            <div className={`w-px hidden sm:block ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`}></div>
+                            <div className="flex-1 flex items-center justify-between">
+                                <div>
+                                    <div className={`font-semibold mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Çalışma Modu</div>
+                                    <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Canlı veya Sandbox(Test)</div>
+                                </div>
+                                <select 
+                                    className={`text-sm font-semibold rounded-lg px-3 py-1.5 outline-none border cursor-pointer ${isDayMode ? 'bg-white border-slate-300 text-slate-700' : 'bg-white/5 border-white/10 text-white shadow-inner'}`} 
+                                    value={formConfig?.mode || 'live'}
+                                    onChange={(e) => setFormConfig({...formConfig, mode: e.target.value})}
+                                >
+                                    <option value="live">🟢 Canlı Ortam</option>
+                                    <option value="sandbox">🟡 Sandbox (Test)</option>
+                                </select>
+                            </div>
                         </div>
 
-                        {/* Modal Body */}
-                        <div className="p-8 space-y-6">
+                        {/* API Credentials */}
+                        <div className="space-y-4">
+                            <div>
+                                <label className={`block text-sm font-semibold mb-2 flex items-center gap-2 ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
+                                    <Key className="w-4 h-4" /> API Key (Client ID)
+                                </label>
+                                <input 
+                                    type="text" 
+                                    value={formConfig?.apiKey || ''}
+                                    onChange={(e) => setFormConfig({...formConfig, apiKey: e.target.value})}
+                                    className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all shadow-inner ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-white/5 border-white/10 text-white'}`}
+                                    placeholder={`Örn: ${selectedGateway.name.toLowerCase()}_api_key_...`}
+                                />
+                            </div>
                             
-                            {/* Toggle Switches */}
-                            <div className="flex flex-col sm:flex-row gap-6 p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-                                <div className="flex-1 flex items-center justify-between">
-                                    <div>
-                                        <div className={`font-semibold mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Entegrasyon Durumu</div>
-                                        <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Ödeme adımında göster/gizle</div>
-                                    </div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" className="sr-only peer" defaultChecked={configs[selectedGateway.id]?.active} />
-                                        <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                                    </label>
-                                </div>
-                                <div className="w-px bg-slate-200 dark:bg-white/10 hidden sm:block"></div>
-                                <div className="flex-1 flex items-center justify-between">
-                                    <div>
-                                        <div className={`font-semibold mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Çalışma Modu</div>
-                                        <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Canlı veya Sandbox(Test)</div>
-                                    </div>
-                                    <select className={`text-sm font-semibold rounded-lg px-3 py-1.5 outline-none border cursor-pointer ${isDayMode ? 'bg-white border-slate-300 text-slate-700' : 'bg-[#0B0D14] border-white/20 text-white'}`} defaultValue={configs[selectedGateway.id]?.mode || 'live'}>
-                                        <option value="live">🟢 Canlı Ortam</option>
-                                        <option value="sandbox">🟡 Sandbox (Test)</option>
-                                    </select>
+                            <div>
+                                <label className={`block text-sm font-semibold mb-2 flex items-center gap-2 ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
+                                    <ShieldCheck className="w-4 h-4" /> Secret Key (Güvenlik Anahtarı)
+                                </label>
+                                <div className="relative">
+                                    <input 
+                                        type={showPassword ? "text" : "password"} 
+                                        value={formConfig?.secretKey || ''}
+                                        onChange={(e) => setFormConfig({...formConfig, secretKey: e.target.value})}
+                                        className={`w-full px-4 py-3 pr-12 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all shadow-inner ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-white/5 border-white/10 text-white'}`}
+                                        placeholder="************************"
+                                    />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-colors ${isDayMode ? 'text-slate-400 hover:bg-slate-100' : 'text-gray-500 hover:bg-white/10'}`}
+                                    >
+                                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* API Credentials */}
-                            <div className="space-y-4">
-                                <div>
-                                    <label className={`block text-sm font-semibold mb-2 flex items-center gap-2 ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
-                                        <Key className="w-4 h-4" /> API Key (Client ID)
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#0B0D14] border-white/10 text-white'}`}
-                                        placeholder={`Örn: ${selectedGateway.name.toLowerCase()}_api_key_...`}
-                                    />
+                            <div>
+                                <label className={`block text-sm font-semibold mb-2 flex items-center gap-2 ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
+                                    <Globe className="w-4 h-4" /> Webhook / Callback URL
+                                </label>
+                                <div className={`w-full px-4 py-3 rounded-xl border flex items-center justify-between ${isDayMode ? 'bg-slate-50 border-slate-200 text-slate-500' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                                    <span className="text-sm truncate">https://api.cvniz.com/webhooks/payments/{selectedGateway.id}</span>
+                                    <button className={`text-xs font-semibold px-3 py-1 rounded-lg ${isDayMode ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-white/10 text-white hover:bg-white/20'}`}>
+                                        Kopyala
+                                    </button>
                                 </div>
-                                
-                                <div>
-                                    <label className={`block text-sm font-semibold mb-2 flex items-center gap-2 ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
-                                        <ShieldCheck className="w-4 h-4" /> Secret Key (Güvenlik Anahtarı)
-                                    </label>
-                                    <div className="relative">
-                                        <input 
-                                            type={showPassword ? "text" : "password"} 
-                                            className={`w-full px-4 py-3 pr-12 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#0B0D14] border-white/10 text-white'}`}
-                                            placeholder="************************"
-                                        />
-                                        <button 
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-colors ${isDayMode ? 'text-slate-400 hover:bg-slate-100' : 'text-gray-500 hover:bg-white/10'}`}
-                                        >
-                                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className={`block text-sm font-semibold mb-2 flex items-center gap-2 ${isDayMode ? 'text-slate-700' : 'text-gray-300'}`}>
-                                        <Globe className="w-4 h-4" /> Webhook / Callback URL
-                                    </label>
-                                    <div className={`w-full px-4 py-3 rounded-xl border flex items-center justify-between ${isDayMode ? 'bg-slate-50 border-slate-200 text-slate-500' : 'bg-white/5 border-white/5 text-gray-500'}`}>
-                                        <span className="text-sm truncate">https://api.cvniz.com/webhooks/payments/{selectedGateway.id}</span>
-                                        <button className={`text-xs font-semibold px-3 py-1 rounded-lg ${isDayMode ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-white/10 text-white hover:bg-white/20'}`}>
-                                            Kopyala
-                                        </button>
-                                    </div>
-                                    <p className={`text-xs mt-2 ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>
-                                        Bu adresi {selectedGateway.name} panelindeki bildirim (webhook/callback) url kısmına yapıştırın.
-                                    </p>
-                                </div>
+                                <p className={`text-xs mt-2 ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>
+                                    Bu adresi {selectedGateway.name} panelindeki bildirim (webhook/callback) url kısmına yapıştırın.
+                                </p>
                             </div>
                         </div>
 
                         {/* Modal Footer */}
-                        <div className={`p-6 border-t flex justify-end gap-3 ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'}`}>
-                            <button onClick={() => setSelectedGateway(null)} className={`px-6 py-2.5 rounded-xl font-semibold transition-colors ${isDayMode ? 'text-slate-600 hover:bg-slate-200' : 'text-gray-300 hover:bg-white/10'}`}>
+                        <div className={`pt-4 border-t flex justify-end gap-3 ${isDayMode ? 'border-slate-200' : 'border-white/10'}`}>
+                            <button onClick={() => setSelectedGateway(null)} disabled={saving} className={`px-6 py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-50 ${isDayMode ? 'text-slate-600 hover:bg-slate-200 border border-slate-200' : 'text-gray-300 hover:bg-white/10 border border-white/10'}`}>
                                 İptal
                             </button>
-                            <button onClick={() => setSelectedGateway(null)} className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all ${isDayMode ? 'bg-cyan-600 text-white hover:bg-cyan-700' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}>
-                                <Save className="w-4 h-4" /> Değişiklikleri Kaydet
+                            <button onClick={handleSave} disabled={saving} className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all disabled:opacity-50 ${isDayMode ? 'bg-cyan-600 text-white hover:bg-cyan-700' : 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-white hover:scale-[1.02] active:scale-95 shadow-cyan-500/20'}`}>
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin"/> : <Save className="w-4 h-4" />} Değişiklikleri Kaydet
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </Modal>
         </div>
     )
 }

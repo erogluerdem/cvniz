@@ -32,18 +32,59 @@ export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = fa
     }
 
     try {
-        // Create canvas from the CV element
-        const canvas = await html2canvas(element, {
-            scale: 1.5, // Reduced from 2 to save size while keeping quality for print
+        const { widthMm: imgWidth, heightMm: pageHeightMm } = getPdfPageSizeMm(pageFormat)
+        const ratio = pageHeightMm / imgWidth
+        
+        // --- SMART PAGINATION ENGINE ---
+        // Clone the element to mutate it without affecting the live UI
+        const clone = element.cloneNode(true)
+        clone.style.position = 'absolute'
+        clone.style.top = '-99999px'
+        clone.style.left = '-99999px'
+        clone.style.width = `${element.offsetWidth}px` // Lock width to match original
+        // Temporarily append to body to calculate real bounding boxes
+        document.body.appendChild(clone)
+        
+        const pxPageHeight = element.offsetWidth * ratio
+        
+        // Find all elements that shouldn't be broken across pages
+        const avoidItems = Array.from(clone.querySelectorAll('.break-inside-avoid, .page-break-inside-avoid'))
+        
+        // Process them in DOM order
+        avoidItems.forEach((item) => {
+            const cloneRect = clone.getBoundingClientRect()
+            const itemRect = item.getBoundingClientRect()
+            
+            const topRelativeToContainer = itemRect.top - cloneRect.top
+            const bottomRelativeToContainer = topRelativeToContainer + itemRect.height
+            
+            const pageOfTop = Math.floor(topRelativeToContainer / pxPageHeight)
+            const pageOfBottom = Math.floor(bottomRelativeToContainer / pxPageHeight)
+            
+            // If the element crosses a page boundary and is smaller than a single page
+            if (pageOfBottom > pageOfTop && itemRect.height < pxPageHeight) {
+                // Calculate pixels needed to push it to the start of the next page
+                const distanceToNextPage = ((pageOfTop + 1) * pxPageHeight) - topRelativeToContainer
+                const currentMarginTop = parseFloat(window.getComputedStyle(item).marginTop) || 0
+                // Add the distance as margin-top to bump it down
+                item.style.marginTop = `${currentMarginTop + distanceToNextPage}px`
+            }
+        })
+        
+        // Create canvas from the perfectly paginated clone
+        const canvas = await html2canvas(clone, {
+            scale: 2, // Keep crisp quality
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
             imageTimeout: 0
         })
+        
+        // Cleanup clone
+        document.body.removeChild(clone)
 
-        // Calculate dimensions for A4
-        const { widthMm: imgWidth, heightMm: pageHeight } = getPdfPageSizeMm(pageFormat)
+        // Calculate final dimensions for PDF
         const imgHeight = (canvas.height * imgWidth) / canvas.width
 
         // Create PDF with compression enabled
@@ -63,14 +104,14 @@ export const exportToPDF = async (elementId, filename = 'cv.pdf', isPremium = fa
 
         // Add first page
         pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST')
-        heightLeft -= pageHeight
+        heightLeft -= pageHeightMm
 
         // Add extra pages if needed
-        while (heightLeft >= 0) {
+        while (heightLeft > 1) { // >1 to avoid blank extra pages for rounding errors
             position = heightLeft - imgHeight
             pdf.addPage()
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST')
-            heightLeft -= pageHeight
+            heightLeft -= pageHeightMm
         }
 
         // Add watermark for non-premium users

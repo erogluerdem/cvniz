@@ -275,7 +275,7 @@ export default function AISmartFillModal({ isOpen, onClose, cvData, onFill }) {
 
           {/* card */}
           <motion.div
-            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
+            className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[2rem] border border-white/10 bg-slate-950/95 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
             initial={{ scale: 0.92, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.92, opacity: 0, y: 30 }}

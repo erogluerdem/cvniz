@@ -4,8 +4,10 @@ import {
  Copy, Check, RefreshCw, Search, Filter, ToggleLeft, ToggleRight,
  TrendingUp, Gift, Clock, Zap, AlertCircle, CheckCircle2, Edit
 } from 'lucide-react'
-import { adminAPI} from '../../services/api'
-import { useToast} from '../../context/ToastContext'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
+import Modal from '../../components/admin/Modal'
+import { useOutletContext } from 'react-router-dom'
 
 // Kupon renk paletleri
 const couponColors = [
@@ -23,6 +25,7 @@ const getColorIndex = (code) => {
 }
 
 export default function CouponsPage() {
+ const { isDayMode } = useOutletContext() || { isDayMode: false }
  const { toast, confirm} = useToast()
  const [coupons, setCoupons] = useState([])
  const [loading, setLoading] = useState(true)
@@ -185,7 +188,7 @@ export default function CouponsPage() {
 }
 
  return (
- <div className="space-y-6">
+ <div className="space-y-6 font-primary">
  {/* Header */}
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
@@ -364,129 +367,120 @@ export default function CouponsPage() {
  )
 })}
 
- {filteredCoupons.length === 0 && (
- <div className="md:col-span-2 lg:col-span-3 text-center py-20 glass-card rounded-2xl border border-dashed border-white/10">
- <Tag className="w-12 h-12 text-gray-600 mx-auto mb-4" />
- <h4 className="text-lg font-semibold text-white uppercase mb-1">KUPON BULUNAMADI</h4>
- <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Kriterlere uyan kupon yok.</p>
- </div>
- )}
- </div>
+  {filteredCoupons.length === 0 && (
+  <div className="md:col-span-2 lg:col-span-3 text-center py-20 glass-card rounded-2xl border border-dashed border-white/10">
+  <Tag className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+  <h4 className="text-lg font-semibold text-white uppercase mb-1">KUPON BULUNAMADI</h4>
+  <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Kriterlere uyan kupon yok.</p>
+  </div>
+  )}
+  </div>
 
- {/* Modal */}
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
- <div className="glass-card rounded-2xl p-8 max-w-lg w-full border border-white/10 relative overflow-hidden animate-scale-in">
- <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-3xl -z-10"></div>
+  <Modal
+    isOpen={showModal}
+    onClose={() => setShowModal(false)}
+    title={editingCoupon ? 'Kuponu Düzenle' : 'Yeni Kupon Oluştur'}
+    isDayMode={isDayMode}
+  >
+  <form onSubmit={handleSubmit} className="space-y-5">
+    <div className="space-y-3">
+    <label className={`block text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Kupon Kodu</label>
+    <div className="flex gap-2">
+    <input
+    type="text"
+    value={formData.code}
+    onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase()})}
+    className={`flex-1 px-4 py-3.5 rounded-2xl text-sm font-bold uppercase transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border focus:border-amber-500 focus:outline-none' : 'bg-white/5 border border-white/10 text-white focus:outline-none focus:border-amber-500/30'}`}
+    placeholder="ÖRN: SUMMER2024"
+    required
+    />
+    <button
+    type="button"
+    onClick={generateCode}
+    className={`px-4 rounded-2xl font-semibold text-xs tracking-wider uppercase transition-all border ${isDayMode ? 'bg-amber-100 text-amber-700 border-amber-300' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'}`}
+    >
+    <Zap className="w-4 h-4" />
+    </button>
+    </div>
+    </div>
 
- <div className="flex items-center justify-between mb-8">
- <div>
- <h3 className="text-2xl font-semibold text-white uppercase">
- {editingCoupon ? 'KUPONU DÜZENLE' : 'YENİ KUPON'}
- </h3>
- <p className="text-sm text-gray-400 font-medium">İndirim kuponu oluşturun veya düzenleyin.</p>
- </div>
- <button onClick={() => { setShowModal(false); setEditingCoupon(null)}} className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-white transition-all">
- <X className="w-6 h-6" />
- </button>
- </div>
+    <div className="grid grid-cols-2 gap-4">
+    <div className="space-y-3">
+    <label className={`block text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>İndirim Tipi</label>
+    <select
+    value={formData.type}
+    onChange={(e) => setFormData({ ...formData, type: e.target.value})}
+    className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border focus:border-amber-500 focus:outline-none' : 'bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-amber-500/30'}`}
+    >
+    <option value="percent">Yüzde (%)</option>
+    <option value="fixed">Sabit Tutar (₺)</option>
+    </select>
+    </div>
+    <div className="space-y-3">
+    <label className={`block text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>İndirim Değeri</label>
+    <input
+    type="number"
+    value={formData.discount}
+    onChange={(e) => setFormData({ ...formData, discount: e.target.value})}
+    className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border focus:border-amber-500 focus:outline-none' : 'bg-white/5 border border-white/10 text-white focus:outline-none focus:border-amber-500/30'}`}
+    min="0"
+    max={formData.type === 'percent' ? "100" : undefined}
+    required
+    />
+    </div>
+    </div>
 
- <form onSubmit={handleSubmit} className="space-y-5">
- {/* Kupon Kodu */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KUPON KODU</label>
- <div className="flex gap-2">
- <input
- type="text"
- value={formData.code}
- onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase()})}
- placeholder="YENIYIL2024"
- className="flex-1 px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-semibold uppercase tracking-wider focus:outline-none focus:border-amber-500/30"
- required
- disabled={!!editingCoupon}
- />
- {!editingCoupon && (
- <button
- type="button"
- onClick={generateCode}
- className="px-4 py-3.5 rounded-2xl bg-amber-500/10 text-amber-400 font-semibold text-xs hover:bg-amber-500/20 transition-all"
- >
- <Zap className="w-5 h-5" />
- </button>
- )}
- </div>
- </div>
+    <div className="grid grid-cols-2 gap-4">
+    <div className="space-y-3">
+    <label className={`block text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Kullanım Sınırı (Opsiyonel)</label>
+    <input
+    type="number"
+    value={formData.usageLimit}
+    onChange={(e) => setFormData({ ...formData, usageLimit: e.target.value})}
+    className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border focus:border-amber-500 focus:outline-none' : 'bg-white/5 border border-white/10 text-white focus:outline-none focus:border-amber-500/30'}`}
+    min="1"
+    placeholder="Sınırsız"
+    />
+    </div>
+    <div className="space-y-3">
+    <label className={`block text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Son Geçerlilik (Opsiyonel)</label>
+    <input
+    type="date"
+    value={formData.expiryDate}
+    onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value})}
+    className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border focus:border-amber-500 focus:outline-none' : 'bg-white/5 border border-white/10 text-white focus:outline-none focus:border-amber-500/30 text-white color-scheme-dark'}`}
+    />
+    </div>
+    </div>
 
- {/* Tür & Miktar */}
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">İNDİRİM TÜRÜ</label>
- <select
- value={formData.type}
- onChange={(e) => setFormData({ ...formData, type: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-amber-500/30"
- >
- <option value="percent">Yüzde (%)</option>
- <option value="fixed">Sabit (₺)</option>
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">MİKTAR</label>
- <input
- type="number"
- value={formData.discount}
- onChange={(e) => setFormData({ ...formData, discount: e.target.value})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-amber-500/30"
- required
- min="1"
- />
- </div>
- </div>
+    <div className="flex items-center gap-3 p-4 rounded-2xl border border-white/10 bg-white/5 mt-2">
+    <input
+    type="checkbox"
+    id="isActive"
+    checked={formData.isActive}
+    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked})}
+    className={`w-5 h-5 rounded-md accent-amber-500 cursor-pointer ${isDayMode ? 'border-slate-300' : 'bg-black/30 border-white/20'}`}
+    />
+    <label htmlFor="isActive" className={`text-sm font-semibold cursor-pointer select-none ${isDayMode ? 'text-slate-700' : 'text-white'}`}>Kuponu hemen aktif et</label>
+    </div>
 
- {/* Kullanım Limiti */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KULLANIM LİMİTİ</label>
- <input
- type="number"
- value={formData.usageLimit}
- onChange={(e) => setFormData({ ...formData, usageLimit: e.target.value})}
- placeholder="Sınırsız için boş bırakın"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-amber-500/30"
- min="1"
- />
- </div>
-
- {/* Son Kullanma Tarihi */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">SON KULLANMA TARİHİ</label>
- <input
- type="date"
- value={formData.expiryDate}
- onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value})}
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-amber-500/30"
- />
- </div>
-
- {/* Buttons */}
- <div className="flex gap-4 pt-4">
- <button
- type="button"
- onClick={() => { setShowModal(false); setEditingCoupon(null)}}
- className="flex-1 py-4 rounded-2xl bg-white/5 text-gray-500 font-semibold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
- >
- İPTAL
- </button>
- <button
- type="submit"
- className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 hover:scale-[1.02] active:scale-95 transition-all"
- >
- {editingCoupon ? 'GÜNCELLE' : 'KUPON OLUŞTUR'}
- </button>
- </div>
- </form>
- </div>
- </div>
- )}
- </div>
+    <div className="flex gap-4 pt-4">
+    <button
+    type="button"
+    onClick={() => setShowModal(false)}
+    className={`flex-1 py-4 rounded-2xl font-semibold text-xs uppercase tracking-wider transition-all border ${isDayMode ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100' : 'bg-white/5 border-transparent text-gray-500 hover:bg-white/10'}`}
+    >
+    İPTAL
+    </button>
+    <button
+    type="submit"
+    className={`flex-1 py-4 rounded-2xl text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-lg ${isDayMode ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/20' : 'bg-gradient-to-br from-amber-500 to-orange-600 shadow-amber-500/20 hover:scale-[1.02] active:scale-95'}`}
+    >
+    {editingCoupon ? 'KAYDET' : 'KUPON OLUŞTUR'}
+    </button>
+    </div>
+  </form>
+  </Modal>
+  </div>
  )
 }

@@ -2,11 +2,15 @@ import { useState, useEffect} from 'react'
 import { Plus, Trash2, Play, Pause, BarChart2, Activity, Users, Target, RefreshCw} from 'lucide-react'
 import { abTestAPI} from '../../services/api'
 import { motion, AnimatePresence} from 'framer-motion'
+import Modal from '../../components/admin/Modal'
+import { useOutletContext } from 'react-router-dom'
 
 export default function ABTestsPage() {
+    const { isDayMode } = useOutletContext() || { isDayMode: false }
  const [tests, setTests] = useState([])
  const [loading, setLoading] = useState(true)
  const [showCreateModal, setShowCreateModal] = useState(false)
+ const [submitting, setSubmitting] = useState(false)
 
  // New Test Form State
  const [newTest, setNewTest] = useState({
@@ -38,6 +42,7 @@ export default function ABTestsPage() {
 }
 
  const handleCreate = async () => {
+    setSubmitting(true)
  try {
  const response = await abTestAPI.create(newTest)
  if (response.success) {
@@ -52,12 +57,14 @@ export default function ABTestsPage() {
  { name: 'Control', value: '', trafficAllocation: 50},
  { name: 'Variant A', value: '', trafficAllocation: 50}
  ]
-})
-}
-} catch (error) {
+ })
+ }
+ } catch (error) {
  alert('Hata: ' + error.message)
-}
-}
+ } finally {
+    setSubmitting(false)
+ }
+ }
 
  const handleDelete = async (id) => {
  if (!window.confirm('Bu testi silmek istediğinize emin misiniz?')) return;
@@ -180,43 +187,38 @@ export default function ABTestsPage() {
  )}
 
  {/* Create Modal */}
- <AnimatePresence>
- {showCreateModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
- <motion.div
- initial={{ scale: 0.9, opacity: 0}}
- animate={{ scale: 1, opacity: 1}}
- exit={{ scale: 0.9, opacity: 0}}
- className="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-2xl p-6 shadow-2xl"
+ <Modal
+    isOpen={showCreateModal}
+    onClose={() => { if(!submitting) setShowCreateModal(false) }}
+    title="Yeni A/B Testi"
+    isDayMode={isDayMode}
  >
- <h3 className="text-xl font-bold text-white mb-6">Yeni A/B Testi</h3>
-
- <div className="space-y-4">
+ <div className="space-y-4 mt-4">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-xs text-gray-500 font-bold uppercase mb-1 block">Test Adı</label>
+ <label className={`text-xs font-bold uppercase mb-1 block ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Test Adı</label>
  <input
  type="text"
  value={newTest.name}
  onChange={e => setNewTest({ ...newTest, name: e.target.value})}
- className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white"
+ className={`w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border' : 'bg-black/20 border-white/10 text-white border'}`}
  placeholder="Örn: Landing Header Rengi"
  />
  </div>
  <div>
- <label className="text-xs text-gray-500 font-bold uppercase mb-1 block">Key (Kod)</label>
+ <label className={`text-xs font-bold uppercase mb-1 block ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Key (Kod)</label>
  <input
  type="text"
  value={newTest.key}
  onChange={e => setNewTest({ ...newTest, key: e.target.value})}
- className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white font-mono"
+ className={`w-full rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border' : 'bg-black/20 border-white/10 text-white border'}`}
  placeholder="landing_header_color"
  />
  </div>
  </div>
 
  <div className="space-y-3">
- <label className="text-xs text-gray-500 font-bold uppercase block">Varyasyonlar</label>
+ <label className={`text-xs font-bold uppercase block ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Varyasyonlar</label>
  {newTest.variants.map((v, i) => (
  <div key={i} className="flex gap-3">
  <input
@@ -227,8 +229,8 @@ export default function ABTestsPage() {
  const vars = [...newTest.variants]
  vars[i].name = e.target.value
  setNewTest({ ...newTest, variants: vars})
-}}
- className="w-1/3 bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white"
+ }}
+ className={`w-1/3 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border' : 'bg-black/20 border-white/10 text-white border'}`}
  placeholder="İsim"
  />
  <input
@@ -238,8 +240,8 @@ export default function ABTestsPage() {
  const vars = [...newTest.variants]
  vars[i].value = e.target.value
  setNewTest({ ...newTest, variants: vars})
-}}
- className="flex-1 bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white"
+ }}
+ className={`flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border' : 'bg-black/20 border-white/10 text-white border'}`}
  placeholder="Değer (String/JSON)"
  />
  <input
@@ -249,8 +251,8 @@ export default function ABTestsPage() {
  const vars = [...newTest.variants]
  vars[i].trafficAllocation = parseInt(e.target.value)
  setNewTest({ ...newTest, variants: vars})
-}}
- className="w-20 bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-center"
+ }}
+ className={`w-20 rounded-xl px-4 py-3 text-sm text-center focus:outline-none transition-all ${isDayMode ? 'bg-white border-slate-200 text-slate-900 border' : 'bg-black/20 border-white/10 text-white border'}`}
  placeholder="%"
  />
  </div>
@@ -260,22 +262,21 @@ export default function ABTestsPage() {
 
  <div className="flex justify-end gap-3 mt-8">
  <button
+ disabled={submitting}
  onClick={() => setShowCreateModal(false)}
- className="px-4 py-2 text-gray-400 hover:text-white"
+ className={`px-6 py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-50 ${isDayMode ? 'text-slate-600 hover:bg-slate-200' : 'text-gray-400 hover:text-white'}`}
  >
  İptal
  </button>
  <button
+ disabled={submitting}
  onClick={handleCreate}
- className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-bold"
+ className={`px-6 py-2.5 text-white rounded-xl font-bold transition-all disabled:opacity-50 ${isDayMode ? 'bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-600/20' : 'bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20'}`}
  >
  Oluştur
  </button>
  </div>
- </motion.div>
- </div>
- )}
- </AnimatePresence>
+ </Modal>
  </div>
  )
 }

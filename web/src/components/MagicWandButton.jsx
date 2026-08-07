@@ -48,7 +48,7 @@ export default function MagicWandButton({ text, onImprove, className = '' }) {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 disabled={loading}
-                className="p-1.5 rounded-lg text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center gap-1 group"
+                className="p-1.5 rounded-lg text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center gap-1 group [.editor-theme-editorial_&]:text-purple-600 [.editor-theme-editorial_&]:hover:bg-purple-100"
                 title="AI ile İyileştir"
             >
                 {loading ? (
@@ -67,8 +67,8 @@ export default function MagicWandButton({ text, onImprove, className = '' }) {
                         className="fixed inset-0 z-40"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="absolute top-full right-0 mt-2 w-48 bg-[#1a1d24] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div className="p-2 border-b border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-[#1a1d24] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 [.editor-theme-editorial_&]:bg-white [.editor-theme-editorial_&]:border-slate-200 [.editor-theme-editorial_&]:shadow-lg">
+                        <div className="p-2 border-b border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wider [.editor-theme-editorial_&]:border-slate-100">
                             Sihirli Değnek
                         </div>
                         <div className="p-1">
@@ -81,7 +81,7 @@ export default function MagicWandButton({ text, onImprove, className = '' }) {
                                 <button
                                     key={opt.id}
                                     onClick={() => handleImprove(opt.id)}
-                                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 flex items-center gap-2 transition-colors"
+                                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 flex items-center gap-2 transition-colors [.editor-theme-editorial_&]:text-slate-700 [.editor-theme-editorial_&]:hover:bg-purple-50 [.editor-theme-editorial_&]:hover:text-purple-700"
                                 >
                                     <opt.icon className={`w-3.5 h-3.5 ${opt.className || ''}`} />
                                     {opt.label}

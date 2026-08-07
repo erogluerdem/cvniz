@@ -3,6 +3,8 @@ import { useState, useEffect} from 'react'
 import { Globe, Search, Plus, Edit, Check, X, Languages, Save, Trash2, RefreshCw} from 'lucide-react'
 import { translationAPI} from '../../services/api'
 import { useToast} from '../../context/ToastContext'
+import { useOutletContext } from 'react-router-dom'
+import Modal from '../../components/admin/Modal'
 
 const languages = [
  { code: 'tr', name: 'Türkçe', flag: '🇹🇷'},
@@ -13,7 +15,8 @@ const languages = [
 ]
 
 export default function TranslationsPage() {
- const { showToast} = useToast()
+ const { showToast } = useToast()
+ const { isDayMode } = useOutletContext() || { isDayMode: false }
  const [selectedLang, setSelectedLang] = useState('tr')
  const [searchQuery, setSearchQuery] = useState('')
  const [loading, setLoading] = useState(false)
@@ -148,12 +151,12 @@ export default function TranslationsPage() {
 }
 
  return (
- <div className="space-y-6">
+ <div className={`space-y-6 font-primary ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
  <div className="flex items-center justify-between">
- <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400">
+ <h1 className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${isDayMode ? 'from-cyan-600 to-purple-600' : 'from-cyan-400 to-purple-400'}`}>
  Çeviri Yönetimi
  </h1>
- <button onClick={fetchTranslations} className="p-2 bg-white/5 rounded-lg hover:bg-white/10">
+ <button onClick={fetchTranslations} className={`p-2 rounded-lg transition-colors ${isDayMode ? 'bg-slate-100 hover:bg-slate-200 text-slate-600' : 'bg-white/5 hover:bg-white/10 text-white'}`}>
  <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
  </button>
  </div>
@@ -170,19 +173,20 @@ export default function TranslationsPage() {
  <button
  key={lang.code}
  onClick={() => setSelectedLang(lang.code)}
- className={`glass-card rounded-xl p-4 text-left transition-all ${selectedLang === lang.code ? 'ring-2 ring-cyan-500' : ''
-}`}
+ className={`rounded-xl p-4 text-left transition-all border ${
+    isDayMode ? 'bg-white border-slate-200' : 'glass-card border-white/5'
+ } ${selectedLang === lang.code ? 'ring-2 ring-cyan-500' : ''}`}
  >
  <div className="text-2xl mb-2">{lang.flag}</div>
- <div className="font-medium text-sm">{lang.name}</div>
+ <div className={`font-medium text-sm ${isDayMode ? 'text-slate-700' : 'text-white'}`}>{lang.name}</div>
  <div className="flex items-center gap-2 mt-2">
- <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+ <div className={`flex-1 h-1.5 rounded-full overflow-hidden ${isDayMode ? 'bg-slate-100' : 'bg-white/10'}`}>
  <div
  className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
  style={{ width:`${progress}%`}}
  />
  </div>
- <span className="text-xs text-gray-400">{progress}%</span>
+ <span className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>{progress}%</span>
  </div>
  </button>
  )
@@ -192,20 +196,24 @@ export default function TranslationsPage() {
  {/* Toolbar */}
  <div className="flex items-center justify-between gap-4">
  <div className="relative flex-1 max-w-md">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+ <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`} />
  <input
  type="text"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Çeviri ara..."
- className="input-field pl-9 w-full"
+ className={`pl-9 w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors border outline-none ${
+    isDayMode ? 'bg-white border-slate-200 focus:border-cyan-500 text-slate-800' : 'bg-white/5 border-white/10 focus:border-cyan-500/50 text-white input-field'
+ }`}
  />
  </div>
  <div className="flex gap-2">
  <button
  onClick={() => setIsAdding(!isAdding)}
- className={`px-4 py-2 rounded-xl border transition-colors flex items-center gap-2 ${isAdding ? 'bg-red-500/10 border-red-500/50 text-red-400' : 'bg-white/5 border-white/10 text-gray-400'
-}`}
+ className={`px-4 py-2 rounded-xl border transition-colors flex items-center gap-2 font-medium ${
+    isAdding ? 'bg-red-500/10 border-red-500/50 text-red-500' : 
+    (isDayMode ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10')
+ }`}
  >
  {isAdding ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
  {isAdding ? 'İptal' : 'Yeni Anahtar'}
@@ -222,56 +230,73 @@ export default function TranslationsPage() {
  </div>
  </div>
 
- {/* Add New Key Form */}
- {isAdding && (
- <div className="glass-card p-4 rounded-xl border border-cyan-500/30 flex gap-4 items-end animate-in fade-in slide-in-from-top-4">
- <div className="flex-1 space-y-1">
- <label className="text-xs text-gray-400">Anahtar (Key)</label>
+ <Modal
+    isOpen={isAdding}
+    onClose={() => setIsAdding(false)}
+    title="Yeni Çeviri Ekle"
+    isDayMode={isDayMode}
+ >
+ <div className="space-y-4">
+ <div className="space-y-1">
+ <label className={`text-xs font-semibold ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Anahtar (Key)</label>
  <input
  type="text"
  value={newKey}
  onChange={(e) => setNewKey(e.target.value)}
  placeholder="örn: homepage.title"
- className="input-field w-full"
+ className={`w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors border outline-none ${
+    isDayMode ? 'bg-white border-slate-200 focus:border-cyan-500 text-slate-800' : 'bg-white/5 border-white/10 focus:border-cyan-500/50 text-white'
+ }`}
  />
  </div>
- <div className="flex-[2] space-y-1">
- <label className="text-xs text-gray-400">Değer ({languages.find(l => l.code === selectedLang)?.name})</label>
+ <div className="space-y-1">
+ <label className={`text-xs font-semibold ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Değer ({languages.find(l => l.code === selectedLang)?.name})</label>
  <input
  type="text"
  value={newValue}
  onChange={(e) => setNewValue(e.target.value)}
  placeholder="Çeviri metni..."
- className="input-field w-full"
+ className={`w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors border outline-none ${
+    isDayMode ? 'bg-white border-slate-200 focus:border-cyan-500 text-slate-800' : 'bg-white/5 border-white/10 focus:border-cyan-500/50 text-white'
+ }`}
  />
  </div>
- <button
- onClick={handleAddKey}
- disabled={!newKey || !newValue}
- className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
- >
- Ekle
- </button>
+ <div className="flex gap-4 pt-4">
+    <button
+    type="button"
+    onClick={() => setIsAdding(false)}
+    className={`flex-1 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wider transition-all border ${isDayMode ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100' : 'bg-white/5 border-transparent text-gray-400 hover:bg-white/10'}`}
+    >
+    İPTAL
+    </button>
+    <button
+    onClick={handleAddKey}
+    disabled={!newKey || !newValue}
+    className={`flex-1 py-3 rounded-2xl text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-lg ${isDayMode ? 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-600/20' : 'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-cyan-500/20 hover:scale-[1.02] active:scale-95'} disabled:opacity-50 disabled:cursor-not-allowed`}
+    >
+    EKLE
+    </button>
  </div>
- )}
+ </div>
+ </Modal>
 
  {/* Translations Table */}
- <div className="glass-card rounded-2xl overflow-hidden">
+ <div className={`rounded-2xl overflow-hidden border ${isDayMode ? 'bg-white border-slate-200' : 'glass-card border-white/5'}`}>
  <table className="w-full">
- <thead className="bg-white/5">
+ <thead className={isDayMode ? 'bg-slate-50 border-b border-slate-200' : 'bg-white/5'}>
  <tr>
- <th className="text-left px-4 py-3 text-sm font-medium text-gray-400 w-1/4">Anahtar</th>
- <th className="text-left px-4 py-3 text-sm font-medium text-gray-400 w-1/3">Türkçe (Referans)</th>
- <th className="text-left px-4 py-3 text-sm font-medium text-gray-400">
+ <th className={`text-left px-4 py-3 text-sm font-semibold w-1/4 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>Anahtar</th>
+ <th className={`text-left px-4 py-3 text-sm font-semibold w-1/3 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>Türkçe (Referans)</th>
+ <th className={`text-left px-4 py-3 text-sm font-semibold ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
  {languages.find(l => l.code === selectedLang)?.flag} {languages.find(l => l.code === selectedLang)?.name}
  </th>
- <th className="text-left px-4 py-3 text-sm font-medium text-gray-400 w-24">İşlem</th>
+ <th className={`text-left px-4 py-3 text-sm font-semibold w-24 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>İşlem</th>
  </tr>
  </thead>
  <tbody>
  {displayedKeys.length === 0 ? (
  <tr>
- <td colSpan="4" className="text-center py-8 text-gray-500">
+ <td colSpan="4" className={`text-center py-8 ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>
  {allKeys.length === 0 ? 'Henüz hiç çeviri eklenmemiş.' : 'Aradığınız kriterlere uygun çeviri bulunamadı.'}
  </td>
  </tr>
@@ -282,18 +307,20 @@ export default function TranslationsPage() {
  const isEditing = editingId === key;
 
  return (
- <tr key={key} className="border-t border-white/10 hover:bg-white/5">
+ <tr key={key} className={`border-t transition-colors ${isDayMode ? 'border-slate-100 hover:bg-slate-50' : 'border-white/10 hover:bg-white/5'}`}>
  <td className="px-4 py-3">
- <code className="px-2 py-1 bg-white/5 rounded text-xs select-all text-purple-300">{key}</code>
+ <code className={`px-2 py-1 rounded text-xs select-all ${isDayMode ? 'bg-slate-100 text-purple-700' : 'bg-white/5 text-purple-300'}`}>{key}</code>
  </td>
- <td className="px-4 py-3 text-sm text-gray-400 font-light">{trValue || '-'}</td>
+ <td className={`px-4 py-3 text-sm font-light ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>{trValue || '-'}</td>
  <td className="px-4 py-3">
  {isEditing ? (
  <input
  type="text"
  value={editValue}
  onChange={(e) => setEditValue(e.target.value)}
- className="input-field w-full text-white bg-black/40 border-cyan-500/50"
+ className={`w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors border outline-none ${
+    isDayMode ? 'bg-white border-cyan-300 focus:border-cyan-500 text-slate-800' : 'bg-black/40 border-cyan-500/50 text-white'
+ }`}
  autoFocus
  onKeyDown={(e) => {
  if (e.key === 'Enter') handleSave(key);
@@ -301,7 +328,7 @@ export default function TranslationsPage() {
 }}
  />
  ) : (
- <span className={`${currentValue ? 'text-white' : 'text-amber-400 text-sm'}`}>
+ <span className={`${currentValue ? (isDayMode ? 'text-slate-800' : 'text-white') : 'text-amber-500 text-sm'}`}>
  {currentValue || 'Çeviri yok'}
  </span>
  )}

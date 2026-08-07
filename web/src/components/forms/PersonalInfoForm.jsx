@@ -15,58 +15,63 @@ export default function PersonalInfoForm({
     return (
         <div className="space-y-6">
             {/* Photo Upload Section */}
-            <div className="flex items-center gap-6 p-6 bg-white/5 rounded-2xl border border-white/10 relative overflow-hidden group">
+            <div className="flex items-center gap-6 p-6 rounded-3xl border relative overflow-hidden group transition-all duration-500 bg-slate-900/60 backdrop-blur-xl border-white/10 [.editor-theme-editorial_&]:bg-white [.editor-theme-editorial_&]:border-slate-200 [.editor-theme-editorial_&]:shadow-xl">
+                {/* Decorative blob */}
+                <div className="absolute -right-8 -top-8 w-32 h-32 bg-cyan-500/10 blur-[40px] rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+                
                 <div className="relative shrink-0">
-                    {cvData.personal.photo ? (
-                        <img src={cvData.personal.photo} alt="Profile" className="w-24 h-24 rounded-2xl object-cover border-2 border-cyan-500/50" />
-                    ) : (
-                        <div className="w-24 h-24 rounded-2xl bg-slate-800 flex items-center justify-center border-2 border-dashed border-white/10">
-                            <User className="w-10 h-10 text-slate-600" />
-                        </div>
-                    )}
-                    {isPremium && (
-                        <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-cyan-500 rounded-xl flex items-center justify-center cursor-pointer hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/20">
-                            <Camera className="w-4 h-4 text-slate-950" />
-                            <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
-                        </label>
-                    )}
+                    <div className="relative z-10">
+                        {cvData.personal.photo ? (
+                            <img src={cvData.personal.photo} alt="Profile" className="w-24 h-24 rounded-2xl object-cover border-2 border-cyan-500/50 shadow-lg shadow-cyan-500/20" />
+                        ) : (
+                            <div className="w-24 h-24 rounded-2xl flex items-center justify-center border-2 border-dashed transition-colors bg-slate-800 border-white/10 [.editor-theme-editorial_&]:bg-slate-50 [.editor-theme-editorial_&]:border-slate-300">
+                                <User className="w-10 h-10 text-slate-500 [.editor-theme-editorial_&]:text-slate-400" />
+                            </div>
+                        )}
+                        {isPremium && (
+                            <label className="absolute -bottom-3 -right-3 w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-lg shadow-cyan-500/30">
+                                <Camera className="w-5 h-5 text-white" />
+                                <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
+                            </label>
+                        )}
+                    </div>
                 </div>
-                <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                <div className="flex-1 relative z-10">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-sm font-black uppercase tracking-widest flex items-center gap-2 text-white [.editor-theme-editorial_&]:text-slate-900">
                             Profil Fotoğrafı
-                            {!isPremium && <Lock className="w-3 h-3 text-amber-500" />}
+                            {!isPremium && <Lock className="w-3.5 h-3.5 text-amber-500" />}
                         </h3>
                         {isPremium && (
                             <button
                                 onClick={() => setShowHeadshotModal(true)}
-                                className="text-[10px] font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 hover:shadow-lg hover:shadow-blue-500/20 transition-all"
+                                className="text-[10px] font-bold bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-purple-400 border border-purple-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:from-blue-500/30 hover:to-purple-500/30 transition-all [.editor-theme-editorial_&]:bg-purple-50 [.editor-theme-editorial_&]:text-purple-600 [.editor-theme-editorial_&]:border-purple-200"
                             >
                                 <Sparkles className="w-3 h-3" />
                                 AI Headshot
                             </button>
                         )}
                     </div>
-                    <p className="text-[10px] text-slate-500 font-medium">
+                    <p className="text-xs font-medium leading-relaxed text-slate-400 [.editor-theme-editorial_&]:text-slate-500">
                         {isPremium
                             ? 'Özgeçmişinizi kişiselleştirmek için bir fotoğraf yükleyin veya yapay zeka ile profesyonel bir portre oluşturun.'
-                            : 'Fotoğraf özelliği Premium üyeler içindir.'}
+                            : 'Fotoğraf özelliği Premium üyeler içindir. Göz alıcı bir profil için yükseltin.'}
                     </p>
                     {!isPremium && (
                         <button
                             onClick={() => document.getElementById('premium-panel-trigger')?.click()}
-                            className="mt-3 text-[9px] font-black text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors"
+                            className="mt-4 text-[10px] font-black text-amber-400 uppercase tracking-widest hover:text-amber-300 transition-colors flex items-center gap-1 [.editor-theme-editorial_&]:text-amber-600 [.editor-theme-editorial_&]:hover:text-amber-500"
                         >
-                            PREMIUM'A GEÇ
+                            PREMIUM'A GEÇ <Sparkles className="w-3 h-3" />
                         </button>
                     )}
                 </div>
                 {cvData.personal.photo && isPremium && (
                     <button
                         onClick={() => updatePersonal('photo', '')}
-                        className="absolute top-4 right-4 p-2 rounded-lg bg-red-500/10 text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500/20"
+                        className="absolute top-4 right-4 p-2 rounded-xl bg-red-500/10 text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500/20 hover:scale-110"
                     >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-4 h-4" />
                     </button>
                 )}
             </div>
@@ -98,7 +103,7 @@ export default function PersonalInfoForm({
                     />
                     <button
                         onClick={generateAISummary}
-                        className="py-1 px-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex items-center gap-2"
+                        className="py-1.5 px-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex items-center gap-2 [.editor-theme-editorial_&]:bg-cyan-50 [.editor-theme-editorial_&]:border-cyan-200 [.editor-theme-editorial_&]:text-cyan-600 [.editor-theme-editorial_&]:hover:bg-cyan-100 shadow-sm"
                     >
                         <Sparkles className="w-3 h-3" /> AI İLE YAZ
                     </button>

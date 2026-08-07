@@ -1,16 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ShieldAlert, AlertOctagon, UserX, Globe, Crosshair, Lock, Search, Activity, Ban } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
-
-const MOCK_ALERTS = [
-    { id: 1, type: 'Temp Mail', user: 'johndoe123@temp-mail.org', ip: '192.168.1.45', time: '5 dk önce', action: 'Otomatik Engellendi', severity: 'low' },
-    { id: 2, type: 'AI İstismar', user: 'ahmet.y@gmail.com', ip: '85.100.22.14', time: '12 dk önce', action: 'Limit Aşımı (Bloke)', severity: 'high' },
-    { id: 3, type: 'Fraud (Ödeme)', user: 'fake.buyer@yahoo.com', ip: '45.22.11.9', time: '1 saat önce', action: 'Iyzico 3D Secure İptal', severity: 'critical' },
-]
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
 
 export default function AntiFraudPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
-    const [alerts] = useState(MOCK_ALERTS)
+    const { toast } = useToast()
+    const [alerts, setAlerts] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchAlerts = async () => {
+            try {
+                const res = await adminAPI.getFraudAlerts()
+                if (res.success) {
+                    setAlerts(res.alerts)
+                }
+            } catch (err) {
+                toast.error("Güvenlik uyarıları getirilemedi.")
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchAlerts()
+    }, [toast])
 
     return (
         <div className="space-y-8 font-primary">
@@ -110,7 +124,7 @@ export default function AntiFraudPage() {
                                     <td className="px-6 py-4">
                                         <span className={`font-medium ${isDayMode ? 'text-slate-600' : 'text-gray-300'}`}>{alert.action}</span>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500">{alert.time}</td>
+                                    <td className="px-6 py-4 text-gray-500">{new Date(alert.createdAt).toLocaleString('tr-TR')}</td>
                                     <td className="px-6 py-4">
                                         <button className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${isDayMode ? 'border-slate-300 hover:bg-slate-100 text-slate-700' : 'border-white/20 hover:bg-white/10 text-white'}`}>
                                             Karalisteye Al
@@ -118,6 +132,16 @@ export default function AntiFraudPage() {
                                     </td>
                                 </tr>
                             ))}
+                            {!loading && alerts.length === 0 && (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500 font-medium">Yakın zamanda tespit edilen bir tehdit yok.</td>
+                                </tr>
+                            )}
+                            {loading && (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500 font-medium">Yükleniyor...</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                  </div>

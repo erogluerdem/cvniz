@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Network, Plus, Search, Filter, Edit3, Trash2,
     DollarSign, Users, Link as LinkIcon
@@ -6,22 +6,104 @@ import {
 import { useOutletContext } from 'react-router-dom'
 import { useToast } from '../../context/ToastContext'
 
-const dummyAffiliates = [
-    { id: 1, name: "Ahmet Yılmaz", code: "AHMET20", clicks: 1250, conversions: 120, revenue: "12.500₺", status: "active" },
-    { id: 2, name: "Teknoloji Blogu", code: "TECHCV", clicks: 8430, conversions: 450, revenue: "45.000₺", status: "active" },
-    { id: 3, name: "Kariyer Net", code: "KARIYER50", clicks: 120, conversions: 2, revenue: "200₺", status: "inactive" },
-]
+import { adminAPI } from '../../services/api'
+import Modal from '../../components/admin/Modal'
 
 export default function AffiliatePage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
     const { toast } = useToast()
     const [searchQuery, setSearchQuery] = useState('')
-    const [affiliates, setAffiliates] = useState(dummyAffiliates)
+    const [affiliates, setAffiliates] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [editingAffiliate, setEditingAffiliate] = useState(null)
+    const [formData, setFormData] = useState({
+        name: '',
+        code: '',
+        clicks: 0,
+        conversions: 0,
+        revenue: 0,
+        status: 'active'
+    })
+    const [isSaving, setIsSaving] = useState(false)
 
-    const handleDelete = (id) => {
+    useEffect(() => {
+        const fetchAffiliates = async () => {
+            try {
+                const response = await adminAPI.getAffiliates()
+                if (response.success) {
+                    setAffiliates(response.affiliates)
+                }
+            } catch (error) {
+                toast.error("Affiliate kayıtları getirilemedi.")
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        fetchAffiliates()
+    }, [toast])
+
+    const handleDelete = async (id) => {
         if (window.confirm("Bu affiliate kaydını silmek istediğinize emin misiniz?")) {
-            setAffiliates(affiliates.filter(a => a.id !== id))
-            toast.success("Affiliate başarıyla silindi.")
+            try {
+                const res = await adminAPI.deleteAffiliate(id)
+                if (res.success) {
+                    setAffiliates(affiliates.filter(a => a._id !== id))
+                    toast.success("Affiliate başarıyla silindi.")
+                }
+            } catch (error) {
+                toast.error("Silme işlemi başarısız oldu.")
+            }
+        }
+    }
+
+    const openModal = (affiliate = null) => {
+        if (affiliate) {
+            setEditingAffiliate(affiliate)
+            setFormData({
+                name: affiliate.name || '',
+                code: affiliate.code || '',
+                clicks: affiliate.clicks || 0,
+                conversions: affiliate.conversions || 0,
+                revenue: affiliate.revenue || 0,
+                status: affiliate.status || 'active'
+            })
+        } else {
+            setEditingAffiliate(null)
+            setFormData({
+                name: '',
+                code: '',
+                clicks: 0,
+                conversions: 0,
+                revenue: 0,
+                status: 'active'
+            })
+        }
+        setIsModalOpen(true)
+    }
+
+    const handleSave = async (e) => {
+        e.preventDefault()
+        setIsSaving(true)
+        try {
+            if (editingAffiliate) {
+                const res = await adminAPI.updateAffiliate(editingAffiliate._id, formData)
+                if (res.success) {
+                    setAffiliates(affiliates.map(a => a._id === editingAffiliate._id ? res.affiliate : a))
+                    toast.success("Affiliate güncellendi.")
+                }
+            } else {
+                const res = await adminAPI.createAffiliate(formData)
+                if (res.success) {
+                    setAffiliates([res.affiliate, ...affiliates])
+                    toast.success("Yeni affiliate eklendi.")
+                }
+            }
+            setIsModalOpen(false)
+        } catch (error) {
+            toast.error("İşlem başarısız oldu.")
+        } finally {
+            setIsSaving(false)
         }
     }
 
@@ -41,7 +123,9 @@ export default function AffiliatePage() {
                     </div>
                 </div>
 
-                <button className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 hover:scale-105 shadow-lg ${
+                <button 
+                    onClick={() => openModal()}
+                    className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 hover:scale-105 shadow-lg ${
                     isDayMode ? 'bg-slate-900 text-white shadow-slate-900/20' : 'bg-white text-slate-900 shadow-white/10'
                 }`}>
                     <Plus className="w-4 h-4" />
@@ -85,8 +169,12 @@ export default function AffiliatePage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {affiliates.map((affiliate) => (
-                                <tr key={affiliate.id} className={`border-b last:border-0 transition-colors ${
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan="5" className="py-12 text-center text-sm font-semibold text-gray-500">Yükleniyor...</td>
+                                </tr>
+                            ) : affiliates.filter(a => (a.name || '').toLowerCase().includes(searchQuery.toLowerCase())).map((affiliate) => (
+                                <tr key={affiliate._id} className={`border-b last:border-0 transition-colors ${
                                     isDayMode ? 'border-slate-100 hover:bg-slate-50' : 'border-white/5 hover:bg-white/[0.02]'
                                 }`}>
                                     <td className="py-4 px-6">
@@ -116,23 +204,144 @@ export default function AffiliatePage() {
                                     </td>
                                     <td className="py-4 px-6">
                                         <div className={`font-bold text-sm ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
-                                            {affiliate.revenue}
+                                            {affiliate.revenue || 0}₺
                                         </div>
                                     </td>
                                     <td className="py-4 px-6 text-right">
-                                        <button className={`p-2 rounded-xl transition-all mr-2 ${isDayMode ? 'hover:bg-emerald-50 text-slate-400 hover:text-emerald-600' : 'hover:bg-emerald-500/20 text-gray-500 hover:text-emerald-400'}`}>
+                                        <button 
+                                            onClick={() => openModal(affiliate)}
+                                            className={`p-2 rounded-xl transition-all mr-2 ${isDayMode ? 'hover:bg-emerald-50 text-slate-400 hover:text-emerald-600' : 'hover:bg-emerald-500/20 text-gray-500 hover:text-emerald-400'}`}>
                                             <Edit3 className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(affiliate.id)} className={`p-2 rounded-xl transition-all ${isDayMode ? 'hover:bg-red-50 text-slate-400 hover:text-red-600' : 'hover:bg-red-500/20 text-gray-500 hover:text-red-400'}`}>
+                                        <button onClick={() => handleDelete(affiliate._id)} className={`p-2 rounded-xl transition-all ${isDayMode ? 'hover:bg-red-50 text-slate-400 hover:text-red-600' : 'hover:bg-red-500/20 text-gray-500 hover:text-red-400'}`}>
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </td>
                                 </tr>
                             ))}
+                            {!isLoading && affiliates.filter(a => (a.name || '').toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                                <tr>
+                                    <td colSpan="5" className="py-12 text-center text-sm font-semibold text-gray-500">Kayıt bulunamadı.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)}
+                title={editingAffiliate ? 'Partner Düzenle' : 'Yeni Partner Ekle'}
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSave} className="space-y-4">
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Partner Adı</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={e => setFormData({...formData, name: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Referans Kodu</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.code}
+                            onChange={e => setFormData({...formData, code: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Durum</label>
+                        <select
+                            value={formData.status}
+                            onChange={e => setFormData({...formData, status: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900' 
+                                    : 'bg-white/5 border border-white/10 text-white'
+                            }`}
+                        >
+                            <option value="active">Aktif</option>
+                            <option value="inactive">Pasif</option>
+                        </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Tıklama</label>
+                            <input
+                                type="number"
+                                value={formData.clicks}
+                                onChange={e => setFormData({...formData, clicks: Number(e.target.value)})}
+                                className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-emerald-500' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-emerald-500/50'
+                                }`}
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Dönüşüm</label>
+                            <input
+                                type="number"
+                                value={formData.conversions}
+                                onChange={e => setFormData({...formData, conversions: Number(e.target.value)})}
+                                className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-emerald-500' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-emerald-500/50'
+                                }`}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Toplam Kazanç (₺)</label>
+                        <input
+                            type="number"
+                            value={formData.revenue}
+                            onChange={e => setFormData({...formData, revenue: Number(e.target.value)})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-emerald-500' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-emerald-500/50'
+                            }`}
+                        />
+                    </div>
+                    <div className="pt-4 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
+                                isDayMode ? 'hover:bg-slate-100 text-slate-600' : 'hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSaving}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg ${
+                                isDayMode ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20' : 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/20'
+                            }`}
+                        >
+                            {isSaving ? 'Kaydediliyor...' : 'Kaydet'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
         </div>
     )
 }

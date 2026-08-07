@@ -287,14 +287,16 @@ export function ProfileModal({ isOpen, onClose, user, onSave, savedProfile }) {
 // ============ ONBOARDING TOUR ============
 export function OnboardingTour({ isOpen, onClose, step, setStep }) {
     const steps = [
-        { title: 'CVniz\'a Hoş Geldiniz! 🎉', desc: 'Saniyeler içinde profesyonel bir özgeçmiş oluşturmaya hazır mısınız?', icon: <Sparkles className="w-10 h-10 text-white" />, color: 'from-blue-500 to-cyan-400' },
-        { title: 'Yeni CV Oluşturun', desc: 'Editörümüzle bilgilerinizi kolayca girin, gerisini bize bırakın.', icon: <FileText className="w-10 h-10 text-white" />, color: 'from-purple-500 to-indigo-500' },
-        { title: 'Premium Şablonlar', desc: 'Sektörünüze özel, özenle tasarlanmış 65+ şablon arasından seçim yapın.', icon: <LayoutTemplate className="w-10 h-10 text-white" />, color: 'from-amber-500 to-orange-500' },
-        { title: 'Yapay Zeka Destekli', desc: 'Tıkandığınız yerde AI asistanımız profesyonel özetinizi ve deneyimlerinizi yazsın.', icon: <Bot className="w-10 h-10 text-white" />, color: 'from-emerald-400 to-green-600' },
-        { title: 'Hazırsınız!', desc: 'Artık mülakatlara davet edilme şansınızı artıracak o mükemmel CV\'yi oluşturabilirsiniz.', icon: <Trophy className="w-10 h-10 text-white" />, color: 'from-cyan-500 to-blue-600' }
+        { title: 'CVniz\'e Hoş Geldiniz! 🎉', desc: 'Saniyeler içinde profesyonel bir özgeçmiş oluşturmaya hazır mısınız? Kariyer yolculuğunuzda size eşlik edecek en güçlü araca hoş geldiniz.', icon: <Sparkles className="w-16 h-16 text-white" />, color: 'from-blue-500 to-cyan-400' },
+        { title: 'Zahmetsiz CV Oluşturma', desc: 'Modern editörümüzle bilgilerinizi kolayca girin. Tasarım ve hizalama ile uğraşmayın, gerisini algoritmalarımız halletsin.', icon: <FileText className="w-16 h-16 text-white" />, color: 'from-purple-500 to-indigo-500' },
+        { title: 'Premium Şablonlar', desc: 'Dünya standartlarında tasarlanmış 65+ şablon arasından sektörünüze en uygun olanı seçin ve tek tıkla uygulayın.', icon: <LayoutTemplate className="w-16 h-16 text-white" />, color: 'from-amber-500 to-orange-500' },
+        { title: 'Yapay Zeka Destekli', desc: 'Kendinizi nasıl ifade edeceğinizi bilemiyor musunuz? Tıkandığınız yerde yapay zeka asistanımız sizin yerinize yazsın.', icon: <Bot className="w-16 h-16 text-white" />, color: 'from-emerald-400 to-teal-500' },
+        { title: 'Başarıya Hazırsınız!', desc: 'Artık İK uzmanlarının dikkatini çekecek, mülakatlara davet edilme şansınızı artıracak o mükemmel CV\'yi oluşturabilirsiniz.', icon: <Trophy className="w-16 h-16 text-white" />, color: 'from-pink-500 to-rose-500' }
     ]
 
     if (!isOpen) return null
+
+    const currentStep = steps[step]
 
     return (
         <AnimatePresence>
@@ -302,93 +304,107 @@ export function OnboardingTour({ isOpen, onClose, step, setStep }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
             >
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-                    <motion.div 
-                        animate={{ 
-                            scale: [1, 1.2, 1],
-                            opacity: [0.1, 0.2, 0.1] 
-                        }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className={`w-96 h-96 rounded-full bg-gradient-to-br ${steps[step].color} blur-[100px]`}
-                    />
-                </div>
-
                 <motion.div 
-                    initial={{ scale: 0.9, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    transition={{ type: "spring", bounce: 0.4 }}
-                    className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 max-w-md w-full text-center shadow-2xl z-10 relative overflow-hidden"
+                    initial={{ scale: 0.95, y: 20, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    exit={{ scale: 0.95, y: 20, opacity: 0 }}
+                    transition={{ type: "spring", bounce: 0.3, duration: 0.8 }}
+                    className="bg-slate-950/90 backdrop-blur-3xl border border-white/10 rounded-[2rem] w-full max-w-4xl shadow-2xl z-10 relative overflow-hidden flex flex-col md:flex-row min-h-[450px]"
                 >
-                    {/* Progress indicators */}
-                    <div className="flex justify-center gap-2 mb-8 relative z-10">
-                        {steps.map((_, i) => (
-                            <motion.div 
-                                key={i} 
-                                className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'bg-cyan-400 w-8' : i < step ? 'bg-cyan-400/50 w-4' : 'bg-gray-700 w-4'}`} 
-                                layout
-                            />
-                        ))}
-                    </div>
-
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={step}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative z-10"
-                        >
-                            <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${steps[step].color} flex items-center justify-center mx-auto mb-6 shadow-xl transform rotate-3`}>
+                    {/* Visual Left Side */}
+                    <div className="relative hidden md:flex w-2/5 p-8 items-center justify-center overflow-hidden border-r border-white/5">
+                        <div className="absolute inset-0 bg-white/[0.02]"></div>
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+                        <motion.div 
+                            key={`bg-${step}`}
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 1.2, opacity: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className={`absolute w-[150%] h-[150%] bg-gradient-to-br ${currentStep.color} opacity-20 blur-[80px] rounded-full pointer-events-none`}
+                        />
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={step}
+                                initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
+                                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                                exit={{ opacity: 0, scale: 0.5, rotate: 20 }}
+                                transition={{ type: "spring", bounce: 0.5 }}
+                                className={`relative z-10 w-40 h-40 rounded-[2.5rem] bg-gradient-to-br ${currentStep.color} shadow-2xl flex items-center justify-center transform rotate-3 ring-4 ring-white/10`}
+                            >
                                 <motion.div
-                                    animate={{ rotate: [-3, 3, -3], scale: [1, 1.05, 1] }}
-                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                    animate={{ y: [-5, 5, -5] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                                 >
-                                    {steps[step].icon}
+                                    {currentStep.icon}
                                 </motion.div>
-                            </div>
-
-                            <h3 className="text-2xl font-black mb-3 tracking-tight">{steps[step].title}</h3>
-                            <p className="text-slate-400 mb-8 leading-relaxed px-4">{steps[step].desc}</p>
-                        </motion.div>
-                    </AnimatePresence>
-
-                    <div className="flex gap-3 relative z-10">
-                        {step > 0 && (
-                            <button onClick={() => setStep(step - 1)} className="px-6 py-3 rounded-2xl border border-white/10 hover:bg-white/5 transition-colors font-medium">
-                                Geri
-                            </button>
-                        )}
-                        <button 
-                            onClick={() => {
-                                if (step < steps.length - 1) {
-                                    setStep(step + 1)
-                                } else {
-                                    onClose()
-                                }
-                            }} 
-                            className="flex-1 btn-premium py-3 rounded-2xl justify-center font-bold text-lg shadow-lg shadow-cyan-500/25"
-                        >
-                            {step < steps.length - 1 ? (
-                                <>Devam <ArrowRight className="w-5 h-5 ml-1" /></>
-                            ) : (
-                                <>Başla <Zap className="w-5 h-5 ml-1" /></>
-                            )}
-                        </button>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
-                    {step < steps.length - 1 && (
-                        <button onClick={onClose} className="mt-6 text-sm text-slate-500 hover:text-white transition-colors relative z-10">
-                            Turu Atla
+                    {/* Content Right Side */}
+                    <div className="relative flex flex-col p-8 md:p-12 w-full md:w-3/5">
+                        <button onClick={onClose} className="absolute top-6 right-6 p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors z-20">
+                            <X className="w-5 h-5" />
                         </button>
-                    )}
+
+                        <div className="flex gap-2 mb-10 mt-4 md:mt-0">
+                            {steps.map((_, i) => (
+                                <div key={i} className="h-1.5 rounded-full bg-white/10 flex-1 overflow-hidden relative">
+                                    <motion.div 
+                                        className={`absolute inset-0 bg-gradient-to-r ${currentStep.color}`}
+                                        initial={{ width: '0%' }}
+                                        animate={{ width: i < step ? '100%' : i === step ? '100%' : '0%' }}
+                                        transition={{ duration: 0.5 }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex-1 flex flex-col justify-center">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={step}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <h3 className="text-3xl font-black mb-4 tracking-tight text-white">{currentStep.title}</h3>
+                                    <p className="text-lg text-slate-400 leading-relaxed font-medium">{currentStep.desc}</p>
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center gap-4 mt-10">
+                            {step > 0 && (
+                                <button onClick={() => setStep(step - 1)} className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-semibold transition-all">
+                                    Geri
+                                </button>
+                            )}
+                            <button 
+                                onClick={() => {
+                                    if (step < steps.length - 1) setStep(step + 1)
+                                    else onClose()
+                                }} 
+                                className={`w-full group flex items-center justify-center gap-2 py-4 rounded-2xl bg-gradient-to-r ${currentStep.color} text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5`}
+                            >
+                                {step < steps.length - 1 ? (
+                                    <>Devam Et <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
+                                ) : (
+                                    <>Hemen Başla <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" /></>
+                                )}
+                            </button>
+                        </div>
+                    </div>
                 </motion.div>
             </motion.div>
         </AnimatePresence>
     )
 }
+
 
 // ============ ACHIEVEMENT BADGE ============
 export function AchievementBadge({ icon, title, unlocked, color }) {

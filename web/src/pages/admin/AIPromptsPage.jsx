@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Sparkles, Edit2, Play, Save, History, Plus } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
+import Modal from '../../components/admin/Modal'
 
 export default function AIPromptsPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const [showModal, setShowModal] = useState(false)
     const [prompts, setPrompts] = useState([
         { id: 1, name: 'CV Generator', type: 'System', version: 'v2.4', lastUpdated: '2 gün önce', active: true },
         { id: 2, name: 'Cover Letter', type: 'User', version: 'v1.1', lastUpdated: '1 hafta önce', active: true },
@@ -17,7 +19,9 @@ export default function AIPromptsPage() {
                     <h2 className={`text-2xl font-semibold mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>AI Prompt Laboratuvarı</h2>
                     <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Yapay zeka modellerinin komutlarını ve davranışlarını yönetin.</p>
                 </div>
-                <button className={`px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium transition-all ${isDayMode ? 'bg-cyan-600 text-white hover:bg-cyan-700' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}>
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className={`px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium transition-all ${isDayMode ? 'bg-cyan-600 text-white hover:bg-cyan-700' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}>
                     <Plus className="w-4 h-4" /> Yeni Prompt
                 </button>
             </div>
@@ -56,6 +60,51 @@ export default function AIPromptsPage() {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                title="Yeni Prompt Oluştur"
+                isDayMode={isDayMode}
+            >
+                <div className="space-y-4">
+                    <div className="space-y-1">
+                        <label className={`text-xs font-semibold ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Prompt Adı</label>
+                        <input
+                            type="text"
+                            placeholder="örn: Özgeçmiş İnceleyici"
+                            className={`w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors border outline-none ${
+                                isDayMode ? 'bg-white border-slate-200 focus:border-cyan-500 text-slate-800' : 'bg-white/5 border-white/10 focus:border-cyan-500/50 text-white'
+                            }`}
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className={`text-xs font-semibold ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Sistem Promptu</label>
+                        <textarea
+                            rows={4}
+                            placeholder="Sen bir kariyer danışmanısın..."
+                            className={`w-full px-4 py-2 rounded-xl text-sm font-medium transition-colors border outline-none resize-none ${
+                                isDayMode ? 'bg-white border-slate-200 focus:border-cyan-500 text-slate-800' : 'bg-white/5 border-white/10 focus:border-cyan-500/50 text-white'
+                            }`}
+                        />
+                    </div>
+                    <div className="flex gap-4 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => setShowModal(false)}
+                            className={`flex-1 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wider transition-all border ${isDayMode ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100' : 'bg-white/5 border-transparent text-gray-400 hover:bg-white/10'}`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="button"
+                            className={`flex-1 py-3 rounded-2xl text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-lg ${isDayMode ? 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-600/20' : 'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-cyan-500/20 hover:scale-[1.02] active:scale-95'}`}
+                        >
+                            Kaydet
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 }

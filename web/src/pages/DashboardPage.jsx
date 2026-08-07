@@ -608,33 +608,38 @@ export default function DashboardPage() {
                                 <motion.div 
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`relative rounded-[2.5rem] border backdrop-blur-xl p-10 overflow-hidden group ${darkMode ? 'border-white/10 bg-slate-900/50' : 'border-slate-200 bg-slate-50'}`}
+                                    className={`relative rounded-[2.5rem] border backdrop-blur-3xl p-12 overflow-hidden group ${darkMode ? 'border-white/10 bg-slate-900/60' : 'border-slate-200 bg-white/80'}`}
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                                     
-                                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-                                        <div className="flex-1 text-center md:text-left">
-                                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-500 mb-6 ring-1 ring-cyan-500/30 shadow-inner">
-                                                <Sparkles className="w-8 h-8" />
+                                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+                                        <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start">
+                                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-gradient-to-br from-cyan-500 to-blue-600 text-white mb-8 shadow-lg shadow-cyan-500/30 transform group-hover:scale-105 group-hover:-rotate-3 transition-transform duration-500">
+                                                <Sparkles className="w-10 h-10" />
                                             </div>
-                                            <h3 className={`text-3xl font-black mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>Kariyerinize İlk Adımı Atın</h3>
-                                            <p className={`mb-8 max-w-md leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                                                Henüz bir özgeçmiş oluşturmadınız. Şablonlarımızı kullanarak dakikalar içinde profesyonel bir CV hazırlayabilir veya yapay zeka ile otomatik doldurabilirsiniz.
+                                            <h3 className={`text-4xl font-black mb-4 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                                                Kariyerinize <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">İlk Adımı</span> Atın
+                                            </h3>
+                                            <p className={`mb-10 text-lg leading-relaxed max-w-lg ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                                                Henüz bir özgeçmiş oluşturmadınız. Yapay zekanın gücünü arkanıza alarak dakikalar içinde profesyonel bir başyapıt yaratın.
                                             </p>
-                                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                                            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                                                 <Link 
-                                                    to="/editor" 
-                                                    className="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg text-white font-bold text-sm uppercase tracking-widest hover:shadow-cyan-500/30 transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center gap-2"
+                                                    to="/editor?new=true" 
+                                                    className="px-10 py-5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 shadow-xl shadow-cyan-500/20 text-white font-black text-sm uppercase tracking-widest hover:shadow-cyan-500/40 transition-all hover:-translate-y-1 active:translate-y-0 inline-flex items-center justify-center gap-3 w-full sm:w-auto group/btn"
                                                 >
-                                                    <Plus className="w-5 h-5" /> CV Oluştur
+                                                    <Plus className="w-5 h-5 group-hover/btn:rotate-90 transition-transform duration-300" /> ŞİMDİ OLUŞTUR
                                                 </Link>
-                                                <button className={`px-8 py-4 rounded-2xl border font-bold text-sm uppercase tracking-widest transition-all hover:scale-105 active:scale-95 inline-flex items-center justify-center gap-2 ${darkMode ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white' : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 shadow-sm'}`}>
-                                                    Şablonları İncele
+                                                <button className={`px-10 py-5 rounded-2xl border font-bold text-sm uppercase tracking-widest transition-all hover:-translate-y-1 active:translate-y-0 inline-flex items-center justify-center gap-3 w-full sm:w-auto ${darkMode ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white' : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 shadow-sm'}`}>
+                                                    Şablonları Gör
                                                 </button>
                                             </div>
                                         </div>
                                         
-                                        <div className="hidden md:block w-72 relative perspective-1000">
+                                        <div className="hidden md:flex flex-1 items-center justify-center relative perspective-1000">
+                                            {/* Glowing background blob */}
+                                            <div className="absolute inset-0 bg-cyan-500/20 blur-[100px] rounded-full mix-blend-screen" />
+                                            
                                             <motion.div 
                                                 animate={{ 
                                                     rotateY: [-5, 5, -5],
@@ -642,23 +647,26 @@ export default function DashboardPage() {
                                                     y: [-10, 10, -10]
                                                 }}
                                                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                                                className="relative w-full aspect-[1/1.4] rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm shadow-2xl p-4 overflow-hidden"
+                                                className={`relative w-72 h-72 rounded-[3rem] border flex items-center justify-center shadow-2xl backdrop-blur-xl ${darkMode ? 'bg-slate-800/50 border-white/10' : 'bg-white border-slate-200'}`}
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-                                                <div className="h-4 w-1/2 bg-white/20 rounded-full mb-4" />
-                                                <div className="h-2 w-3/4 bg-white/10 rounded-full mb-2" />
-                                                <div className="h-2 w-5/6 bg-white/10 rounded-full mb-6" />
+                                                <div className="absolute inset-0 rounded-[3rem] bg-gradient-to-br from-cyan-400/20 to-transparent pointer-events-none" />
+                                                <FolderKanban className="w-32 h-32 text-cyan-500 drop-shadow-2xl opacity-80" />
                                                 
-                                                <div className="grid grid-cols-2 gap-2 mb-4">
-                                                    <div className="h-16 bg-white/5 rounded-lg" />
-                                                    <div className="h-16 bg-white/5 rounded-lg" />
-                                                </div>
-                                                
-                                                <div className="space-y-2">
-                                                    <div className="h-2 w-full bg-white/10 rounded-full" />
-                                                    <div className="h-2 w-full bg-white/10 rounded-full" />
-                                                    <div className="h-2 w-2/3 bg-white/10 rounded-full" />
-                                                </div>
+                                                {/* Floating elements */}
+                                                <motion.div 
+                                                    animate={{ y: [0, -15, 0], opacity: [0.5, 1, 0.5] }}
+                                                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                                    className="absolute -top-6 -right-6 w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 shadow-xl flex items-center justify-center transform rotate-12"
+                                                >
+                                                    <FileText className="w-8 h-8 text-white" />
+                                                </motion.div>
+                                                <motion.div 
+                                                    animate={{ y: [0, 15, 0], opacity: [0.5, 1, 0.5] }}
+                                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                                    className="absolute -bottom-4 -left-4 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-xl flex items-center justify-center transform -rotate-12"
+                                                >
+                                                    <Sparkles className="w-6 h-6 text-white" />
+                                                </motion.div>
                                             </motion.div>
                                         </div>
                                     </div>
@@ -688,7 +696,7 @@ export default function DashboardPage() {
                                                         <h3 className={`text-lg font-bold truncate transition-colors ${darkMode ? 'text-white group-hover:text-cyan-400' : 'text-slate-900 group-hover:text-sky-600'}`}>
                                                             {cv.name}
                                                         </h3>
-                                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div className="flex gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                                             <button
                                                                 onClick={() => duplicateCV(cv.id)}
                                                                 className={`p-1.5 rounded-lg transition-all ${darkMode ? 'hover:bg-white/10 text-slate-400 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-900'}`}

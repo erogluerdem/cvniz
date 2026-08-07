@@ -2,9 +2,12 @@ import { useState, useEffect} from 'react'
 import { Megaphone, Plus, Bell, Shield, Info, AlertTriangle, CheckCircle, X, Loader2, Power, Trash2, Users, Calendar, Filter, Search, ChevronRight, Zap, Target} from 'lucide-react'
 import { adminAPI} from '../../services/api'
 import { StatusBadge, FilterTabs} from '../../components/admin/SharedComponents'
+import Modal from '../../components/admin/Modal'
+import { useOutletContext } from 'react-router-dom'
 
 export default function AnnouncementsPage() {
- const [announcements, setAnnouncements] = useState([])
+    const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const [announcements, setAnnouncements] = useState([])
  const [loading, setLoading] = useState(true)
  const [showModal, setShowModal] = useState(false)
  const [activeFilter, setActiveFilter] = useState('all')
@@ -271,107 +274,111 @@ export default function AnnouncementsPage() {
  </div>
  )}
 
- {/* Modern Modal */}
- {showModal && (
- <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
- <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => !submitting && setShowModal(false)}></div>
- <div className="glass-card rounded-2xl p-8 max-w-xl w-full border border-white/10 shadow-2xl relative animate-in fade-in zoom-in duration-300">
- {/* Modal Header */}
- <div className="flex items-center justify-between mb-8">
- <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center border border-white/10 shadow-inner">
- <Megaphone className="w-6 h-6 text-cyan-400" />
- </div>
- <div>
- <h3 className="text-2xl font-semibold text-white uppercase">Duyuru Oluştur</h3>
- <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Sistem geneline yayınla</p>
- </div>
- </div>
- <button
- onClick={() => setShowModal(false)}
- className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all"
- disabled={submitting}
- >
- <X className="w-5 h-5" />
- </button>
- </div>
+            {/* Modern Modal */}
+            <Modal 
+                isOpen={showModal} 
+                onClose={() => { if(!submitting) setShowModal(false) }}
+                title="Duyuru Oluştur"
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Duyuru Başlığı</label>
+                            <input
+                                type="text"
+                                value={formData.title}
+                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                className={`w-full px-5 py-4 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/50 shadow-inner'
+                                }`}
+                                placeholder="Kısa ve etkileyici bir başlık..."
+                                required
+                            />
+                        </div>
 
- <form onSubmit={handleSubmit} className="space-y-6">
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div className="md:col-span-2">
- <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2 px-1">Duyuru Başlığı</label>
- <input
- type="text"
- value={formData.title}
- onChange={(e) => setFormData({ ...formData, title: e.target.value})}
- className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-all shadow-inner font-bold"
- placeholder="Kısa ve etkileyici bir başlık..."
- required
- />
- </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Görünüm Tipi</label>
+                            <select
+                                value={formData.type}
+                                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                className={`w-full px-5 py-4 rounded-2xl text-sm font-bold focus:outline-none transition-all appearance-none cursor-pointer ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-cyan-500/50 shadow-inner'
+                                }`}
+                            >
+                                <option value="info">Bilgilendirme (Mavi)</option>
+                                <option value="success">Başarı (Yeşil)</option>
+                                <option value="warning">Uyarı (Turuncu)</option>
+                                <option value="error">Kritik (Kırmızı)</option>
+                            </select>
+                        </div>
 
- <div>
- <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2 px-1">Görünüm Tipi</label>
- <select
- value={formData.type}
- onChange={(e) => setFormData({ ...formData, type: e.target.value})}
- className="w-full bg-slate-900 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-all shadow-inner font-bold appearance-none cursor-pointer"
- >
- <option value="info">Bilgilendirme (Mavi)</option>
- <option value="success">Başarı (Yeşil)</option>
- <option value="warning">Uyarı (Turuncu)</option>
- <option value="error">Kritik (Kırmızı)</option>
- </select>
- </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Hedef Kitle</label>
+                            <select
+                                value={formData.target}
+                                onChange={(e) => setFormData({ ...formData, target: e.target.value })}
+                                className={`w-full px-5 py-4 rounded-2xl text-sm font-bold focus:outline-none transition-all appearance-none cursor-pointer ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-cyan-500/50 shadow-inner'
+                                }`}
+                            >
+                                <option value="all">Herkes</option>
+                                <option value="premium">Sadece PRO Üyeler</option>
+                                <option value="free">Ücretsiz Üyeler</option>
+                            </select>
+                        </div>
 
- <div>
- <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2 px-1">Hedef Kitle</label>
- <select
- value={formData.target}
- onChange={(e) => setFormData({ ...formData, target: e.target.value})}
- className="w-full bg-slate-900 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-all shadow-inner font-bold appearance-none cursor-pointer"
- >
- <option value="all">Herkes</option>
- <option value="premium">Sadece PRO Üyeler</option>
- <option value="free">Ücretsiz Üyeler</option>
- </select>
- </div>
+                        <div className="md:col-span-2">
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Duyuru Mesajı</label>
+                            <textarea
+                                value={formData.content}
+                                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                rows={4}
+                                className={`w-full p-5 rounded-3xl text-sm font-medium resize-none focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/50 shadow-inner'
+                                }`}
+                                placeholder="Kullanıcılara ileteceğiniz mesajın detayları..."
+                                required
+                            />
+                        </div>
+                    </div>
 
- <div className="md:col-span-2">
- <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2 px-1">Duyuru Mesajı</label>
- <textarea
- value={formData.content}
- onChange={(e) => setFormData({ ...formData, content: e.target.value})}
- rows={4}
- className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition-all shadow-inner font-medium resize-none"
- placeholder="Kullanıcılara ileteceğiniz mesajın detayları..."
- required
- />
- </div>
- </div>
-
- <div className="flex gap-4 pt-4">
- <button
- type="button"
- disabled={submitting}
- onClick={() => setShowModal(false)}
- className="flex-1 py-4 rounded-2xl border border-white/10 text-gray-400 text-xs font-semibold uppercase tracking-wider hover:bg-white/5 hover:text-white transition-all disabled:opacity-50"
- >
- İptal
- </button>
- <button
- type="submit"
- disabled={submitting}
- className="flex-[2] py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-semibold uppercase tracking-wider shadow-xl shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
- >
- {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
- ŞİMDİ YAYINLA
- </button>
- </div>
- </form>
- </div>
- </div>
- )}
- </div>
- )
+                    <div className="flex gap-4 pt-4">
+                        <button
+                            type="button"
+                            disabled={submitting}
+                            onClick={() => setShowModal(false)}
+                            className={`flex-1 py-4 rounded-2xl border font-semibold text-xs uppercase tracking-wider transition-all disabled:opacity-50 ${
+                                isDayMode 
+                                    ? 'border-slate-200 text-slate-500 hover:bg-slate-100' 
+                                    : 'border-white/10 text-gray-400 hover:bg-white/5 hover:text-white'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={submitting}
+                            className={`flex-[2] py-4 rounded-2xl text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-3 disabled:opacity-50 ${
+                                isDayMode 
+                                    ? 'bg-cyan-600 shadow-xl shadow-cyan-600/20 hover:bg-cyan-700' 
+                                    : 'bg-gradient-to-r from-cyan-500 to-purple-600 shadow-xl shadow-purple-500/20 hover:scale-[1.02] active:scale-95'
+                            }`}
+                        >
+                            {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
+                            ŞİMDİ YAYINLA
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+        </div>
+    )
 }

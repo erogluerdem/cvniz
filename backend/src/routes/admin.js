@@ -19,15 +19,18 @@ const Email = require('../models/Email');
 const EmailTemplate = require('../models/EmailTemplate');
 const SecuritySettings = require('../models/SecuritySettings');
 const LoginLog = require('../models/LoginLog');
-const ApiKey = require('../models/ApiKey');
-const AISettings = require('../models/AISettings');
-const AIUsageLog = require('../models/AIUsageLog');
 const Theme = require('../models/Theme');
+const FraudAlert = require('../models/FraudAlert');
+const GDPRRequest = require('../models/GDPRRequest');
+const PaymentGateway = require('../models/PaymentGateway');
+const SmsProvider = require('../models/SmsProvider');
+const { PremiumPlan } = require('../models/PremiumPlan');
 const CVView = require('../models/CVView');
 const BlogPost = require('../models/BlogPost');
 const FAQ = require('../models/FAQ');
 const CareerPath = require('../models/CareerPath');
 const SEOSettings = require('../models/SEOSettings');
+const Affiliate = require('../models/Affiliate');
 const logger = require('../utils/logger');
 const { authenticate, adminOnly } = require('../middleware/auth');
 
@@ -1645,6 +1648,187 @@ router.delete('/seo/:id', authenticate, adminOnly, async (req, res) => {
         await SEOSettings.findByIdAndDelete(req.params.id);
         res.json({ success: true });
     } catch (error) { res.status(500).json({ error: 'SEO ayarı silinemedi' }); }
+});
+
+// ================= AFFILIATE ROUTES =================
+router.get('/affiliates', authenticate, adminOnly, async (req, res) => {
+    try {
+        const affiliates = await Affiliate.find().sort('-createdAt');
+        res.json({ success: true, affiliates });
+    } catch (error) { res.status(500).json({ error: 'Affiliate kayıtları getirilemedi' }); }
+});
+router.post('/affiliates', authenticate, adminOnly, async (req, res) => {
+    try {
+        const affiliate = new Affiliate(req.body);
+        await affiliate.save();
+        res.json({ success: true, affiliate });
+    } catch (error) { res.status(500).json({ error: 'Affiliate kaydı oluşturulamadı' }); }
+});
+router.put('/affiliates/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const affiliate = await Affiliate.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, affiliate });
+    } catch (error) { res.status(500).json({ error: 'Affiliate kaydı güncellenemedi' }); }
+});
+router.delete('/affiliates/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await Affiliate.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'Affiliate kaydı silinemedi' }); }
+});
+
+// ================= EMAIL TEMPLATES ROUTES =================
+router.get('/email-templates', authenticate, adminOnly, async (req, res) => {
+    try {
+        const templates = await EmailTemplate.find().sort('-createdAt');
+        res.json({ success: true, templates });
+    } catch (error) { res.status(500).json({ error: 'E-posta şablonları getirilemedi' }); }
+});
+router.post('/email-templates', authenticate, adminOnly, async (req, res) => {
+    try {
+        const template = new EmailTemplate(req.body);
+        await template.save();
+        res.json({ success: true, template });
+    } catch (error) { res.status(500).json({ error: 'E-posta şablonu oluşturulamadı' }); }
+});
+router.put('/email-templates/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const template = await EmailTemplate.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, template });
+    } catch (error) { res.status(500).json({ error: 'E-posta şablonu güncellenemedi' }); }
+});
+router.delete('/email-templates/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await EmailTemplate.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'E-posta şablonu silinemedi' }); }
+});
+
+// Fraud Alerts
+router.get('/fraud-alerts', authenticate, adminOnly, async (req, res) => {
+    try {
+        const alerts = await FraudAlert.find().sort({ createdAt: -1 }).limit(100);
+        res.json({ success: true, alerts });
+    } catch (error) { res.status(500).json({ error: 'Fraud verileri getirilemedi' }); }
+});
+
+router.post('/fraud-alerts', authenticate, adminOnly, async (req, res) => {
+    try {
+        const alert = new FraudAlert(req.body);
+        await alert.save();
+        res.json({ success: true, alert });
+    } catch (error) { res.status(500).json({ error: 'Fraud uyarısı oluşturulamadı' }); }
+});
+
+// GDPR Requests
+router.get('/gdpr-requests', authenticate, adminOnly, async (req, res) => {
+    try {
+        const requests = await GDPRRequest.find().sort({ createdAt: -1 });
+        res.json({ success: true, requests });
+    } catch (error) { res.status(500).json({ error: 'GDPR talepleri getirilemedi' }); }
+});
+
+router.post('/gdpr-requests', authenticate, adminOnly, async (req, res) => {
+    try {
+        const request = new GDPRRequest(req.body);
+        await request.save();
+        res.json({ success: true, request });
+    } catch (error) { res.status(500).json({ error: 'GDPR talebi oluşturulamadı' }); }
+});
+
+router.put('/gdpr-requests/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const request = await GDPRRequest.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, request });
+    } catch (error) { res.status(500).json({ error: 'GDPR talebi güncellenemedi' }); }
+});
+
+// Premium Plans
+router.get('/premium-plans', authenticate, adminOnly, async (req, res) => {
+    try {
+        const plans = await PremiumPlan.find().sort({ createdAt: 1 });
+        res.json({ success: true, plans });
+    } catch (error) { res.status(500).json({ error: 'Paketler getirilemedi' }); }
+});
+
+router.post('/premium-plans', authenticate, adminOnly, async (req, res) => {
+    try {
+        const plan = new PremiumPlan(req.body);
+        await plan.save();
+        res.json({ success: true, plan });
+    } catch (error) { res.status(500).json({ error: 'Paket oluşturulamadı' }); }
+});
+
+router.put('/premium-plans/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const plan = await PremiumPlan.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, plan });
+    } catch (error) { res.status(500).json({ error: 'Paket güncellenemedi' }); }
+});
+
+router.delete('/premium-plans/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await PremiumPlan.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'Paket silinemedi' }); }
+});
+
+// Payment Gateways
+router.get('/payment-gateways', authenticate, adminOnly, async (req, res) => {
+    try {
+        const gateways = await PaymentGateway.find();
+        res.json({ success: true, gateways });
+    } catch (error) { res.status(500).json({ error: 'Ödeme yöntemleri getirilemedi' }); }
+});
+
+router.put('/payment-gateways', authenticate, adminOnly, async (req, res) => {
+    try {
+        const updates = req.body; // Array of gateway objects
+        for (const update of updates) {
+            await PaymentGateway.findOneAndUpdate(
+                { id: update.id },
+                { $set: update },
+                { upsert: true, new: true }
+            );
+        }
+        const updatedGateways = await PaymentGateway.find();
+        res.json({ success: true, gateways: updatedGateways });
+    } catch (error) { res.status(500).json({ error: 'Ödeme yöntemleri güncellenemedi' }); }
+});
+
+// SMS Providers
+router.get('/sms-providers', authenticate, adminOnly, async (req, res) => {
+    try {
+        const providers = await SmsProvider.find();
+        res.json({ success: true, providers });
+    } catch (error) { res.status(500).json({ error: 'SMS sağlayıcıları getirilemedi' }); }
+});
+
+router.put('/sms-providers', authenticate, adminOnly, async (req, res) => {
+    try {
+        const updates = req.body;
+        for (const update of updates) {
+            await SmsProvider.findOneAndUpdate(
+                { id: update.id },
+                { $set: update },
+                { upsert: true, new: true }
+            );
+        }
+        const updatedProviders = await SmsProvider.find();
+        res.json({ success: true, providers: updatedProviders });
+    } catch (error) { res.status(500).json({ error: 'SMS sağlayıcıları güncellenemedi' }); }
+});
+
+// Storage Monitor (Stats)
+router.get('/storage-stats', authenticate, adminOnly, async (req, res) => {
+    try {
+        // Return dummy dynamic stats for now, this could be calculated from DB files in reality
+        res.json({ 
+            success: true, 
+            totalStorage: 500, 
+            usedStorage: Math.floor(Math.random() * (400 - 300) + 300) 
+        });
+    } catch (error) { res.status(500).json({ error: 'Depolama bilgileri getirilemedi' }); }
 });
 
 module.exports = router;

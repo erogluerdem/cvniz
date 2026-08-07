@@ -1,6 +1,8 @@
-import { useState } from 'react'
-import { Settings, CheckCircle2, XCircle, MessageSquare, ShieldCheck, Activity, Key, Hash, EyeOff, Eye, Save, X, Phone } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Settings, CheckCircle2, XCircle, MessageSquare, ShieldCheck, Activity, Key, Hash, EyeOff, Eye, Save, X, Phone, Loader2 } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
 
 const SMS_PROVIDERS = [
     { id: 'netgsm', name: 'Netgsm', type: 'Toplu SMS & OTP', color: 'blue' },
@@ -19,19 +21,79 @@ const SMS_PROVIDERS = [
 
 export default function SmsProvidersPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const { toast } = useToast()
     
-    // Mock state for configured providers
-    const [configs, setConfigs] = useState({
-        'netgsm': { active: true, originator: 'CVNIZ' },
-        'iletimerkezi': { active: false, originator: '' },
-    })
-
+    const [configs, setConfigs] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
     const [selectedProvider, setSelectedProvider] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
+    const [formConfig, setFormConfig] = useState(null)
+
+    useEffect(() => {
+        fetchProviders()
+    }, [])
+
+    const fetchProviders = async () => {
+        try {
+            const res = await adminAPI.getSmsProviders()
+            if (res.success) {
+                const configMap = {}
+                res.providers.forEach(p => {
+                    configMap[p.id] = {
+                        active: p.active,
+                        originator: p.senderId || '',
+                        username: p.credentials?.username || '',
+                        password: p.credentials?.password || ''
+                    }
+                })
+                setConfigs(configMap)
+            }
+        } catch (error) {
+            toast.error("SMS sağlayıcıları getirilemedi")
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleConfigure = (provider) => {
+        const conf = configs[provider.id] || { active: false, originator: '', username: '', password: '' }
+        setFormConfig({ ...conf })
         setSelectedProvider(provider)
         setShowPassword(false)
+    }
+
+    const handleSave = async () => {
+        setSaving(true)
+        try {
+            const updatePayload = [{
+                id: selectedProvider.id,
+                name: selectedProvider.name,
+                provider: selectedProvider.id,
+                active: formConfig.active,
+                senderId: formConfig.originator,
+                credentials: {
+                    username: formConfig.username,
+                    password: formConfig.password
+                }
+            }]
+            const res = await adminAPI.updateSmsProviders(updatePayload)
+            if (res.success) {
+                const newMap = { ...configs }
+                res.providers.forEach(p => {
+                    newMap[p.id] = {
+                        active: p.active,
+                        originator: p.senderId || '',
+                        username: p.credentials?.username || '',
+                        password: p.credentials?.password || ''
+                    }
+                })
+                setConfigs(newMap)
+                toast.success("Ayarlar kaydedildi")
+                setSelectedProvider(null)
+            }
+        } catch(e) { toast.error("Kaydedilirken hata oluştu") }
+        finally { setSaving(false) }
     }
 
     return (
@@ -57,6 +119,7 @@ export default function SmsProvidersPage() {
             </div>
 
             {/* Grid of SMS Providers */}
+            {loading ? <div className="text-center p-8 text-slate-500">Yükleniyor...</div> : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {SMS_PROVIDERS.map((provider) => {
                     const conf = configs[provider.id] || { active: false, originator: '' }
@@ -126,6 +189,7 @@ export default function SmsProvidersPage() {
                     )
                 })}
             </div>
+            )}
 
             {/* Configuration Modal */}
             {selectedProvider && (
@@ -158,7 +222,12 @@ export default function SmsProvidersPage() {
                                         <div className={`text-xs ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Sistemde varsayılan olarak kullan</div>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" className="sr-only peer" defaultChecked={configs[selectedProvider.id]?.active} />
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer" 
+                                            checked={formConfig?.active || false}
+                                            onChange={(e) => setFormConfig({...formConfig, active: e.target.checked})}
+                                        />
                                         <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                                     </label>
                                 </div>
@@ -173,6 +242,8 @@ export default function SmsProvidersPage() {
                                         </label>
                                         <input 
                                             type="text" 
+                                            value={formConfig?.username || ''}
+                                            onChange={(e) => setFormConfig({...formConfig, username: e.target.value})}
                                             className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#0B0D14] border-white/10 text-white'}`}
                                             placeholder="Örn: 8501234567"
                                         />
@@ -184,6 +255,8 @@ export default function SmsProvidersPage() {
                                         <div className="relative">
                                             <input 
                                                 type={showPassword ? "text" : "password"} 
+                                                value={formConfig?.password || ''}
+                                                onChange={(e) => setFormConfig({...formConfig, password: e.target.value})}
                                                 className={`w-full px-4 py-3 pr-12 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#0B0D14] border-white/10 text-white'}`}
                                                 placeholder="************************"
                                             />
@@ -204,7 +277,8 @@ export default function SmsProvidersPage() {
                                     </label>
                                     <input 
                                         type="text" 
-                                        defaultValue={configs[selectedProvider.id]?.originator || ''}
+                                        value={formConfig?.originator || ''}
+                                        onChange={(e) => setFormConfig({...formConfig, originator: e.target.value})}
                                         className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all uppercase ${isDayMode ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#0B0D14] border-white/10 text-white'}`}
                                         placeholder="Örn: CVNIZ"
                                         maxLength={11}
@@ -218,11 +292,11 @@ export default function SmsProvidersPage() {
 
                         {/* Modal Footer */}
                         <div className={`p-6 border-t flex justify-end gap-3 ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'}`}>
-                            <button onClick={() => setSelectedProvider(null)} className={`px-6 py-2.5 rounded-xl font-semibold transition-colors ${isDayMode ? 'text-slate-600 hover:bg-slate-200' : 'text-gray-300 hover:bg-white/10'}`}>
+                            <button onClick={() => setSelectedProvider(null)} disabled={saving} className={`px-6 py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-50 ${isDayMode ? 'text-slate-600 hover:bg-slate-200' : 'text-gray-300 hover:bg-white/10'}`}>
                                 İptal
                             </button>
-                            <button onClick={() => setSelectedProvider(null)} className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all ${isDayMode ? 'bg-cyan-600 text-white hover:bg-cyan-700' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}>
-                                <Save className="w-4 h-4" /> Ayarları Kaydet
+                            <button onClick={handleSave} disabled={saving} className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg transition-all disabled:opacity-50 ${isDayMode ? 'bg-cyan-600 text-white hover:bg-cyan-700' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}>
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin"/> : <Save className="w-4 h-4" />} Ayarları Kaydet
                             </button>
                         </div>
                     </div>

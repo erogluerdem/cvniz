@@ -7,6 +7,7 @@ import { useOutletContext } from 'react-router-dom'
 import { useToast } from '../../context/ToastContext'
 
 import { adminAPI } from '../../services/api'
+import Modal from '../../components/admin/Modal'
 
 export default function BlogPage() {
     const { isDayMode } = useOutletContext() || { isDayMode: false }
@@ -14,6 +15,15 @@ export default function BlogPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [posts, setPosts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [editingPost, setEditingPost] = useState(null)
+    const [formData, setFormData] = useState({
+        title: '',
+        content: '',
+        category: '',
+        status: 'published'
+    })
+    const [isSaving, setIsSaving] = useState(false)
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -45,6 +55,52 @@ export default function BlogPage() {
         }
     }
 
+    const openModal = (post = null) => {
+        if (post) {
+            setEditingPost(post)
+            setFormData({
+                title: post.title || '',
+                content: post.content || '',
+                category: post.category || '',
+                status: post.status || 'published'
+            })
+        } else {
+            setEditingPost(null)
+            setFormData({
+                title: '',
+                content: '',
+                category: '',
+                status: 'published'
+            })
+        }
+        setIsModalOpen(true)
+    }
+
+    const handleSave = async (e) => {
+        e.preventDefault()
+        setIsSaving(true)
+        try {
+            if (editingPost) {
+                const res = await adminAPI.updateBlogPost(editingPost._id, formData)
+                if (res.success) {
+                    setPosts(posts.map(p => p._id === editingPost._id ? res.post : p))
+                    toast.success("Yazı güncellendi.")
+                }
+            } else {
+                const res = await adminAPI.createBlogPost(formData)
+                if (res.success) {
+                    setPosts([res.post, ...posts])
+                    toast.success("Yeni yazı eklendi.")
+                }
+            }
+            setIsModalOpen(false)
+        } catch (error) {
+            toast.error("İşlem başarısız oldu.")
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
     return (
         <div className="space-y-8 font-primary">
             {/* Header Area */}
@@ -63,7 +119,9 @@ export default function BlogPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 hover:scale-105 active:scale-95 shadow-lg ${
+                    <button 
+                        onClick={() => openModal()}
+                        className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 hover:scale-105 active:scale-95 shadow-lg ${
                         isDayMode ? 'bg-slate-900 text-white shadow-slate-900/20 hover:bg-slate-800' : 'bg-white text-slate-900 shadow-white/10 hover:bg-gray-100'
                     }`}>
                         <Plus className="w-4 h-4" />
@@ -217,7 +275,9 @@ export default function BlogPage() {
                                     </td>
                                     <td className="py-4 px-6 text-right">
                                         <div className="flex items-center justify-end gap-2">
-                                            <button className={`p-2 rounded-xl transition-all ${
+                                            <button 
+                                                onClick={() => openModal(post)}
+                                                className={`p-2 rounded-xl transition-all ${
                                                 isDayMode ? 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600' : 'hover:bg-indigo-500/20 text-gray-500 hover:text-indigo-400'
                                             }`} title="Düzenle">
                                                 <Edit3 className="w-4 h-4" />
@@ -283,6 +343,93 @@ export default function BlogPage() {
                     </div>
                 </div>
             </div>
+
+            <Modal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)}
+                title={editingPost ? 'Yazıyı Düzenle' : 'Yeni Yazı Ekle'}
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSave} className="space-y-4">
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Başlık</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.title}
+                            onChange={e => setFormData({...formData, title: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Kategori</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.category}
+                            onChange={e => setFormData({...formData, category: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10'
+                            }`}
+                        />
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>Durum</label>
+                        <select
+                            value={formData.status}
+                            onChange={e => setFormData({...formData, status: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900' 
+                                    : 'bg-white/5 border border-white/10 text-white'
+                            }`}
+                        >
+                            <option value="published">Yayında</option>
+                            <option value="draft">Taslak</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>İçerik</label>
+                        <textarea
+                            required
+                            rows="4"
+                            value={formData.content}
+                            onChange={e => setFormData({...formData, content: e.target.value})}
+                            className={`w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10'
+                            }`}
+                        ></textarea>
+                    </div>
+                    <div className="pt-4 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
+                                isDayMode ? 'hover:bg-slate-100 text-slate-600' : 'hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSaving}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg ${
+                                isDayMode ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20' : 'bg-indigo-500 hover:bg-indigo-600 shadow-indigo-500/20'
+                            }`}
+                        >
+                            {isSaving ? 'Kaydediliyor...' : 'Kaydet'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
         </div>
     )
 }

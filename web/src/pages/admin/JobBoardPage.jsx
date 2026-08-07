@@ -4,8 +4,10 @@ import {
  RefreshCw, Search, Star, Zap, CheckCircle2, PauseCircle, AlertCircle,
  Globe, Laptop, Home, TrendingUp, Calendar, Award
 } from 'lucide-react'
-import { adminAPI} from '../../services/api'
-import { useToast} from '../../context/ToastContext'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
+import Modal from '../../components/admin/Modal'
+import { useOutletContext } from 'react-router-dom'
 
 const typeConfig = {
  'full-time': { label: 'Tam Zamanlı', color: 'bg-blue-500/20 text-blue-400'},
@@ -39,8 +41,9 @@ const experienceConfig = {
 }
 
 export default function JobBoardPage() {
- const { toast, confirm} = useToast()
- const [jobs, setJobs] = useState([])
+    const { isDayMode } = useOutletContext() || { isDayMode: false }
+    const { toast, confirm } = useToast()
+    const [jobs, setJobs] = useState([])
  const [stats, setStats] = useState({ total: 0, active: 0, totalApplications: 0, companies: 0})
  const [loading, setLoading] = useState(true)
  const [showModal, setShowModal] = useState(false)
@@ -198,10 +201,11 @@ export default function JobBoardPage() {
  )
 }
 
- return (
- <div className="space-y-6">
- {/* Header */}
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    return (
+        <>
+        <div className="space-y-6 font-primary">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
  <h2 className="text-2xl font-semibold text-white mb-1 uppercase flex items-center gap-3">
  <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/20">
@@ -404,186 +408,214 @@ export default function JobBoardPage() {
  )}
  </div>
 
- {/* Modal */}
- {showModal && (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
- <div className="glass-card rounded-2xl p-8 max-w-2xl w-full border border-white/10 relative overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto">
- <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-3xl -z-10"></div>
+    </div>
 
- <div className="flex items-center justify-between mb-8">
- <div>
- <h3 className="text-2xl font-semibold text-white uppercase">
- {editingJob ? 'İLANI DÜZENLE' : 'YENİ İŞ İLANI'}
- </h3>
- <p className="text-sm text-gray-400 font-medium">İş ilanı detaylarını girin.</p>
- </div>
- <button onClick={() => { setShowModal(false); setEditingJob(null)}} className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-white transition-all">
- <X className="w-6 h-6" />
- </button>
- </div>
+            <Modal 
+                isOpen={showModal} 
+                onClose={() => { setShowModal(false); setEditingJob(null) }}
+                title={editingJob ? 'İlanı Düzenle' : 'Yeni İş İlanı'}
+                isDayMode={isDayMode}
+            >
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Title */}
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>POZİSYON</label>
+                        <input
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            placeholder="Senior Frontend Developer"
+                            className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/30'
+                            }`}
+                            required
+                        />
+                    </div>
 
- <form onSubmit={handleSubmit} className="space-y-5">
- {/* Title */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">POZİSYON</label>
- <input
- type="text"
- value={formData.title}
- onChange={(e) => setFormData({ ...formData, title: e.target.value})}
- placeholder="Senior Frontend Developer"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- required
- />
- </div>
+                    {/* Company & Location */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>ŞİRKET</label>
+                            <input
+                                type="text"
+                                value={formData.company}
+                                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                placeholder="Tech Corp"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>KONUM</label>
+                            <input
+                                type="text"
+                                value={formData.location}
+                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                placeholder="İstanbul, Türkiye"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                                required
+                            />
+                        </div>
+                    </div>
 
- {/* Company & Location */}
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">ŞİRKET</label>
- <input
- type="text"
- value={formData.company}
- onChange={(e) => setFormData({ ...formData, company: e.target.value})}
- placeholder="Tech Corp"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- required
- />
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">KONUM</label>
- <input
- type="text"
- value={formData.location}
- onChange={(e) => setFormData({ ...formData, location: e.target.value})}
- placeholder="İstanbul, Türkiye"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- required
- />
- </div>
- </div>
+                    {/* Location Type & Job Type */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>ÇALIŞMA ŞEKLİ</label>
+                            <select
+                                value={formData.locationType}
+                                onChange={(e) => setFormData({ ...formData, locationType: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                            >
+                                <option value="onsite">Ofiste</option>
+                                <option value="remote">Uzaktan</option>
+                                <option value="hybrid">Hibrit</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>İŞ TÜRÜ</label>
+                            <select
+                                value={formData.type}
+                                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                            >
+                                {Object.entries(typeConfig).map(([key, val]) => (
+                                    <option key={key} value={key}>{val.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>DENEYİM</label>
+                            <select
+                                value={formData.experienceLevel}
+                                onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-slate-900 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                            >
+                                {Object.entries(experienceConfig).map(([key, label]) => (
+                                    <option key={key} value={key}>{label}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
 
- {/* Location Type & Job Type */}
- <div className="grid grid-cols-3 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">ÇALIŞMA ŞEKLİ</label>
- <select
- value={formData.locationType}
- onChange={(e) => setFormData({ ...formData, locationType: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- >
- <option value="onsite">Ofiste</option>
- <option value="remote">Uzaktan</option>
- <option value="hybrid">Hibrit</option>
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">İŞ TÜRÜ</label>
- <select
- value={formData.type}
- onChange={(e) => setFormData({ ...formData, type: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- >
- {Object.entries(typeConfig).map(([key, val]) => (
- <option key={key} value={key}>{val.label}</option>
- ))}
- </select>
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">DENEYİM</label>
- <select
- value={formData.experienceLevel}
- onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value})}
- className="w-full px-4 py-3.5 bg-slate-900 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- >
- {Object.entries(experienceConfig).map(([key, label]) => (
- <option key={key} value={key}>{label}</option>
- ))}
- </select>
- </div>
- </div>
+                    {/* Salary */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>MAAŞ (MIN)</label>
+                            <input
+                                type="number"
+                                value={formData.salaryMin}
+                                onChange={(e) => setFormData({ ...formData, salaryMin: e.target.value })}
+                                placeholder="30000"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                            />
+                        </div>
+                        <div>
+                            <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>MAAŞ (MAX)</label>
+                            <input
+                                type="number"
+                                value={formData.salaryMax}
+                                onChange={(e) => setFormData({ ...formData, salaryMax: e.target.value })}
+                                placeholder="50000"
+                                className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all ${
+                                    isDayMode 
+                                        ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                        : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/30'
+                                }`}
+                            />
+                        </div>
+                    </div>
 
- {/* Salary */}
- <div className="grid grid-cols-2 gap-4">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">MAAŞ (MIN)</label>
- <input
- type="number"
- value={formData.salaryMin}
- onChange={(e) => setFormData({ ...formData, salaryMin: e.target.value})}
- placeholder="30000"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- />
- </div>
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">MAAŞ (MAX)</label>
- <input
- type="number"
- value={formData.salaryMax}
- onChange={(e) => setFormData({ ...formData, salaryMax: e.target.value})}
- placeholder="50000"
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-bold focus:outline-none focus:border-cyan-500/30"
- />
- </div>
- </div>
+                    {/* Description */}
+                    <div>
+                        <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDayMode ? 'text-slate-700' : 'text-gray-400'}`}>AÇIKLAMA</label>
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            placeholder="İş tanımı ve gereksinimler..."
+                            className={`w-full px-4 py-3.5 rounded-2xl text-sm font-bold focus:outline-none transition-all resize-none ${
+                                isDayMode 
+                                    ? 'bg-slate-50 border border-slate-200 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10' 
+                                    : 'bg-white/5 border border-white/10 text-white focus:border-cyan-500/30'
+                            }`}
+                            rows={3}
+                        />
+                    </div>
 
- {/* Description */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">AÇIKLAMA</label>
- <textarea
- value={formData.description}
- onChange={(e) => setFormData({ ...formData, description: e.target.value})}
- placeholder="İş tanımı ve gereksinimler..."
- className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white font-medium focus:outline-none focus:border-cyan-500/30 resize-none"
- rows={3}
- />
- </div>
+                    {/* Flags */}
+                    <div className="flex items-center gap-6">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={formData.featured}
+                                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                                className={`w-5 h-5 rounded-lg border-none text-amber-500 focus:ring-0 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`}
+                            />
+                            <span className={`text-sm font-bold flex items-center gap-2 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                                <Star className="w-4 h-4 text-amber-400" /> Öne Çıkar
+                            </span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={formData.urgent}
+                                onChange={(e) => setFormData({ ...formData, urgent: e.target.checked })}
+                                className={`w-5 h-5 rounded-lg border-none text-red-500 focus:ring-0 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`}
+                            />
+                            <span className={`text-sm font-bold flex items-center gap-2 ${isDayMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                                <Zap className="w-4 h-4 text-red-400" /> Acil
+                            </span>
+                        </label>
+                    </div>
 
- {/* Flags */}
- <div className="flex items-center gap-6">
- <label className="flex items-center gap-3 cursor-pointer">
- <input
- type="checkbox"
- checked={formData.featured}
- onChange={(e) => setFormData({ ...formData, featured: e.target.checked})}
- className="w-5 h-5 rounded-lg bg-white/10 border-none text-amber-500 focus:ring-0"
- />
- <span className="text-sm font-bold text-gray-400 flex items-center gap-2">
- <Star className="w-4 h-4 text-amber-400" /> Öne Çıkar
- </span>
- </label>
- <label className="flex items-center gap-3 cursor-pointer">
- <input
- type="checkbox"
- checked={formData.urgent}
- onChange={(e) => setFormData({ ...formData, urgent: e.target.checked})}
- className="w-5 h-5 rounded-lg bg-white/10 border-none text-red-500 focus:ring-0"
- />
- <span className="text-sm font-bold text-gray-400 flex items-center gap-2">
- <Zap className="w-4 h-4 text-red-400" /> Acil
- </span>
- </label>
- </div>
-
- {/* Buttons */}
- <div className="flex gap-4 pt-4">
- <button
- type="button"
- onClick={() => { setShowModal(false); setEditingJob(null)}}
- className="flex-1 py-4 rounded-2xl bg-white/5 text-gray-500 font-semibold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
- >
- İPTAL
- </button>
- <button
- type="submit"
- className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-95 transition-all"
- >
- {editingJob ? 'GÜNCELLE' : 'YAYINLA'}
- </button>
- </div>
- </form>
- </div>
- </div>
- )}
- </div>
- )
+                    {/* Buttons */}
+                    <div className="pt-4 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => { setShowModal(false); setEditingJob(null) }}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
+                                isDayMode ? 'hover:bg-slate-100 text-slate-600' : 'hover:bg-white/10 text-gray-300'
+                            }`}
+                        >
+                            İptal
+                        </button>
+                        <button
+                            type="submit"
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all shadow-lg ${
+                                isDayMode ? 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-600/20' : 'bg-gradient-to-br from-cyan-500 to-blue-600 hover:scale-[1.02] shadow-cyan-500/20'
+                            }`}
+                        >
+                            {editingJob ? 'GÜNCELLE' : 'YAYINLA'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+        </>
+    )
 }

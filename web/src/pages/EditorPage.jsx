@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import confetti from 'canvas-confetti'
 import { 
     Download, Play, HelpCircle, UserPlus, Lock, Shield, Check, X, AlertTriangle, Layout, Type, Palette, Settings as SettingsIcon,
     History, Share2, ZoomIn, ZoomOut, Maximize2, Monitor, Laptop, Tablet, Smartphone, Search,
     User, Briefcase, GraduationCap, Wrench, Menu, Trophy, FolderKanban, Award, Users, Heart, GitBranch, Linkedin, FileText, Globe2,
-    Edit3, PanelLeft, GripVertical, DownloadCloud, ArrowLeft, Save, ChevronRight, Sparkles, Eye, CheckCircle
+    Edit3, PanelLeft, GripVertical, DownloadCloud, ArrowLeft, Save, ChevronRight, Sparkles, Eye, CheckCircle, Target, Crown
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -599,6 +600,19 @@ export default function EditorPage() {
         }
     }, [searchParams])
 
+    // Unsaved changes warning
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (syncStatus === 'unsaved' || syncStatus === 'syncing') {
+                e.preventDefault()
+                e.returnValue = 'Değişiklikleriniz henüz kaydedilmedi. Çıkmak istediğinize emin misiniz?'
+                return e.returnValue
+            }
+        }
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    }, [syncStatus])
+
     // Auto-fill from saved profile for new CVs
     useEffect(() => {
         if (!cvId && user && getProfile) {
@@ -873,6 +887,13 @@ export default function EditorPage() {
                 case 'pdf-letter':
                     setPdfPageFormat(pdfFormat)
                     await exportToPDF('cv-preview-frame', filename, isPremium, pdfFormat)
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#22d3ee', '#818cf8', '#c084fc']
+                    })
+                    toast.success('CV başarıyla indirildi!')
                     break
                 case 'png':
                     await exportToPNG('cv-preview-frame', filename)
@@ -1267,21 +1288,36 @@ export default function EditorPage() {
                         </div>
 
                         {/* Quick Actions - Hidden on Mobile */}
-                        <div className="hidden lg:flex gap-2 mt-1">
-                            <button onClick={() => setShowTargetFitAI(true)} className="text-[9px] font-black text-purple-400 hover:text-purple-300 uppercase tracking-widest border border-purple-500/20 px-2 py-0.5 rounded bg-purple-500/5 transition-all active:scale-95 flex items-center gap-1">
+                        <div className={`hidden xl:flex items-center gap-1 mt-1 p-1 rounded-[14px] border backdrop-blur-md shadow-inner transition-all ${isDayMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'}`}>
+                            <button onClick={() => setShowTargetFitAI(true)} className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isDayMode ? 'text-slate-500 hover:text-purple-600 hover:bg-purple-50' : 'text-slate-400 hover:text-purple-400 hover:bg-purple-500/10'}`}>
+                                <Target className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                                 İlana Uyarla
                             </button>
-                            <button onClick={handleSpellcheck} className="text-[9px] font-black text-amber-400 hover:text-amber-300 uppercase tracking-widest border border-amber-500/20 px-2 py-0.5 rounded bg-amber-500/5 transition-all active:scale-95 flex items-center gap-1">
-                                Yazım Denetimi
+                            <div className={`w-px h-3 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`} />
+                            <button onClick={handleSpellcheck} className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isDayMode ? 'text-slate-500 hover:text-amber-600 hover:bg-amber-50' : 'text-slate-400 hover:text-amber-400 hover:bg-amber-500/10'}`}>
+                                <CheckCircle className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                                Denetim
                             </button>
-                            <button onClick={handleLoadSample} className="text-[9px] font-black text-cyan-400 hover:text-cyan-300 uppercase tracking-widest border border-cyan-500/20 px-2 py-0.5 rounded bg-cyan-500/5 transition-all active:scale-95">Örnek Doldur</button>
-                            <button onClick={() => setShowCVImporter(true)} className="text-[9px] font-black text-emerald-400 hover:text-emerald-300 uppercase tracking-widest border border-emerald-500/20 px-2 py-0.5 rounded bg-emerald-500/5 transition-all active:scale-95 flex items-center gap-1">
+                            <div className={`w-px h-3 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`} />
+                            <button onClick={handleLoadSample} className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isDayMode ? 'text-slate-500 hover:text-cyan-600 hover:bg-cyan-50' : 'text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10'}`}>
+                                <Sparkles className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                                Örnek Doldur
+                            </button>
+                            <div className={`w-px h-3 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`} />
+                            <button onClick={() => setShowCVImporter(true)} className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isDayMode ? 'text-slate-500 hover:text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10'}`}>
+                                <FileText className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                                 CV Yükle
                             </button>
-                            <button onClick={() => setShowLinkedInModal(true)} className="text-[9px] font-black text-blue-400 hover:text-blue-300 uppercase tracking-widest border border-blue-500/20 px-2 py-0.5 rounded bg-blue-500/5 transition-all active:scale-95 flex items-center gap-1">
-                                <Linkedin className="w-3 h-3" /> LinkedIn
+                            <div className={`w-px h-3 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`} />
+                            <button onClick={() => setShowLinkedInModal(true)} className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isDayMode ? 'text-slate-500 hover:text-blue-600 hover:bg-blue-50' : 'text-slate-400 hover:text-blue-400 hover:bg-blue-500/10'}`}>
+                                <Linkedin className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                                LinkedIn
                             </button>
-                            <button onClick={handleClearAll} className="text-[9px] font-black text-red-400 hover:text-red-300 uppercase tracking-widest border border-red-500/20 px-2 py-0.5 rounded bg-red-500/5 transition-all active:scale-95">Temizle</button>
+                            <div className={`w-px h-3 ${isDayMode ? 'bg-slate-200' : 'bg-white/10'}`} />
+                            <button onClick={handleClearAll} className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${isDayMode ? 'text-slate-500 hover:text-red-600 hover:bg-red-50' : 'text-slate-400 hover:text-red-400 hover:bg-red-500/10'}`}>
+                                <X className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                                Temizle
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1551,19 +1587,37 @@ export default function EditorPage() {
 
                     {/* CV Strength - Desktop Only */}
                     <div className={`hidden md:block p-4 border-t mt-auto ${isDayMode ? 'border-slate-200/80' : 'border-white/5'}`}>
-                        <div className={`rounded-2xl p-4 border ${isDayMode ? 'bg-slate-50 border-slate-200 shadow-day text-slate-700' : 'bg-gradient-to-br from-slate-800 to-slate-900 border-white/5'}`}>
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDayMode ? 'bg-emerald-100 text-emerald-500' : 'bg-emerald-500/20'}`}>
-                                    <Trophy className="w-4 h-4 text-current" />
+                        <div className={`relative rounded-2xl p-5 border overflow-hidden group ${isDayMode ? 'bg-white border-slate-200 shadow-lg' : 'bg-slate-900/60 backdrop-blur-xl border-white/10'}`}>
+                            {/* Glowing background blob */}
+                            <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/20 blur-[30px] rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+                            
+                            <div className="relative z-10 flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-inner ${isDayMode ? 'bg-emerald-50 text-emerald-500 border border-emerald-100' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                                        <Trophy className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className={`text-[10px] font-black uppercase tracking-widest ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>CV GÜCÜ</span>
+                                        <span className={`text-sm font-bold ${isDayMode ? 'text-slate-900' : 'text-white'}`}>%65</span>
+                                    </div>
                                 </div>
-                                <span className={`text-[10px] font-black uppercase tracking-widest ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>CV GÜCÜ</span>
                             </div>
-                            <div className={`h-1.5 rounded-full overflow-hidden ${isDayMode ? 'bg-slate-100' : 'bg-white/5'}`}>
-                                <div className="h-full bg-emerald-500 w-[65%] shadow-[0_0_8px_#10b981]" />
+                            
+                            <div className="relative z-10">
+                                <div className={`h-2 rounded-full overflow-hidden ${isDayMode ? 'bg-slate-100' : 'bg-slate-800'}`}>
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: '65%' }}
+                                        transition={{ duration: 1, ease: "easeOut" }}
+                                        className="h-full bg-gradient-to-r from-emerald-400 to-cyan-500 rounded-full relative"
+                                    >
+                                        <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse" />
+                                    </motion.div>
+                                </div>
+                                <p className={`text-[10px] mt-3 font-medium leading-relaxed ${isDayMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                                    <span className={isDayMode ? 'text-emerald-600 font-bold' : 'text-emerald-400 font-bold'}>%80'e ulaşmak</span> için yetenek ekleyin
+                                </p>
                             </div>
-                            <p className={`text-[10px] mt-2 font-medium ${isDayMode ? 'text-slate-500' : 'text-slate-500'}`}>
-                                %80'e ulaşmak için yetenek ekleyin
-                            </p>
                         </div>
                     </div>
                 </nav>
@@ -2132,6 +2186,35 @@ export default function EditorPage() {
                     navigate('/pricing')
                 }}
             />
+
+            {/* Exporting Loader Overlay */}
+            <AnimatePresence>
+                {isExporting && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-lg"
+                    >
+                        <div className="bg-slate-900/90 border border-white/10 rounded-[2rem] p-12 flex flex-col items-center justify-center max-w-sm text-center shadow-2xl relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-purple-500/10" />
+                            <div className="relative mb-8">
+                                <div className="absolute inset-0 bg-cyan-500/30 blur-2xl rounded-full" />
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="w-20 h-20 border-[3px] border-cyan-500/20 border-t-cyan-400 rounded-full"
+                                />
+                                <FileText className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-cyan-400" />
+                            </div>
+                            <h3 className="text-2xl font-black text-white mb-3 tracking-tight relative z-10">Tasarım Hazırlanıyor</h3>
+                            <p className="text-sm text-slate-400 leading-relaxed relative z-10">
+                                Harika tasarımınız piksellere işleniyor, yüksek kaliteli PDF oluşturulurken lütfen bekleyin...
+                            </p>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

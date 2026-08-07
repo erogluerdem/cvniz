@@ -406,6 +406,47 @@ export const adminAPI = {
         api.get('/admin/security/stats'),
     getLoginLogs: () =>
         api.get('/admin/security/login-logs'),
+
+    // Anti Fraud
+    getFraudAlerts: () =>
+        api.get('/admin/fraud-alerts'),
+    createFraudAlert: (data) =>
+        api.post('/admin/fraud-alerts', data),
+
+    // GDPR Compliance
+    getGDPRRequests: () =>
+        api.get('/admin/gdpr-requests'),
+    createGDPRRequest: (data) =>
+        api.post('/admin/gdpr-requests', data),
+    updateGDPRRequest: (id, data) =>
+        api.put(`/admin/gdpr-requests/${id}`, data),
+
+    // Premium Plans
+    getPremiumPlans: () =>
+        api.get('/admin/premium-plans'),
+    createPremiumPlan: (data) =>
+        api.post('/admin/premium-plans', data),
+    updatePremiumPlan: (id, data) =>
+        api.put(`/admin/premium-plans/${id}`, data),
+    deletePremiumPlan: (id) =>
+        api.delete(`/admin/premium-plans/${id}`),
+
+    // Payment Gateways
+    getPaymentGateways: () =>
+        api.get('/admin/payment-gateways'),
+    updatePaymentGateways: (data) =>
+        api.put('/admin/payment-gateways', data),
+
+    // SMS Providers
+    getSmsProviders: () =>
+        api.get('/admin/sms-providers'),
+    updateSmsProviders: (data) =>
+        api.put('/admin/sms-providers', data),
+
+    // Storage Monitor
+    getStorageStats: () =>
+        api.get('/admin/storage-stats'),
+
     blockIP: (ip, reason) =>
         api.post('/admin/security/block-ip', { ip, reason }),
     unblockIP: (ip) =>
@@ -469,6 +510,18 @@ export const adminAPI = {
     createSeoSetting: (data) => api.post('/admin/seo', data),
     updateSeoSetting: (id, data) => api.put(`/admin/seo/${id}`, data),
     deleteSeoSetting: (id) => api.delete(`/admin/seo/${id}`),
+
+    // Affiliate
+    getAffiliates: () => api.get('/admin/affiliates'),
+    createAffiliate: (data) => api.post('/admin/affiliates', data),
+    updateAffiliate: (id, data) => api.put(`/admin/affiliates/${id}`, data),
+    deleteAffiliate: (id) => api.delete(`/admin/affiliates/${id}`),
+
+    // Email Templates
+    getEmailTemplates: () => api.get('/admin/email-templates'),
+    createEmailTemplate: (data) => api.post('/admin/email-templates', data),
+    updateEmailTemplate: (id, data) => api.put(`/admin/email-templates/${id}`, data),
+    deleteEmailTemplate: (id) => api.delete(`/admin/email-templates/${id}`),
 };
 
 // ============ AI API ============

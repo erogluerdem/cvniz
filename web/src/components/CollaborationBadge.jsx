@@ -2,19 +2,15 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Copy, Check, Mail, Crown, Link as LinkIcon, Eye, Edit3, X } from 'lucide-react'
 
-const mockCollaborators = [
-  { id: 1, name: 'Ahmet Y.', email: 'ahmet@mail.com', avatar: 'AY', color: 'from-cyan-500 to-blue-500' },
-  { id: 2, name: 'Elif K.', email: 'elif@mail.com', avatar: 'EK', color: 'from-emerald-500 to-teal-500' },
-  { id: 3, name: 'Murat D.', email: 'murat@mail.com', avatar: 'MD', color: 'from-amber-500 to-orange-500' },
-]
-
 export default function CollaborationBadge({ cvId, cvName, isOpen, onToggle, position = 'right' }) {
   const [copied, setCopied] = useState(false)
   const [permission, setPermission] = useState('edit')
   const [email, setEmail] = useState('')
   const [inviteSent, setInviteSent] = useState(false)
+  const [collaborators, setCollaborators] = useState([])
 
-  const collabLink = `${window.location.origin}/collab/${cvId}`
+  // If cvId is missing, use 'yeni-ozgecmis' as placeholder for link
+  const collabLink = `${window.location.origin}/collab/${cvId || 'yeni-ozgecmis'}`
 
   const handleCopy = async () => {
     try {
@@ -34,12 +30,29 @@ export default function CollaborationBadge({ cvId, cvName, isOpen, onToggle, pos
   }
 
   const handleInvite = () => {
-    if (!email.trim()) return
+    if (!email.trim() || !email.includes('@')) return
     setInviteSent(true)
+    
     setTimeout(() => {
+      const colors = [
+        'from-cyan-500 to-blue-500', 
+        'from-emerald-500 to-teal-500', 
+        'from-amber-500 to-orange-500', 
+        'from-purple-500 to-pink-500'
+      ]
+      
+      const newCollab = {
+        id: Date.now(),
+        name: email.split('@')[0],
+        email: email,
+        avatar: email.substring(0, 2).toUpperCase(),
+        color: colors[collaborators.length % colors.length]
+      }
+      
+      setCollaborators(prev => [...prev, newCollab])
       setInviteSent(false)
       setEmail('')
-    }, 2000)
+    }, 1000)
   }
 
   return (
@@ -259,72 +272,87 @@ export default function CollaborationBadge({ cvId, cvName, isOpen, onToggle, pos
                     Davet Edilenler
                   </label>
                   <span className="text-[10px] text-slate-600 font-medium">
-                    {mockCollaborators.length} kişi
+                    {collaborators.length} kişi
                   </span>
                 </div>
 
-                <div className="space-y-2">
-                  {mockCollaborators.map((collab, index) => (
-                    <motion.div
-                      key={collab.id}
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.08, duration: 0.3 }}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl
-                                 bg-white/[0.02] border border-white/5
-                                 hover:bg-white/[0.04] hover:border-white/10
-                                 transition-colors group"
-                    >
-                      {/* Avatar */}
-                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${collab.color}
-                                      flex items-center justify-center shrink-0
-                                      shadow-lg`}>
-                        <span className="text-[10px] font-bold text-white">
-                          {collab.avatar}
-                        </span>
-                      </div>
-
-                      {/* Info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-white truncate">
-                          {collab.name}
-                        </p>
-                        <p className="text-[11px] text-slate-500 truncate">
-                          {collab.email}
-                        </p>
-                      </div>
-
-                      {/* Status Pill */}
-                      <span className="shrink-0 px-2 py-1 rounded-md
-                                       bg-emerald-500/10 border border-emerald-500/20
-                                       text-[10px] font-medium text-emerald-400">
-                        Davet edildi
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Stacked Avatars Summary */}
-                <div className="mt-4 flex items-center gap-3">
-                  <div className="flex -space-x-2">
-                    {mockCollaborators.map((collab) => (
-                      <div
-                        key={collab.id}
-                        className={`w-7 h-7 rounded-full bg-gradient-to-br ${collab.color}
-                                    flex items-center justify-center
-                                    border-2 border-[#0f1115]
-                                    shadow-md`}
-                      >
-                        <span className="text-[9px] font-bold text-white">
-                          {collab.avatar}
-                        </span>
-                      </div>
-                    ))}
+                {collaborators.length === 0 ? (
+                  <div className="py-6 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
+                    <Users className="w-8 h-8 text-slate-600 mx-auto mb-2 opacity-30" />
+                    <p className="text-xs text-slate-400">Henüz kimse davet edilmedi</p>
+                    <p className="text-[10px] text-slate-500 mt-1 px-4">CV'nizi incelemesi veya düzenlemesi için iş arkadaşlarınızı davet edin</p>
                   </div>
-                  <p className="text-[11px] text-slate-500">
-                    <span className="text-slate-300 font-medium">{mockCollaborators.length} kişi</span> bu CV'ye erişebilir
-                  </p>
-                </div>
+                ) : (
+                  <>
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+                      {collaborators.map((collab, index) => (
+                        <motion.div
+                          key={collab.id}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.08, duration: 0.3 }}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl
+                                     bg-white/[0.02] border border-white/5
+                                     hover:bg-white/[0.04] hover:border-white/10
+                                     transition-colors group"
+                        >
+                          {/* Avatar */}
+                          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${collab.color}
+                                          flex items-center justify-center shrink-0
+                                          shadow-lg`}>
+                            <span className="text-[10px] font-bold text-white">
+                              {collab.avatar}
+                            </span>
+                          </div>
+
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-white truncate">
+                              {collab.name}
+                            </p>
+                            <p className="text-[11px] text-slate-500 truncate">
+                              {collab.email}
+                            </p>
+                          </div>
+
+                          {/* Status Pill */}
+                          <span className="shrink-0 px-2 py-1 rounded-md
+                                           bg-emerald-500/10 border border-emerald-500/20
+                                           text-[10px] font-medium text-emerald-400">
+                            Davet edildi
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Stacked Avatars Summary */}
+                    <div className="mt-4 flex items-center gap-3">
+                      <div className="flex -space-x-2">
+                        {collaborators.slice(0, 5).map((collab) => (
+                          <div
+                            key={collab.id}
+                            className={`w-7 h-7 rounded-full bg-gradient-to-br ${collab.color}
+                                        flex items-center justify-center
+                                        border-2 border-[#0f1115]
+                                        shadow-md relative z-10`}
+                          >
+                            <span className="text-[9px] font-bold text-white">
+                              {collab.avatar}
+                            </span>
+                          </div>
+                        ))}
+                        {collaborators.length > 5 && (
+                          <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center border-2 border-[#0f1115] shadow-md relative z-0">
+                            <span className="text-[9px] font-bold text-slate-400">+{collaborators.length - 5}</span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500">
+                        <span className="text-slate-300 font-medium">{collaborators.length} kişi</span> bu CV'ye erişebilir
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
           </>

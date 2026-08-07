@@ -573,31 +573,27 @@ export default function Layout() {
             </footer >
 
             {/* Mobile Bottom Navigation Bar - Only on smaller screens */}
-            <div className="lg:hidden fixed-bottom-nav px-8 py-4 flex items-center justify-between gap-4">
-                <Link to="/" className={`flex flex-col items-center gap-1.5 flex-1 transition-all ${isActive('/') ? 'text-cyan-400 scale-110' : 'text-gray-500 hover:text-white'}`}>
-                    <div className={`p-2 rounded-xl ${isActive('/') ? 'bg-cyan-500/10' : ''}`}>
-                        <HomeIcon className="w-5 h-5" />
+            <div className="lg:hidden mobile-tab-nav">
+                <Link to="/" className={`mobile-tab-btn ${isActive('/') ? 'active' : ''}`}>
+                    <HomeIcon className="w-6 h-6" />
+                    <span className="text-[10px] font-semibold mt-0.5">Ana Sayfa</span>
+                </Link>
+                <Link to={isAdmin ? '/admin' : '/dashboard'} className={`mobile-tab-btn ${location.pathname.includes('dashboard') || location.pathname.includes('admin') ? 'active' : ''}`}>
+                    <LayoutGrid className="w-6 h-6" />
+                    <span className="text-[10px] font-semibold mt-0.5">Panel</span>
+                </Link>
+                <Link to="/editor" className="flex flex-col items-center gap-1 -mt-8 group relative z-10">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white shadow-lg shadow-cyan-500/40 transition-transform group-active:scale-90 border-4 border-white dark:border-slate-900">
+                        <Plus className="w-7 h-7" />
                     </div>
                 </Link>
-                <Link to={isAdmin ? '/admin' : '/dashboard'} className={`flex flex-col items-center gap-1.5 flex-1 transition-all ${location.pathname.includes('dashboard') || location.pathname.includes('admin') ? 'text-cyan-400 scale-110' : 'text-gray-500 hover:text-white'}`}>
-                    <div className={`p-2 rounded-xl ${location.pathname.includes('dashboard') || location.pathname.includes('admin') ? 'bg-cyan-500/10' : ''}`}>
-                        <LayoutGrid className="w-5 h-5" />
-                    </div>
+                <Link to="/templates" className={`mobile-tab-btn ${isActive('/templates') ? 'active' : ''}`}>
+                    <FileText className="w-6 h-6" />
+                    <span className="text-[10px] font-semibold mt-0.5">Şablonlar</span>
                 </Link>
-                <Link to="/editor" className="flex flex-col items-center gap-1 flex-1 -mt-12 group">
-                    <div className="w-16 h-16 rounded-3xl bg-slate-950 border-4 border-slate-900 flex items-center justify-center text-cyan-400 shadow-[0_0_40px_-5px_rgba(34,211,238,0.4)] transition-transform group-active:scale-95">
-                        <Plus className="w-9 h-9" />
-                    </div>
-                </Link>
-                <Link to="/templates" className={`flex flex-col items-center gap-1.5 flex-1 transition-all ${isActive('/templates') ? 'text-cyan-400 scale-110' : 'text-gray-500 hover:text-white'}`}>
-                    <div className={`p-2 rounded-xl ${isActive('/templates') ? 'bg-cyan-500/10' : ''}`}>
-                        <FileText className="w-5 h-5" />
-                    </div>
-                </Link>
-                <button onClick={toggleTheme} className="flex flex-col items-center gap-1.5 flex-1 text-gray-500">
-                    <div className="p-2">
-                        {isDayMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-amber-500" />}
-                    </div>
+                <button onClick={toggleTheme} className="mobile-tab-btn">
+                    {isDayMode ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6 text-amber-400" />}
+                    <span className="text-[10px] font-semibold mt-0.5">{isDayMode ? 'Gece' : 'Gündüz'}</span>
                 </button>
             </div>
         </div >

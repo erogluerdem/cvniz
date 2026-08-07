@@ -133,6 +133,7 @@ export default function SubscriptionPlansPage() {
                                         className={`p-2 rounded-lg transition-colors ${isDayMode ? 'text-slate-400 hover:bg-slate-100' : 'text-gray-500 hover:bg-white/10'}`}
                                     >
                                         <Edit2 className="w-4 h-4" />
+                                    </button>
                                     <button 
                                         onClick={() => handleDelete(plan._id)}
                                         className={`p-2 rounded-lg transition-colors ${isDayMode ? 'text-rose-500 hover:bg-rose-100' : 'text-rose-400 hover:bg-rose-500/20'}`}

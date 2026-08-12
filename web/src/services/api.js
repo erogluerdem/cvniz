@@ -273,6 +273,9 @@ export const adminAPI = {
     deleteAnnouncement: (id) =>
         api.delete(`/admin/announcements/${id}`),
 
+    // Feedbacks
+    getFeedbacks: () =>
+        api.get('/admin/feedbacks'),
     // Logs
     getLogs: (params = {}) =>
         api.get('/admin/logs', { params }),

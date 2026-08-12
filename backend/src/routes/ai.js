@@ -294,4 +294,44 @@ router.post('/generate-cover-letter', async (req, res) => {
     }
 });
 
+// @desc    ATS Job Description Match Score & Keyword Gap Analysis
+// @route   POST /api/ai/match-job
+// @access  Private
+router.post('/match-job', async (req, res) => {
+    try {
+        const { jobDescription, cvData } = req.body;
+
+        if (!jobDescription || jobDescription.trim().length < 20) {
+            return res.status(400).json({ error: 'Lütfen en az 20 karakterlik iş ilanı metni girin.' });
+        }
+
+        // Calculate ATS score and keyword gap analysis
+        const wordsInJob = jobDescription.toLowerCase().match(/\b[a-zçğıöşü]{4,}\b/gi) || [];
+        const uniqueJobKeywords = Array.from(new Set(wordsInJob)).slice(0, 15);
+        const cvText = JSON.stringify(cvData || {}).toLowerCase();
+        
+        const matchedKeywords = uniqueJobKeywords.filter(kw => cvText.includes(kw));
+        const missingKeywords = uniqueJobKeywords.filter(kw => !cvText.includes(kw));
+        
+        const matchPercentage = uniqueJobKeywords.length > 0 
+            ? Math.round((matchedKeywords.length / uniqueJobKeywords.length) * 100)
+            : 75;
+
+        res.json({
+            success: true,
+            data: {
+                score: matchPercentage,
+                matchedKeywords,
+                missingKeywords,
+                suggestions: missingKeywords.length > 0
+                    ? missingKeywords.map(kw => `CV'nize "${kw}" yetkinliğini eklemeyi değerlendirebilirsiniz.`)
+                    : ['CV\'niz bu iş ilanı kriterlerine yüksek oranda uyum sağlamaktadır!']
+            }
+        });
+    } catch (error) {
+        console.error('Job Match Error:', error);
+        res.status(500).json({ error: 'İş eşleştirme analizi yapılamadı.' });
+    }
+});
+
 module.exports = router;

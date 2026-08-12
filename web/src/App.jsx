@@ -57,6 +57,7 @@ const EditorPage = lazy(() => import('./pages/EditorPage'))
 const PublicCVViewer = lazy(() => import('./pages/PublicCVViewer'))
 const LivingCVPage = lazy(() => import('./pages/LivingCVPage'))
 const CVAnalyticsPage = lazy(() => import('./pages/CVAnalyticsPage'))
+const AIToolsPage = lazy(() => import('./pages/AIToolsPage'))
 
 // Admin Pages - Multi-page Structure
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
@@ -352,6 +353,15 @@ function AnimatedRoutes() {
                     <ProtectedRoute>
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                             <DashboardPage />
+                        </motion.div>
+                    </ProtectedRoute>
+                } />
+
+                {/* AI Tools Studio Route */}
+                <Route path="/ai-tools" element={
+                    <ProtectedRoute>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                            <AIToolsPage />
                         </motion.div>
                     </ProtectedRoute>
                 } />

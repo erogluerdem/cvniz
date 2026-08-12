@@ -30,10 +30,12 @@ export default defineConfig({
         // Split vendor code
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['tailwindcss'],
+          'lucide-icons': ['lucide-react'],
+          'pdf-export': ['jspdf', 'html2canvas'],
           'utils-vendor': ['axios', 'date-fns', 'lodash'],
           'charts': ['recharts'],
-          'animations': ['framer-motion']
+          'animations': ['framer-motion', 'canvas-confetti', 'react-confetti'],
+          'sentry': ['@sentry/react']
         },
         // Optimize chunk names for caching
         chunkFileNames: 'js/[name].[hash:8].js',

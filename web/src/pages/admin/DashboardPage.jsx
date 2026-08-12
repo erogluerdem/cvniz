@@ -164,10 +164,6 @@ export default function DashboardPage() {
  <p className={`text-xs font-bold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Son 6 Aylık CV Oluşturma Dağılımı</p>
  </div>
  </div>
- <select className={`border rounded-xl px-4 py-2 text-xs font-semibold outline-none cursor-pointer transition-all uppercase tracking-wider ${isDayMode ? 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100' : 'bg-white/5 border-white/10 text-white hover:bg-white/10'}`}>
- <option>SON 6 AY</option>
- <option>SON 1 YIL</option>
- </select>
  </div>
 
  <div className="flex items-end justify-between h-64 gap-3 px-2">
@@ -316,21 +312,21 @@ export default function DashboardPage() {
  <div className="flex items-center justify-between">
  <span className="text-xs font-semibold text-purple-200/50 uppercase tracking-wider">SSL SERTIFIKASI</span>
  <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
- <span className="text-xs font-semibold text-white uppercase">AKTIF</span>
+ <div className={`w-2 h-2 rounded-full ${stats.systemStatus?.ssl ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+ <span className="text-xs font-semibold text-white uppercase">{stats.systemStatus?.ssl ? 'AKTIF' : 'PASIF'}</span>
  </div>
  </div>
  <div className="flex items-center justify-between">
  <span className="text-xs font-semibold text-purple-200/50 uppercase tracking-wider">FIREWALL</span>
  <div className="flex items-center gap-2">
- <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
- <span className="text-xs font-semibold text-white uppercase">KORUMADA</span>
+ <div className={`w-2 h-2 rounded-full ${stats.systemStatus?.firewall ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></div>
+ <span className="text-xs font-semibold text-white uppercase">{stats.systemStatus?.firewall ? 'KORUMADA' : 'DEVRE DISI'}</span>
  </div>
  </div>
  <div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
- <div className="h-full w-full bg-gradient-to-r from-purple-500 to-indigo-500"></div>
+ <div className={`h-full w-full ${stats.systemStatus?.ssl && stats.systemStatus?.firewall ? 'bg-gradient-to-r from-purple-500 to-indigo-500' : 'bg-red-500'}`}></div>
  </div>
- <p className="text-xs text-purple-200/40 font-bold uppercase leading-tight mt-4">Tüm sistemler normal sınırlar içerisinde çalışıyor.</p>
+ <p className="text-xs text-purple-200/40 font-bold uppercase leading-tight mt-4">{stats.systemStatus?.status || 'Sistem durumu bekleniyor...'}</p>
  </div>
  </div>
  </div>

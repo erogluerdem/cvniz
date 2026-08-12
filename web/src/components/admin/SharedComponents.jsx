@@ -74,14 +74,14 @@ export function DataTable({ columns, data, actions }) {
 // Status Badge
 export function StatusBadge({ status, type = 'default' }) {
     const colors = {
-        success: 'bg-green-500/20 text-green-400',
-        warning: 'bg-amber-500/20 text-amber-400',
-        error: 'bg-red-500/20 text-red-400',
-        info: 'bg-cyan-500/20 text-cyan-400',
-        default: 'bg-white/10 text-gray-400'
+        success: 'bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/20',
+        warning: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20',
+        error: 'bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20',
+        info: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20',
+        default: 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'
     }
     return (
-        <span className={`px-2 py-1 rounded-lg text-xs ${colors[type]}`}>
+        <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${colors[type] || colors.default}`}>
             {status}
         </span>
     )
@@ -92,8 +92,8 @@ export function PageHeader({ title, subtitle, actions }) {
     return (
         <div className="flex items-center justify-between mb-6">
             <div>
-                <h1 className="text-2xl font-bold">{title}</h1>
-                {subtitle && <p className="text-gray-400 text-sm">{subtitle}</p>}
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{title}</h1>
+                {subtitle && <p className="text-slate-500 dark:text-gray-400 text-sm">{subtitle}</p>}
             </div>
             {actions && <div className="flex items-center gap-3">{actions}</div>}
         </div>
@@ -124,11 +124,11 @@ export function FilterTabs({ tabs, activeTab, onChange }) {
 export function EmptyState({ icon, title, description }) {
     return (
         <div className="text-center py-12">
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-4 text-slate-500 dark:text-gray-400">
                 {icon}
             </div>
-            <h3 className="text-lg font-medium mb-2">{title}</h3>
-            <p className="text-gray-400 text-sm">{description}</p>
+            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">{title}</h3>
+            <p className="text-slate-500 dark:text-gray-400 text-sm">{description}</p>
         </div>
     )
 }

@@ -24,22 +24,36 @@ export default function BlogPage() {
         status: 'published'
     })
     const [isSaving, setIsSaving] = useState(false)
+    const [stats, setStats] = useState(null)
+    const [page, setPage] = useState(1)
+    const [totalPosts, setTotalPosts] = useState(0)
+    const limit = 20
+
+    const fetchPosts = async () => {
+        setIsLoading(true)
+        try {
+            const [postsRes, statsRes] = await Promise.all([
+                adminAPI.getBlogPosts({ page, limit }),
+                adminAPI.getBlogStats()
+            ])
+            if (postsRes.success) {
+                setPosts(postsRes.posts)
+                setTotalPosts(postsRes.total || 0)
+                if (postsRes.page) setPage(postsRes.page)
+            }
+            if (statsRes.success) {
+                setStats(statsRes.stats)
+            }
+        } catch (error) {
+            toast.error("Blog verileri getirilemedi.")
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await adminAPI.getBlogPosts()
-                if (response.success) {
-                    setPosts(response.posts)
-                }
-            } catch (error) {
-                toast.error("Blog yazıları getirilemedi.")
-            } finally {
-                setIsLoading(false)
-            }
-        }
         fetchPosts()
-    }, [toast])
+    }, [page, toast])
 
     const handleDelete = async (id) => {
         if (window.confirm("Bu yazıyı silmek istediğinize emin misiniz?")) {
@@ -133,10 +147,10 @@ export default function BlogPage() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'TOPLAM YAZI', value: '156', icon: BookOpen, color: 'indigo', growth: '+12%', sub: 'Bu ay +8 yeni' },
-                    { label: 'YAYINDA OLAN', value: '142', icon: CheckCircle2, color: 'emerald', growth: '+5%', sub: 'Aktif içerikler' },
-                    { label: 'TASLAKLAR', value: '14', icon: Clock, color: 'amber', growth: '-2%', sub: 'Onay bekleyen' },
-                    { label: 'TOPLAM OKUNMA', value: '1.2M', icon: Eye, color: 'cyan', growth: '+24%', sub: 'Son 30 günde 45K' }
+                    { label: 'TOPLAM YAZI', value: stats?.totalPosts || 0, icon: BookOpen, color: 'indigo', growth: `+${stats?.thisMonthNew || 0}%`, sub: `Bu ay +${stats?.thisMonthNew || 0} yeni` },
+                    { label: 'YAYINDA OLAN', value: stats?.published || 0, icon: CheckCircle2, color: 'emerald', growth: '+0%', sub: 'Aktif içerikler' },
+                    { label: 'TASLAKLAR', value: stats?.drafts || 0, icon: Clock, color: 'amber', growth: '-0%', sub: 'Onay bekleyen' },
+                    { label: 'TOPLAM OKUNMA', value: (stats?.totalViews || 0).toLocaleString(), icon: Eye, color: 'cyan', growth: '+0%', sub: 'Genel okunma sayısı' }
                 ].map((stat, i) => (
                     <div key={i} className={`rounded-3xl p-7 border relative group overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
                         isDayMode ? 'bg-white border-slate-200 shadow-sm hover:shadow-md' : 'glass-card border-white/5 hover:border-white/10'
@@ -320,27 +334,44 @@ export default function BlogPage() {
                     </table>
                 </div>
                 
-                {/* Pagination (Static UI for demo) */}
+                {/* Pagination */}
                 <div className={`p-6 border-t flex items-center justify-between ${
                     isDayMode ? 'border-slate-100 bg-slate-50/50' : 'border-white/5 bg-white/[0.02]'
                 }`}>
                     <span className={`text-[11px] font-bold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>
-                        Toplam {posts.length} kayıt gösteriliyor
+                        Toplam {totalPosts} kayıt bulundu. Gösterilen: {posts.length}
                     </span>
-                    <div className="flex gap-2">
-                        <button className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                            isDayMode ? 'bg-white border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-50' : 'bg-black/20 border border-white/10 text-gray-500 hover:text-white hover:bg-white/5'
-                        }`}>Geri</button>
-                        <button className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                            isDayMode ? 'bg-indigo-600 text-white shadow-md' : 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
-                        }`}>1</button>
-                        <button className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                            isDayMode ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-black/20 border border-white/10 text-gray-300 hover:bg-white/5'
-                        }`}>2</button>
-                        <button className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                            isDayMode ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-black/20 border border-white/10 text-gray-300 hover:bg-white/5'
-                        }`}>İleri</button>
-                    </div>
+                    {totalPosts > limit && (
+                        <div className="flex gap-2">
+                            <button 
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                                isDayMode ? 'bg-white border border-slate-200 text-slate-400 hover:text-slate-700 hover:bg-slate-50' : 'bg-black/20 border border-white/10 text-gray-500 hover:text-white hover:bg-white/5'
+                            }`}>Geri</button>
+                            
+                            {Array.from({ length: Math.ceil(totalPosts / limit) }, (_, i) => i + 1).map((p) => (
+                                <button
+                                    key={p}
+                                    onClick={() => setPage(p)}
+                                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                                        page === p
+                                            ? (isDayMode ? 'bg-indigo-600 text-white shadow-md' : 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20')
+                                            : (isDayMode ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-black/20 border border-white/10 text-gray-300 hover:bg-white/5')
+                                    }`}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+
+                            <button 
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={page >= Math.ceil(totalPosts / limit)}
+                                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                                isDayMode ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-black/20 border border-white/10 text-gray-300 hover:bg-white/5'
+                            }`}>İleri</button>
+                        </div>
+                    )}
                 </div>
             </div>
 

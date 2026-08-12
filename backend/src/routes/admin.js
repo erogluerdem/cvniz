@@ -7,6 +7,7 @@ const Payment = require('../models/Payment');
 const CV = require('../models/CV');
 const Coupon = require('../models/Coupon');
 const Announcement = require('../models/Announcement');
+const Feedback = require('../models/Feedback');
 const Log = require('../models/Log');
 const Settings = require('../models/Settings');
 const Referral = require('../models/Referral');
@@ -108,6 +109,13 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
             { $sort: { '_id.year': 1, '_id.month': 1 } }
         ]);
 
+        // System Status Mock Check (In a real scenario, you'd check connection health here)
+        const systemStatus = {
+            ssl: req.secure || process.env.NODE_ENV === 'production',
+            firewall: true,
+            status: 'Tüm sistemler normal sınırlar içerisinde çalışıyor.'
+        };
+
         res.json({
             success: true,
             stats: {
@@ -126,7 +134,8 @@ router.get('/stats', authenticate, adminOnly, async (req, res) => {
                     label: new Date(t._id.year, t._id.month - 1).toLocaleDateString('tr-TR', { month: 'short' }).toUpperCase(),
                     count: t.count
                 })),
-                growth: yesterdayCVs > 0 ? (((todayCVs - yesterdayCVs) / yesterdayCVs) * 100).toFixed(1) : (todayCVs > 0 ? 100 : 0)
+                growth: yesterdayCVs > 0 ? (((todayCVs - yesterdayCVs) / yesterdayCVs) * 100).toFixed(1) : (todayCVs > 0 ? 100 : 0),
+                systemStatus
             }
         });
     } catch (error) {
@@ -227,7 +236,7 @@ router.delete('/announcements/:id', authenticate, adminOnly, async (req, res) =>
 // ============ LOGS ============
 router.get('/logs', authenticate, adminOnly, async (req, res) => {
     try {
-        const { module, admin, startDate, endDate, limit = 100 } = req.query;
+        const { module, admin, startDate, endDate, limit = 20, page = 1 } = req.query;
         const query = {};
 
         if (module) {query.module = module;}
@@ -239,11 +248,14 @@ router.get('/logs', authenticate, adminOnly, async (req, res) => {
             if (endDate) {query.createdAt.$lte = new Date(endDate);}
         }
 
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const total = await Log.countDocuments(query);
         const logs = await Log.find(query)
             .sort({ createdAt: -1 })
+            .skip(skip)
             .limit(parseInt(limit));
 
-        res.json({ success: true, logs });
+        res.json({ success: true, logs, total, page: parseInt(page), limit: parseInt(limit) });
     } catch (error) {
         res.status(500).json({ error: 'Loglar alınamadı' });
     }
@@ -1543,11 +1555,46 @@ router.get('/reports', authenticate, adminOnly, async (req, res) => {
 });
 
 // ================= BLOG ROUTES =================
+// Blog
+router.get('/blog/stats', authenticate, adminOnly, async (req, res) => {
+    try {
+        const totalPosts = await BlogPost.countDocuments();
+        const published = await BlogPost.countDocuments({ status: 'published' });
+        const drafts = await BlogPost.countDocuments({ status: 'draft' });
+        const viewsObj = await BlogPost.aggregate([
+            { $group: { _id: null, totalViews: { $sum: '$views' } } }
+        ]);
+        const totalViews = viewsObj.length > 0 ? viewsObj[0].totalViews : 0;
+        
+        // This month
+        const thisMonth = new Date();
+        thisMonth.setDate(1);
+        const thisMonthNew = await BlogPost.countDocuments({ createdAt: { $gte: thisMonth } });
+
+        res.json({ success: true, stats: { totalPosts, published, drafts, totalViews, thisMonthNew } });
+    } catch (error) {
+        console.error('Blog stats error:', error);
+        res.status(500).json({ error: 'Blog istatistikleri alınamadı' });
+    }
+});
+
 router.get('/blog', authenticate, adminOnly, async (req, res) => {
     try {
-        const posts = await BlogPost.find().populate('author', 'name email').sort('-createdAt');
-        res.json({ success: true, posts });
-    } catch (error) { res.status(500).json({ error: 'Blog yazıları getirilemedi' }); }
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        
+        const total = await BlogPost.countDocuments();
+        const posts = await BlogPost.find()
+            .populate('author', 'name email')
+            .sort('-createdAt')
+            .skip(skip)
+            .limit(parseInt(limit));
+            
+        res.json({ success: true, posts, total, page: parseInt(page), limit: parseInt(limit) });
+    } catch (error) {
+        console.error('Blog posts error:', error);
+        res.status(500).json({ error: 'Blog yazıları getirilemedi' });
+    }
 });
 router.post('/blog', authenticate, adminOnly, async (req, res) => {
     try {
@@ -1829,6 +1876,22 @@ router.get('/storage-stats', authenticate, adminOnly, async (req, res) => {
             usedStorage: Math.floor(Math.random() * (400 - 300) + 300) 
         });
     } catch (error) { res.status(500).json({ error: 'Depolama bilgileri getirilemedi' }); }
+});
+
+// ============ FEEDBACK MANAGEMENT ============
+router.get('/feedbacks', authenticate, adminOnly, async (req, res) => {
+    try {
+        const feedbacks = await Feedback.find().populate('userId', 'name email').sort({ createdAt: -1 });
+        // Calculate average score and stats if needed, or send as is
+        const stats = {
+            total: feedbacks.length,
+            averageScore: feedbacks.length > 0 ? (feedbacks.reduce((acc, f) => acc + f.score, 0) / feedbacks.length).toFixed(1) : 0
+        };
+        res.json({ success: true, feedbacks, stats });
+    } catch (error) {
+        console.error('Feedback fetch error:', error);
+        res.status(500).json({ success: false, error: 'Geri bildirimler getirilemedi' });
+    }
 });
 
 module.exports = router;

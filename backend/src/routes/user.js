@@ -14,7 +14,7 @@ const router = express.Router();
 // @access  Private/Admin
 router.get('/', authenticate, adminOnly, async (req, res) => {
     try {
-        const { search, role, isPremium, isActive } = req.query;
+        const { search, role, isPremium, isActive, page = 1, limit = 20 } = req.query;
         const query = {};
 
         // Search filter
@@ -40,34 +40,57 @@ router.get('/', authenticate, adminOnly, async (req, res) => {
             query.isActive = isActive === 'true';
         }
 
-        const users = await User.aggregate([
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const result = await User.aggregate([
             { $match: query },
             {
-                $lookup: {
-                    from: 'cvs',
-                    localField: '_id',
-                    foreignField: 'userId',
-                    as: 'cvs'
+                $facet: {
+                    metadata: [{ $count: 'total' }],
+                    data: [
+                        { $sort: { createdAt: -1 } },
+                        { $skip: skip },
+                        { $limit: parseInt(limit) },
+                        {
+                            $lookup: {
+                                from: 'cvs',
+                                localField: '_id',
+                                foreignField: 'userId',
+                                as: 'cvs'
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: 'loginlogs',
+                                localField: '_id',
+                                foreignField: 'userId',
+                                as: 'logs'
+                            }
+                        },
+                        {
+                            $project: {
+                                id: '$_id',
+                                name: 1,
+                                email: 1,
+                                role: 1,
+                                isPremium: 1,
+                                premiumExpiresAt: 1,
+                                isActive: 1,
+                                createdAt: 1,
+                                lastLogin: 1,
+                                cvCount: { $size: '$cvs' },
+                                logCount: { $size: '$logs' }
+                            }
+                        }
+                    ]
                 }
-            },
-            {
-                $project: {
-                    id: '$_id',
-                    name: 1,
-                    email: 1,
-                    role: 1,
-                    isPremium: 1,
-                    premiumExpiresAt: 1,
-                    isActive: 1,
-                    createdAt: 1,
-                    lastLogin: 1,
-                    cvCount: { $size: '$cvs' }
-                }
-            },
-            { $sort: { createdAt: -1 } }
+            }
         ]);
 
-        res.json({ success: true, users });
+        const users = result[0].data;
+        const total = result[0].metadata[0] ? result[0].metadata[0].total : 0;
+
+        res.json({ success: true, users, total, page: parseInt(page), limit: parseInt(limit) });
     } catch (error) {
         console.error('Fetch users error:', error);
         res.status(500).json({ error: 'Kullanıcılar alınamadı' });

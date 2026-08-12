@@ -118,7 +118,15 @@ export default function AdminLayout() {
  return activeGroup ? [activeGroup.id] : ['overview']
 })
 
- useEffect(() => {
+	useEffect(() => {
+		if (isDayMode) {
+			document.documentElement.classList.remove('dark')
+		} else {
+			document.documentElement.classList.add('dark')
+		}
+	}, [isDayMode])
+
+	useEffect(() => {
  const handleKeyDown = (e) => {
  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
  e.preventDefault()
@@ -162,6 +170,7 @@ export default function AdminLayout() {
  isOpen={showCommandPalette} 
  onClose={() => setShowCommandPalette(false)} 
  menuGroups={menuGroups} 
+ isDayMode={isDayMode}
  />
  
  {/* Sidebar */}

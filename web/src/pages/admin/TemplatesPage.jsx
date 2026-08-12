@@ -1,15 +1,15 @@
-import { useState, useEffect, useMemo} from 'react'
-import { Link} from 'react-router-dom'
+import { useState, useEffect, useMemo } from 'react'
+import { Link, useOutletContext } from 'react-router-dom'
 import {
- Plus, Crown, Star, Trash2, Edit, Eye, X, Save,
- Palette, Layout, Type, Copy, Check, RefreshCw,
- Filter, Search, Grid, List, AlertCircle, TrendingUp,
- CheckCircle2, Info, ArrowUpRight, Zap, Image, Upload
+  Plus, Crown, Star, Trash2, Edit, Eye, X, Save,
+  Palette, Layout, Type, Copy, Check, RefreshCw,
+  Filter, Search, Grid, List, AlertCircle, TrendingUp,
+  CheckCircle2, Info, ArrowUpRight, Zap, Image, Upload
 } from 'lucide-react'
-import { templateAPI} from '../../services/api'
-import { FilterTabs, StatusBadge} from '../../components/admin/SharedComponents'
-import { useToast} from '../../context/ToastContext'
-import { WEB_CV_TEMPLATES, WEB_CV_CATEGORIES} from '../../data/webCVTemplates'
+import { templateAPI } from '../../services/api'
+import { FilterTabs, StatusBadge } from '../../components/admin/SharedComponents'
+import { useToast } from '../../context/ToastContext'
+import { WEB_CV_TEMPLATES, WEB_CV_CATEGORIES } from '../../data/webCVTemplates'
 
 // Original static list to be used for initial sync if DB is empty
 const STATIC_TEMPLATES = [
@@ -206,8 +206,9 @@ const getColor = (id) => {
 }
 
 export default function TemplatesPage() {
- const { toast, confirm} = useToast()
- const [templates, setTemplates] = useState([])
+  const { toast, confirm } = useToast()
+  const { isDayMode } = useOutletContext() || { isDayMode: false }
+  const [templates, setTemplates] = useState([])
  const [loading, setLoading] = useState(true)
  const [syncing, setSyncing] = useState(false)
  const [activeCategory, setActiveCategory] = useState('all')
@@ -325,195 +326,57 @@ export default function TemplatesPage() {
  )
 
  const stats = useMemo(() => ({
- total: templates.length,
- premium: templates.filter(t => t.isPremium).length,
- active: templates.filter(t => t.isActive).length,
- usage: templates.reduce((s, t) => s + (t.usageCount || 0), 0)
-}), [templates])
+    total: templates.length,
+    premium: templates.filter(t => t.isPremium).length,
+    active: templates.filter(t => t.isActive).length,
+    usage: templates.reduce((s, t) => s + (t.usageCount || 0), 0)
+  }), [templates])
 
- if (loading && templates.length === 0) {
- return (
- <div className="flex flex-col items-center justify-center py-32 gap-6">
- <div className="relative">
- <div className="w-20 h-20 rounded-full border-4 border-cyan-500/10 border-t-cyan-500 animate-spin"></div>
- <Palette className="w-8 h-8 text-cyan-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
- </div>
- <div className="text-center">
- <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">Şablonlar Yükleniyor</h3>
- <p className="text-gray-500 text-xs font-bold uppercase">Marketplace verileri senkronize ediliyor...</p>
- </div>
- </div>
- )
-}
+  if (loading && templates.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-6">
+        <div className="relative">
+          <div className="w-20 h-20 rounded-full border-4 border-cyan-500/10 border-t-cyan-500 animate-spin"></div>
+          <Palette className="w-8 h-8 text-cyan-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        </div>
+        <div className="text-center">
+          <h3 className={`font-semibold uppercase tracking-wider text-xs mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Şablonlar Yükleniyor</h3>
+          <p className={`text-xs font-bold uppercase ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>Marketplace verileri senkronize ediliyor...</p>
+        </div>
+      </div>
+    )
+  }
 
- return (
- <div className="space-y-8">
- {/* Header Section */}
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
- <div>
- <h2 className="text-2xl font-semibold text-white mb-1 uppercase flex items-center gap-3">
- <div className="p-2 rounded-xl bg-cyan-500/20 border border-cyan-500/20">
- <Palette className="w-6 h-6 text-cyan-400" />
- </div>
- Şablon Katalogu
- </h2>
- <p className="text-gray-400 text-sm font-medium">Marketplace şablonlarını yönetin ve yapılandırın.</p>
- </div>
- <div className="flex gap-3">
- <button
- onClick={handleSync}
- disabled={syncing}
- className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-gray-400 font-semibold text-xs uppercase tracking-wider hover:bg-white/10 hover:text-white transition-all flex items-center gap-2 group"
- >
- <RefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-all duration-500 ${syncing ? 'animate-spin' : ''}`} />
- VERİLERİ EŞİTLE
- </button>
- <button
- onClick={() => { setForm({ templateId: '', name: '', category: 'professional', isPremium: false, config: { colors: {}, styles: {}}}); setModalTab('general'); setShowModal('add')}}
- className="px-8 py-3 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 border border-white/10"
- >
- <Plus className="w-5 h-5 shadow-inner" /> YENİ ŞABLON
- </button>
- </div>
- </div>
-
- {/* Conditional Rendering: List or Editor */}
- {(showModal === 'add' || showModal === 'edit') ? (
- <div className="bg-slate-900 rounded-2xl p-8 border border-white/10 relative overflow-hidden animate-fade-in shadow-2xl ring-1 ring-white/10">
- <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
- <div className="flex items-center gap-4">
- <button
- onClick={() => setShowModal(null)}
- className="p-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all group"
- >
- <ArrowUpRight className="w-5 h-5 rotate-[225deg] group-hover:-translate-x-1 transition-transform" />
- </button>
- <div>
- <h3 className="text-2xl font-semibold text-white uppercase">
- {showModal === 'add' ? 'YENİ ŞABLON OLUŞTUR' : 'ŞABLON DÜZENLE'}
- </h3>
- <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-1">
- {showModal === 'add' ? 'Yeni bir tasarım dili oluşturun' :`${form.name} şablonunu yapılandırın`}
- </p>
- </div>
- </div>
- <div className="flex gap-3">
- <button
- type="button"
- onClick={() => setShowModal(null)}
- className="px-6 py-3 rounded-2xl bg-white/5 text-gray-500 font-semibold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
- >
- İPTAL
- </button>
- <button
- onClick={handleSave}
- className="px-8 py-3 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
- >
- <Save className="w-4 h-4" />
- KAYDET
- </button>
- </div>
- </div>
-
- {/* Editor Tabs - In-Page Style */}
- <div className="flex gap-2 p-1 bg-white/5 rounded-2xl mb-8 max-w-md">
- <button
- onClick={() => setModalTab('general')}
- className={`flex-1 py-3 rounded-xl font-semibold text-xs tracking-wider uppercase transition-all ${modalTab === 'general' ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20' : 'text-gray-500 hover:text-white'}`}
- >
- GENEL AYARLAR
- </button>
- <button
- onClick={() => setModalTab('theme')}
- className={`flex-1 py-3 rounded-xl font-semibold text-xs tracking-wider uppercase transition-all ${modalTab === 'theme' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-gray-500 hover:text-white'}`}
- >
- TEMA DÜZENLEYİCİ
- </button>
- </div>
-
- <div className="max-w-4xl">
- {modalTab === 'general' ? (
- <div className="space-y-8">
- <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- <div className="space-y-6">
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">ŞABLON ADI</label>
- <input
- type="text"
- value={form.name}
- onChange={(e) => setForm({ ...form, name: e.target.value})}
- className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold"
- placeholder="Örn: Executive v2"
- required
- />
- </div>
-
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">KATEGORİ</label>
- <select
- value={form.category}
- onChange={(e) => setForm({ ...form, category: e.target.value})}
- className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold appearance-none cursor-pointer"
- >
- <option value="popular">Popular</option>
- <option value="professional">Professional</option>
- <option value="tech">Tech</option>
- <option value="creative">Creative</option>
- <option value="modern">Modern</option>
- <option value="premium">Premium</option>
- <option value="web">Web CV</option>
- </select>
- </div>
- </div>
-
- <div className="space-y-6">
- {/* Thumbnail - URL or File Upload */}
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">KAPAK RESMİ</label>
- <div className="flex gap-2">
- <input
- type="text"
- value={form.thumbnail || ''}
- onChange={(e) => setForm({ ...form, thumbnail: e.target.value})}
- className="flex-1 bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all font-bold text-xs"
- placeholder="URL veya dosya yükle →"
- />
- <label className={`px-4 py-4 rounded-2xl cursor-pointer transition-all flex items-center gap-2 ${uploading ? 'bg-cyan-500/20 text-cyan-400' : 'bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400'}`}>
- {uploading ? (
- <RefreshCw className="w-5 h-5 animate-spin" />
- ) : (
- <Upload className="w-5 h-5" />
- )}
- <input
- type="file"
- accept="image/*"
- className="hidden"
- disabled={uploading}
- onChange={async (e) => {
- const file = e.target.files?.[0]
- if (!file) return
- setUploading(true)
- try {
- const { mediaAPI} = await import('../../services/api')
- const formData = new FormData()
- formData.append('file', file)
- const res = await mediaAPI.upload(formData)
- if (res.success && res.media?.path) {
- const baseUrl = window.location.origin.replace(':5175', ':3001')
- setForm({ ...form, thumbnail: baseUrl + res.media.path})
- toast.success('Resim yüklendi!')
-}
-} catch (err) {
- toast.error('Yükleme hatası: ' + (err.message || 'Bilinmeyen hata'))
-} finally {
- setUploading(false)
- e.target.value = ''
-}
-}}
- />
- </label>
- </div>
- </div>
+  return (
+    <div className="space-y-8 font-primary">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className={`text-2xl font-semibold mb-1 uppercase flex items-center gap-3 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>
+            <div className="p-2 rounded-xl bg-cyan-500/20 border border-cyan-500/20">
+              <Palette className="w-6 h-6 text-cyan-500" />
+            </div>
+            Şablon Katalogu
+          </h2>
+          <p className={`text-sm font-medium ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Marketplace şablonlarını yönetin ve yapılandırın.</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className={`px-6 py-3 rounded-2xl border font-semibold text-xs uppercase tracking-wider transition-all flex items-center gap-2 group ${isDayMode ? 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 shadow-sm' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white'}`}
+          >
+            <RefreshCw className={`w-4 h-4 group-hover:rotate-180 transition-all duration-500 ${syncing ? 'animate-spin' : ''}`} />
+            VERİLERİ EŞİTLE
+          </button>
+          <button
+            onClick={() => { setForm({ templateId: '', name: '', category: 'professional', isPremium: false, config: { colors: {}, styles: {} } }); setModalTab('general'); setShowModal('add') }}
+            className="px-8 py-3 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 border border-white/10"
+          >
+            <Plus className="w-5 h-5 shadow-inner" /> YENİ ŞABLON
+          </button>
+        </div>
+      </div>
 
  <div
  onClick={() => setForm({ ...form, isPremium: !form.isPremium})}
@@ -892,57 +755,43 @@ export default function TemplatesPage() {
  </div>
  </div>
  </div>
- )}
+</div>
  </div>
- </div>
- )}
- </div>
- </div>
- ) : (
- <>
- {/* Stats Banner */}
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- {/* ... (Existing Stats Content) ... */}
- </div>
- </>
  )}
 
- {/* Existing List View Content (Only render if NOT editing) */}
  {(!showModal) && (
  <>
  {/* Stats Banner */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  {[
- { label: 'TOPLAM ŞABLON', value: stats.total, icon: <Layout className="w-4 h-4" />, color: 'cyan'},
- { label: 'PREMİUM ÜYELİK', value: stats.premium, icon: <Crown className="w-4 h-4" />, color: 'purple'},
- { label: 'AKTİF ŞABLONLAR', value: stats.active, icon: <CheckCircle2 className="w-4 h-4" />, color: 'green'},
- { label: 'TOPLAM KULLANIM', value: stats.usage, icon: <TrendingUp className="w-4 h-4" />, color: 'amber'}
+ { label: 'TOPLAM ŞABLON', value: stats.total, icon: <Layout className="w-4 h-4" />, color: 'cyan' },
+ { label: 'PREMİUM ÜYELİK', value: stats.premium, icon: <Crown className="w-4 h-4" />, color: 'purple' },
+ { label: 'AKTİF ŞABLONLAR', value: stats.active, icon: <CheckCircle2 className="w-4 h-4" />, color: 'green' },
+ { label: 'TOPLAM KULLANIM', value: stats.usage, icon: <TrendingUp className="w-4 h-4" />, color: 'amber' }
  ].map((stat, i) => (
-
- <div key={i} className="bg-white dark:bg-white/5 rounded-2xl p-6 border border-gray-100 dark:border-white/5 relative overflow-hidden group shadow-sm hover:shadow-lg transition-all">
- <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 dark:bg-${stat.color}-500/5 blur-3xl -z-10`}></div>
+ <div key={i} className={`rounded-2xl p-6 border relative overflow-hidden group transition-all ${isDayMode ? 'bg-white border-slate-200 shadow-sm hover:shadow-md' : 'glass-card border-white/5'}`}>
+ <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/10 blur-3xl -z-10`}></div>
  <div className="flex items-center gap-3 mb-2">
- <div className={`p-2 rounded-xl bg-${stat.color}-500/10 text-${stat.color}-500 dark:text-${stat.color}-400`}>
+ <div className={`p-2 rounded-xl bg-${stat.color}-500/10 text-${stat.color}-500`}>
  {stat.icon}
  </div>
- <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{stat.label}</span>
+ <span className={`text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>{stat.label}</span>
  </div>
- <div className="text-3xl font-semibold text-gray-900 dark:text-white">{stat.value}</div>
+ <div className={`text-3xl font-semibold ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{stat.value}</div>
  </div>
  ))}
  </div>
 
  {/* Toolbar */}
- <div className="bg-white dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
- {/* ... (Existing Toolbar Content) ... */}
+ <div className={`rounded-2xl p-4 border flex flex-col md:flex-row items-center justify-between gap-4 ${isDayMode ? 'bg-white border-slate-200 shadow-sm' : 'glass-card border-white/5'}`}>
  <div className="relative w-full md:w-96">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+ <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 ${isDayMode ? 'text-slate-400' : 'text-gray-400'}`} />
  <input
  type="text"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Şablon adı ile ara..."
- className="bg-gray-100 dark:bg-black/20 border-transparent dark:border-white/5 rounded-2xl pl-12 pr-6 py-3.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:bg-white dark:focus:bg-black/40 focus:ring-2 focus:ring-cyan-500/20 transition-all w-full font-medium"
+ className={`border rounded-2xl pl-12 pr-6 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all w-full font-medium ${isDayMode ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400' : 'bg-black/20 border-white/5 text-white'}`}
  />
  </div>
  <FilterTabs
@@ -954,19 +803,18 @@ export default function TemplatesPage() {
 
  {/* Templates Grid */}
  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
- {/* ... (Existing Grid Content) ... */}
  {filtered.map(t => (
  <div key={t._id} className={`rounded-2xl p-3 transition-all border relative group ${t.isActive
- ? 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/5 hover:border-cyan-500/30 shadow-sm hover:shadow-xl dark:shadow-none'
- : 'bg-gray-50 dark:bg-white/5 border-gray-100 dark:border-white/5 opacity-60 grayscale'
-}`}>
+ ? (isDayMode ? 'bg-white border-slate-200 hover:border-cyan-500/40 shadow-sm hover:shadow-lg' : 'glass-card border-white/5 hover:border-cyan-500/30')
+ : (isDayMode ? 'bg-slate-100 border-slate-200 opacity-60 grayscale' : 'bg-white/5 border-white/5 opacity-60 grayscale')
+ }`}>
  {/* Preview - Show thumbnail if available */}
- <div className="aspect-[3/4] rounded-[2rem] bg-gray-100 dark:bg-white/5 overflow-hidden relative mb-4 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500" style={{ background: t.thumbnail ? 'transparent' :`linear-gradient(135deg, ${getColor(t.templateId)}22, ${getColor(t.templateId + 'x')}44)`}}>
+ <div className={`aspect-[3/4] rounded-[1.5rem] overflow-hidden relative mb-4 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500 ${isDayMode ? 'bg-slate-100' : 'bg-white/5'}`} style={{ background: t.thumbnail ? 'transparent' : `linear-gradient(135deg, ${getColor(t.templateId)}22, ${getColor(t.templateId + 'x')}44)` }}>
  {t.thumbnail ? (
  <img src={t.thumbnail} alt={t.name} className="w-full h-full object-cover" />
  ) : (
  <div className="text-center">
- <span className="text-4xl font-semibold text-gray-300 dark:text-white/20 uppercase select-none">{t.name.charAt(0)}</span>
+ <span className={`text-4xl font-semibold uppercase select-none ${isDayMode ? 'text-slate-300' : 'text-white/20'}`}>{t.name.charAt(0)}</span>
  </div>
  )}
  <div className="absolute top-4 right-4 z-10">
@@ -1002,16 +850,16 @@ export default function TemplatesPage() {
  isActive: !!t.isActive,
  usageCount: t.usageCount || 0,
  config: {
- colors: { ...(t.config?.colors || {})},
- styles: { ...(t.config?.styles || {})}
-}
-}
+ colors: { ...(t.config?.colors || {}) },
+ styles: { ...(t.config?.styles || {}) }
+ }
+ }
  setSelected(t)
  setForm(safeForm)
  setModalTab('general')
  setShowModal('edit')
- window.scrollTo({ top: 0, behavior: 'smooth'})
-}}
+ window.scrollTo({ top: 0, behavior: 'smooth' })
+ }}
  className="w-full py-3 rounded-xl bg-white/10 text-white font-semibold text-xs tracking-wider uppercase border border-white/10 hover:bg-white/20 transition-all"
  >
  DÜZENLE
@@ -1027,10 +875,10 @@ export default function TemplatesPage() {
 
  {/* Info Area */}
  <div className="px-2">
- <h4 className="text-xs font-semibold text-gray-900 dark:text-white truncate mb-1 uppercase tracking-tight">{t.name}</h4>
- <div className="flex items-center justify-between text-xs font-bold text-gray-500">
- <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-cyan-500 dark:text-cyan-400" /> {t.usageCount || 0}</span>
- <span className="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 uppercase text-gray-600 dark:text-gray-400">{t.category}</span>
+ <h4 className={`text-xs font-semibold truncate mb-1 uppercase tracking-tight ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{t.name}</h4>
+ <div className={`flex items-center justify-between text-xs font-bold ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>
+ <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-cyan-500" /> {t.usageCount || 0}</span>
+ <span className={`px-2 py-0.5 rounded-lg border uppercase ${isDayMode ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-white/5 border-white/5 text-gray-400'}`}>{t.category}</span>
  </div>
  </div>
  </div>
@@ -1038,10 +886,10 @@ export default function TemplatesPage() {
 
  {/* Empty State */}
  {filtered.length === 0 && (
- <div className="col-span-full py-20 text-center flex flex-col items-center justify-center opacity-40">
- <AlertCircle className="w-16 h-16 text-gray-600 mb-4" />
- <h4 className="text-lg font-semibold text-white uppercase">ŞABLON BULUNAMADI</h4>
- <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">Lütfen farklı bir kategori veya arama terimi deneyin.</p>
+ <div className="col-span-full py-20 text-center flex flex-col items-center justify-center opacity-60">
+ <AlertCircle className={`w-16 h-16 mb-4 ${isDayMode ? 'text-slate-400' : 'text-gray-600'}`} />
+ <h4 className={`text-lg font-semibold uppercase ${isDayMode ? 'text-slate-900' : 'text-white'}`}>ŞABLON BULUNAMADI</h4>
+ <p className={`text-xs font-bold uppercase tracking-wider mt-1 ${isDayMode ? 'text-slate-400' : 'text-gray-500'}`}>Lütfen farklı bir kategori veya arama terimi deneyin.</p>
  </div>
  )}
  </div>

@@ -20,6 +20,9 @@ export default function UsersPage() {
  const [stats, setStats] = useState(null)
  const [loading, setLoading] = useState(true)
  const [refreshing, setRefreshing] = useState(false)
+ const [page, setPage] = useState(1)
+ const [totalUsers, setTotalUsers] = useState(0)
+ const limit = 20
 
  // Filters State
  const [search, setSearch] = useState('')
@@ -53,10 +56,16 @@ export default function UsersPage() {
  role: activeFilter === 'admin' ? 'admin' : undefined,
  isPremium: activeFilter === 'premium' ? 'true' : undefined,
  isActive: activeFilter === 'banned' ? 'false' : undefined,
+ page,
+ limit,
  ...customParams
 }
  const res = await userAPI.getUsers(params)
- if (res.success) setUsers(res.users)
+ if (res.success) {
+ setUsers(res.users)
+ setTotalUsers(res.total || 0)
+ if (res.page) setPage(res.page)
+}
 } catch (error) {
  toast.error('Kullanıcılar yüklenemedi')
 } finally {
@@ -82,10 +91,20 @@ export default function UsersPage() {
  // Debounced search
  useEffect(() => {
  const timer = setTimeout(() => {
- if (!loading) fetchUsers()
+ if (!loading) {
+ if (page !== 1) {
+ setPage(1) // Reset to page 1 on search or filter
+} else {
+ fetchUsers()
+}
+}
 }, 500)
  return () => clearTimeout(timer)
 }, [search, activeFilter])
+
+ useEffect(() => {
+ if (!loading) fetchUsers()
+}, [page])
 
  const handleOpenCreateModal = () => {
  setModalMode('create')
@@ -207,7 +226,7 @@ export default function UsersPage() {
  </div>
  <h2 className={`text-3xl font-semibold uppercase ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Ekip & Üyeler</h2>
  </div>
- <p className={`text-xs font-bold uppercase tracking-wider pl-1 ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Toplam {users.length} kullanıcı aktif olarak sistemde</p>
+ <p className={`text-xs font-bold uppercase tracking-wider pl-1 ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>Toplam {totalUsers} kullanıcı aktif olarak sistemde</p>
  </div>
 
  <div className="flex flex-wrap gap-4">
@@ -395,7 +414,7 @@ export default function UsersPage() {
  </div>
  <div className={`w-px h-8 ${isDayMode ? 'bg-slate-200' : 'bg-white/5'}`}></div>
  <div className="text-center group-hover:scale-110 transition-transform">
- <div className={`text-sm font-semibold mb-0.5 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>0</div>
+ <div className={`text-sm font-semibold mb-0.5 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{u.logCount || 0}</div>
  <div className={`text-xs font-semibold uppercase tracking-wider ${isDayMode ? 'text-slate-500' : 'text-gray-500'}`}>LOG</div>
  </div>
  </div>
@@ -466,16 +485,41 @@ export default function UsersPage() {
  {/* Pagination Placeholder */}
  <div className="flex items-center justify-between pb-10">
  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider pl-4">
- Gösterilen: <span className="text-white">{users.length} kullanıcı</span>
+ Gösterilen: <span className="text-white">{users.length} kullanıcı</span> / Toplam {totalUsers}
  </div>
+ {totalUsers > limit && (
  <div className="flex items-center gap-3">
- <button className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-500 uppercase tracking-wider opacity-50 cursor-not-allowed">Önceki</button>
+ <button
+ onClick={() => setPage(p => Math.max(1, p - 1))}
+ disabled={page === 1}
+ className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+ >
+ Önceki
+ </button>
  <div className="flex items-center gap-2">
- <button className="w-10 h-10 rounded-xl bg-cyan-500 text-slate-950 font-semibold text-xs shadow-lg shadow-cyan-500/20">1</button>
- <button className="w-10 h-10 rounded-xl bg-white/5 text-gray-500 hover:bg-white/10 font-semibold text-xs transition-all">2</button>
+ {Array.from({ length: Math.ceil(totalUsers / limit) }, (_, i) => i + 1).map((p) => (
+ <button
+ key={p}
+ onClick={() => setPage(p)}
+ className={`w-10 h-10 rounded-xl font-semibold text-xs transition-all ${
+ page === p
+ ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
+ : 'bg-white/5 text-gray-500 hover:bg-white/10'
+}`}
+ >
+ {p}
+ </button>
+ ))}
  </div>
- <button className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 uppercase tracking-wider hover:bg-white/10 transition-all">Sonraki</button>
+ <button
+ onClick={() => setPage(p => p + 1)}
+ disabled={page >= Math.ceil(totalUsers / limit)}
+ className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 uppercase tracking-wider hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+ >
+ Sonraki
+ </button>
  </div>
+ )}
  </div>
 
  {/* Modal */}

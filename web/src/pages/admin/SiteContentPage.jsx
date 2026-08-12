@@ -8,132 +8,123 @@ export default function SiteContentPage() {
   const { toast } = useToast()
   const { isDayMode } = useOutletContext() || { isDayMode: false }
   const [activeSection, setActiveSection] = useState('hero')
- const [loading, setLoading] = useState(true)
- const [saving, setSaving] = useState(false)
- const [content, setContent] = useState({
- hero: {
- title: 'Profesyonel CV\'nizi',
- titleHighlight: 'Dakikalar İçinde',
- titleEnd: 'Oluşturun',
- subtitle: 'Yapay zeka destekli CV oluşturucu ile kariyer hedeflerinize ulaşın.',
- ctaPrimary: 'Ücretsiz Başla',
- ctaSecondary: 'Şablonları İncele',
- badge: '🚀 100.000+ kullanıcı güveniyor'
-},
- stats: [
- { value: 100000, suffix: '+', label: 'Mutlu Kullanıcı'},
- { value: 107, suffix: '+', label: 'Profesyonel Şablon'}
- ],
- steps: [
- { id: 1, title: 'Şablon Seç', description: 'Şablon seç', icon: 'FileText'}
- ],
- features: [
- { id: 1, title: 'AI Destekli', description: 'İçerik oluştur', icon: 'Sparkles'}
- ],
- testimonials: [
- { id: 1, name: 'Ahmet Yılmaz', role: 'Yazılım Mühendisi', text: 'Harika bir platform!', rating: 5}
- ],
- faqs: [
- { id: 1, question: 'Soru?', answer: 'Cevap.'}
- ],
- pricing: {
- free: { price: 0, features: ['1 CV', '3 İndirme']},
- pro: { price: 29, features: ['Sınırsız CV', 'AI Asistan']}
-},
- footer: {
- copyright: '© 2024 CVniz. Tüm hakları saklıdır.',
- description: 'Profesyonel CV oluşturmanın en kolay yolu.'
-}
-})
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [content, setContent] = useState({
+    hero: {
+      title: 'Profesyonel CV\'nizi',
+      titleHighlight: 'Dakikalar İçinde',
+      titleEnd: 'Oluşturun',
+      subtitle: 'Yapay zeka destekli CV oluşturucu ile kariyer hedeflerinize ulaşın.',
+      ctaPrimary: 'Ücretsiz Başla',
+      ctaSecondary: 'Şablonları İncele',
+      badge: '🚀 100.000+ kullanıcı güveniyor'
+    },
+    stats: [
+      { value: 100000, suffix: '+', label: 'Mutlu Kullanıcı'},
+      { value: 107, suffix: '+', label: 'Profesyonel Şablon'}
+    ],
+    steps: [
+      { id: 1, title: 'Şablon Seç', description: 'Şablon seç', icon: 'FileText'}
+    ],
+    features: [
+      { id: 1, title: 'AI Destekli', description: 'İçerik oluştur', icon: 'Sparkles'}
+    ],
+    testimonials: [
+      { id: 1, name: 'Ahmet Yılmaz', role: 'Yazılım Mühendisi', text: 'Harika bir platform!', rating: 5}
+    ],
+    faqs: [
+      { id: 1, question: 'Soru?', answer: 'Cevap.'}
+    ],
+    pricing: {
+      free: { price: 0, features: ['1 CV', '3 İndirme']},
+      pro: { price: 29, features: ['Sınırsız CV', 'AI Asistan']}
+    },
+    footer: {
+      copyright: '© 2024 CVniz. Tüm hakları saklıdır.',
+      description: 'Profesyonel CV oluşturmanın en kolay yolu.'
+    }
+  })
 
- useEffect(() => {
- fetchSettings()
-}, [])
+  useEffect(() => {
+    fetchSettings()
+  }, [])
 
- const fetchSettings = async () => {
- setLoading(true)
- try {
- const response = await adminAPI.getSettings()
- if (response.success) {
- const landingContent = response.settings.find(s => s.key === 'landing_page_content')
- if (landingContent) {
- setContent(prev => ({ ...prev, ...landingContent.value}))
-}
-}
-} catch (error) {
- console.error('Settings fetch error:', error)
-} finally {
- setLoading(false)
-}
-}
+  const fetchSettings = async () => {
+    setLoading(true)
+    try {
+      const response = await adminAPI.getSettings()
+      if (response.success) {
+        const landingContent = response.settings.find(s => s.key === 'landing_page_content')
+        if (landingContent) {
+          setContent(prev => ({ ...prev, ...landingContent.value}))
+        }
+      }
+    } catch (error) {
+      console.error('Settings fetch error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
- const handleSave = async () => {
- setSaving(true)
- try {
- const response = await adminAPI.updateSetting(
- 'landing_page_content',
- content
- )
- if (response.success) {
- toast.success('İçerik başarıyla güncellendi!')
-}
-} catch (error) {
- toast.error('Kaydetme hatası: ' + error.message)
-} finally {
- setSaving(false)
-}
-}
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const response = await adminAPI.updateSetting(
+        'landing_page_content',
+        content
+      )
+      if (response.success) {
+        toast.success('İçerik başarıyla güncellendi!')
+      }
+    } catch (error) {
+      toast.error('Kaydetme hatası: ' + error.message)
+    } finally {
+      setSaving(false)
+    }
+  }
 
- const sections = [
- { id: 'hero', label: 'Ana Bölüm (Hero)', icon: <Image className="w-5 h-5" />, desc: 'Manşet metinleri ve rozetler'},
- { id: 'stats', label: 'İstatistikler', icon: <Activity className="w-5 h-5" />, desc: 'Sayaçlar ve başarı rakamları'},
- { id: 'steps', label: 'Nasıl Çalışır?', icon: <PlusCircle className="w-5 h-5" />, desc: 'İşleyiş adımları'},
- { id: 'features', label: 'Özellikler', icon: <Zap className="w-5 h-5" />, desc: 'Platform avantajları'},
- { id: 'testimonials', label: 'Yorumlar', icon: <MessageSquare className="w-5 h-5" />, desc: 'Kullanıcı geri bildirimleri'},
- { id: 'faqs', label: 'SSS', icon: <HelpCircle className="w-5 h-5" />, desc: 'Sık sorulan sorular'},
- { id: 'pricing', label: 'Fiyatlandırma', icon: <DollarSign className="w-5 h-5" />, desc: 'Paketler ve ücretler'},
- { id: 'footer', label: 'Alt Bilgi (Footer)', icon: <Globe className="w-5 h-5" />, desc: 'İletişim ve telif hakları'}
- ]
+  const sections = [
+    { id: 'hero', label: 'Ana Bölüm (Hero)', icon: <Image className="w-5 h-5" />, desc: 'Manşet metinleri ve rozetler'},
+    { id: 'stats', label: 'İstatistikler', icon: <Activity className="w-5 h-5" />, desc: 'Sayaçlar ve başarı rakamları'},
+    { id: 'steps', label: 'Nasıl Çalışır?', icon: <PlusCircle className="w-5 h-5" />, desc: 'İşleyiş adımları'},
+    { id: 'features', label: 'Özellikler', icon: <Zap className="w-5 h-5" />, desc: 'Platform avantajları'},
+    { id: 'testimonials', label: 'Yorumlar', icon: <MessageSquare className="w-5 h-5" />, desc: 'Kullanıcı geri bildirimleri'},
+    { id: 'faqs', label: 'SSS', icon: <HelpCircle className="w-5 h-5" />, desc: 'Sık sorulan sorular'},
+    { id: 'pricing', label: 'Fiyatlandırma', icon: <DollarSign className="w-5 h-5" />, desc: 'Paketler ve ücretler'},
+    { id: 'footer', label: 'Alt Bilgi (Footer)', icon: <Globe className="w-5 h-5" />, desc: 'İletişim ve telif hakları'}
+  ]
 
- const updateNestedContent = (section, field, value) => {
- setContent(prev => ({
- ...prev,
- [section]: {
- ...prev[section],
- [field]: value
-}
-}))
-}
+  const updateNestedContent = (section, field, value) => {
+    setContent(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }))
+  }
 
- const addItem = (section, template = { id: Date.now(), title: 'Yeni Öğe', description: 'Açıklama...', icon: 'Star'}) => {
- setContent(prev => ({
- ...prev,
- [section]: [...(prev[section] || []), template]
-}))
-}
+  const addItem = (section, template = { id: Date.now(), title: 'Yeni Öğe', description: 'Açıklama...', icon: 'Star' }) => {
+    setContent(prev => ({
+      ...prev,
+      [section]: [...(prev[section] || []), template]
+    }))
+  }
 
- const removeItem = (section, id) => {
- setContent(prev => ({
- ...prev,
- [section]: prev[section].filter(item => item.id !== id)
-}))
-}
+  const removeItem = (section, id) => {
+    setContent(prev => ({
+      ...prev,
+      [section]: prev[section].filter(item => item.id !== id)
+    }))
+  }
 
- const updateListItem = (section, index, field, value) => {
- const newList = [...content[section]]
- newList[index][field] = value
- setContent(prev => ({ ...prev, [section]: newList}))
-}
+  const updateListItem = (section, index, field, value) => {
+    const newList = [...content[section]]
+    newList[index][field] = value
+    setContent(prev => ({ ...prev, [section]: newList }))
+  }
 
- if (loading) {
- return (
- <div className="flex flex-col items-center justify-center py-32 gap-6">
- <div className="relative">
- <div className="w-20 h-20 rounded-full border-4 border-cyan-500/10 border-t-cyan-500 animate-spin"></div>
- <Layout className="w-8 h-8 text-cyan-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
- </div>
- <div className="text-center">
- <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">CMS Yükleniyor</h3>
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-6">

@@ -1,14 +1,64 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Activity, Power, AlertTriangle, Search, ShieldAlert } from 'lucide-react'
 import { useOutletContext } from 'react-router-dom'
+import { adminAPI } from '../../services/api'
+import { useToast } from '../../context/ToastContext'
 
 export default function SessionsPage() {
+    const { toast } = useToast()
     const { isDayMode } = useOutletContext() || { isDayMode: false }
-    const [sessions, setSessions] = useState([
-        { id: 1, ip: '192.168.1.100', user: 'Ahmet Y.', location: 'İstanbul, TR', browser: 'Chrome / Windows', status: 'active', threat: 'low' },
-        { id: 2, ip: '45.22.11.90', user: 'Ayşe K.', location: 'Ankara, TR', browser: 'Safari / iOS', status: 'active', threat: 'low' },
-        { id: 3, ip: '104.28.19.11', user: 'Mehmet C.', location: 'Bilinmeyen (VPN)', browser: 'Firefox / Linux', status: 'suspicious', threat: 'high' },
-    ])
+    const [sessions, setSessions] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [search, setSearch] = useState('')
+
+    useEffect(() => {
+        fetchSessions()
+    }, [])
+
+    const fetchSessions = async () => {
+        try {
+            const res = await adminAPI.getUserSessions()
+            if (res.success) {
+                setSessions(res.sessions)
+            }
+        } catch (error) {
+            toast.error('Oturumlar yüklenemedi')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Bu oturumu kapatmak istediğinize emin misiniz?')) return
+        try {
+            const res = await adminAPI.deleteUserSession(id)
+            if (res.success) {
+                setSessions(sessions.filter(s => s._id !== id))
+                toast.success('Oturum kapatıldı')
+            }
+        } catch (error) {
+            toast.error('Oturum kapatılamadı')
+        }
+    }
+
+    const handleDeleteAll = async () => {
+        if (!window.confirm('TÜM oturumları kapatmak istediğinize emin misiniz? (Acil durum)')) return
+        try {
+            const res = await adminAPI.deleteAllUserSessions()
+            if (res.success) {
+                setSessions([])
+                toast.success('Tüm oturumlar kapatıldı')
+            }
+        } catch (error) {
+            toast.error('Oturumlar kapatılamadı')
+        }
+    }
+
+    const filteredSessions = sessions.filter(session => 
+        (session.user?.toLowerCase() || '').includes(search.toLowerCase()) || 
+        (session.ip?.toLowerCase() || '').includes(search.toLowerCase())
+    )
+
 
     return (
         <div className="space-y-6 font-primary">
@@ -17,7 +67,7 @@ export default function SessionsPage() {
                     <h2 className={`text-2xl font-semibold mb-1 ${isDayMode ? 'text-slate-900' : 'text-white'}`}>Aktif Oturumlar & Güvenlik</h2>
                     <p className={`text-sm ${isDayMode ? 'text-slate-500' : 'text-gray-400'}`}>Sistemde çevrimiçi olan kullanıcıları izleyin ve şüpheli işlemlere müdahale edin.</p>
                 </div>
-                <button className="px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all">
+                <button onClick={handleDeleteAll} className="px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-medium bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
                     <Power className="w-4 h-4" /> Tümünü Kapat (Acil)
                 </button>
             </div>
@@ -26,7 +76,13 @@ export default function SessionsPage() {
                 <div className={`p-4 border-b flex justify-between items-center ${isDayMode ? 'border-slate-200' : 'border-white/5'}`}>
                     <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border w-64 ${isDayMode ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-white/5 border-white/10 text-white'}`}>
                         <Search className="w-4 h-4 opacity-50" />
-                        <input type="text" placeholder="IP veya Kullanıcı ara..." className="bg-transparent border-none outline-none text-sm w-full" />
+                        <input 
+                            type="text" 
+                            placeholder="IP veya Kullanıcı ara..." 
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="bg-transparent border-none outline-none text-sm w-full" 
+                        />
                     </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -41,8 +97,16 @@ export default function SessionsPage() {
                             </tr>
                         </thead>
                         <tbody className={`divide-y ${isDayMode ? 'divide-slate-200' : 'divide-white/5'}`}>
-                            {sessions.map((session) => (
-                                <tr key={session.id} className={isDayMode ? 'hover:bg-slate-50' : 'hover:bg-white/5'}>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="5" className="text-center py-8 text-slate-500">Yükleniyor...</td>
+                                </tr>
+                            ) : filteredSessions.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="text-center py-8 text-slate-500">Kayıtlı oturum bulunamadı.</td>
+                                </tr>
+                            ) : filteredSessions.map((session) => (
+                                <tr key={session._id} className={isDayMode ? 'hover:bg-slate-50' : 'hover:bg-white/5'}>
                                     <td className={`p-4 font-semibold ${isDayMode ? 'text-slate-900' : 'text-white'}`}>{session.user}</td>
                                     <td className="p-4">
                                         <div className={isDayMode ? 'text-slate-900' : 'text-gray-300'}>{session.ip}</div>
@@ -61,7 +125,7 @@ export default function SessionsPage() {
                                         )}
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
+                                        <button onClick={() => handleDelete(session._id)} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors">
                                             Oturumu Kapat
                                         </button>
                                     </td>

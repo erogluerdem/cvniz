@@ -1,15 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig({
   plugins: [
-    react(),
-    visualizer({
-      open: false,
-      gzipSize: true,
-      brotliSize: true,
-    })
+    react()
   ],
   server: {
     proxy: {
@@ -54,23 +48,10 @@ export default defineConfig({
         }
       }
     },
-    // Compression settings
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info']
-      },
-      format: {
-        comments: false
-      }
-    },
-    // Source map optimization
-    sourcemap: process.env.NODE_ENV === 'development',
-    // Build optimizations
+    minify: 'esbuild',
+    sourcemap: false,
     cssCodeSplit: true,
-    reportCompressedSize: true,
+    reportCompressedSize: false,
     chunkSizeWarningLimit: 1000
   },
   // Performance hints

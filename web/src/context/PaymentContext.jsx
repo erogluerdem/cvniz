@@ -43,7 +43,7 @@ const COUPONS = {
 }
 
 export function PaymentProvider({ children }) {
-    const { user, updateUser } = useAuth()
+    const { user, updateUser, loading: authLoading } = useAuth()
     const [payments, setPayments] = useState([])
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [billingCycle, setBillingCycle] = useState('yearly') // monthly, yearly, lifetime
@@ -52,12 +52,12 @@ export function PaymentProvider({ children }) {
 
     // Load payments from backend
     useEffect(() => {
-        if (user) {
+        if (!authLoading && user) {
             loadPayments()
-        } else {
+        } else if (!authLoading && !user) {
             setPayments([])
         }
-    }, [user])
+    }, [user, authLoading])
 
     const loadPayments = async () => {
         try {

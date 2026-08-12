@@ -375,8 +375,11 @@ export default function TemplatesPage() {
           >
             <Plus className="w-5 h-5 shadow-inner" /> YENİ ŞABLON
           </button>
+        </div>
       </div>
- <div className="grid grid-cols-12 gap-8 h-[calc(100vh-320px)]">
+
+      {showModal && (
+        <div className="grid grid-cols-12 gap-8 h-[calc(100vh-320px)]">
  {/* Sidebar Navigation for Theme Sections */}
  <div className="col-span-3 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
  {[
@@ -721,7 +724,6 @@ export default function TemplatesPage() {
  </div>
  </div>
  ))}
- </div>
  </div>
  </div>
  </div>

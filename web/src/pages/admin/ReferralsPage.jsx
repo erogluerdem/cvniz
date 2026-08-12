@@ -25,127 +25,131 @@ export default function ReferralsPage() {
   const { toast, confirm } = useToast()
   const { isDayMode } = useOutletContext() || { isDayMode: false }
   const [referrals, setReferrals] = useState([])
- const [stats, setStats] = useState({ totalReferrals: 0, converted: 0, pending: 0, totalEarnings: 0, conversionRate: 0})
- const [topReferrers, setTopReferrers] = useState([])
- const [loading, setLoading] = useState(true)
- const [searchQuery, setSearchQuery] = useState('')
- const [activeFilter, setActiveFilter] = useState('all')
- const [showSettings, setShowSettings] = useState(false)
- const [settings, setSettings] = useState({
- enabled: true,
- referrerReward: 20,
- referredReward: 10,
- maxRewards: 1000
-})
- const [copiedCode, setCopiedCode] = useState(null)
+  const [stats, setStats] = useState({ totalReferrals: 0, converted: 0, pending: 0, totalEarnings: 0, conversionRate: 0 })
+  const [topReferrers, setTopReferrers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeFilter, setActiveFilter] = useState('all')
+  const [showSettings, setShowSettings] = useState(false)
+  const [settings, setSettings] = useState({
+    enabled: true,
+    referrerReward: 20,
+    referredReward: 10,
+    maxRewards: 1000
+  })
+  const [copiedCode, setCopiedCode] = useState(null)
 
- useEffect(() => {
- fetchData()
-}, [])
+  useEffect(() => {
+    fetchData()
+  }, [])
 
- const fetchData = async () => {
- setLoading(true)
- try {
- const [referralsRes, statsRes] = await Promise.all([
- adminAPI.getReferrals(),
- adminAPI.getReferralStats()
- ])
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      const [referralsRes, statsRes] = await Promise.all([
+        adminAPI.getReferrals(),
+        adminAPI.getReferralStats()
+      ])
 
- if (referralsRes.success) setReferrals(referralsRes.referrals)
- if (statsRes.success) {
- setStats(statsRes.stats)
- setTopReferrers(statsRes.topReferrers || [])
-}
-} catch (error) {
- toast.error('Veriler yüklenirken hata: ' + error.message)
-} finally {
- setLoading(false)
-}
-}
+      if (referralsRes.success) setReferrals(referralsRes.referrals)
+      if (statsRes.success) {
+        setStats(statsRes.stats)
+        setTopReferrers(statsRes.topReferrers || [])
+      }
+    } catch (error) {
+      toast.error('Veriler yüklenirken hata: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
- const copyCode = (code) => {
- navigator.clipboard.writeText(code)
- setCopiedCode(code)
- toast.success('Referans kodu kopyalandı!')
- setTimeout(() => setCopiedCode(null), 2000)
-}
+  const copyCode = (code) => {
+    navigator.clipboard.writeText(code)
+    setCopiedCode(code)
+    toast.success('Referans kodu kopyalandı!')
+    setTimeout(() => setCopiedCode(null), 2000)
+  }
 
- const updateReferralStatus = async (id, status) => {
- try {
- const response = await adminAPI.updateReferral(id, { status})
- if (response.success) {
- setReferrals(referrals.map(r => r._id === id ? { ...r, status} : r))
- toast.success('Referans durumu güncellendi.')
- fetchData() // Refresh stats
-}
-} catch (error) {
- toast.error('Durum güncellenemedi.')
-}
-}
+  const updateReferralStatus = async (id, status) => {
+    try {
+      const response = await adminAPI.updateReferral(id, { status })
+      if (response.success) {
+        setReferrals(referrals.map(r => r._id === id ? { ...r, status } : r))
+        toast.success('Referans durumu güncellendi.')
+        fetchData()
+      }
+    } catch (error) {
+      toast.error('Durum güncellenemedi.')
+    }
+  }
 
- const markAsPaid = async (id) => {
- try {
- const response = await adminAPI.updateReferral(id, { isPaid: true, paidAt: new Date()})
- if (response.success) {
- setReferrals(referrals.map(r => r._id === id ? { ...r, isPaid: true} : r))
- toast.success('Ödeme tamamlandı olarak işaretlendi.')
-}
-} catch (error) {
- toast.error('İşlem başarısız.')
-}
-}
+  const markAsPaid = async (id) => {
+    try {
+      const response = await adminAPI.updateReferral(id, { isPaid: true, paidAt: new Date() })
+      if (response.success) {
+        setReferrals(referrals.map(r => r._id === id ? { ...r, isPaid: true } : r))
+        toast.success('Ödeme tamamlandı olarak işaretlendi.')
+      }
+    } catch (error) {
+      toast.error('İşlem başarısız.')
+    }
+  }
 
- const deleteReferral = async (id) => {
- const confirmed = await confirm({
- title: 'Referansı Sil',
- message: 'Bu referansı kalıcı olarak silmek istediğinize emin misiniz?',
- confirmText: 'Evet, Sil',
- type: 'danger'
-})
- if (!confirmed) return
+  const deleteReferral = async (id) => {
+    const confirmed = await confirm({
+      title: 'Referansı Sil',
+      message: 'Bu referansı kalıcı olarak silmek istediğinize emin misiniz?',
+      confirmText: 'Evet, Sil',
+      type: 'danger'
+    })
+    if (!confirmed) return
 
- try {
- const response = await adminAPI.deleteReferral(id)
- if (response.success) {
- setReferrals(referrals.filter(r => r._id !== id))
- toast.success('Referans silindi.')
-}
-} catch (error) {
- toast.error('Referans silinemedi.')
-}
-}
+    try {
+      const response = await adminAPI.deleteReferral(id)
+      if (response.success) {
+        setReferrals(referrals.filter(r => r._id !== id))
+        toast.success('Referans silindi.')
+      }
+    } catch (error) {
+      toast.error('Referans silinemedi.')
+    }
+  }
 
- const saveSettings = async () => {
- try {
- // Settings API entegrasyonu gerekiyor
- toast.success('Ayarlar kaydedildi.')
- setShowSettings(false)
-} catch (error) {
- toast.error('Ayarlar kaydedilemedi.')
-}
-}
+  const saveSettings = async () => {
+    try {
+      toast.success('Ayarlar kaydedildi.')
+      setShowSettings(false)
+    } catch (error) {
+      toast.error('Ayarlar kaydedilemedi.')
+    }
+  }
 
- const filteredReferrals = referrals.filter(r => {
- const matchesSearch =
- r.referralCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
- r.referrer?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
- r.referred?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredReferrals = referrals.filter(r => {
+    const matchesSearch =
+      r.referralCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.referrer?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.referred?.name?.toLowerCase().includes(searchQuery.toLowerCase())
 
- if (activeFilter === 'all') return matchesSearch
- return matchesSearch && r.status === activeFilter
-})
+    if (activeFilter === 'all') return matchesSearch
+    return matchesSearch && r.status === activeFilter
+  })
 
- if (loading && referrals.length === 0) {
- return (
- <div className="flex flex-col items-center justify-center py-32 gap-6">
- <div className="relative">
- <div className="w-20 h-20 rounded-full border-4 border-purple-500/10 border-t-purple-500 animate-spin"></div>
- <Link2 className="w-8 h-8 text-purple-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
- </div>
- <div className="text-center">
- <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">REFERANSLAR YÜKLENİYOR</h3>
- <p className="text-gray-500 text-xs font-bold uppercase">Veriler senkronize ediliyor...</p>
- </d  return (
+  if (loading && referrals.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-6">
+        <div className="relative">
+          <div className="w-20 h-20 rounded-full border-4 border-purple-500/10 border-t-purple-500 animate-spin"></div>
+          <Link2 className="w-8 h-8 text-purple-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        </div>
+        <div className="text-center">
+          <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">REFERANSLAR YÜKLENİYOR</h3>
+          <p className="text-gray-500 text-xs font-bold uppercase">Veriler senkronize ediliyor...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
     <div className="space-y-6 font-primary">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

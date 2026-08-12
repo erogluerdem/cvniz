@@ -525,6 +525,41 @@ export const adminAPI = {
     createEmailTemplate: (data) => api.post('/admin/email-templates', data),
     updateEmailTemplate: (id, data) => api.put(`/admin/email-templates/${id}`, data),
     deleteEmailTemplate: (id) => api.delete(`/admin/email-templates/${id}`),
+
+    // CRM Deals
+    getCRMDeals: () => api.get('/admin/crm-deals'),
+    createCRMDeal: (data) => api.post('/admin/crm-deals', data),
+    updateCRMDeal: (id, data) => api.put(`/admin/crm-deals/${id}`, data),
+    deleteCRMDeal: (id) => api.delete(`/admin/crm-deals/${id}`),
+
+    // AI Prompts
+    getAIPrompts: () => api.get('/admin/ai-prompts'),
+    createAIPrompt: (data) => api.post('/admin/ai-prompts', data),
+    updateAIPrompt: (id, data) => api.put(`/admin/ai-prompts/${id}`, data),
+    deleteAIPrompt: (id) => api.delete(`/admin/ai-prompts/${id}`),
+
+    // Cron Jobs
+    getCronJobs: () => api.get('/admin/cron-jobs'),
+    createCronJob: (data) => api.post('/admin/cron-jobs', data),
+    updateCronJob: (id, data) => api.put(`/admin/cron-jobs/${id}`, data),
+    deleteCronJob: (id) => api.delete(`/admin/cron-jobs/${id}`),
+
+    // Integrations
+    getIntegrations: () => api.get('/admin/integrations'),
+    createIntegration: (data) => api.post('/admin/integrations', data),
+    updateIntegration: (id, data) => api.put(`/admin/integrations/${id}`, data),
+    deleteIntegration: (id) => api.delete(`/admin/integrations/${id}`),
+
+    // Admin Roles
+    getAdminRoles: () => api.get('/admin/admin-roles'),
+    createAdminRole: (data) => api.post('/admin/admin-roles', data),
+    updateAdminRole: (id, data) => api.put(`/admin/admin-roles/${id}`, data),
+    deleteAdminRole: (id) => api.delete(`/admin/admin-roles/${id}`),
+
+    // User Sessions
+    getUserSessions: () => api.get('/admin/user-sessions'),
+    deleteUserSession: (id) => api.delete(`/admin/user-sessions/${id}`),
+    deleteAllUserSessions: () => api.delete('/admin/user-sessions'),
 };
 
 // ============ AI API ============

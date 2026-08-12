@@ -375,38 +375,7 @@ export default function TemplatesPage() {
           >
             <Plus className="w-5 h-5 shadow-inner" /> YENİ ŞABLON
           </button>
-        </div>
       </div>
-
- <div
- onClick={() => setForm({ ...form, isPremium: !form.isPremium})}
- className={`flex items-center justify-between p-5 rounded-[2rem] border transition-all cursor-pointer ${form.isPremium ? 'bg-amber-500/10 border-amber-500/30' : 'bg-white/5 border-white/10'}`}
- >
- <div className="flex items-center gap-4">
- <div className={`p-3 rounded-2xl ${form.isPremium ? 'bg-amber-500 text-white' : 'bg-white/5 text-gray-500'}`}>
- <Crown className="w-5 h-5" />
- </div>
- <span className={`text-xs font-semibold uppercase tracking-wider ${form.isPremium ? 'text-amber-500' : 'text-gray-500'}`}>PREMİUM ŞABLON</span>
- </div>
- <div className={`w-10 h-6 rounded-full p-1 transition-all ${form.isPremium ? 'bg-amber-500' : 'bg-white/10'}`}>
- <div className={`w-4 h-4 rounded-full bg-white transition-all transform ${form.isPremium ? 'translate-x-4' : ''}`} />
- </div>
- </div>
- </div>
- </div>
-
- <div>
- <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">AÇIKLAMA</label>
- <textarea
- value={form.description || ''}
- onChange={(e) => setForm({ ...form, description: e.target.value})}
- rows={4}
- className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:border-cyan-500/30 transition-all w-full font-bold resize-none"
- placeholder="Şablonun öne çıkan özelliklerini ve kullanım alanlarını açıklayın..."
- />
- </div>
- </div>
- ) : (
  <div className="grid grid-cols-12 gap-8 h-[calc(100vh-320px)]">
  {/* Sidebar Navigation for Theme Sections */}
  <div className="col-span-3 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
@@ -755,7 +724,6 @@ export default function TemplatesPage() {
  </div>
  </div>
  </div>
-</div>
  </div>
  )}
 

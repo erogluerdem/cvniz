@@ -88,11 +88,11 @@ export default function LiveStatsPage() {
  <div className="w-24 h-24 rounded-full border-4 border-cyan-500/10 border-t-cyan-500 animate-spin"></div>
  <Radio className="w-10 h-10 text-cyan-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
  </div>
- <div className="text-center font-primary">
- <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">Veri Akışı Başlatılıyor</h3>
- <p className="text-gray-500 text-xs font-bold uppercase">Real-time kanalına bağlanılıyor...</p>
- </div>
- </d  return (
+    </div>
+  )
+}
+
+  return (
     <div className="space-y-8 font-primary">
       {/* Header / Control Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

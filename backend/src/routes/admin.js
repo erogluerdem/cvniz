@@ -32,6 +32,12 @@ const FAQ = require('../models/FAQ');
 const CareerPath = require('../models/CareerPath');
 const SEOSettings = require('../models/SEOSettings');
 const Affiliate = require('../models/Affiliate');
+const CRMDeal = require('../models/CRMDeal');
+const AIPrompt = require('../models/AIPrompt');
+const CronJob = require('../models/CronJob');
+const Integration = require('../models/Integration');
+const AdminRole = require('../models/AdminRole');
+const UserSession = require('../models/UserSession');
 const logger = require('../utils/logger');
 const { authenticate, adminOnly } = require('../middleware/auth');
 
@@ -1894,5 +1900,245 @@ router.get('/feedbacks', authenticate, adminOnly, async (req, res) => {
     }
 });
 
-module.exports = router;
+// ============ CRM DEALS MANAGEMENT ============
+router.get('/crm-deals', authenticate, adminOnly, async (req, res) => {
+    try {
+        const deals = await CRMDeal.find().sort({ createdAt: -1 });
+        res.json({ success: true, deals });
+    } catch (error) {
+        console.error('CRM Deals fetch error:', error);
+        res.status(500).json({ success: false, error: 'CRM fırsatları getirilemedi' });
+    }
+});
 
+router.post('/crm-deals', authenticate, adminOnly, async (req, res) => {
+    try {
+        const deal = new CRMDeal(req.body);
+        await deal.save();
+        res.json({ success: true, deal });
+    } catch (error) {
+        console.error('CRM Deal create error:', error);
+        res.status(500).json({ success: false, error: 'CRM fırsatı oluşturulamadı' });
+    }
+});
+
+router.put('/crm-deals/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const deal = await CRMDeal.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, deal });
+    } catch (error) {
+        console.error('CRM Deal update error:', error);
+        res.status(500).json({ success: false, error: 'CRM fırsatı güncellenemedi' });
+    }
+});
+
+router.delete('/crm-deals/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await CRMDeal.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('CRM Deal delete error:', error);
+        res.status(500).json({ success: false, error: 'CRM fırsatı silinemedi' });
+    }
+});
+
+// ============ AI PROMPTS MANAGEMENT ============
+router.get('/ai-prompts', authenticate, adminOnly, async (req, res) => {
+    try {
+        const prompts = await AIPrompt.find().sort({ createdAt: -1 });
+        res.json({ success: true, prompts });
+    } catch (error) {
+        console.error('AI Prompts fetch error:', error);
+        res.status(500).json({ success: false, error: 'AI Promptleri getirilemedi' });
+    }
+});
+
+router.post('/ai-prompts', authenticate, adminOnly, async (req, res) => {
+    try {
+        const prompt = new AIPrompt(req.body);
+        await prompt.save();
+        res.json({ success: true, prompt });
+    } catch (error) {
+        console.error('AI Prompt create error:', error);
+        res.status(500).json({ success: false, error: 'AI Prompt oluşturulamadı' });
+    }
+});
+
+router.put('/ai-prompts/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const prompt = await AIPrompt.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, prompt });
+    } catch (error) {
+        console.error('AI Prompt update error:', error);
+        res.status(500).json({ success: false, error: 'AI Prompt güncellenemedi' });
+    }
+});
+
+router.delete('/ai-prompts/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await AIPrompt.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('AI Prompt delete error:', error);
+        res.status(500).json({ success: false, error: 'AI Prompt silinemedi' });
+    }
+});
+
+// ============ CRON JOBS MANAGEMENT ============
+router.get('/cron-jobs', authenticate, adminOnly, async (req, res) => {
+    try {
+        const jobs = await CronJob.find().sort({ createdAt: -1 });
+        res.json({ success: true, jobs });
+    } catch (error) {
+        console.error('Cron Jobs fetch error:', error);
+        res.status(500).json({ success: false, error: 'Zamanlanmış görevler getirilemedi' });
+    }
+});
+
+router.post('/cron-jobs', authenticate, adminOnly, async (req, res) => {
+    try {
+        const job = new CronJob(req.body);
+        await job.save();
+        res.json({ success: true, job });
+    } catch (error) {
+        console.error('Cron Job create error:', error);
+        res.status(500).json({ success: false, error: 'Zamanlanmış görev oluşturulamadı' });
+    }
+});
+
+router.put('/cron-jobs/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const job = await CronJob.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, job });
+    } catch (error) {
+        console.error('Cron Job update error:', error);
+        res.status(500).json({ success: false, error: 'Zamanlanmış görev güncellenemedi' });
+    }
+});
+
+router.delete('/cron-jobs/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await CronJob.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Cron Job delete error:', error);
+        res.status(500).json({ success: false, error: 'Zamanlanmış görev silinemedi' });
+    }
+});
+
+// ============ INTEGRATIONS MANAGEMENT ============
+router.get('/integrations', authenticate, adminOnly, async (req, res) => {
+    try {
+        const integrations = await Integration.find().sort({ createdAt: -1 });
+        res.json({ success: true, integrations });
+    } catch (error) {
+        console.error('Integrations fetch error:', error);
+        res.status(500).json({ success: false, error: 'Entegrasyonlar getirilemedi' });
+    }
+});
+
+router.post('/integrations', authenticate, adminOnly, async (req, res) => {
+    try {
+        const integration = new Integration(req.body);
+        await integration.save();
+        res.json({ success: true, integration });
+    } catch (error) {
+        console.error('Integration create error:', error);
+        res.status(500).json({ success: false, error: 'Entegrasyon oluşturulamadı' });
+    }
+});
+
+router.put('/integrations/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const integration = await Integration.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, integration });
+    } catch (error) {
+        console.error('Integration update error:', error);
+        res.status(500).json({ success: false, error: 'Entegrasyon güncellenemedi' });
+    }
+});
+
+router.delete('/integrations/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await Integration.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Integration delete error:', error);
+        res.status(500).json({ success: false, error: 'Entegrasyon silinemedi' });
+    }
+});
+
+// ============ ADMIN ROLES MANAGEMENT ============
+router.get('/admin-roles', authenticate, adminOnly, async (req, res) => {
+    try {
+        const roles = await AdminRole.find().sort({ createdAt: -1 });
+        res.json({ success: true, roles });
+    } catch (error) {
+        console.error('Admin Roles fetch error:', error);
+        res.status(500).json({ success: false, error: 'Roller getirilemedi' });
+    }
+});
+
+router.post('/admin-roles', authenticate, adminOnly, async (req, res) => {
+    try {
+        const role = new AdminRole(req.body);
+        await role.save();
+        res.json({ success: true, role });
+    } catch (error) {
+        console.error('Admin Role create error:', error);
+        res.status(500).json({ success: false, error: 'Rol oluşturulamadı' });
+    }
+});
+
+router.put('/admin-roles/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        const role = await AdminRole.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, role });
+    } catch (error) {
+        console.error('Admin Role update error:', error);
+        res.status(500).json({ success: false, error: 'Rol güncellenemedi' });
+    }
+});
+
+router.delete('/admin-roles/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await AdminRole.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Admin Role delete error:', error);
+        res.status(500).json({ success: false, error: 'Rol silinemedi' });
+    }
+});
+
+// ============ USER SESSIONS MANAGEMENT ============
+router.get('/user-sessions', authenticate, adminOnly, async (req, res) => {
+    try {
+        const sessions = await UserSession.find().sort({ createdAt: -1 });
+        res.json({ success: true, sessions });
+    } catch (error) {
+        console.error('User Sessions fetch error:', error);
+        res.status(500).json({ success: false, error: 'Oturumlar getirilemedi' });
+    }
+});
+
+router.delete('/user-sessions/:id', authenticate, adminOnly, async (req, res) => {
+    try {
+        await UserSession.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('User Session delete error:', error);
+        res.status(500).json({ success: false, error: 'Oturum kapatılamadı' });
+    }
+});
+
+router.delete('/user-sessions', authenticate, adminOnly, async (req, res) => {
+    try {
+        await UserSession.deleteMany({});
+        res.json({ success: true });
+    } catch (error) {
+        console.error('User Sessions bulk delete error:', error);
+        res.status(500).json({ success: false, error: 'Oturumlar kapatılamadı' });
+    }
+});
+
+module.exports = router;

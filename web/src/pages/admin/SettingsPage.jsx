@@ -116,7 +116,11 @@ export default function SettingsPage() {
  <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">Sistem Parametreleri Yükleniyor</h3>
  <p className="text-gray-500 text-xs font-bold uppercase">Konfigürasyon haritası okunuyor...</p>
  </div>
- </  const renderSettingField = (key, label, description, type = 'text', options = null) => {
+    </div>
+  )
+}
+
+  const renderSettingField = (key, label, description, type = 'text', options = null) => {
     const value = settings[key]
 
     return (

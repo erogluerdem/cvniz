@@ -16,7 +16,7 @@ export default function IndustrialRawTemplate({ data }) {
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <div className="absolute inset-0 bg-[#d4d4d8]" />
                 {/* Concrete Texture Simulation */}
-                <div className="absolute inset-0 opacity-[0.4] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/concrete-wall.png')]" />
+                <div className="absolute inset-0 opacity-[0.4] mix-blend-multiply" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/concrete-wall.png')" }} />
                 <div className="absolute inset-0 opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #a1a1aa 0%, transparent 100%)', backgroundSize: '100% 100%' }} />
 
                 {/* Safety Stripes in background corners */}

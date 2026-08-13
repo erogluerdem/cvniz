@@ -144,7 +144,11 @@ export default function ThemePage() {
  const updateUI = (key, value) => {
  setSelectedTheme(prev => ({
  ...prev,
- ui: { ...prev.ui, [key]: value}  if (loading) {
+ ui: { ...prev.ui, [key]: value}
+ }))
+}
+
+ if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-6">
         <div className="relative">
@@ -531,6 +535,7 @@ export default function ThemePage() {
             </div>
           </div>
         </div>
+    </div>
     </div>
   )
 }

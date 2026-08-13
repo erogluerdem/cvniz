@@ -40,7 +40,7 @@ export default function EpigrapherTemplate({ data, theme = {}, highlightedField 
             {/* STONE OVERLAY */}
             <div className="fixed inset-0 pointer-events-none z-0">
                 <div className="absolute inset-0 bg-[#e4e4e7]" />
-                <motion.div variants={stoneVariants} animate="animate" className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/pave.png')] opacity-10" />
+                <motion.div variants={stoneVariants} animate="animate" className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/pave.png')" }} />
                 <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-transparent via-slate-800/5 to-slate-800/10" />
             </div>
 

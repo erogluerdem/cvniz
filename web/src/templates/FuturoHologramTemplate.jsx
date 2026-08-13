@@ -180,7 +180,7 @@ export default function FuturoHologramTemplate({ data }) {
                                                             whileInView={{ width: `${100 - i * 5}%` }}
                                                             className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-600 to-indigo-500 shadow-[0_0_10px_#06b6d4]"
                                                         />
-                                                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/60-lines.png')] opacity-30 pointer-events-none" />
+                                                        <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/60-lines.png')" }} />
                                                     </div>
                                                 </div>
                                             ))}

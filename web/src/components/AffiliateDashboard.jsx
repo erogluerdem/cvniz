@@ -105,7 +105,7 @@ export default function AffiliateDashboard() {
             <div className="space-y-8">
                 {/* Hero Section */}
                 <div className="relative bg-gradient-to-br from-purple-900/50 via-gray-900 to-cyan-900/50 rounded-3xl p-8 md:p-12 overflow-hidden border border-purple-500/30">
-                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('/grid.svg')" }} />
                     
                     <div className="relative z-10 max-w-2xl">
                         <div className="inline-flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-6">

@@ -42,7 +42,7 @@ export default function ArtRestorerTemplate({ data, theme = {}, highlightedField
             {/* REVEAL OVERLAY */}
             <div className="fixed inset-0 pointer-events-none z-0">
                 <motion.div variants={revealVariants} animate="animate" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[#b45309]/5 rounded-full blur-[120px]" />
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/canvas.png')] opacity-10" />
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/canvas.png')" }} />
                 <div className="absolute inset-0 bg-[#fef3c7]/60" />
             </div>
 

@@ -96,7 +96,9 @@ export default function LogsPage() {
  <p className="text-gray-500 text-xs font-bold uppercase">Sistem kayıtları taranıyor...</p>
  </div>
  </div>
- )  return (
+  )
+}
+  return (
     <div className="space-y-6">
       {/* Header Area */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 font-primary">

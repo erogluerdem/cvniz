@@ -521,7 +521,7 @@ export default function FeaturesPage() {
                 <div className="max-w-5xl mx-auto">
                     <div className={`rounded-[3rem] md:rounded-[4rem] p-10 md:p-24 relative overflow-hidden text-center shadow-2xl transition-all ${isDayMode ? 'bg-white border border-slate-200/70 shadow-[0_30px_60px_rgba(168,85,247,0.15)]' : 'glass-card border-cyan-500/30'}`}>
                         {/* Background Mesh/Patterns */}
-                        <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMCIvPgo8Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjUiLz4KPC9zdmc+')]"></div>
+                        <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMCIvPgo8Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjUiLz4KPC9zdmc+')" }}></div>
                         
                         <div className="relative z-10">
                             <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-8 md:mb-10 shadow-xl border ${isDayMode ? 'bg-gradient-to-br from-purple-500 to-pink-500 border-white text-white shadow-purple-500/30' : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400'}`}>

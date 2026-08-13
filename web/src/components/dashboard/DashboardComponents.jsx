@@ -316,7 +316,7 @@ export function OnboardingTour({ isOpen, onClose, step, setStep }) {
                     {/* Visual Left Side */}
                     <div className="relative hidden md:flex w-2/5 p-8 items-center justify-center overflow-hidden border-r border-white/5">
                         <div className="absolute inset-0 bg-white/[0.02]"></div>
-                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+                        <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/cubes.png')" }}></div>
                         <motion.div 
                             key={`bg-${step}`}
                             initial={{ scale: 0.8, opacity: 0 }}

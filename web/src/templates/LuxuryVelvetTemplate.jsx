@@ -27,7 +27,7 @@ export default function LuxuryVelvetTemplate({ data }) {
                 />
 
                 {/* Subtle Grain / Texture */}
-                <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+                <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/stardust.png')" }} />
 
                 {/* Floating Gold Accents */}
                 <motion.div

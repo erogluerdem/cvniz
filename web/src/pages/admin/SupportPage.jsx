@@ -127,7 +127,10 @@ export default function SupportPage() {
  total: (allTickets || []).length,
  open: (allTickets || []).filter(t => t.status === 'open').length,
  inProgress: (allTickets || []).filter(t => t.status === 'in_progress').length,
- closed: (allTickets || []).filter(t => t.status === 'resolved' || t.status =  return (
+  closed: (allTickets || []).filter(t => t.status === 'resolved' || t.status === 'closed').length
+ }
+
+  return (
     <div className="space-y-6 font-primary">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

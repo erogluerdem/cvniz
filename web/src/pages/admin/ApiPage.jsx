@@ -25,146 +25,144 @@ export default function ApiPage() {
   const { toast, confirm } = useToast()
   const { isDayMode } = useOutletContext() || { isDayMode: false }
   const [loading, setLoading] = useState(true)
- const [apiKeys, setApiKeys] = useState([])
- const [stats, setStats] = useState({ total: 0, active: 0, totalRequests: 0, version: 'v1.0'})
- const [showModal, setShowModal] = useState(false)
- const [visibleKeys, setVisibleKeys] = useState({})
- const [copiedId, setCopiedId] = useState(null)
- const [newKeyData, setNewKeyData] = useState({
- name: '',
- environment: 'production',
- permissions: ['read'],
- rateLimit: 1000,
- description: ''
-})
 
- useEffect(() => {
- fetchData()
-}, [])
+  const [apiKeys, setApiKeys] = useState([])
+  const [stats, setStats] = useState({ total: 0, active: 0, totalRequests: 0, version: 'v1.0'})
+  const [showModal, setShowModal] = useState(false)
+  const [visibleKeys, setVisibleKeys] = useState({})
+  const [copiedId, setCopiedId] = useState(null)
+  const [newKeyData, setNewKeyData] = useState({
+    name: '',
+    environment: 'production',
+    permissions: ['read'],
+    rateLimit: 1000,
+    description: ''
+  })
 
- const fetchData = async () => {
- setLoading(true)
- try {
- const [keysRes, statsRes] = await Promise.all([
- adminAPI.getApiKeys(),
- adminAPI.getApiKeyStats()
- ])
- if (keysRes.success) setApiKeys(keysRes.apiKeys)
- if (statsRes.success) setStats(statsRes.stats)
-} catch (error) {
- toast.error('Veriler yüklenirken hata: ' + error.message)
-} finally {
- setLoading(false)
-}
-}
+  useEffect(() => {
+    fetchData()
+  }, [])
 
- const toggleKeyVisibility = (id) => {
- setVisibleKeys(prev => ({ ...prev, [id]: !prev[id]}))
-}
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      const [keysRes, statsRes] = await Promise.all([
+        adminAPI.getApiKeys(),
+        adminAPI.getApiKeyStats()
+      ])
+      if (keysRes.success) setApiKeys(keysRes.apiKeys)
+      if (statsRes.success) setStats(statsRes.stats)
+    } catch (error) {
+      toast.error('Veriler yüklenirken hata: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
- const copyKey = (id, key) => {
- navigator.clipboard.writeText(key)
- setCopiedId(id)
- toast.success('API anahtarı kopyalandı!')
- setTimeout(() => setCopiedId(null), 2000)
-}
+  const toggleKeyVisibility = (id) => {
+    setVisibleKeys(prev => ({ ...prev, [id]: !prev[id]}))
+  }
 
- const toggleStatus = async (apiKey) => {
- try {
- const newStatus = apiKey.status === 'active' ? 'inactive' : 'active'
- const response = await adminAPI.updateApiKey(apiKey._id, { status: newStatus})
- if (response.success) {
- setApiKeys(keys => keys.map(k => k._id === apiKey._id ? response.apiKey : k))
- toast.success(`Anahtar ${newStatus === 'active' ? 'aktif' : 'pasif'} edildi!`)
-}
-} catch (error) {
- toast.error('Durum güncellenemedi')
-}
-}
+  const copyKey = (id, key) => {
+    navigator.clipboard.writeText(key)
+    setCopiedId(id)
+    toast.success('API anahtarı kopyalandı!')
+    setTimeout(() => setCopiedId(null), 2000)
+  }
 
- const handleRegenerate = async (id) => {
- const confirmed = await confirm({
- title: 'Anahtarı Yenile',
- message: 'Bu anahtar yenilenecek. Eski anahtar geçersiz olacak. Devam etmek istiyor musunuz?',
- confirmText: 'Evet, Yenile',
- type: 'warning'
-})
- if (!confirmed) return
+  const toggleStatus = async (apiKey) => {
+    try {
+      const newStatus = apiKey.status === 'active' ? 'inactive' : 'active'
+      const response = await adminAPI.updateApiKey(apiKey._id, { status: newStatus})
+      if (response.success) {
+        setApiKeys(keys => keys.map(k => k._id === apiKey._id ? response.apiKey : k))
+        toast.success(`Anahtar ${newStatus === 'active' ? 'aktif' : 'pasif'} edildi!`)
+      }
+    } catch (error) {
+      toast.error('Durum güncellenemedi')
+    }
+  }
 
- try {
- const response = await adminAPI.regenerateApiKey(id)
- if (response.success) {
- setApiKeys(keys => keys.map(k => k._id === id ? response.apiKey : k))
- setVisibleKeys(prev => ({ ...prev, [id]: true}))
- toast.success('API anahtarı yenilendi! Yeni anahtarı kopyalamayı unutmayın.')
-}
-} catch (error) {
- toast.error('Anahtar yenilenemedi')
-}
-}
+  const handleRegenerate = async (id) => {
+    const confirmed = await confirm({
+      title: 'Anahtarı Yenile',
+      message: 'Bu anahtar yenilenecek. Eski anahtar geçersiz olacak. Devam etmek istiyor musunuz?',
+      confirmText: 'Evet, Yenile',
+      type: 'warning'
+    })
+    if (!confirmed) return
 
- const handleDelete = async (id) => {
- const confirmed = await confirm({
- title: 'Anahtarı Sil',
- message: 'Bu API anahtarı kalıcı olarak silinecek. Bu işlem geri alınamaz!',
- confirmText: 'Evet, Sil',
- type: 'danger'
-})
- if (!confirmed) return
+    try {
+      const response = await adminAPI.regenerateApiKey(id)
+      if (response.success) {
+        setApiKeys(keys => keys.map(k => k._id === id ? response.apiKey : k))
+        setVisibleKeys(prev => ({ ...prev, [id]: true}))
+        toast.success('API anahtarı yenilendi! Yeni anahtarı kopyalamayı unutmayın.')
+      }
+    } catch (error) {
+      toast.error('Anahtar yenilenemedi')
+    }
+  }
 
- try {
- const response = await adminAPI.deleteApiKey(id)
- if (response.success) {
- setApiKeys(keys => keys.filter(k => k._id !== id))
- toast.success('API anahtarı silindi!')
- fetchData()
-}
-} catch (error) {
- toast.error('Anahtar silinemedi')
-}
-}
+  const handleDelete = async (id) => {
+    const confirmed = await confirm({
+      title: 'Anahtarı Sil',
+      message: 'Bu API anahtarı kalıcı olarak silinecek. Bu işlem geri alınamaz!',
+      confirmText: 'Evet, Sil',
+      type: 'danger'
+    })
+    if (!confirmed) return
 
- const handleCreate = async (e) => {
- e.preventDefault()
- if (!newKeyData.name.trim()) {
- toast.error('Anahtar adı gerekli')
- return
-}
+    try {
+      const response = await adminAPI.deleteApiKey(id)
+      if (response.success) {
+        setApiKeys(keys => keys.filter(k => k._id !== id))
+        toast.success('API anahtarı silindi!')
+        fetchData()
+      }
+    } catch (error) {
+      toast.error('Anahtar silinemedi')
+    }
+  }
 
- try {
- const response = await adminAPI.createApiKey(newKeyData)
- if (response.success) {
- setApiKeys([response.apiKey, ...apiKeys])
- setVisibleKeys(prev => ({ ...prev, [response.apiKey._id]: true}))
- setNewKeyData({ name: '', environment: 'production', permissions: ['read'], rateLimit: 1000, description: ''})
- setShowModal(false)
- toast.success('API anahtarı oluşturuldu! Anahtarı güvenli bir yere kaydedin.')
- fetchData()
-}
-} catch (error) {
- toast.error('Anahtar oluşturulamadı')
-}
-}
+  const handleCreate = async (e) => {
+    e.preventDefault()
+    if (!newKeyData.name.trim()) {
+      toast.error('Anahtar adı gerekli')
+      return
+    }
 
- const togglePermission = (perm) => {
- setNewKeyData(prev => ({
- ...prev,
- permissions: prev.permissions.includes(perm)
- ? prev.permissions.filter(p => p !== perm)
- : [...prev.permissions, perm]
-}))
-}
+    try {
+      const response = await adminAPI.createApiKey(newKeyData)
+      if (response.success) {
+        setApiKeys([response.apiKey, ...apiKeys])
+        setVisibleKeys(prev => ({ ...prev, [response.apiKey._id]: true}))
+        setNewKeyData({ name: '', environment: 'production', permissions: ['read'], rateLimit: 1000, description: ''})
+        setShowModal(false)
+        toast.success('API anahtarı oluşturuldu! Anahtarı güvenli bir yere kaydedin.')
+        fetchData()
+      }
+    } catch (error) {
+      toast.error('Anahtar oluşturulamadı')
+    }
+  }
 
- if (loading && apiKeys.length === 0) {
- return (
- <div className="flex flex-col items-center justify-center py-32 gap-6">
- <div className="relative">
- <div className="w-20 h-20 rounded-full border-4 border-purple-500/10 border-t-purple-500 animate-spin"></div>
- <Key className="w-8 h-8 text-purple-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
- </div>
- <div className="text-center">
- <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">API ANAHTARLARI YÜKLENİYOR</h3>
- <p className="text-gray-500 text-xs font-bold uppercase">Veriler alınıyor...</  return (
+  if (loading && apiKeys.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-6">
+        <div className="relative">
+          <div className="w-20 h-20 rounded-full border-4 border-purple-500/10 border-t-purple-500 animate-spin"></div>
+          <Key className="w-8 h-8 text-purple-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        </div>
+        <div className="text-center">
+          <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">API ANAHTARLARI YÜKLENİYOR</h3>
+          <p className="text-gray-500 text-xs font-bold uppercase">Veriler alınıyor...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -431,15 +429,4 @@ export default function ApiPage() {
       )}
     </div>
   )
-} transition-all"
- >
- ANAHTAR OLUŞTUR
- </button>
- </div>
- </form>
- </div>
- </div>
- )}
- </div>
- )
 }

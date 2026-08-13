@@ -303,7 +303,7 @@ export default function SupportPage() {
             </div>
 
             {/* Main Content: Ticket Detail */}
-            <div className={`flex-1 flex flex-col ${isDayMode ? 'bg-gradient-to-b from-white via-slate-50 to-white' : "bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]"}`}>
+            <div className={`flex-1 flex flex-col ${isDayMode ? 'bg-gradient-to-b from-white via-slate-50 to-white' : ""}`} style={!isDayMode ? { backgroundImage: "url('https://www.transparenttextures.com/patterns/dark-matter.png')" } : {}}>
                 <AnimatePresence mode="wait">
                     {selectedTicket ? (
                         <motion.div

@@ -177,7 +177,12 @@ export default function EnterprisePage() {
  </div>
  <div className="text-center">
  <h3 className="text-white font-semibold uppercase tracking-wider text-xs mb-1">KURUMSAL HESAPLAR YÜKLENİYOR</h3>
- <p className="text-gray-500 text-xs font-bold uppercase">Veriler senkronize ediliyor...</p  return (
+ <p className="text-gray-500 text-xs font-bold uppercase">Veriler senkronize ediliyor...</p>
+ </div>
+ </div>
+ )
+}
+  return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

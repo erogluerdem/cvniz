@@ -71,7 +71,7 @@ Projeyi hiçbir reklam veya kısaltma linki olmadan doğrudan Cloudflare R2 yük
 🔗 **Ürün Detayları ve Doğrudan İndirme:**  
 👉 **[https://erdemeroglu.com.tr/yazilimlar/cvniz](https://erdemeroglu.com.tr/yazilimlar/cvniz)**
 
-*(Not: Sayfada **"Google ile Hızlı Giriş Yap & İndir"** butonuna basarak 1 saniyede tek tıkla üye olabilir ve 73 MB'lık tam açık kaynak paketini anında indirebilirsiniz. İndirdiğiniz anda e-posta adresiniz otomatik olarak çekiliş veri tabanımıza kaydedilecektir.)*
+*(Not: Sayfada **"Google ile Hızlı Giriş Yap & İndir"** butonuna basarak 1 saniyede tek tıkla üye olabilir ve 60 MB'lık temiz açık kaynak paketini anında indirebilirsiniz. İndirdiğiniz anda e-posta adresiniz otomatik olarak çekiliş veri tabanımıza kaydedilecektir.)*
 
 ---
 

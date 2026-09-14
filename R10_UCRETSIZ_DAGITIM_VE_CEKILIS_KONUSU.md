@@ -1,117 +1,131 @@
-# 🎁 [DEV HEDİYE / AÇIK KAYNAK] Yapay Zeka Destekli CV & Kariyer SaaS Platformumuz (Web + Mobil + Backend + BI) Tamamen Ücretsiz! + cvniz.com Alan Adı Çekilişle Hediye!
+# 🎁 [AÇIK KAYNAK / ÜCRETSİZ DAĞITIM] Yapay Zeka Destekli CV & Kariyer SaaS Platformumuz (Web + Mobil + Backend + BI) Tamamen Ücretsiz! + cvniz.com Alan Adı Bir Girişimciye Hediye!
 
 ---
 
 **Değerli R10 Ailesi, Sevgili Meslektaşlarım Merhaba,**
 
-Aylardır gece gündüz üzerinde çalıştığımız, sıradan bir "özgeçmiş sitesi" olmanın çok ötesine geçen; yapay zekayı (OpenAI & Gemini) kariyer dünyasının tüm adımlarına entegre ettiğimiz **CVniz** projemizi topluluğumuza **tamamen ücretsiz ve açık kaynak** olarak hediye etme kararı aldık.
+Aylardır ekibimizle üzerinde çalıştığımız, sıradan bir "özgeçmiş sitesi" olmanın çok ötesine geçen; yapay zekayı (OpenAI & Gemini) kariyer dünyasının tüm adımlarına entegre ettiğimiz **CVniz** projemizi topluluğumuza **tamamen ücretsiz ve açık kaynak** olarak armağan ediyoruz.
 
-Peki neden böyle bir karar aldık? Dürüst olmak gerekirse: Asıl işimiz olan kurumsal ERP, WMS ve B2B otomasyon projelerimizin yoğunluğu nedeniyle bu projeye hak ettiği pazarlama ve operasyonel zamanı ayıramaz hale geldik. Aylarca verilen emeğin, binlerce satır temiz kodun ve özel yapay zeka algoritmalarının sunucularımızda veya disklerimizde çürümesine gönlümüz el vermedi. 
+### Neden Ücretsiz Veriyoruz?
+Dürüst olmak gerekirse: Asıl işimiz olan kurumsal ERP, WMS ve B2B otomasyon projelerimizin yoğunluğu nedeniyle bu projeye hak ettiği pazarlama, operasyon ve zaman yatırımını yapamaz hale geldik. Aylarca verilen emeğin, binlerce satır temiz kodun ve özel yapay zeka prompt/algoritmalarının sunucularımızda veya disklerimizde öylece durmasına gönlümüz el vermedi.
 
-İstiyoruz ki R10'dan bir arkadaşımız, bir yazılımcı genç veya kendi SaaS girişimini kurmak isteyen bir girişimci bu projeyi alsın; ister yayına alıp hemen para kazanmaya başlasın, ister portföyüne katsın, isterse inceleyip kendine bir şeyler katsın.
+İstiyoruz ki R10'dan bir arkadaşımız, genç bir yazılımcı veya kendi SaaS girişimini kurmak isteyen bir meslektaşımız bu projeyi alsın; ister yayına alıp hemen işletsin, ister portföyüne katsın, isterse inceleyip kendine yeni bir vizyon katsın.
 
-Üstelik sadece kodları vermekle kalmıyoruz; projenin jenerik ve akılda kalıcı orijinal alan adı olan **cvniz.com**'u da projeyi indiren ve konumuza yorum bırakan arkadaşlarımız arasından yapacağımız çekilişle **ücretsiz olarak devredeceğiz.**
+Üstelik sadece kodları vermekle kalmıyoruz; projenin jenerik ve çok kıymetli olan orijinal alan adı **cvniz.com**'u da bu projeyi gerçekten ayağa kaldırıp büyütecek **bir meslektaşımıza hiçbir ücret talep etmeden tamamen hediye edeceğiz.**
 
 ---
 
-### 🚀 Projede Neler Var? (Sıradan Bir Script Değil, Tam Bir SaaS Ekosistemi)
+### 🛡️ R10 "Ücretsiz Scriptler" Kategori Kuralları & Yasallık Beyanı
+* **%100 Özgün ve Yasal:** Bu proje warez, nulled, çalıntı veya yabancı bir script kopyası **kesinlikle değildir**. Tüm mimari, veritabanı şemaları, mobil ve web arayüzleri sıfırdan bizim tarafımızdan kodlanmıştır.
+* **Mevzuata Tam Uyum:** T.C. kanun ve mevzuatlarına, genel ahlaka ve R10.net forum kurallarına %100 uygundur. İçerisinde hiçbir zararlı kod, gizli reklam, crypto-miner, shell veya lisans kısıtlaması yer almaz.
+* **Temiz Paket:** Kodlar gereksiz video, devasa görsel veya build çöplerinden arındırılmış; yalnızca 10.8 MB temiz kaynak kod olarak paketlenmiştir.
 
-Sistemi incelerken "Vay canına, bunu da mı yapmışlar?" diyeceğiniz pek çok yenilikçi modül hazırladık:
+---
 
-1. 🪄 **AI Smart Fill (Tek Tıkla CV Doldurma):**
-   Kullanıcı sadece hedeflediği pozisyonu giriyor (Örn: "Frontend Developer", "Veri Bilimci"). Sistem saniyeler içinde sektöre ve seviyeye uygun profesyonel özet, 8-10 adet kritik teknik/sosyal beceri ve detaylı iş deneyimlerini otomatik üretiyor.
+### 🔗 Dosya Kaynak Bağlantıları ve VirüsTotal Sonuçları (Zorunlu)
 
-2. 📸 **AI Headshot (Stüdyo Kalitesinde Kurumsal Fotoğraf):**
-   Kullanıcının evde telefonla çektiği sıradan bir selfie'yi yapay zeka ile arka planı stüdyo olan, lacivert takım elbiseli kurumsal bir vesikalık fotoğrafa dönüştürüyor.
+Forum kuralları gereği dosya kaynak bağlantısı ve güvenlik tarama detayları aşağıdadır:
 
-3. 🧠 **Interview Coach Pro (Yapay Zeka Canlı Mülakat Koçu):**
-   Kullanıcı hedeflediği pozisyonu seçip mülakata başlıyor. Yapay zeka ona zorlu sorular soruyor, kullanıcının sesli/yazılı yanıtlarını analiz ediyor ve mülakat sonunda kapsamlı bir **değerlendirme karnesi** çıkartıyor.
+* 🌐 **Resmi Tanıtım ve Doğrudan İndirme Sayfası:**  
+  👉 **[https://erdemeroglu.com.tr/yazilimlar/cvniz](https://erdemeroglu.com.tr/yazilimlar/cvniz)**  
+  *(Sayfadaki Google ile tek tıkla oturum açıp doğrudan yüksek hızlı CDN'den indirebilirsiniz.)*
 
-4. 💬 **Salary Negotiator (Canlı Maaş Pazarlığı Simülatörü):**
-   Kullanıcıyı rol yapan zorlu bir İK yöneticisi ile karşı karşıya getiriyoruz! Kullanıcı argüman sundukça yapay zekanın teklifi artıyor veya sertleşiyor. Gerçek bir maaş pazarlığı oyunu!
+* 📦 **Doğrudan Dosya Kaynak Bağlantısı (Alternatif Direkt İndirme):**  
+  👉 **[https://cdn.erdemeroglu.com.tr/downloads/cvniz/cvniz-full-open-source.zip](https://cdn.erdemeroglu.com.tr/downloads/cvniz/cvniz-full-open-source.zip)**
 
-5. 📊 **Real-Time ATS Scanner (Canlı İK Filtre Analizi):**
-   Kullanıcı CV'sini doldururken arka planda çalışan motor, İK tarama robotlarının (ATS) gözünden okunabilirlik skorunu, eksik anahtar kelimeleri ve format uyumluluğunu anlık olarak puanlıyor.
+* 🐙 **GitHub Açık Kaynak Deposu:**  
+  👉 **[https://github.com/erogluerdem/cvniz](https://github.com/erogluerdem/cvniz)**
 
-6. 👥 **Multiplayer Canlı Ortak Çalışma (Google Docs Tarzı):**
-   Bir arkadaşınızla veya kariyer danışmanınızla aynı CV linkini paylaşıp, canlı imleç takibiyle aynı anda düzenleme yapabiliyorsunuz.
+* 🛡️ **VirusTotal Tarama Sonucu:**  
+  👉 **[VirusTotal Raporunu Görüntülemek İçin Tıklayın](https://www.virustotal.com/gui/file/3197e7ca4d1689c14f178592874656e3696c99583a8e52d01a5e6f7edc02bc8d)**
+  - **Dosya Adı:** `cvniz-full-open-source.zip`
+  - **Dosya Boyutu:** `10.80 MB (11.329.073 bytes)`
+  - **SHA-256 Özeti:** `3197e7ca4d1689c14f178592874656e3696c99583a8e52d01a5e6f7edc02bc8d`
+  - **Tespit Durumu:** 0 / 64 (Temiz - Clean)
 
-7. 🔌 **GitHub & LinkedIn Entegrasyonu:**
-   Özellikle yazılımcılar için: Tek tıkla GitHub kullanıcı adını yazıyorsunuz; repoları, kullanılan popüler dilleri ve yıldız sayılarını doğrudan CV projelerine aktarıyor.
+---
 
-8. 📱 **React Native (Expo) Mobil Uygulama:**
+### 🚀 Projede Neler Var? (Sıradan Bir Script Değil, Uçtan Uca Bir SaaS)
+
+Sistemi incelerken her detayında ciddi bir işçilik göreceksiniz:
+
+1. 🪄 **AI Smart Fill (Tek Tıkla CV Doldurma):**  
+   Kullanıcı sadece hedeflediği pozisyonu giriyor (Örn: "Full Stack Developer", "Pazarlama Uzmanı"). Sistem saniyeler içinde sektöre uygun profesyonel özet, teknik ve sosyal yetkinlikler ve detaylı iş deneyimlerini otomatik üretiyor.
+
+2. 📸 **AI Headshot (Stüdyo Kalitesinde Kurumsal Portre):**  
+   Kullanıcının telefonla çektiği basit bir fotoğrafı yapay zeka ile stüdyo fonlu, lacivert takım elbiseli kurumsal bir vesikalığa dönüştürüyor.
+
+3. 🧠 **Interview Coach Pro (Canlı Yapay Zeka Mülakat Koçu):**  
+   Hedef pozisyona göre adaya zorlu, gerçekçi mülakat soruları soruyor; verilen yanıtları analiz edip mülakat sonunda güçlü/zayıf yönleri gösteren kapsamlı bir karne çıkartıyor.
+
+4. 💬 **Salary Negotiator (Canlı Maaş Pazarlığı Simülatörü):**  
+   Adayı rol yapan zorlu bir İK yöneticisi ile sanal bir pazarlık masasına oturtuyor. Verilen argümanların kalitesine göre maaş teklifi yükseliyor veya zorlaşıyor.
+
+5. 📊 **Real-Time ATS Scanner (Canlı İK Filtre Analizi):**  
+   Kullanıcı CV'sini yazarken arka planda çalışan motor, İK tarama robotlarının (ATS) gözünden okunabilirlik skorunu, anahtar kelime eşleşmesini ve format uyumluluğunu anlık puanlıyor.
+
+6. 👥 **Multiplayer Canlı Ortak Çalışma (Google Docs Tarzı):**  
+   Bir arkadaşınızla veya kariyer danışmanınızla aynı link üzerinden canlı imleç takibiyle aynı anda CV üzerinde düzenleme yapabiliyorsunuz.
+
+7. 🔌 **GitHub & LinkedIn Entegrasyonu:**  
+   Tek tıkla GitHub kullanıcı adı girildiğinde repoları, kullanılan popüler dilleri ve yıldız sayılarını doğrudan CV projelerine aktarıyor.
+
+8. 📱 **React Native (Expo) Mobil Uygulama:**  
    Proje sadece web'den ibaret değil! Hem iOS (App Store) hem Android (Google Play) için derlenmeye hazır, modern ve eksiksiz bir mobil uygulama pakete dahildir.
 
-9. 📈 **İş Zekası (BI) & Makine Öğrenmesi Yönetim Paneli:**
+9. 📈 **İş Zekası (BI) & Makine Öğrenmesi Yönetim Paneli:**  
    Yönetici panelinde gerçek veri bilimi modelleri çalışıyor:
-   - **Churn Analizi:** Hangi kullanıcının aboneliğini iptal etme riski olduğunu %82-97 doğrulukla tahmin eder.
-   - **ARIMA Modeli:** Gelecek ayın gelir ve kullanıcı artışını matematiksel olarak öngörür.
-   - **K-Means Segmentasyonu:** Kullanıcı davranışlarını gruplar.
+   - **Churn Analizi:** Hangi kullanıcının aboneliğini iptal etme riski olduğunu tahmin eder.
+   - **ARIMA Modeli:** Gelecek ayların gelir ve kullanıcı artışını matematiksel olarak projeksiyonlar.
+   - **K-Means Segmentasyonu:** Kullanıcı davranışlarını kümeleyerek pazarlama stratejisi sunar.
 
-10. 💳 **Hazır SaaS Ödeme Altyapısı:**
-    Türkiye pazarı için Iyzico abonelik ve kredi satın alma modeli entegredir. Dileyen kod yapısını bozmadan dakikalar içinde Stripe veya PayTR'a çevirebilir.
+10. 💳 **Hazır SaaS Ödeme Altyapısı:**  
+    Türkiye pazarı için Iyzico abonelik ve kredi modeli entegredir. Dileyen dakikalar içinde Stripe veya PayTR'a çevirebilir.
 
 ---
 
-### 💻 Teknoloji Yığını (Tech Stack)
+### 💻 Teknoloji Mimarisi (Tech Stack)
 
 * **Web Frontend:** React 18 (Vite), Tailwind CSS, Framer Motion, Lucide Icons
 * **Mobil:** React Native (Expo) — Android & iOS Uyumlu
 * **Backend:** Node.js, Express.js (REST API, JWT Auth, Sentry, Rate Limiting)
-* **Veritabanı & Cache:** MongoDB (Mongoose) + Redis
-* **Yapay Zeka Motoru:** OpenAI API (GPT-4o/mini) & Google Gemini API
-* **Altyapı & DevOps:** Docker & Docker-Compose (Tek komutla ayağa kalkar)
+* **Veritabanı & Önbellek:** MongoDB (Mongoose) + Redis
+* **Yapay Zeka:** OpenAI API (GPT-4o/mini) & Google Gemini API
+* **DevOps:** Docker & Docker-Compose (Tek komutla tüm servisler ayağa kalkar)
 
 ---
 
-### 📥 İndirme Linki ve Detaylar
+### 🎁 cvniz.com Alan Adı Hediyesi Nasıl Olacak?
 
-Projeyi hiçbir reklam veya kısaltma linki olmadan doğrudan Cloudflare R2 yüksek hızlı CDN altyapımız üzerinden full ZIP olarak indirebilirsiniz:
+Bu proje için daha önce tescil ettiğimiz akılda kalıcı jenerik **cvniz.com** alan adını satmıyoruz; **gerçekten yayına alacak veya geliştirecek bir meslektaşımıza hediye ediyoruz.**
 
-🔗 **Ürün Detayları ve Doğrudan İndirme:**  
-👉 **[https://erdemeroglu.com.tr/yazilimlar/cvniz](https://erdemeroglu.com.tr/yazilimlar/cvniz)**
-
-*(Not: Sayfada **"Google ile Hızlı Giriş Yap & İndir"** butonuna basarak 1 saniyede tek tıkla üye olabilir ve 60 MB'lık temiz açık kaynak paketini anında indirebilirsiniz. İndirdiğiniz anda e-posta adresiniz otomatik olarak çekiliş veri tabanımıza kaydedilecektir.)*
-
----
-
-### 🎁 cvniz.com Alan Adı Çekilişi Nasıl Olacak?
-
-Projeyi sadece kod olarak vermek istemedik; bu işi gerçekten yayına alıp büyütecek bir arkadaşımızın elinde hayat bulsun diye **cvniz.com** alan adını da hediye ediyoruz.
-
-**Çekilişe Katılım Şartları Çok Basit:**
-1. Yukarıdaki linkten **Google ile tek tıkla giriş yaparak** projeyi indirmek (sistem indirenleri otomatik listeler).
-2. Bu konunun altına projenin en çok hangi modülünü beğendiğinizi veya projeyle ilgili kısa bir iyi niyet dileğinizi yazarak **"İndirdim, çekilişe katılıyorum"** şeklinde bir yorum bırakmak.
-
-📌 **Çekiliş Süreci:**
-- Çekiliş konunun açılışından itibaren **15 gün sonra** R10 üyeleri huzurunda şeffaf bir çekiliş aracıyla (random.org veya video kaydı ile) yapılacaktır.
-- Kazanan arkadaşımıza alan adı hiçbir ücret talep edilmeksizin doğrudan firması üzerinden ücretsiz devredilecektir.
-- Kazanan kişinin kurulum aşamasında takıldığı bir yer olursa bizzat teknik destek de vereceğim.
+**Süreç:**
+1. Projeyi yukarıdaki linkten indirip kodları inceleyin.
+2. Bu konunun altına projeyi nasıl değerlendirmeyi düşündüğünüzü, projenin en çok hangi modülünü beğendiğinizi veya kısa bir iyi niyet mesajınızı yazın.
+3. Konu açılışından sonra yorumları ve projeyi sahiplenmek isteyen arkadaşları inceleyip, bu projeyi en güzel şekilde yaşatacağına ve hakkını vereceğine inandığımız bir meslektaşımıza **cvniz.com** alan adını firması üzerinden hiçbir ücret almadan doğrudan devredeceğiz.
+4. Alan adını hediye ettiğimiz arkadaşımıza kurulum veya yayına alma sürecinde takıldığı bir yer olursa bizzat teknik destek de sağlayacağım.
 
 ---
 
-### 🛠️ Kurulum Kolaylığı
+### 🛠️ Kurulum Kolaylığı (Docker İle 2 Dakika)
 
-Projeyi sunucunuzda veya kendi bilgisayarınızda çalıştırmak için Docker kurulu olması yeterlidir:
+Paket içerisindeki **KURULUM_VE_TESEKKURLER.md** dosyasında tüm ayrıntılar yer alıyor. Docker ile çalıştırmak için:
 
 ```bash
-# 1. Depoyu veya indirdiğiniz ZIP'i açın
-cd cvniz
-
-# 2. Ortam değişkenlerini düzenleyin
+# 1. Ortam değişkenlerini hazırlayın
 cp .env.example .env
 
-# 3. Tek komutla tüm sistemi ayağa kaldırın
+# 2. Tek komutla tüm sistemi ayağa kaldırın
 docker-compose up -d --build
 ```
-Sistem yaklaşık 2 dakika içinde Web'i, API'yi, Redis'i ve veritabanını otomatik bağlayıp çalışır hale getirecektir.
+Sistem yaklaşık 2 dakika içinde Web, API, Redis ve MongoDB'yi otomatik bağlayıp çalışır hale getirecektir.
 
 ---
 
 ### 💬 Son Söz
 
-Bu proje için çok ciddi vakit ve emek harcandı. Umarım aranızdan birinin kendi SaaS yolculuğuna başlamasına, güzel paralar kazanmasına veya portföyüne değer katmasına vesile olur.
+Bu proje için çok ciddi vakit ve emek harcandı. Umarım aranızdan birinin kendi SaaS girişimini başlatmasına, portföyüne değer katmasına veya yeni teknolojiler öğrenmesine vesile olur.
 
-Sorularınız, kurulumda takıldığınız noktalar veya geliştirme önerileriniz olursa bu konu altından seve seve yardımcı olurum.
+Sorularınız veya takıldığınız bir nokta olursa bu konu altından memnuniyetle yanıtlarım.
 
-Güle güle kullanmanız dileğiyle, herkese bol kazançlar ve iyi forumlar! 🚀
+Güle güle kullanmanız dileğiyle, herkese başarılar ve iyi forumlar! 🚀
